@@ -2,16 +2,19 @@ package nonylene.net.photolinkviewer;
 
 import android.app.Activity;
 import android.app.LoaderManager;
+import android.content.Intent;
 import android.content.Loader;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -30,8 +33,25 @@ public class Show extends Activity {
         Button button2 = (Button) findViewById(R.id.button2);
         button1.setOnClickListener(new Button1ClickListener());
         button2.setOnClickListener(new Button2ClickListener());
-        AsyncExecute hoge = new AsyncExecute();
-        hoge.Start("https://pbs.twimg.com/media/Bz1FnXUCEAAkVGt.png:orig");
+        if (Intent.ACTION_VIEW.equals(getIntent().getAction())) {
+            Uri uri = getIntent().getData();
+            String url = uri.toString();
+            String a = URLPurser(url);
+            AsyncExecute hoge = new AsyncExecute();
+            hoge.Start(a);
+        }else{
+            Toast.makeText(this,"Intent Error!", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public String URLPurser(String url){
+        if (url.contains("twipple")){
+            Log.v("twipple", url);
+            return("http://p.twipple.jp/show/orig/" + url.substring(url.indexOf(".jp/") + 4));
+        }else{
+            Log.v("default","hoge");
+            return("https://pbs.twimg.com/media/Bz1FnXUCEAAkVGt.png:orig");
+        }
     }
 
 
