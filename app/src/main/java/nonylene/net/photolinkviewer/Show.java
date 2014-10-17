@@ -1,19 +1,21 @@
 package nonylene.net.photolinkviewer;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.Loader;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.os.Environment;
+import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 
@@ -24,30 +26,41 @@ public class Show extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show);
+        Button button1 = (Button) findViewById(R.id.button1);
+        Button button2 = (Button) findViewById(R.id.button2);
+        button1.setOnClickListener(new Button1ClickListener());
+        button2.setOnClickListener(new Button2ClickListener());
         AsyncExecute hoge = new AsyncExecute();
         hoge.Start("https://pbs.twimg.com/media/Bz1FnXUCEAAkVGt.png:orig");
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.show, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+    class Button1ClickListener implements View.OnClickListener {
+        public void onClick(View v) {
+            ImageView imageView = (ImageView) findViewById(R.id.imgview);
+            Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+            File root = Environment.getExternalStorageDirectory();
+            String directory = "GetImgTst";
+            String Name = "hoge.png";
+            File dir = new File(root, directory);
+            Log.v("dir", dir.toString());
+            dir.mkdirs();
+            File path = new File(dir, Name);
+            try {
+                FileOutputStream fo = new FileOutputStream(path);
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, fo);
+                fo.close();
+            } catch (IOException e) {
+                Log.e("error", e.toString());
+            }
         }
-        return super.onOptionsItemSelected(item);
     }
 
+    class Button2ClickListener implements View.OnClickListener {
+        public void onClick(View v) {
+            Log.v("save", "clicked");
+        }
+    }
 
     public class AsyncExecute implements LoaderManager.LoaderCallbacks<Drawable> {
 
