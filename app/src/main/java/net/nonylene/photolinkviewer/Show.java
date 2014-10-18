@@ -29,6 +29,9 @@ import java.util.regex.Pattern;
 
 public class Show extends Activity {
 
+    private String filename = "hoge";
+    private String sitename = "hoge";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,12 +52,20 @@ public class Show extends Activity {
 
     public void URLPurser(String url) {
         try {
+            String id = null;
             if (url.contains("twipple")) {
                 Log.v("twipple", url);
+                Pattern pattern = Pattern.compile("^https?://p\\.twipple\\.jp/(\\w+)");
+                Matcher matcher = pattern.matcher(url);
+                if (matcher.find()) {
+                    Log.v("march", "success");
+                }
+                id = matcher.group(1);
+                sitename = "twipple";
+                filename = id;
                 AsyncExecute hoge = new AsyncExecute();
-                hoge.Start("http://p.twipple.jp/show/orig/" + url.substring(url.indexOf(".jp/") + 4));
+                hoge.Start("http://p.twipple.jp/show/orig/" + id);
             } else if (url.contains("flic")) {
-                String id = null;
                 if (url.contains("flickr")) {
                     Log.v("flickr", url);
                     Pattern pattern = Pattern.compile("^https?://www\\.flickr\\.com/photos/[\\w@]+/(\\d+)");
@@ -72,6 +83,8 @@ public class Show extends Activity {
                     }
                     id = Base58.decode(matcher.group(1));
                 }
+                sitename = "flickr";
+                filename = id;
                 String request = "https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&format=json&api_key=<API_KEY>&photo_id="
                         + id;
                 Log.v("flickrAPI", request);
@@ -93,16 +106,16 @@ public class Show extends Activity {
             ImageView imageView = (ImageView) findViewById(R.id.imgview);
             Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
             File root = Environment.getExternalStorageDirectory();
-            String directory = "GetImgTst";
-            String Name = "hoge.png";
-            File dir = new File(root, directory);
+            String directory = "PLViewer";
+            File dir = new File(root, directory + "/" + sitename);
             Log.v("dir", dir.toString());
             dir.mkdirs();
-            File path = new File(dir, Name);
+            File path = new File(dir, filename + ".png");
             try {
                 FileOutputStream fo = new FileOutputStream(path);
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, fo);
                 fo.close();
+                Toast.makeText(Show.this, "file saved to " + path.toString(), Toast.LENGTH_LONG).show();
             } catch (IOException e) {
                 Log.e("error", e.toString());
             }
@@ -132,7 +145,7 @@ public class Show extends Activity {
                 return new AsyncHttp(getApplicationContext(), url);
 
             } catch (IOException e) {
-                Toast.makeText(Show.this, "fuck", Toast.LENGTH_LONG).show();
+                Log.e("DrawableLoaderError", e.toString());
                 return null;
             }
         }
@@ -166,7 +179,7 @@ public class Show extends Activity {
                 return new AsyncJSON(getApplicationContext(), url);
 
             } catch (IOException e) {
-                Toast.makeText(Show.this, "fuck", Toast.LENGTH_LONG).show();
+                Log.e("JSONLoaderError", e.toString());
                 return null;
             }
         }
