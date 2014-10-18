@@ -48,32 +48,42 @@ public class Show extends Activity {
     }
 
     public void URLPurser(String url) {
-        if (url.contains("twipple")) {
-            Log.v("twipple", url);
-            AsyncExecute hoge = new AsyncExecute();
-            hoge.Start("http://p.twipple.jp/show/orig/" + url.substring(url.indexOf(".jp/") + 4));
-        } else if (url.contains("flickr")) {
-            Log.v("flickr", url);
-            try {
-                Pattern pattern = Pattern.compile("^https://www\\.flickr\\.com/photos/[\\w@]+/(\\d+)/");
-                Matcher matcher = pattern.matcher(url);
-                if (matcher.find()){ Log.v("march","success"); }
+        try {
+            if (url.contains("twipple")) {
+                Log.v("twipple", url);
+                AsyncExecute hoge = new AsyncExecute();
+                hoge.Start("http://p.twipple.jp/show/orig/" + url.substring(url.indexOf(".jp/") + 4));
+            } else if (url.contains("flic")) {
+                String id = null;
+                if (url.contains("flickr")) {
+                    Log.v("flickr", url);
+                    Pattern pattern = Pattern.compile("^https?://www\\.flickr\\.com/photos/[\\w@]+/(\\d+)");
+                    Matcher matcher = pattern.matcher(url);
+                    if (matcher.find()) {
+                        Log.v("march", "success");
+                    }
+                    id = matcher.group(1);
+                } else if (url.contains("flic.kr")) {
+                    Log.v("flic.kr", url);
+                    Pattern pattern = Pattern.compile("^https?://flic\\.kr/p/(\\w+)");
+                    Matcher matcher = pattern.matcher(url);
+                    if (matcher.find()) {
+                        Log.v("march", "success");
+                    }
+                    id = Base58.decode(matcher.group(1));
+                }
                 String request = "https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&format=json&api_key=<API_KEY>&photo_id="
-                        + matcher.group(1);
+                        + id;
                 Log.v("flickrAPI", request);
                 AsyncJSONExecute hoge = new AsyncJSONExecute();
                 hoge.Start(request);
-
-
-            } catch (Exception e) {
-                Log.e("IOerror", e.toString());
+            } else {
+                Log.v("default", "hoge");
+                AsyncExecute hoge = new AsyncExecute();
+                hoge.Start("https://pbs.twimg.com/media/Bz1FnXUCEAAkVGt.png:orig");
             }
-        } else if (url.contains("flic.kr")) {
-            Log.v("flic.kr", url);
-        } else {
-            Log.v("default", "hoge");
-            AsyncExecute hoge = new AsyncExecute();
-            hoge.Start("https://pbs.twimg.com/media/Bz1FnXUCEAAkVGt.png:orig");
+        } catch (Exception e) {
+            Log.e("IOerror", e.toString());
         }
     }
 
@@ -172,10 +182,10 @@ public class Show extends Activity {
                 String id = photo.getString("id");
                 String secret = photo.getString("secret");
                 //license
-                Log.v("URL","https://farm"+ farm + ".staticflickr.com/" + server + "/" + id + "_" + secret +"_b.jpg");
+                Log.v("URL", "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + secret + "_b.jpg");
                 AsyncExecute hoge = new AsyncExecute();
-                hoge.Start("https://farm"+ farm + ".staticflickr.com/" + server + "/" + id + "_" + secret +"_b.jpg");
-            }catch (JSONException e){
+                hoge.Start("https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + secret + "_b.jpg");
+            } catch (JSONException e) {
                 Log.e("JSONError", e.toString());
             }
         }
