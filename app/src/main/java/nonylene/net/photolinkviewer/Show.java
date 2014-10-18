@@ -14,13 +14,17 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class Show extends Activity {
@@ -36,21 +40,40 @@ public class Show extends Activity {
         if (Intent.ACTION_VIEW.equals(getIntent().getAction())) {
             Uri uri = getIntent().getData();
             String url = uri.toString();
-            String a = URLPurser(url);
-            AsyncExecute hoge = new AsyncExecute();
-            hoge.Start(a);
-        }else{
-            Toast.makeText(this,"Intent Error!", Toast.LENGTH_LONG).show();
+            Log.v("url", url);
+            URLPurser(url);
+        } else {
+            Toast.makeText(this, "Intent Error!", Toast.LENGTH_LONG).show();
         }
     }
 
-    public String URLPurser(String url){
-        if (url.contains("twipple")){
+    public void URLPurser(String url) {
+        if (url.contains("twipple")) {
             Log.v("twipple", url);
-            return("http://p.twipple.jp/show/orig/" + url.substring(url.indexOf(".jp/") + 4));
-        }else{
-            Log.v("default","hoge");
-            return("https://pbs.twimg.com/media/Bz1FnXUCEAAkVGt.png:orig");
+            AsyncExecute hoge = new AsyncExecute();
+            hoge.Start("http://p.twipple.jp/show/orig/" + url.substring(url.indexOf(".jp/") + 4));
+        } else if (url.contains("flickr")) {
+            Log.v("flickr", url);
+            try {
+                Pattern pattern = Pattern.compile("^https://www\\.flickr\\.com/photos/[\\w@]+/(\\d+)/");
+                Matcher matcher = pattern.matcher(url);
+                if (matcher.find()){ Log.v("march","success"); }
+                String request = "https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&format=json&api_key=<API_KEY>&photo_id="
+                        + matcher.group(1);
+                Log.v("flickrAPI", request);
+                AsyncJSONExecute hoge = new AsyncJSONExecute();
+                hoge.Start(request);
+
+
+            } catch (Exception e) {
+                Log.e("IOerror", e.toString());
+            }
+        } else if (url.contains("flic.kr")) {
+            Log.v("flic.kr", url);
+        } else {
+            Log.v("default", "hoge");
+            AsyncExecute hoge = new AsyncExecute();
+            hoge.Start("https://pbs.twimg.com/media/Bz1FnXUCEAAkVGt.png:orig");
         }
     }
 
@@ -88,7 +111,7 @@ public class Show extends Activity {
         public void Start(String url) {
             Bundle bundle = new Bundle();
             bundle.putString("url", url);
-            getLoaderManager().initLoader(0, bundle, this);
+            getLoaderManager().restartLoader(0, bundle, this);
         }
 
         @Override
@@ -112,6 +135,53 @@ public class Show extends Activity {
 
         @Override
         public void onLoaderReset(Loader<Drawable> loader) {
+
+        }
+    }
+
+    public class AsyncJSONExecute implements LoaderManager.LoaderCallbacks<JSONObject> {
+
+
+        public void Start(String url) {
+            Bundle bundle = new Bundle();
+            bundle.putString("url", url);
+            getLoaderManager().restartLoader(0, bundle, this);
+        }
+
+        @Override
+        public Loader<JSONObject> onCreateLoader(int id, Bundle bundle) {
+            try {
+                String c = bundle.getString("url");
+                URL url = new URL(c);
+                return new AsyncJSON(getApplicationContext(), url);
+
+            } catch (IOException e) {
+                Toast.makeText(Show.this, "fuck", Toast.LENGTH_LONG).show();
+                return null;
+            }
+        }
+
+        @Override
+        public void onLoadFinished(Loader<JSONObject> loader, JSONObject json) {
+
+            try {
+                Log.v("json", json.toString(2));
+                JSONObject photo = new JSONObject(json.getString("photo"));
+                String farm = photo.getString("farm");
+                String server = photo.getString("server");
+                String id = photo.getString("id");
+                String secret = photo.getString("secret");
+                //license
+                Log.v("URL","https://farm"+ farm + ".staticflickr.com/" + server + "/" + id + "_" + secret +"_b.jpg");
+                AsyncExecute hoge = new AsyncExecute();
+                hoge.Start("https://farm"+ farm + ".staticflickr.com/" + server + "/" + id + "_" + secret +"_b.jpg");
+            }catch (JSONException e){
+                Log.e("JSONError", e.toString());
+            }
+        }
+
+        @Override
+        public void onLoaderReset(Loader<JSONObject> loader) {
 
         }
     }
