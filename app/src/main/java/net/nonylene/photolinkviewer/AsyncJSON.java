@@ -1,10 +1,8 @@
-package nonylene.net.photolinkviewer;
+package net.nonylene.photolinkviewer;
 
 import android.content.AsyncTaskLoader;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
-import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;

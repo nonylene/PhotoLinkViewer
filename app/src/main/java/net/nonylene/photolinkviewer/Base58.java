@@ -1,4 +1,4 @@
-package nonylene.net.photolinkviewer;
+package net.nonylene.photolinkviewer;
 
 public class Base58 {
     private static final String alphabet = "123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ";

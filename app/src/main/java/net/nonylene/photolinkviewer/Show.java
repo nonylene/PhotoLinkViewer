@@ -1,4 +1,4 @@
-package nonylene.net.photolinkviewer;
+package net.nonylene.photolinkviewer;
 
 import android.app.Activity;
 import android.app.LoaderManager;
