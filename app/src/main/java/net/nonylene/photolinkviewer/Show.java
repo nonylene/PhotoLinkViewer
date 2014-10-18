@@ -50,57 +50,6 @@ public class Show extends Activity {
         }
     }
 
-    public void URLPurser(String url) {
-        try {
-            String id = null;
-            if (url.contains("twipple")) {
-                Log.v("twipple", url);
-                Pattern pattern = Pattern.compile("^https?://p\\.twipple\\.jp/(\\w+)");
-                Matcher matcher = pattern.matcher(url);
-                if (matcher.find()) {
-                    Log.v("march", "success");
-                }
-                id = matcher.group(1);
-                sitename = "twipple";
-                filename = id;
-                AsyncExecute hoge = new AsyncExecute();
-                hoge.Start("http://p.twipple.jp/show/orig/" + id);
-            } else if (url.contains("flic")) {
-                if (url.contains("flickr")) {
-                    Log.v("flickr", url);
-                    Pattern pattern = Pattern.compile("^https?://www\\.flickr\\.com/photos/[\\w@]+/(\\d+)");
-                    Matcher matcher = pattern.matcher(url);
-                    if (matcher.find()) {
-                        Log.v("march", "success");
-                    }
-                    id = matcher.group(1);
-                } else if (url.contains("flic.kr")) {
-                    Log.v("flic.kr", url);
-                    Pattern pattern = Pattern.compile("^https?://flic\\.kr/p/(\\w+)");
-                    Matcher matcher = pattern.matcher(url);
-                    if (matcher.find()) {
-                        Log.v("march", "success");
-                    }
-                    id = Base58.decode(matcher.group(1));
-                }
-                sitename = "flickr";
-                filename = id;
-                String request = "https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&format=json&api_key=<API_KEY>&photo_id="
-                        + id;
-                Log.v("flickrAPI", request);
-                AsyncJSONExecute hoge = new AsyncJSONExecute();
-                hoge.Start(request);
-            } else {
-                Log.v("default", "hoge");
-                AsyncExecute hoge = new AsyncExecute();
-                hoge.Start("https://pbs.twimg.com/media/Bz1FnXUCEAAkVGt.png:orig");
-            }
-        } catch (Exception e) {
-            Log.e("IOerror", e.toString());
-        }
-    }
-
-
     class Button1ClickListener implements View.OnClickListener {
         public void onClick(View v) {
             ImageView imageView = (ImageView) findViewById(R.id.imgview);
@@ -195,9 +144,10 @@ public class Show extends Activity {
                 String id = photo.getString("id");
                 String secret = photo.getString("secret");
                 //license
-                Log.v("URL", "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + secret + "_b.jpg");
+                String url = "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + secret + "_b.jpg";
+                Log.v("URL", url);
                 AsyncExecute hoge = new AsyncExecute();
-                hoge.Start("https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + secret + "_b.jpg");
+                hoge.Start(url);
             } catch (JSONException e) {
                 Log.e("JSONError", e.toString());
             }
@@ -209,4 +159,79 @@ public class Show extends Activity {
         }
     }
 
+    public void URLPurser(String url) {
+        try {
+            String id = null;
+            if (url.contains("flic")) {
+                Log.v("flickr", url);
+                if (url.contains("w.flickr")) {
+                    Pattern pattern = Pattern.compile("^https?://[wm]w*\\.flickr\\.com/?#?/photos/[\\w@]+/(\\d+)");
+                    Matcher matcher = pattern.matcher(url);
+                    if (matcher.find()) {
+                        Log.v("match", "success");
+                    }
+                    id = matcher.group(1);
+                } else if (url.contains("flic.kr")) {
+                    Pattern pattern = Pattern.compile("^https?://flic\\.kr/p/(\\w+)");
+                    Matcher matcher = pattern.matcher(url);
+                    if (matcher.find()) {
+                        Log.v("match", "success");
+                    }
+                    id = Base58.decode(matcher.group(1));
+                }
+                sitename = "flickr";
+                filename = id;
+                String request = "https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&format=json&api_key=<API_KEY>&photo_id="
+                        + id;
+                Log.v("flickrAPI", request);
+                AsyncJSONExecute hoge = new AsyncJSONExecute();
+                hoge.Start(request);
+            } else {
+                if (url.contains("twipple")) {
+                    Log.v("twipple", url);
+                    Pattern pattern = Pattern.compile("^https?://p\\.twipple\\.jp/(\\w+)");
+                    Matcher matcher = pattern.matcher(url);
+                    if (matcher.find()) {
+                        Log.v("match", "success");
+                    }
+                    id = matcher.group(1);
+                    sitename = "twipple";
+                    filename = id;
+                    AsyncExecute hoge = new AsyncExecute();
+                    hoge.Start("http://p.twipple.jp/show/orig/" + id);
+                } else if (url.contains("img.ly")) {
+                    Log.v("img.ly", url);
+                    Pattern pattern = Pattern.compile("^https?://img\\.ly/(\\w+)");
+                    Matcher matcher = pattern.matcher(url);
+                    if (matcher.find()) {
+                        Log.v("match", "success");
+                    }
+                    id = matcher.group(1);
+                    sitename = "img.ly";
+                    filename = id;
+                    AsyncExecute hoge = new AsyncExecute();
+                    hoge.Start("http://img.ly/show/full/" + id);
+                } else if (url.contains("instagr")) {
+                    Log.v("instagram", url);
+                    Pattern pattern = Pattern.compile("^https?://instagr\\.?am[\\.com]*/p/(\\w+)");
+                    Matcher matcher = pattern.matcher(url);
+                    if (matcher.find()) {
+                        Log.v("match", "success");
+                    }
+                    id = matcher.group(1);
+                    sitename = "instagram";
+                    filename = id;
+                    AsyncExecute hoge = new AsyncExecute();
+                    hoge.Start("http://instagram.com/p/" + id + "/media/?size=l");
+                } else {
+                    Log.v("default", "hoge");
+                    AsyncExecute hoge = new AsyncExecute();
+                    Toast.makeText(Show.this, "this url is incompatible, so showing a sample picture.", Toast.LENGTH_LONG).show();
+                    hoge.Start("https://pbs.twimg.com/media/Bz1FnXUCEAAkVGt.png:orig");
+                }
+            }
+        } catch (Exception e) {
+            Log.e("IOException", e.toString());
+        }
+    }
 }

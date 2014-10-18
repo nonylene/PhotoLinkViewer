@@ -26,6 +26,12 @@
                     android:host="www.flickr.com"
                     android:scheme="https" />
                 <data
+                    android:host="m.flickr.com"
+                    android:scheme="http" />
+                <data
+                    android:host="m.flickr.com"
+                    android:scheme="https" />
+                <data
                     android:host="flic.kr"
                     android:scheme="http" />
                 <data
@@ -33,6 +39,15 @@
                     android:scheme="https" />
                 <data
                     android:host="p.twipple.jp"
+                    android:scheme="http" />
+                <data
+                    android:host="img.ly"
+                    android:scheme="http" />
+                <data
+                    android:host="instagram.com"
+                    android:scheme="http" />
+                <data
+                    android:host="instagr.am"
                     android:scheme="http" />
             </intent-filter>
         </activity>
