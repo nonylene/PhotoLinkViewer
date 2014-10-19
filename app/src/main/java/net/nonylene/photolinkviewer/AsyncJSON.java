@@ -44,52 +44,54 @@ public class AsyncJSON extends AsyncTaskLoader<JSONObject> {
             String hoge = stringBuilder.toString();
             Pattern pattern = Pattern.compile("^jsonFlickrApi\\(([^\\)]+)\\)");
             Matcher matcher = pattern.matcher(hoge);
-            if (matcher.find()){ Log.v("march","success"); }
-            hoge = matcher.group(1);
+            if (matcher.find()) {
+                Log.v("match", "success");
+                hoge = matcher.group(1);
+            }
             Log.v("text", hoge);
             json = new JSONObject(hoge);
             return json;
         } catch (IOException e) {
             Log.e("IOExc", e.toString());
             return json;
-        } catch (JSONException e){
+        } catch (JSONException e) {
             Log.e("JSOMExc", e.toString());
             return json;
         }
     }
 
     @Override
-    public void deliverResult(JSONObject json){
-        if (isReset()){
-            if(this.result != null ){
+    public void deliverResult(JSONObject json) {
+        if (isReset()) {
+            if (this.result != null) {
                 this.result = null;
             }
             return;
         }
         this.result = json;
-        if (isStarted()){
+        if (isStarted()) {
             super.deliverResult(json);
         }
     }
 
     @Override
     public void onStartLoading() {
-        if (this.result != null){
+        if (this.result != null) {
             deliverResult(this.result);
         }
-        if(takeContentChanged() || this.result == null){
+        if (takeContentChanged() || this.result == null) {
             forceLoad();
         }
     }
 
     @Override
-    public void onStopLoading(){
+    public void onStopLoading() {
         super.onStopLoading();
         cancelLoad();
     }
 
     @Override
-    public void onReset(){
+    public void onReset() {
         super.onReset();
         onStopLoading();
     }

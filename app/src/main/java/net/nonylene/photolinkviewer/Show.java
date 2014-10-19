@@ -73,7 +73,7 @@ public class Show extends Activity {
 
     class Button2ClickListener implements View.OnClickListener {
         public void onClick(View v) {
-            Log.v("save", "clicked");
+            Log.v("settings", "clicked");
         }
     }
 
