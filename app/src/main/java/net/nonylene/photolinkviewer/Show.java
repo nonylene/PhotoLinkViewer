@@ -29,7 +29,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class Show extends Activity implements GestureDetector.OnGestureListener {
+public class Show extends Activity {
 
     private String filename = "hoge";
     private String sitename = "hoge";
@@ -43,7 +43,7 @@ public class Show extends Activity implements GestureDetector.OnGestureListener 
         Button button2 = (Button) findViewById(R.id.button2);
         button1.setOnClickListener(new Button1ClickListener());
         button2.setOnClickListener(new Button2ClickListener());
-        gestureDetector = new GestureDetector(this,this);
+        gestureDetector = new GestureDetector(this,new TouchEvent());
         if (Intent.ACTION_VIEW.equals(getIntent().getAction())) {
             Uri uri = getIntent().getData();
             String url = uri.toString();
@@ -82,44 +82,11 @@ public class Show extends Activity implements GestureDetector.OnGestureListener 
         }
     }
 
-    public boolean onTouchEvent(MotionEvent motionEvent){
-        return gestureDetector.onTouchEvent(motionEvent) || super.onTouchEvent(motionEvent);
-    }
-
     @Override
-    public boolean onSingleTapUp(MotionEvent e) {
-        Log.v("INFO", "onSingleTapUp");
+    public boolean onTouchEvent(MotionEvent ev) {
+        gestureDetector.onTouchEvent(ev);
         return false;
     }
-
-    @Override
-    public void onShowPress(MotionEvent e) {
-        Log.v("INFO", "onSingleTapUp");
-    }
-
-    @Override
-    public void onLongPress(MotionEvent e) {
-        Log.v("INFO", "onLongPress");
-    }
-
-    @Override
-    public boolean onFling(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        Log.v("INFO", "onFling");
-        return false;
-    }
-
-    @Override
-    public boolean onDown(MotionEvent arg0) {
-        Log.v("INFO", "onDown");
-        return false;
-    }
-
-    @Override
-    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        Log.v("INFO", "onScroll");
-        return false;
-    }
-
 
     public class AsyncExecute implements LoaderManager.LoaderCallbacks<Drawable> {
 
