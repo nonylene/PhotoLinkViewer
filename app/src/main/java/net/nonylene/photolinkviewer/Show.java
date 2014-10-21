@@ -181,8 +181,9 @@ public class Show extends Activity {
                 }
                 sitename = "flickr";
                 filename = id;
-                String request = "https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&format=json&api_key=<API_KEY>&photo_id="
-                        + id;
+                String api_key = (String) getText(R.string.flickr_key);
+                String request = "https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&format=json&api_key=" + api_key +
+                "&photo_id=" + id;
                 Log.v("flickrAPI", request);
                 AsyncJSONExecute hoge = new AsyncJSONExecute();
                 hoge.Start(request);
