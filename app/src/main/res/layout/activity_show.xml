@@ -12,7 +12,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".Show">
 
-    <ImageView
+    <net.nonylene.photolinkviewer.PLVImageView
         android:id="@+id/imgview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

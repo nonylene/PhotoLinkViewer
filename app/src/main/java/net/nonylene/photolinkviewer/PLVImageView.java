@@ -1,10 +1,24 @@
 package net.nonylene.photolinkviewer;
 
+import android.content.Context;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.widget.ImageView;
 
-public class TouchEvent implements GestureDetector.OnGestureListener {
+public class PLVImageView extends ImageView implements GestureDetector.OnGestureListener {
+    private  GestureDetector gestureDetector;
+    public PLVImageView (Context context, AttributeSet attrs){
+        super(context, attrs);
+        gestureDetector = new GestureDetector(getContext(),this);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent e){
+        gestureDetector.onTouchEvent(e);
+        return true;
+    }
 
     @Override
     public boolean onSingleTapUp(MotionEvent e) {

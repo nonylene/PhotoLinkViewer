@@ -11,8 +11,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -33,7 +31,6 @@ public class Show extends Activity {
 
     private String filename = "hoge";
     private String sitename = "hoge";
-    private GestureDetector gestureDetector;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,7 +40,6 @@ public class Show extends Activity {
         Button button2 = (Button) findViewById(R.id.button2);
         button1.setOnClickListener(new Button1ClickListener());
         button2.setOnClickListener(new Button2ClickListener());
-        gestureDetector = new GestureDetector(this,new TouchEvent());
         if (Intent.ACTION_VIEW.equals(getIntent().getAction())) {
             Uri uri = getIntent().getData();
             String url = uri.toString();
@@ -80,12 +76,6 @@ public class Show extends Activity {
             Intent intent = new Intent(Show.this, Settings.class);
             startActivity(intent);
         }
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        gestureDetector.onTouchEvent(ev);
-        return false;
     }
 
     public class AsyncExecute implements LoaderManager.LoaderCallbacks<Drawable> {
