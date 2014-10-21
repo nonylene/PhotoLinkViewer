@@ -11,6 +11,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -27,19 +29,21 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class Show extends Activity {
+public class Show extends Activity implements GestureDetector.OnGestureListener {
 
     private String filename = "hoge";
     private String sitename = "hoge";
+    private GestureDetector gestureDetector;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show);
         Button button1 = (Button) findViewById(R.id.button1);
         Button button2 = (Button) findViewById(R.id.button2);
         button1.setOnClickListener(new Button1ClickListener());
         button2.setOnClickListener(new Button2ClickListener());
+        gestureDetector = new GestureDetector(this,this);
         if (Intent.ACTION_VIEW.equals(getIntent().getAction())) {
             Uri uri = getIntent().getData();
             String url = uri.toString();
@@ -73,9 +77,49 @@ public class Show extends Activity {
 
     class Button2ClickListener implements View.OnClickListener {
         public void onClick(View v) {
-            Log.v("settings", "clicked");
+            Intent intent = new Intent(Show.this, Settings.class);
+            startActivity(intent);
         }
     }
+
+    public boolean onTouchEvent(MotionEvent motionEvent){
+        return gestureDetector.onTouchEvent(motionEvent) || super.onTouchEvent(motionEvent);
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent e) {
+        Log.v("INFO", "onSingleTapUp");
+        return false;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent e) {
+        Log.v("INFO", "onSingleTapUp");
+    }
+
+    @Override
+    public void onLongPress(MotionEvent e) {
+        Log.v("INFO", "onLongPress");
+    }
+
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        Log.v("INFO", "onFling");
+        return false;
+    }
+
+    @Override
+    public boolean onDown(MotionEvent arg0) {
+        Log.v("INFO", "onDown");
+        return false;
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        Log.v("INFO", "onScroll");
+        return false;
+    }
+
 
     public class AsyncExecute implements LoaderManager.LoaderCallbacks<Drawable> {
 
@@ -164,7 +208,7 @@ public class Show extends Activity {
             String id = null;
             if (url.contains("flic")) {
                 Log.v("flickr", url);
-                if (url.contains("w.flickr")) {
+                if (url.contains("flickr")) {
                     Pattern pattern = Pattern.compile("^https?://[wm]w*\\.flickr\\.com/?#?/photos/[\\w@]+/(\\d+)");
                     Matcher matcher = pattern.matcher(url);
                     if (matcher.find()) {
@@ -183,7 +227,7 @@ public class Show extends Activity {
                 filename = id;
                 String api_key = (String) getText(R.string.flickr_key);
                 String request = "https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&format=json&api_key=" + api_key +
-                "&photo_id=" + id;
+                        "&photo_id=" + id;
                 Log.v("flickrAPI", request);
                 AsyncJSONExecute hoge = new AsyncJSONExecute();
                 hoge.Start(request);

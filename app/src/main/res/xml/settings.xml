@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <CheckBoxPreference
+        android:key="checkbox_preference"
+        android:title="unyaunya"
+        android:summary="poepoe" />
+
+    <EditTextPreference
+        android:key="text_preference"
+        android:title="hogehoge"
+        android:summary="piyopiyo"
+        android:dialogTitle="INVALID" />
+
+</PreferenceScreen>
