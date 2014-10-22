@@ -1,6 +1,8 @@
 package net.nonylene.photolinkviewer;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -8,6 +10,7 @@ import android.view.MotionEvent;
 import android.widget.ImageView;
 
 public class PLVImageView extends ImageView implements GestureDetector.OnGestureListener {
+    String url = null;
     private  GestureDetector gestureDetector;
     public PLVImageView (Context context, AttributeSet attrs){
         super(context, attrs);
@@ -34,6 +37,9 @@ public class PLVImageView extends ImageView implements GestureDetector.OnGesture
     @Override
     public void onLongPress(MotionEvent e) {
         Log.v("INFO", "onLongPress");
+        Uri uri = Uri.parse(url);
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        getContext().startActivity(intent);
 
     }
 

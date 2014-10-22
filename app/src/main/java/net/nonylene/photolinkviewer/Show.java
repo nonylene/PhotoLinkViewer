@@ -2,6 +2,7 @@ package net.nonylene.photolinkviewer;
 
 import android.app.Activity;
 import android.app.LoaderManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
 import android.graphics.Bitmap;
@@ -44,6 +45,8 @@ public class Show extends Activity {
             Uri uri = getIntent().getData();
             String url = uri.toString();
             Log.v("url", url);
+            PLVImageView plvImageView = (PLVImageView) findViewById(R.id.imgview);
+            plvImageView.url = url;
             URLPurser(url);
         } else {
             Toast.makeText(this, "Intent Error!", Toast.LENGTH_LONG).show();
@@ -102,7 +105,7 @@ public class Show extends Activity {
 
         @Override
         public void onLoadFinished(Loader<Drawable> loader, Drawable drawable) {
-            ImageView imageView = (ImageView) findViewById(R.id.imgview);
+            PLVImageView imageView = (PLVImageView) findViewById(R.id.imgview);
             imageView.setImageDrawable(drawable);
         }
 
