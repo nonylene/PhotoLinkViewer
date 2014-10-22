@@ -225,6 +225,19 @@ public class Show extends Activity {
                     filename = id;
                     AsyncExecute hoge = new AsyncExecute();
                     hoge.Start("http://instagram.com/p/" + id + "/media/?size=l");
+                } else if (url.contains("gyazo")) {
+                    Log.v("gyazo", url);
+                    Pattern pattern = Pattern.compile("^https?://gyazo\\.com/(\\w+)");
+                    Matcher matcher = pattern.matcher(url);
+                    if (matcher.find()) {
+                        Log.v("match", "success");
+                    }
+                    id = matcher.group(1);
+                    sitename = "gyazo";
+                    filename = id;
+                    AsyncExecute hoge = new AsyncExecute();
+                    //redirect followed if new protocol is the same as old one.
+                    hoge.Start("https://gyazo.com/" + id + "/raw");
                 } else {
                     Log.v("default", "hoge");
                     AsyncExecute hoge = new AsyncExecute();
