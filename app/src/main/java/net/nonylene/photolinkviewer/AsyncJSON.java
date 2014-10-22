@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
 
 
 public class AsyncJSON extends AsyncTaskLoader<JSONObject> {
+    //get json from url, asynctaskloader
 
     private URL url;
     private Context context = null;
@@ -42,6 +43,7 @@ public class AsyncJSON extends AsyncTaskLoader<JSONObject> {
             }
             inputStream.close();
             String hoge = stringBuilder.toString();
+            //flickr returns function for javascript, so purse for json
             Pattern pattern = Pattern.compile("^jsonFlickrApi\\(([^\\)]+)\\)");
             Matcher matcher = pattern.matcher(hoge);
             if (matcher.find()) {

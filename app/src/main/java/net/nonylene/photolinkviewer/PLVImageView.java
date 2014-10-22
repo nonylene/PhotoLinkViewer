@@ -10,15 +10,18 @@ import android.view.MotionEvent;
 import android.widget.ImageView;
 
 public class PLVImageView extends ImageView implements GestureDetector.OnGestureListener {
+    //custom image view (able to drag, long-press,etc)
+
     String url = null;
-    private  GestureDetector gestureDetector;
-    public PLVImageView (Context context, AttributeSet attrs){
+    private GestureDetector gestureDetector;
+
+    public PLVImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        gestureDetector = new GestureDetector(getContext(),this);
+        gestureDetector = new GestureDetector(getContext(), this);
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent e){
+    public boolean onTouchEvent(MotionEvent e) {
         gestureDetector.onTouchEvent(e);
         return true;
     }

@@ -2,7 +2,6 @@ package net.nonylene.photolinkviewer;
 
 import android.app.Activity;
 import android.app.LoaderManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
 import android.graphics.Bitmap;
@@ -30,6 +29,7 @@ import java.util.regex.Pattern;
 
 public class Show extends Activity {
 
+    //directory,filename to save
     private String filename = "hoge";
     private String sitename = "hoge";
 
@@ -41,11 +41,13 @@ public class Show extends Activity {
         Button button2 = (Button) findViewById(R.id.button2);
         button1.setOnClickListener(new Button1ClickListener());
         button2.setOnClickListener(new Button2ClickListener());
+        //receive intent
         if (Intent.ACTION_VIEW.equals(getIntent().getAction())) {
             Uri uri = getIntent().getData();
             String url = uri.toString();
             Log.v("url", url);
             PLVImageView plvImageView = (PLVImageView) findViewById(R.id.imgview);
+            //set long-press url
             plvImageView.url = url;
             URLPurser(url);
         } else {
@@ -55,12 +57,15 @@ public class Show extends Activity {
 
     class Button1ClickListener implements View.OnClickListener {
         public void onClick(View v) {
+            //save file
             ImageView imageView = (ImageView) findViewById(R.id.imgview);
+            //pickup bitmap
             Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
             File root = Environment.getExternalStorageDirectory();
             String directory = "PLViewer";
             File dir = new File(root, directory + "/" + sitename);
             Log.v("dir", dir.toString());
+            //make directory
             dir.mkdirs();
             File path = new File(dir, filename + ".png");
             try {
@@ -76,6 +81,7 @@ public class Show extends Activity {
 
     class Button2ClickListener implements View.OnClickListener {
         public void onClick(View v) {
+            //settings
             Intent intent = new Intent(Show.this, Settings.class);
             startActivity(intent);
         }
@@ -83,10 +89,10 @@ public class Show extends Activity {
 
     public class AsyncExecute implements LoaderManager.LoaderCallbacks<Drawable> {
 
-
         public void Start(String url) {
             Bundle bundle = new Bundle();
             bundle.putString("url", url);
+            //there are some loaders, so restart(all has finished)
             getLoaderManager().restartLoader(0, bundle, this);
         }
 
@@ -96,7 +102,6 @@ public class Show extends Activity {
                 String c = bundle.getString("url");
                 URL url = new URL(c);
                 return new AsyncHttp(getApplicationContext(), url);
-
             } catch (IOException e) {
                 Log.e("DrawableLoaderError", e.toString());
                 return null;
@@ -105,6 +110,7 @@ public class Show extends Activity {
 
         @Override
         public void onLoadFinished(Loader<Drawable> loader, Drawable drawable) {
+            //set image
             PLVImageView imageView = (PLVImageView) findViewById(R.id.imgview);
             imageView.setImageDrawable(drawable);
         }
@@ -116,7 +122,7 @@ public class Show extends Activity {
     }
 
     public class AsyncJSONExecute implements LoaderManager.LoaderCallbacks<JSONObject> {
-
+        //get json from url
 
         public void Start(String url) {
             Bundle bundle = new Bundle();
@@ -130,7 +136,6 @@ public class Show extends Activity {
                 String c = bundle.getString("url");
                 URL url = new URL(c);
                 return new AsyncJSON(getApplicationContext(), url);
-
             } catch (IOException e) {
                 Log.e("JSONLoaderError", e.toString());
                 return null;
@@ -139,8 +144,8 @@ public class Show extends Activity {
 
         @Override
         public void onLoadFinished(Loader<JSONObject> loader, JSONObject json) {
-
             try {
+                //for flickr
                 Log.v("json", json.toString(2));
                 JSONObject photo = new JSONObject(json.getString("photo"));
                 String farm = photo.getString("farm");
@@ -164,6 +169,8 @@ public class Show extends Activity {
     }
 
     public void URLPurser(String url) {
+        //purse url
+
         try {
             String id = null;
             if (url.contains("flic")) {

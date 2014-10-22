@@ -10,6 +10,7 @@ import java.net.URL;
 
 
 public class AsyncHttp extends AsyncTaskLoader<Drawable> {
+    //get drawable from url
 
     private URL url;
     private Context context = null;
@@ -23,7 +24,6 @@ public class AsyncHttp extends AsyncTaskLoader<Drawable> {
     @Override
     public Drawable loadInBackground() {
         Drawable drawable = null;
-
         try {
             InputStream inputStream = url.openStream();
             drawable = Drawable.createFromStream(inputStream, "webimg");
