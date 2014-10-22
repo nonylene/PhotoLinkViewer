@@ -1,9 +1,13 @@
 package net.nonylene.photolinkviewer;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.LoaderManager;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -41,6 +45,12 @@ public class Show extends Activity {
         Button button2 = (Button) findViewById(R.id.button2);
         button1.setOnClickListener(new Button1ClickListener());
         button2.setOnClickListener(new Button2ClickListener());
+        SharedPreferences preferences = getSharedPreferences("preference", MODE_PRIVATE);
+        if (!preferences.getBoolean("Initialized", false)) {
+            DialogFragment fragment = new InitDialogFragment();
+            fragment.show(getFragmentManager(), "show");
+            preferences.edit().putBoolean("Initialized", true).apply();
+        }
         //receive intent
         if (Intent.ACTION_VIEW.equals(getIntent().getAction())) {
             Uri uri = getIntent().getData();
@@ -165,6 +175,20 @@ public class Show extends Activity {
         @Override
         public void onLoaderReset(Loader<JSONObject> loader) {
 
+        }
+    }
+
+    public static class InitDialogFragment extends DialogFragment {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("Thank you for install")
+                    .setMessage("対応サイト\nflickr, imgly, twipple, instagram, gyazo\n※gifには非対応\n\n操作方法\n" +
+                            "URLのIntentから開いてください。ズームするのとtwitterはいつか対応するつもり。画像を長押しすることで元の" +
+                            "URLに飛ぶことができます。saveを押すとPLViewerのディレクトリにpngとして保存されます。\n\n" +
+                            "今のところSettingsは特に意味無いです。")
+                    .setNeutralButton("OK", null);
+            return builder.create();
         }
     }
 

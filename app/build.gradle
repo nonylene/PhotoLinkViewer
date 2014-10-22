@@ -8,8 +8,8 @@ android {
         applicationId "net.nonylene.photolinkviewer"
         minSdkVersion 14
         targetSdkVersion 19
-        versionCode 3
-        versionName 'it ALPHA2 work shiteruyo'
+        versionCode 4
+        versionName 'it ALPHA3 work shiteruyo'
     }
     buildTypes {
         release {
