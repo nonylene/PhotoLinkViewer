@@ -52,6 +52,14 @@
                 <data
                     android:host="gyazo.com"
                     android:scheme="http" />
+                <data
+                    android:host="twitter.com"
+                    android:pathPattern=".*status.*photo.*"
+                    android:scheme="http" />
+                <data
+                    android:host="twitter.com"
+                    android:pathPattern=".*status.*photo.*"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
         <activity
@@ -62,7 +70,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".TOAuth"
+        <activity
+            android:name=".TOAuth"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

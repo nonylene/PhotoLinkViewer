@@ -15,6 +15,8 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -30,6 +32,18 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.crypto.spec.SecretKeySpec;
+
+import twitter4j.AsyncTwitter;
+import twitter4j.AsyncTwitterFactory;
+import twitter4j.MediaEntity;
+import twitter4j.Status;
+import twitter4j.Twitter;
+import twitter4j.TwitterAdapter;
+import twitter4j.TwitterFactory;
+import twitter4j.TwitterListener;
+import twitter4j.auth.AccessToken;
 
 
 public class Show extends Activity {
@@ -191,7 +205,7 @@ public class Show extends Activity {
                     .setNeutralButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Intent intent = new Intent(getActivity(),TOAuth.class);
+                            Intent intent = new Intent(getActivity(), TOAuth.class);
                             startActivity(intent);
                         }
                     });
@@ -229,6 +243,29 @@ public class Show extends Activity {
                 Log.v("flickrAPI", request);
                 AsyncJSONExecute hoge = new AsyncJSONExecute();
                 hoge.Start(request);
+            } else if (url.contains("twitter")) {
+                Log.v("twitter", url);
+                Pattern pattern = Pattern.compile("^https?://twitter\\.com/\\w+/status/(\\d+)/photo");
+                Matcher matcher = pattern.matcher(url);
+                if (matcher.find()) {
+                    Log.v("match", "success");
+                }
+                id = matcher.group(1);
+                sitename = "twitter";
+                filename = id;
+                SharedPreferences sharedPreferences = getSharedPreferences("preference", MODE_PRIVATE);
+                String apikey = (String) getText(R.string.twitter_key);
+                String apisecret = (String) getText(R.string.twitter_secret);
+                byte[] keyboo = Base64.decode(sharedPreferences.getString("key", null), Base64.DEFAULT);
+                SecretKeySpec key = new SecretKeySpec(keyboo, 0, keyboo.length, "AES");
+                byte[] token = Base64.decode(sharedPreferences.getString("ttoken", null), Base64.DEFAULT);
+                byte[] token_secret = Base64.decode(sharedPreferences.getString("ttokensecret", null), Base64.DEFAULT);
+                AccessToken accessToken = new AccessToken(Encryption.decrypt(token, key), Encryption.decrypt(token_secret, key));
+                AsyncTwitter twitter = new AsyncTwitterFactory().getInstance();
+                twitter.setOAuthConsumer(apikey, apisecret);
+                twitter.setOAuthAccessToken(accessToken);
+                twitter.addListener(twitterListener);
+                twitter.showStatus(Long.parseLong(id));
             } else {
                 if (url.contains("twipple")) {
                     Log.v("twipple", url);
@@ -290,4 +327,15 @@ public class Show extends Activity {
             Log.e("IOException", e.toString());
         }
     }
+
+    private TwitterListener twitterListener = new TwitterAdapter() {
+        @Override
+        public void gotShowStatus(Status status) {
+            MediaEntity[] mediaEntities = status.getMediaEntities();
+            Log.v("media", mediaEntities[0].getMediaURL());
+            String url = mediaEntities[0].getMediaURL();
+            AsyncExecute hoge = new AsyncExecute();
+            hoge.Start(url + ":orig");
+        }
+    };
 }
