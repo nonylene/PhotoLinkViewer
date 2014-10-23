@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.LoaderManager;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
@@ -187,7 +188,13 @@ public class Show extends Activity {
                             "URLのIntentから開いてください。ズームするのとtwitterはいつか対応するつもり。画像を長押しすることで元の" +
                             "URLに飛ぶことができます。saveを押すとPLViewerのディレクトリにpngとして保存されます。\n\n" +
                             "今のところSettingsは特に意味無いです。")
-                    .setNeutralButton("OK", null);
+                    .setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(getActivity(),TOAuth.class);
+                            startActivity(intent);
+                        }
+                    });
             return builder.create();
         }
     }
