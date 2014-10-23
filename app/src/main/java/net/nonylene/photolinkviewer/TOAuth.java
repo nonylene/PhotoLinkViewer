@@ -29,7 +29,7 @@ public class TOAuth extends Activity {
         setContentView(R.layout.toauth);
         twitter = new AsyncTwitterFactory().getInstance();
         Button button1 = (Button) findViewById(R.id.oAuthButton);
-        button1.setOnClickListener(new ButtonClickListener());
+        button1.setOnClickListener(new Button1ClickListener());
     }
 
     private TwitterListener twitterListener = new TwitterAdapter() {
@@ -38,13 +38,13 @@ public class TOAuth extends Activity {
         public void gotOAuthRequestToken(RequestToken token) {
             requestToken = token;
             Uri uri = Uri.parse(requestToken.getAuthorizationURL());
-            Log.v("token", requestToken.getAuthorizationURL());
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             startActivity(intent);
         }
 
         @Override
         public void gotOAuthAccessToken(AccessToken token) {
+            twitter.setOAuthAccessToken(token);
             SharedPreferences preferences = getSharedPreferences("preference", MODE_PRIVATE);
             Key key = Encryption.generate();
             String twitter_token = Encryption.encrypt(token.getToken().getBytes(), key);
@@ -55,7 +55,7 @@ public class TOAuth extends Activity {
         }
     };
 
-    class ButtonClickListener implements View.OnClickListener {
+    class Button1ClickListener implements View.OnClickListener {
         public void onClick(View v) {
             try {
                 String apikey = (String) getText(R.string.twitter_key);
