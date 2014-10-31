@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 public class Show extends Activity {
@@ -32,7 +31,6 @@ public class Show extends Activity {
             ShowFragment showFragment = new ShowFragment();
             showFragment.setArguments(bundle);
             getFragmentManager().beginTransaction().replace(android.R.id.content,showFragment).commit();
-            Log.v("showfrag","completed");
         } else {
             Toast.makeText(this, "Intent Error!", Toast.LENGTH_LONG).show();
         }
@@ -44,7 +42,7 @@ public class Show extends Activity {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle("Thank you for install")
                     .setMessage("対応サイト\nflickr, imgly, twipple, instagram, gyazo\n※gifには非対応\n\n操作方法\n" +
-                            "URLのIntentから開いてください。ズームするのとtwitterはいつか対応するつもり。画像を長押しすることで元の" +
+                            "URLのIntentから開いてください。ズームするのはいつか対応するつもり。画像を長押しすることで元の" +
                             "URLに飛ぶことができます。saveを押すとPLViewerのディレクトリにpngとして保存されます。\n\n" +
                             "今のところSettingsは特に意味無いです。")
                     .setNeutralButton("OK", new DialogInterface.OnClickListener() {
