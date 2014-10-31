@@ -3,16 +3,11 @@ package net.nonylene.photolinkviewer;
 import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.Context;
-import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.os.Environment;
 import android.util.Base64;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -20,15 +15,12 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.regex.Matcher;
@@ -214,7 +206,7 @@ public class ShowFragment extends Fragment {
                 hoge.Start(request);
             } else if (url.contains("twitter")) {
                 Log.v("twitter", url);
-                Pattern pattern = Pattern.compile("^https?://twitter\\.com/\\w+/status/(\\d+)/photo");
+                Pattern pattern = Pattern.compile("^https?://twitter\\.com/\\w+/status/(\\d+)");
                 Matcher matcher = pattern.matcher(url);
                 if (matcher.find()) {
                     Log.v("match", "success");
