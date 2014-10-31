@@ -9,7 +9,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.widget.ImageView;
 
-public class PLVImageView extends ImageView implements GestureDetector.OnGestureListener {
+public class PLVImageView extends ImageView implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener {
     //custom image view (able to drag, long-press,etc)
 
     String url = null;
@@ -29,6 +29,26 @@ public class PLVImageView extends ImageView implements GestureDetector.OnGesture
     @Override
     public boolean onSingleTapUp(MotionEvent e) {
         Log.v("INFO", "onSingleTapUp");
+        return false;
+    }
+
+    @Override
+    public boolean onSingleTapConfirmed(MotionEvent e) {
+        Log.v("INFO", "onSingleTapConfirmed");
+
+        new OptionFragment();
+        return false;
+    }
+
+    @Override
+    public boolean onDoubleTap(MotionEvent e){
+        Log.v("INFO", "onDoubleTap");
+        return false;
+    }
+
+    @Override
+    public boolean onDoubleTapEvent(MotionEvent e){
+        Log.v("INFO", "onDoubleTapEvent");
         return false;
     }
 

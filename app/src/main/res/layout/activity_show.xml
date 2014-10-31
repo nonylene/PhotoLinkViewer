@@ -12,40 +12,9 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".Show">
 
-    <net.nonylene.photolinkviewer.PLVImageView
-        android:id="@+id/imgview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center" />
-
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/button1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16.0dip"
-            android:background="@drawable/button_design"
-            android:text="  SAVE  "
-            android:textColor="@color/button_font_color" />
-
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
-        <Button
-            android:id="@+id/button2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16.0dip"
-            android:background="@drawable/button_design"
-            android:text="SETTING"
-            android:textColor="@color/button_font_color" />
-    </LinearLayout>
+        android:id="@+id/shfragment" />
 
 </FrameLayout>
