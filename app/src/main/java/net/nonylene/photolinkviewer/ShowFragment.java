@@ -51,27 +51,9 @@ public class ShowFragment extends Fragment {
     private View view;
     private String url;
 
-    private GestureDetector.SimpleOnGestureListener simpleOnGestureListener = new GestureDetector.SimpleOnGestureListener(){
-
-        @Override
-        public boolean onSingleTapConfirmed(MotionEvent e) {
-            return super.onSingleTapConfirmed(e);
-            }
-
-        @Override
-        public void onLongPress(MotionEvent e) {
-            Uri uri = Uri.parse(url);
-            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-            startActivity(intent);
-            super.onLongPress(e);
-            }
-    };
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.v("hoge","hoge");
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -83,12 +65,12 @@ public class ShowFragment extends Fragment {
         button1.setOnClickListener(new Button1ClickListener());
         button2.setOnClickListener(new Button2ClickListener());
         ImageView imageView = (ImageView) view.findViewById(R.id.imgview);
+        final GestureDetector gestureDetector = new GestureDetector(getActivity(),new simpleOnGestureListener());
         imageView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                GestureDetector gestureDetector = new GestureDetector(getActivity(),simpleOnGestureListener);
                 gestureDetector.onTouchEvent(event);
-                return false;
+                return true;
             }
         });
         url = getArguments().getString("url");
@@ -128,6 +110,26 @@ public class ShowFragment extends Fragment {
             startActivity(intent);
         }
     }
+
+    class simpleOnGestureListener extends GestureDetector.SimpleOnGestureListener{
+
+        @Override
+        public boolean onSingleTapConfirmed(MotionEvent e) {
+            Log.v("gesture","singletap");
+            getFragmentManager().beginTransaction().add(android.R.id.content, new OptionFragment()).commit();
+            return super.onSingleTapConfirmed(e);
+        }
+
+        @Override
+        public void onLongPress(MotionEvent e) {
+            Log.v("gesture","longpress");
+            Uri uri = Uri.parse(url);
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            startActivity(intent);
+            super.onLongPress(e);
+        }
+    }
+
     public class AsyncExecute implements LoaderManager.LoaderCallbacks<Drawable> {
 
         public void Start(String url) {
