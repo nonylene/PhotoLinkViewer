@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,7 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Toast;
 
-public class Show extends Activity {
+public class Show extends Activity implements ShowFragment.OnFragmentInteractionListener{
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -29,8 +30,10 @@ public class Show extends Activity {
             String url = uri.toString();
             bundle.putString("url",url);
             ShowFragment showFragment = new ShowFragment();
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
             showFragment.setArguments(bundle);
-            getFragmentManager().beginTransaction().replace(android.R.id.content,showFragment).commit();
+            fragmentTransaction.replace(android.R.id.content, showFragment);
+            fragmentTransaction.commit();
         } else {
             Toast.makeText(this, "Intent Error!", Toast.LENGTH_LONG).show();
         }
@@ -54,5 +57,13 @@ public class Show extends Activity {
                     });
             return builder.create();
         }
+    }
+
+    public void onPurseFinished (Bundle bundle){
+        OptionFragment optionFragment = new OptionFragment();
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        optionFragment.setArguments(bundle);
+        fragmentTransaction.add(android.R.id.content,optionFragment);
+        fragmentTransaction.commit();
     }
 }

@@ -1,5 +1,6 @@
 package net.nonylene.photolinkviewer;
 
+import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Intent;
@@ -45,11 +46,8 @@ import twitter4j.auth.AccessToken;
 
 public class ShowFragment extends Fragment {
 
-    //directory,filename to save
-    private String filename = "hoge";
-    private String sitename = "hoge";
     private View view;
-    private String url;
+    private OnFragmentInteractionListener mListener;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,12 +56,7 @@ public class ShowFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.v("hoge","hoge");
         view = inflater.inflate(R.layout.show_fragment, container, false);
-        Button button1 = (Button) view.findViewById(R.id.button1);
-        Button button2 = (Button) view.findViewById(R.id.button2);
-        button1.setOnClickListener(new Button1ClickListener());
-        button2.setOnClickListener(new Button2ClickListener());
         ImageView imageView = (ImageView) view.findViewById(R.id.imgview);
         final GestureDetector gestureDetector = new GestureDetector(getActivity(),new simpleOnGestureListener());
         imageView.setOnTouchListener(new View.OnTouchListener() {
@@ -73,59 +66,22 @@ public class ShowFragment extends Fragment {
                 return true;
             }
         });
-        url = getArguments().getString("url");
+        String url = getArguments().getString("url");
         URLPurser(url);
         return view;
-    }
-
-
-    class Button1ClickListener implements View.OnClickListener {
-        public void onClick(View v) {
-            //save file
-            ImageView imageView = (ImageView) v.findViewById(R.id.imgview);
-            //pickup bitmap
-            Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
-            File root = Environment.getExternalStorageDirectory();
-            String directory = "PLViewer";
-            File dir = new File(root, directory + "/" + sitename);
-            Log.v("dir", dir.toString());
-            //make directory
-            dir.mkdirs();
-            File path = new File(dir, filename + ".png");
-            try {
-                FileOutputStream fo = new FileOutputStream(path);
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, fo);
-                fo.close();
-                Toast.makeText(getActivity(), "file saved to " + path.toString(), Toast.LENGTH_LONG).show();
-            } catch (IOException e) {
-                Log.e("error", e.toString());
-            }
-        }
-    }
-
-    class Button2ClickListener implements View.OnClickListener {
-        public void onClick(View v) {
-            //settings
-            Intent intent = new Intent(getActivity(), Settings.class);
-            startActivity(intent);
-        }
     }
 
     class simpleOnGestureListener extends GestureDetector.SimpleOnGestureListener{
 
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
-            Log.v("gesture","singletap");
-            getFragmentManager().beginTransaction().add(android.R.id.content, new OptionFragment()).commit();
+            Log.v("gesture", "singletap");
             return super.onSingleTapConfirmed(e);
         }
 
         @Override
         public void onLongPress(MotionEvent e) {
             Log.v("gesture","longpress");
-            Uri uri = Uri.parse(url);
-            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-            startActivity(intent);
             super.onLongPress(e);
         }
     }
@@ -224,6 +180,10 @@ public class ShowFragment extends Fragment {
 
     public void URLPurser(String url) {
         //purse url
+
+        //directory,filename to save
+        String sitename = null;
+        String filename = null;
 
         try {
             String id = null;
@@ -332,8 +292,28 @@ public class ShowFragment extends Fragment {
                     hoge.Start("https://pbs.twimg.com/media/Bz1FnXUCEAAkVGt.png:orig");
                 }
             }
+            Bundle bundle = new Bundle();
+            bundle.putString("url",url);
+            bundle.putString("sitename",sitename);
+            bundle.putString("filename",filename);
+            mListener.onPurseFinished(bundle);
         } catch (Exception e) {
             Log.e("IOException", e.toString());
         }
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mListener = (OnFragmentInteractionListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    public interface OnFragmentInteractionListener {
+        public void onPurseFinished(Bundle bundle);
     }
 }
