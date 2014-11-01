@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="action_settings">Settings</string>
+    <string name="action_save">Save</string>
+    <string name="pref_twitter_title">twitter認証の解除</string>
+    <string name="pref_twitter_summary">twitter認証を解除します</string>
+    <string name="toauth_failed_token">tokenの取得に失敗しました</string>
+    <string name="toauth_successed_token">tokenの取得に成功しました</string>
+
+</resources>

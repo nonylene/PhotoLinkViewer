@@ -9,6 +9,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.security.Key;
 
@@ -28,7 +29,6 @@ public class TOAuth extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.toauth);
-        twitter = new AsyncTwitterFactory().getInstance();
         Button button1 = (Button) findViewById(R.id.oAuthButton);
         button1.setOnClickListener(new Button1ClickListener());
     }
@@ -52,12 +52,26 @@ public class TOAuth extends Activity {
                 String twitter_token = Encryption.encrypt(token.getToken().getBytes("UTF-8"), key);
                 String twitter_tsecret = Encryption.encrypt(token.getTokenSecret().getBytes("UTF-8"), key);
                 String keys = Base64.encodeToString(key.getEncoded(), Base64.DEFAULT);
-
                 preferences.edit().putString("key", keys).apply();
                 preferences.edit().putString("ttoken", twitter_token).apply();
                 preferences.edit().putString("ttokensecret", twitter_tsecret).apply();
+                //putting cue to UI Thread
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(TOAuth.this, getString(R.string.toauth_successed_token), Toast.LENGTH_LONG).show();
+                        finish();
+                    }
+                });
             } catch (Exception e) {
                 Log.e("gettoken", e.toString());
+                //putting cue to UI Thread
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(TOAuth.this, getString(R.string.toauth_failed_token), Toast.LENGTH_LONG).show();
+                    }
+                });
             }
         }
     };
@@ -66,6 +80,7 @@ public class TOAuth extends Activity {
     class Button1ClickListener implements View.OnClickListener {
         public void onClick(View v) {
             try {
+                twitter = new AsyncTwitterFactory().getInstance();
                 String apikey = (String) getText(R.string.twitter_key);
                 String apisecret = (String) getText(R.string.twitter_secret);
                 twitter.setOAuthConsumer(apikey, apisecret);
@@ -81,6 +96,10 @@ public class TOAuth extends Activity {
     protected void onNewIntent(Intent intent) {
         Uri uri = intent.getData();
         String oauth = uri.getQueryParameter("oauth_verifier");
-        twitter.getOAuthAccessTokenAsync(requestToken, oauth);
+        if (oauth != null) {
+            twitter.getOAuthAccessTokenAsync(requestToken, oauth);
+        }else{
+            Toast.makeText(TOAuth.this, getString(R.string.toauth_failed_token), Toast.LENGTH_LONG).show();
+        }
     }
 }

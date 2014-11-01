@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.Transparent" parent="android:Theme.Light.NoTitleBar">
+    <style name="Theme.Transparent" parent="android:Theme.Holo.Light.NoActionBar">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@color/background</item>
+        <item name="android:windowAnimationStyle">@style/noActivityAnimation</item>
+    </style>
+    <style name="noActivityAnimation" parent="android:Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@null</item>
+        <item name="android:activityOpenExitAnimation">@null</item>
+        <item name="android:activityCloseEnterAnimation">@null</item>
+        <item name="android:activityCloseExitAnimation">@null</item>
     </style>
 </resources>
