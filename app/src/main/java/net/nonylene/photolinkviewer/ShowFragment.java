@@ -52,7 +52,7 @@ public class ShowFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.show_fragment, container, false);
         ImageView imageView = (ImageView) view.findViewById(R.id.imgview);
-        final GestureDetector gestureDetector = new GestureDetector(getActivity(),new simpleOnGestureListener());
+        final GestureDetector gestureDetector = new GestureDetector(getActivity(), new simpleOnGestureListener());
         imageView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -65,7 +65,7 @@ public class ShowFragment extends Fragment {
         return view;
     }
 
-    class simpleOnGestureListener extends GestureDetector.SimpleOnGestureListener{
+    class simpleOnGestureListener extends GestureDetector.SimpleOnGestureListener {
 
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
@@ -75,7 +75,7 @@ public class ShowFragment extends Fragment {
 
         @Override
         public void onLongPress(MotionEvent e) {
-            Log.v("gesture","longpress");
+            Log.v("gesture", "longpress");
             super.onLongPress(e);
         }
     }
@@ -103,10 +103,11 @@ public class ShowFragment extends Fragment {
 
         @Override
         public void onLoadFinished(Loader<Drawable> loader, Drawable drawable) {
-            //set image
+            //remove progressbar
             FrameLayout frameLayout = (FrameLayout) view.findViewById(R.id.showframe);
             ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.showprogress);
             frameLayout.removeView(progressBar);
+            //set image
             ImageView imageView = (ImageView) view.findViewById(R.id.imgview);
             imageView.setImageDrawable(drawable);
         }
@@ -290,15 +291,16 @@ public class ShowFragment extends Fragment {
                 }
             }
             Bundle bundle = new Bundle();
-            bundle.putString("url",url);
-            bundle.putString("sitename",sitename);
-            bundle.putString("filename",filename);
+            bundle.putString("url", url);
+            bundle.putString("sitename", sitename);
+            bundle.putString("filename", filename);
             mListener.onPurseFinished(bundle);
         } catch (Exception e) {
             Log.e("IOException", e.toString());
         }
     }
 
+    //this is needed to return bundle
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);

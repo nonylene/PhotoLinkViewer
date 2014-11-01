@@ -41,13 +41,13 @@ public class PLVImageView extends ImageView implements GestureDetector.OnGesture
     }
 
     @Override
-    public boolean onDoubleTap(MotionEvent e){
+    public boolean onDoubleTap(MotionEvent e) {
         Log.v("INFO", "onDoubleTap");
         return false;
     }
 
     @Override
-    public boolean onDoubleTapEvent(MotionEvent e){
+    public boolean onDoubleTapEvent(MotionEvent e) {
         Log.v("INFO", "onDoubleTapEvent");
         return false;
     }

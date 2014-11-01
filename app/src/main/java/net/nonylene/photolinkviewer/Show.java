@@ -12,7 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Toast;
 
-public class Show extends Activity implements ShowFragment.OnFragmentInteractionListener{
+public class Show extends Activity implements ShowFragment.OnFragmentInteractionListener {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -28,7 +28,7 @@ public class Show extends Activity implements ShowFragment.OnFragmentInteraction
             Bundle bundle = new Bundle();
             Uri uri = getIntent().getData();
             String url = uri.toString();
-            bundle.putString("url",url);
+            bundle.putString("url", url);
             ShowFragment showFragment = new ShowFragment();
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
             showFragment.setArguments(bundle);
@@ -61,11 +61,11 @@ public class Show extends Activity implements ShowFragment.OnFragmentInteraction
         }
     }
 
-    public void onPurseFinished (Bundle bundle){
+    public void onPurseFinished(Bundle bundle) {
         OptionFragment optionFragment = new OptionFragment();
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         optionFragment.setArguments(bundle);
-        fragmentTransaction.add(android.R.id.content,optionFragment);
+        fragmentTransaction.add(android.R.id.content, optionFragment);
         fragmentTransaction.commit();
     }
 }
