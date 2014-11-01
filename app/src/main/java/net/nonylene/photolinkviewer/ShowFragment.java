@@ -15,7 +15,9 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -102,6 +104,9 @@ public class ShowFragment extends Fragment {
         @Override
         public void onLoadFinished(Loader<Drawable> loader, Drawable drawable) {
             //set image
+            FrameLayout frameLayout = (FrameLayout) view.findViewById(R.id.showframe);
+            ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.showprogress);
+            frameLayout.removeView(progressBar);
             ImageView imageView = (ImageView) view.findViewById(R.id.imgview);
             imageView.setImageDrawable(drawable);
         }
