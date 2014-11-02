@@ -119,7 +119,6 @@ public class ShowFragment extends Fragment {
             //get bitmap size
             float origwidth = bitmap.getWidth();
             float origheight = bitmap.getHeight();
-            Log.v("size", String.valueOf(origheight));
             //get display size
             Display display = getActivity().getWindowManager().getDefaultDisplay();
             Point size = new Point();
@@ -131,8 +130,14 @@ public class ShowFragment extends Fragment {
             float zoom = Math.min(wid, hei);
             if (zoom < 1) {
                 //zoom
-                matrix.postScale(zoom, zoom);
-                matrix.setTranslate(0, 0);
+                matrix.setScale(zoom, zoom);
+                if (wid < hei) {
+                    //adjust width
+                    matrix.postTranslate(0, (dispheight - origheight*wid) / 2 );
+                }else{
+                    //adjust height
+                    matrix.postTranslate((dispwidth - origwidth*hei) / 2, 0);
+                }
             } else {
                 //move
                 matrix.setTranslate((dispwidth - origwidth) / 2, (dispheight - origheight) / 2);
@@ -311,6 +316,18 @@ public class ShowFragment extends Fragment {
                     AsyncExecute hoge = new AsyncExecute();
                     //redirect followed if new protocol is the same as old one.
                     hoge.Start("https://gyazo.com/" + id + "/raw");
+                } else if (url.contains("imgur")) {
+                    Log.v("gyazo", url);
+                    Pattern pattern = Pattern.compile("^https?://[m\\.]?imgur\\.com/([\\w^\\.]+)");
+                    Matcher matcher = pattern.matcher(url);
+                    if (matcher.find()) {
+                        Log.v("match", "success");
+                    }
+                    id = matcher.group(1);
+                    sitename = "imgur";
+                    filename = id;
+                    AsyncExecute hoge = new AsyncExecute();
+                    hoge.Start("http://i.imgur.com/" + id + ".jpg");
                 } else {
                     Log.v("default", "hoge");
                     AsyncExecute hoge = new AsyncExecute();

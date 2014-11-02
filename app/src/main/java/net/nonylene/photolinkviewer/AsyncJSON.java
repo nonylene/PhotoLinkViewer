@@ -57,7 +57,7 @@ public class AsyncJSON extends AsyncTaskLoader<JSONObject> {
             Log.e("IOExc", e.toString());
             return json;
         } catch (JSONException e) {
-            Log.e("JSOMExc", e.toString());
+            Log.e("JSONExc", e.toString());
             return json;
         }
     }

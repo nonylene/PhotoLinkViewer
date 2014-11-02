@@ -51,6 +51,12 @@
                 <data
                     android:host="gyazo.com"
                     android:scheme="http" />
+                <data
+                    android:host="imgur.com"
+                    android:scheme="http" />
+                <data
+                    android:host="m.imgur.com"
+                    android:scheme="http" />
             </intent-filter>
 
             <!--separating because of unavailable of intent-->
