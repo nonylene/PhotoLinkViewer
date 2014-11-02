@@ -5,11 +5,14 @@ import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Loader;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
+import android.graphics.Bitmap;
+import android.graphics.Matrix;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Display;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -80,7 +83,7 @@ public class ShowFragment extends Fragment {
         }
     }
 
-    public class AsyncExecute implements LoaderManager.LoaderCallbacks<Drawable> {
+    public class AsyncExecute implements LoaderManager.LoaderCallbacks<Bitmap> {
 
         public void Start(String url) {
             Bundle bundle = new Bundle();
@@ -90,7 +93,7 @@ public class ShowFragment extends Fragment {
         }
 
         @Override
-        public Loader<Drawable> onCreateLoader(int id, Bundle bundle) {
+        public Loader<Bitmap> onCreateLoader(int id, Bundle bundle) {
             try {
                 String c = bundle.getString("url");
                 URL url = new URL(c);
@@ -102,18 +105,43 @@ public class ShowFragment extends Fragment {
         }
 
         @Override
-        public void onLoadFinished(Loader<Drawable> loader, Drawable drawable) {
+        public void onLoadFinished(Loader<Bitmap> loader, Bitmap bitmap) {
             //remove progressbar
             FrameLayout frameLayout = (FrameLayout) view.findViewById(R.id.showframe);
             ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.showprogress);
             frameLayout.removeView(progressBar);
             //set image
             ImageView imageView = (ImageView) view.findViewById(R.id.imgview);
-            imageView.setImageDrawable(drawable);
+            imageView.setImageBitmap(bitmap);
+            //get matrix from imageview
+            Matrix matrix = new Matrix();
+            matrix.set(imageView.getMatrix());
+            //get bitmap size
+            float origwidth = bitmap.getWidth();
+            float origheight = bitmap.getHeight();
+            Log.v("size", String.valueOf(origheight));
+            //get display size
+            Display display = getActivity().getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            int dispwidth = size.x;
+            int dispheight = size.y;
+            float wid = dispwidth / origwidth;
+            float hei = dispheight / origheight;
+            float zoom = Math.min(wid, hei);
+            if (zoom < 1) {
+                //zoom
+                matrix.postScale(zoom, zoom);
+                matrix.setTranslate(0, 0);
+            } else {
+                //move
+                matrix.setTranslate((dispwidth - origwidth) / 2, (dispheight - origheight) / 2);
+            }
+            imageView.setImageMatrix(matrix);
         }
 
         @Override
-        public void onLoaderReset(Loader<Drawable> loader) {
+        public void onLoaderReset(Loader<Bitmap> loader) {
 
         }
     }

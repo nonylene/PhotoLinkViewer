@@ -2,19 +2,20 @@ package net.nonylene.photolinkviewer;
 
 import android.content.AsyncTaskLoader;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
 
-public class AsyncHttp extends AsyncTaskLoader<Drawable> {
-    //get drawable from url
+public class AsyncHttp extends AsyncTaskLoader<Bitmap> {
+    //get bitmap from url
 
     private URL url;
     private Context context = null;
-    private Drawable result;
+    private Bitmap result;
 
     public AsyncHttp(Context context, URL url) {
         super(context);
@@ -22,29 +23,29 @@ public class AsyncHttp extends AsyncTaskLoader<Drawable> {
     }
 
     @Override
-    public Drawable loadInBackground() {
-        Drawable drawable = null;
+    public Bitmap loadInBackground() {
+        Bitmap bitmap = null;
         try {
             InputStream inputStream = url.openStream();
-            drawable = Drawable.createFromStream(inputStream, "webimg");
+            bitmap = BitmapFactory.decodeStream(inputStream);
             inputStream.close();
-            return drawable;
+            return bitmap;
         } catch (IOException e) {
-            return drawable;
+            return bitmap;
         }
     }
 
     @Override
-    public void deliverResult(Drawable drawable){
+    public void deliverResult(Bitmap bitmap){
         if (isReset()){
             if(this.result != null ){
                 this.result = null;
             }
             return;
         }
-        this.result = drawable;
+        this.result = bitmap;
         if (isStarted()){
-            super.deliverResult(drawable);
+            super.deliverResult(bitmap);
         }
     }
 
