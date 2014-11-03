@@ -75,48 +75,58 @@ public class ShowFragment extends Fragment {
         private float initX;
         private float initY;
         private float basezoom;
+        private float firstzoom;
+        private boolean first = true;
         private float[] values = new float[9];
 
         @Override
         public boolean onScaleBegin(ScaleGestureDetector detector) {
-            Log.d("gesture", "onscalebegin");
+            //define zoom-base point
             touchX = detector.getFocusX();
             touchY = detector.getFocusY();
+            //get current status
             Matrix matrix = new Matrix();
             matrix.set(imageView.getImageMatrix());
             matrix.getValues(values);
+            //set base zoom param
             basezoom = values[Matrix.MSCALE_X];
+            if (first) {
+                firstzoom = basezoom;
+                first = false;
+            }
             initX = values[Matrix.MTRANS_X];
             initY = values[Matrix.MTRANS_Y];
-            Log.d("basezoom", String.valueOf(basezoom));
-            Log.d("gesture", String.valueOf(values[Matrix.MTRANS_X]));
-            Log.d("gesture", String.valueOf(values[Matrix.MTRANS_Y]));
             return super.onScaleBegin(detector);
         }
 
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
-            Log.d("gesture", "onscale");
             Matrix matrix = new Matrix();
             matrix.set(imageView.getImageMatrix());
-            float scalefactor = detector.getScaleFactor();
+            // adjust zoom speed
+            float scalefactor = (float) Math.pow(detector.getScaleFactor(), 1.4);
+            // photo's zoom scale (base is needed)
             float scale = scalefactor * basezoom;
-            Log.d("gesture", String.valueOf(scale));
-            matrix.getValues(values);
-            values[Matrix.MSCALE_X] = scale;
-            values[Matrix.MSCALE_Y] = scale;
-            Log.d("gesture", String.valueOf(values[Matrix.MTRANS_X]));
-            Log.d("gesture", String.valueOf(values[Matrix.MTRANS_Y]));
-            values[Matrix.MTRANS_X] = touchX - scalefactor * (touchX - initX);
-            values[Matrix.MTRANS_Y] = touchY - scalefactor * (touchY - initY);
-            matrix.setValues(values);
-            imageView.setImageMatrix(matrix);
+            if (scale > firstzoom * 0.8) {
+                matrix.getValues(values);
+                // define new size, point
+                values[Matrix.MSCALE_X] = scale;
+                values[Matrix.MSCALE_Y] = scale;
+                float transX = touchX - scalefactor * (touchX - initX);
+                float transY = touchY - scalefactor * (touchY - initY);
+                values[Matrix.MTRANS_X] = transX;
+                values[Matrix.MTRANS_Y] = transY;
+                matrix.setValues(values);
+                imageView.setImageMatrix(matrix);
+            }else{
+
+                Log.d("gesture", "onscalebegin");
+            }
             return super.onScale(detector);
         }
 
         @Override
         public void onScaleEnd(ScaleGestureDetector detector) {
-            Log.d("gesture", "onscalebegin");
             super.onScaleEnd(detector);
         }
     }
