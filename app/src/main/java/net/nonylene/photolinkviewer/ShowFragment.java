@@ -13,6 +13,7 @@ import android.app.Fragment;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Display;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -57,16 +58,37 @@ public class ShowFragment extends Fragment {
         view = inflater.inflate(R.layout.show_fragment, container, false);
         imageView = (ImageView) view.findViewById(R.id.imgview);
         final ScaleGestureDetector scaleGestureDetector = new ScaleGestureDetector(getActivity(), new simpleOnScaleGestureListener());
+        final GestureDetector GestureDetector = new GestureDetector(getActivity(), new simpleOnGestureListener());
         imageView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 scaleGestureDetector.onTouchEvent(event);
+                if (!scaleGestureDetector.isInProgress()) {
+                    GestureDetector.onTouchEvent(event);
+                }
                 return true;
             }
         });
         String url = getArguments().getString("url");
         URLPurser(url);
         return view;
+    }
+
+    class simpleOnGestureListener extends GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+            // drag photo
+            float[] values = new float[9];
+            Matrix matrix = new Matrix();
+            matrix.set(imageView.getImageMatrix());
+            matrix.getValues(values);
+            // move photo
+            values[Matrix.MTRANS_X] = values[Matrix.MTRANS_X] - distanceX;
+            values[Matrix.MTRANS_Y] = values[Matrix.MTRANS_Y] - distanceY;
+            matrix.setValues(values);
+            imageView.setImageMatrix(matrix);
+            return super.onScroll(e1, e2, distanceX, distanceY);
+        }
     }
 
     class simpleOnScaleGestureListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
@@ -118,7 +140,7 @@ public class ShowFragment extends Fragment {
                 values[Matrix.MTRANS_Y] = transY;
                 matrix.setValues(values);
                 imageView.setImageMatrix(matrix);
-            }else{
+            } else {
 
                 Log.d("gesture", "onscalebegin");
             }
