@@ -5,8 +5,8 @@
     <string name="pref_twitter_title">tap to reset</string>
     <string name="pref_twitter_summary">reset twitter oAuth</string>
     <string name="toauth_failed_token">failed to get token!</string>
-    <string name="toauth_successed_token">successed to get token!</string>
-    <string name="initial_dialog">Comaptible with\nflickr, imgly, twipple, instagram, gyazo, twitter, imgur\n-not GIF videos\n\nHow to use\n\nOpen from intente with URL. When you press SAVE button, photo will be saved in PLViewer directory as PNG file.\n\nIf you want to view twitter photos, you must autorize to twitter. However, you cannot view multiple photo yet. So you don\'t have to authorize. Do you authorize?    </string>
+    <string name="toauth_succeeded_token">succeeded to get token!</string>
+    <string name="initial_dialog">Compatible with\nflickr, imgly, twipple, instagram, gyazo, twitter, imgur\n-not GIF videos\n\nHow to use\n\nOpen from intent with URL. When you press SAVE button, photo will be saved in PLViewer directory as PNG file.\n\nIf you want to view twitter photos, you must authorize to twitter. However, you cannot view multiple photo yet. So you don\'t have to authorize. Do you authorize?</string>
     <string name="initial_dialog_ok" translatable="false">OK</string>
     <string name="initial_dialog_no">NO</string>
     <string name="option_fragment_open" translatable="false">Open with new Browser</string>

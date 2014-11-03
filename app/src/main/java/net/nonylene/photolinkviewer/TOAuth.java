@@ -59,7 +59,7 @@ public class TOAuth extends Activity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(TOAuth.this, getString(R.string.toauth_successed_token), Toast.LENGTH_LONG).show();
+                        Toast.makeText(TOAuth.this, getString(R.string.toauth_succeeded_token), Toast.LENGTH_LONG).show();
                         finish();
                     }
                 });
