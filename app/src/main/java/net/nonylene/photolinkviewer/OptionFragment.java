@@ -34,7 +34,7 @@ public class OptionFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_option, container, false);
+        view = inflater.inflate(R.layout.option_fragment, container, false);
         baseButton = (ImageButton) view.findViewById(R.id.basebutton);
         dlButton = (ImageButton) view.findViewById(R.id.dlbutton);
         setButton = (ImageButton) view.findViewById(R.id.setbutton);

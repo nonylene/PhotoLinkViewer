@@ -24,7 +24,7 @@
             android:layout_gravity="end|bottom"
             android:layout_margin="4dp"
             android:background="@null"
-            android:contentDescription="opennew"
+            android:contentDescription="@string/option_fragment_open"
             android:scaleType="fitXY"
             android:src="@drawable/browser"
             android:visibility="gone" />
@@ -36,7 +36,7 @@
             android:layout_gravity="end|bottom"
             android:layout_margin="4dp"
             android:background="@null"
-            android:contentDescription="hoge"
+            android:contentDescription="@string/option_fragment_settings"
             android:scaleType="fitXY"
             android:src="@drawable/setting"
             android:visibility="gone" />
@@ -48,7 +48,7 @@
             android:layout_gravity="end|bottom"
             android:layout_margin="4dp"
             android:background="@null"
-            android:contentDescription="download"
+            android:contentDescription="@string/option_fragment_download"
             android:scaleType="fitXY"
             android:src="@drawable/download"
             android:visibility="gone" />
@@ -63,7 +63,7 @@
             android:layout_marginStart="4dp"
             android:layout_marginTop="15dp"
             android:background="@null"
-            android:contentDescription="openclose"
+            android:contentDescription="@string/option_fragment_openclose"
             android:scaleType="fitXY"
             android:src="@drawable/up_button" />
     </LinearLayout>

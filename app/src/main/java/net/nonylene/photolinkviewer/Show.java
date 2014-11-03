@@ -44,19 +44,15 @@ public class Show extends Activity implements ShowFragment.OnFragmentInteraction
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle("Thank you for install")
-                    .setMessage("対応サイト\nflickr, imgly, twipple, instagram, gyazo, twitter\n※gifには非対応\n\n操作方法\n" +
-                            "URLのIntentから開いてください。ズームするのはいつか対応するつもり。" +
-                            "saveを押すとPLViewerのディレクトリにpngとして保存されます。\n\n" +
-                            "今のところSettingsは特に意味無いです。\n\n" +
-                            "twitterの画像を取得するには認証が必要です。ただまだ複数画像に対応してないので認証する必要性は少ないです。認証しますか？")
-                    .setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                    .setMessage(getString(R.string.initial_dialog))
+                    .setNeutralButton(getString(R.string.initial_dialog_ok), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             Intent intent = new Intent(getActivity(), TOAuth.class);
                             startActivity(intent);
                         }
                     })
-                    .setNegativeButton("やめて", null);
+                    .setNegativeButton(getString(R.string.initial_dialog_no), null);
             return builder.create();
         }
     }
