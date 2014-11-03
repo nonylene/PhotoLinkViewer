@@ -13,9 +13,9 @@ import android.app.Fragment;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Display;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -44,6 +44,7 @@ import twitter4j.auth.AccessToken;
 public class ShowFragment extends Fragment {
 
     private View view;
+    private ImageView imageView;
     private OnFragmentInteractionListener mListener;
 
     @Override
@@ -54,12 +55,12 @@ public class ShowFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.show_fragment, container, false);
-        ImageView imageView = (ImageView) view.findViewById(R.id.imgview);
-        final GestureDetector gestureDetector = new GestureDetector(getActivity(), new simpleOnGestureListener());
+        imageView = (ImageView) view.findViewById(R.id.imgview);
+        final ScaleGestureDetector scaleGestureDetector = new ScaleGestureDetector(getActivity(), new simpleOnScaleGestureListener());
         imageView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                gestureDetector.onTouchEvent(event);
+                scaleGestureDetector.onTouchEvent(event);
                 return true;
             }
         });
@@ -68,18 +69,55 @@ public class ShowFragment extends Fragment {
         return view;
     }
 
-    class simpleOnGestureListener extends GestureDetector.SimpleOnGestureListener {
+    class simpleOnScaleGestureListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+        private float touchX;
+        private float touchY;
+        private float initX;
+        private float initY;
+        private float basezoom;
+        private float[] values = new float[9];
 
         @Override
-        public boolean onSingleTapConfirmed(MotionEvent e) {
-            Log.v("gesture", "singletap");
-            return super.onSingleTapConfirmed(e);
+        public boolean onScaleBegin(ScaleGestureDetector detector) {
+            Log.d("gesture", "onscalebegin");
+            touchX = detector.getFocusX();
+            touchY = detector.getFocusY();
+            Matrix matrix = new Matrix();
+            matrix.set(imageView.getImageMatrix());
+            matrix.getValues(values);
+            basezoom = values[Matrix.MSCALE_X];
+            initX = values[Matrix.MTRANS_X];
+            initY = values[Matrix.MTRANS_Y];
+            Log.d("basezoom", String.valueOf(basezoom));
+            Log.d("gesture", String.valueOf(values[Matrix.MTRANS_X]));
+            Log.d("gesture", String.valueOf(values[Matrix.MTRANS_Y]));
+            return super.onScaleBegin(detector);
         }
 
         @Override
-        public void onLongPress(MotionEvent e) {
-            Log.v("gesture", "longpress");
-            super.onLongPress(e);
+        public boolean onScale(ScaleGestureDetector detector) {
+            Log.d("gesture", "onscale");
+            Matrix matrix = new Matrix();
+            matrix.set(imageView.getImageMatrix());
+            float scalefactor = detector.getScaleFactor();
+            float scale = scalefactor * basezoom;
+            Log.d("gesture", String.valueOf(scale));
+            matrix.getValues(values);
+            values[Matrix.MSCALE_X] = scale;
+            values[Matrix.MSCALE_Y] = scale;
+            Log.d("gesture", String.valueOf(values[Matrix.MTRANS_X]));
+            Log.d("gesture", String.valueOf(values[Matrix.MTRANS_Y]));
+            values[Matrix.MTRANS_X] = touchX - scalefactor * (touchX - initX);
+            values[Matrix.MTRANS_Y] = touchY - scalefactor * (touchY - initY);
+            matrix.setValues(values);
+            imageView.setImageMatrix(matrix);
+            return super.onScale(detector);
+        }
+
+        @Override
+        public void onScaleEnd(ScaleGestureDetector detector) {
+            Log.d("gesture", "onscalebegin");
+            super.onScaleEnd(detector);
         }
     }
 
@@ -111,7 +149,6 @@ public class ShowFragment extends Fragment {
             ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.showprogress);
             frameLayout.removeView(progressBar);
             //set image
-            ImageView imageView = (ImageView) view.findViewById(R.id.imgview);
             imageView.setImageBitmap(bitmap);
             //get matrix from imageview
             Matrix matrix = new Matrix();
@@ -128,20 +165,26 @@ public class ShowFragment extends Fragment {
             float wid = dispwidth / origwidth;
             float hei = dispheight / origheight;
             float zoom = Math.min(wid, hei);
+            float initX;
+            float initY;
             if (zoom < 1) {
                 //zoom
                 matrix.setScale(zoom, zoom);
                 if (wid < hei) {
                     //adjust width
-                    matrix.postTranslate(0, (dispheight - origheight*wid) / 2 );
-                }else{
+                    initX = 0;
+                    initY = (dispheight - origheight * wid) / 2;
+                } else {
                     //adjust height
-                    matrix.postTranslate((dispwidth - origwidth*hei) / 2, 0);
+                    initX = (dispwidth - origwidth * hei) / 2;
+                    initY = 0;
                 }
             } else {
                 //move
-                matrix.setTranslate((dispwidth - origwidth) / 2, (dispheight - origheight) / 2);
+                initX = (dispwidth - origwidth) / 2;
+                initY = (dispheight - origheight) / 2;
             }
+            matrix.postTranslate(initX, initY);
             imageView.setImageMatrix(matrix);
         }
 
@@ -318,7 +361,7 @@ public class ShowFragment extends Fragment {
                     hoge.Start("https://gyazo.com/" + id + "/raw");
                 } else if (url.contains("imgur")) {
                     Log.v("gyazo", url);
-                    Pattern pattern = Pattern.compile("^https?://[m\\.]?imgur\\.com/([\\w^\\.]+)");
+                    Pattern pattern = Pattern.compile("^https?://.*imgur\\.com/([\\w^\\.]+)");
                     Matcher matcher = pattern.matcher(url);
                     if (matcher.find()) {
                         Log.v("match", "success");
