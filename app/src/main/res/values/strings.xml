@@ -2,8 +2,7 @@
 <resources>
 
     <string name="app_name" translatable="false">PhotoLinkViewer</string>
-    <string name="pref_twitter_title">tap to reset</string>
-    <string name="pref_twitter_summary">reset twitter oAuth</string>
+    <string name="pref_twitter_title">Reset Twitter OAuth</string>
     <string name="toauth_failed_token">failed to get token!</string>
     <string name="toauth_succeeded_token">succeeded to get token!</string>
     <string name="initial_dialog">Compatible with\nflickr, imgly, twipple, instagram, gyazo, twitter, imgur\n-not GIF videos\n\nHow to use\n\nOpen from intent with URL. When you press SAVE button, photo will be saved in PLViewer directory as PNG file.\n\nIf you want to view twitter photos, you must authorize to twitter. However, you cannot view multiple photo yet. So you don\'t have to authorize. Do you authorize?</string>
@@ -13,5 +12,17 @@
     <string name="option_fragment_settings" translatable="false">Settings</string>
     <string name="option_fragment_download" translatable="false">Download</string>
     <string name="option_fragment_openclose" translatable="false">Open/Close</string>
+    <string name="setting_update_summary">Tap to update check</string>
+    <string name="setting_update_check">Update Check</string>
+    <string name="pref_twitter_summary">Tap to reset</string>
+    <string name="settings_update_ok">You are using latest version! ver.</string>
+    <string name="settings_update_exist">There is updated version</string>
+    <string name="settings_current_ver">Current version: </string>
+    <string name="settings_latest_ver">\nLatest_version: </string>
+    <string name="settings_description">\nDescription: </string>
+    <string name="settings_update_confirm">Update</string>
+    <string name="settings_update_ng">No</string>
+    <string name="action_save">Save</string>
+    <string name="action_settings">Settings</string>
 
 </resources>

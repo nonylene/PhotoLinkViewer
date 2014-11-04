@@ -9,5 +9,14 @@
     <string name="toauth_succeeded_token">tokenの取得に成功しました</string>
     <string name="initial_dialog">対応サイト\nflickr, imgly, twipple, instagram, gyazo, twitter, imgur\n※gifには非対応\n\n操作方法\nURLのIntentから開いてください。保存ボタンを押すとPLViewerのディレクトリにpngとして保存されます。\n\ntwitterの画像を取得するには認証が必要です。ただまだ複数画像に対応してないので認証する必要性は少ないです。認証しますか？</string>
     <string name="initial_dialog_no">やめて</string>
+    <string name="setting_update_summary">タップして確認</string>
+    <string name="setting_update_check">アップデートチェック</string>
+    <string name="settings_update_ok">最新のバージョンです ver.</string>
+    <string name="settings_update_exist">最新バージョンがあります</string>
+    <string name="settings_current_ver">現在のバージョン: </string>
+    <string name="settings_description">\nアップデート内容: </string>
+    <string name="settings_latest_ver">\n最新のバージョン: </string>
+    <string name="settings_update_confirm">アップデート</string>
+    <string name="settings_update_ng">しない</string>
 
 </resources>
