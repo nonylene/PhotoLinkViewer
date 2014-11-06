@@ -18,5 +18,8 @@
     <string name="settings_latest_ver">\n最新のバージョン: </string>
     <string name="settings_update_confirm">アップデート</string>
     <string name="settings_update_ng">しない</string>
+    <string name="settings_zoom_summary">タップして調整</string>
+    <string name="settings_zoom_dtitle">デフォルト: 1.4</string>
+    <string name="settings_zoom_title">ズーム速度</string>
 
 </resources>

@@ -8,11 +8,18 @@
         <intent
             android:action="android.intent.action.view"
             android:targetClass="net.nonylene.photolinkviewer.TOAuth"
-            android:targetPackage="net.nonylene.photolinkviewer" />
+            android:targetPackage="net.nonylene.photolinkviewer"/>
     </Preference>
 
     <Preference
+        android:key="update_check"
         android:summary="@string/setting_update_summary"
-        android:title="@string/setting_update_check"
-        android:key="update_check" />
+        android:title="@string/setting_update_check"/>
+
+    <EditTextPreference
+        android:key="zoom_speed"
+        android:summary="@string/settings_zoom_summary"
+        android:dialogTitle="@string/settings_zoom_dtitle"
+        android:inputType="numberDecimal"
+        android:title="@string/settings_zoom_title" />
 </PreferenceScreen>

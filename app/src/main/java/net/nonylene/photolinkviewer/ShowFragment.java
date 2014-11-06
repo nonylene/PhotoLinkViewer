@@ -10,6 +10,7 @@ import android.graphics.Matrix;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.preference.PreferenceManager;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Display;
@@ -126,7 +127,9 @@ public class ShowFragment extends Fragment {
             Matrix matrix = new Matrix();
             matrix.set(imageView.getImageMatrix());
             // adjust zoom speed
-            float scalefactor = (float) Math.pow(detector.getScaleFactor(), 1.4);
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            float zoomspeed = Float.parseFloat(preferences.getString("zoom_speed", "1.4"));
+            float scalefactor = (float) Math.pow(detector.getScaleFactor(), zoomspeed);
             // photo's zoom scale (base is needed)
             float scale = scalefactor * basezoom;
             if (scale > firstzoom * 0.8) {
@@ -140,9 +143,6 @@ public class ShowFragment extends Fragment {
                 values[Matrix.MTRANS_Y] = transY;
                 matrix.setValues(values);
                 imageView.setImageMatrix(matrix);
-            } else {
-
-                Log.d("gesture", "onscalebegin");
             }
             return super.onScale(detector);
         }
