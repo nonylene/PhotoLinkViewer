@@ -111,4 +111,12 @@ public class OptionFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onDetach(){
+        super.onDetach();
+        baseButton.setImageBitmap(null);
+        dlButton.setImageBitmap(null);
+        setButton.setImageBitmap(null);
+        webButton.setImageBitmap(null);
+    }
 }

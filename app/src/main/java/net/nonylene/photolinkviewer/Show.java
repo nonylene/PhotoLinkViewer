@@ -64,4 +64,9 @@ public class Show extends Activity implements ShowFragment.OnFragmentInteraction
         fragmentTransaction.add(android.R.id.content, optionFragment);
         fragmentTransaction.commit();
     }
+
+    public void onDestroy(){
+        super.onDestroy();
+        System.gc();
+    }
 }

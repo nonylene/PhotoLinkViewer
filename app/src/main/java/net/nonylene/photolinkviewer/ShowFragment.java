@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Point;
+import android.opengl.GLES10;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.preference.PreferenceManager;
@@ -34,6 +35,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.crypto.spec.SecretKeySpec;
+import javax.microedition.khronos.opengles.GL10;
 
 import twitter4j.AsyncTwitter;
 import twitter4j.AsyncTwitterFactory;
@@ -127,6 +129,7 @@ public class ShowFragment extends Fragment {
             Matrix matrix = new Matrix();
             matrix.set(imageView.getImageMatrix());
             // adjust zoom speed
+            // If using preference_fragment, value is saved to DefaultSharedPref.
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
             float zoomspeed = Float.parseFloat(preferences.getString("zoom_speed", "1.4"));
             float scalefactor = (float) Math.pow(detector.getScaleFactor(), zoomspeed);
@@ -167,7 +170,9 @@ public class ShowFragment extends Fragment {
             try {
                 String c = bundle.getString("url");
                 URL url = new URL(c);
-                return new AsyncHttp(getActivity().getApplicationContext(), url);
+                int[] maxTextureSize = new int[1];
+                GLES10.glGetIntegerv(GL10.GL_MAX_TEXTURE_SIZE, maxTextureSize, 0);
+                return new AsyncHttp(getActivity().getApplicationContext(), url, maxTextureSize[0]);
             } catch (IOException e) {
                 Log.e("DrawableLoaderError", e.toString());
                 return null;
@@ -180,14 +185,14 @@ public class ShowFragment extends Fragment {
             FrameLayout frameLayout = (FrameLayout) view.findViewById(R.id.showframe);
             ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.showprogress);
             frameLayout.removeView(progressBar);
+            //get bitmap size
+            float origwidth = bitmap.getWidth();
+            float origheight = bitmap.getHeight();
             //set image
             imageView.setImageBitmap(bitmap);
             //get matrix from imageview
             Matrix matrix = new Matrix();
             matrix.set(imageView.getMatrix());
-            //get bitmap size
-            float origwidth = bitmap.getWidth();
-            float origheight = bitmap.getHeight();
             //get display size
             Display display = getActivity().getWindowManager().getDefaultDisplay();
             Point size = new Point();
@@ -216,6 +221,7 @@ public class ShowFragment extends Fragment {
                 initX = (dispwidth - origwidth) / 2;
                 initY = (dispheight - origheight) / 2;
             }
+
             matrix.postTranslate(initX, initY);
             imageView.setImageMatrix(matrix);
         }
@@ -256,9 +262,17 @@ public class ShowFragment extends Fragment {
                 String farm = photo.getString("farm");
                 String server = photo.getString("server");
                 String id = photo.getString("id");
-                String secret = photo.getString("secret");
-                //license
-                String url = "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + secret + "_b.jpg";
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                String url;
+                if (sharedPreferences.getBoolean("flickr_original", false)) {
+                    String original_secret = photo.getString("originalsecret");
+                    String original_format = photo.getString("originalformat");
+                    url = "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + original_secret + "_o." + original_format;
+                } else {
+                    String secret = photo.getString("secret");
+                    //license
+                    url = "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + secret + "_b.jpg";
+                }
                 Log.v("URL", url);
                 AsyncExecute hoge = new AsyncExecute();
                 hoge.Start(url);
@@ -434,5 +448,11 @@ public class ShowFragment extends Fragment {
 
     public interface OnFragmentInteractionListener {
         public void onPurseFinished(Bundle bundle);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        imageView.setImageBitmap(null);
     }
 }

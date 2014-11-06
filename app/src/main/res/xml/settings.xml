@@ -22,4 +22,10 @@
         android:dialogTitle="@string/settings_zoom_dtitle"
         android:inputType="numberDecimal"
         android:title="@string/settings_zoom_title" />
+
+    <CheckBoxPreference
+        android:key="flickr_original"
+        android:summary="@string/settings_flickr_summary"
+        android:title="@string/settings_flickr_title" />
+
 </PreferenceScreen>
