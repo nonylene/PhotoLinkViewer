@@ -30,12 +30,12 @@
     <string name="settings_flickr_summary">If photo is too big, follow next setting</string>
     <string name="settings_flickr_title">View original photo on Flickr</string>
     <string name="settings_4096_summary">Some devices cannot display big size photo</string>
-    <string name="settings_4096_title">VIew more detailed photo</string>
+    <string name="settings_4096_title">View more detailed photo</string>
     <string name="intent_title">Select App</string>
     <string name="rotate_right" translatable="false">rotate_right</string>
     <string name="rotate_left" translatable="false">rotate_left</string>
     <string name="save_dialog_positive">Save</string>
-    <string name="save_dialog_title">Save photo to...</string>
+    <string name="save_dialog_title">Save photo to…</string>
     <string name="save_dialog_negative">Cancel</string>
 
 </resources>

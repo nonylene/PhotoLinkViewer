@@ -414,7 +414,7 @@ public class ShowFragment extends Fragment {
                     hoge.Start("http://i.imgur.com/" + id + ".jpg");
                 } else if (url.contains("twimg")) {
                     Log.v("twimg", url);
-                    Pattern pattern = Pattern.compile("^https?://pbs\\.twimg\\.com/media/([\\w^\\.]+)\\.");
+                    Pattern pattern = Pattern.compile("^https?://pbs\\.twimg\\.com/media/([^\\.]+)\\.");
                     Matcher matcher = pattern.matcher(url);
                     if (matcher.find()) {
                         Log.v("match", "success");
