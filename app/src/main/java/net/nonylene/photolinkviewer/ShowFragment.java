@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Point;
-import android.opengl.GLES10;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.preference.PreferenceManager;
@@ -35,7 +34,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.crypto.spec.SecretKeySpec;
-import javax.microedition.khronos.opengles.GL10;
 
 import twitter4j.AsyncTwitter;
 import twitter4j.AsyncTwitterFactory;
@@ -170,9 +168,12 @@ public class ShowFragment extends Fragment {
             try {
                 String c = bundle.getString("url");
                 URL url = new URL(c);
-                int[] maxTextureSize = new int[1];
-                GLES10.glGetIntegerv(GL10.GL_MAX_TEXTURE_SIZE, maxTextureSize, 0);
-                return new AsyncHttp(getActivity().getApplicationContext(), url, maxTextureSize[0]);
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                int max_size = 2048;
+                if (sharedPreferences.getBoolean("view_4096", false)){
+                    max_size = 4096;
+                }
+                return new AsyncHttp(getActivity().getApplicationContext(), url, max_size);
             } catch (IOException e) {
                 Log.e("DrawableLoaderError", e.toString());
                 return null;

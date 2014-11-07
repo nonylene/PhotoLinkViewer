@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -17,7 +18,7 @@ public class AsyncHttp extends AsyncTaskLoader<Bitmap> {
     private Bitmap result;
     private int max_size;
 
-    public AsyncHttp(Context context, URL url, int max_size) {
+    public AsyncHttp(Context context, URL url ,int max_size) {
         super(context);
         this.url = url;
         this.max_size = max_size;

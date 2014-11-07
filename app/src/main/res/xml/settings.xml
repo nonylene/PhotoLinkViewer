@@ -28,4 +28,8 @@
         android:summary="@string/settings_flickr_summary"
         android:title="@string/settings_flickr_title" />
 
+    <CheckBoxPreference
+        android:key="view_4096"
+        android:summary="@string/settings_4096_summary"
+        android:title="@string/settings_4096_title" />
 </PreferenceScreen>
