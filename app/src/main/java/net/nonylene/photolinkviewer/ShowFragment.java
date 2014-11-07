@@ -23,7 +23,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -170,7 +169,7 @@ public class ShowFragment extends Fragment {
                 URL url = new URL(c);
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 int max_size = 2048;
-                if (sharedPreferences.getBoolean("view_4096", false)){
+                if (sharedPreferences.getBoolean("view_4096", false)) {
                     max_size = 4096;
                 }
                 return new AsyncHttp(getActivity().getApplicationContext(), url, max_size);
@@ -418,11 +417,14 @@ public class ShowFragment extends Fragment {
                     filename = id;
                     AsyncExecute hoge = new AsyncExecute();
                     hoge.Start("http://i.imgur.com/" + id + ".jpg");
+                } else if (url.contains("twimg")) {
+                    Log.v("twimg", url);
+                    AsyncExecute hoge = new AsyncExecute();
+                    hoge.Start(url + ":orig");
                 } else {
                     Log.v("default", "hoge");
                     AsyncExecute hoge = new AsyncExecute();
-                    Toast.makeText(getActivity(), "this url is incompatible, so showing a sample picture.", Toast.LENGTH_LONG).show();
-                    hoge.Start("https://pbs.twimg.com/media/Bz1FnXUCEAAkVGt.png:orig");
+                    hoge.Start(url);
                 }
             }
             Bundle bundle = new Bundle();

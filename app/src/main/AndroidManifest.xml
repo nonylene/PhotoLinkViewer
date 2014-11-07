@@ -77,6 +77,22 @@
                     android:host="twitter.com"
                     android:pathPattern=".*status.*photo.*"
                     android:scheme="https" />
+                <data
+                    android:host="*"
+                    android:pathPattern=".*\\.png"
+                    android:scheme="http" />
+                <data
+                    android:host="*"
+                    android:pathPattern=".*\\.png"
+                    android:scheme="https" />
+                <data
+                    android:host="*"
+                    android:pathPattern=".*\\.jpg"
+                    android:scheme="http" />
+                <data
+                    android:host="*"
+                    android:pathPattern=".*\\.jpg"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
         <activity
