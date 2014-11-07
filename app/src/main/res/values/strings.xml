@@ -17,9 +17,9 @@
     <string name="pref_twitter_summary">Tap to reset</string>
     <string name="settings_update_ok">You are using latest version! ver.</string>
     <string name="settings_update_exist">There is updated version</string>
-    <string name="settings_current_ver">Current version: </string>
-    <string name="settings_latest_ver">\nLatest_version: </string>
-    <string name="settings_description">\nDescription: </string>
+    <string name="settings_current_ver">"Current version: "</string>
+    <string name="settings_latest_ver">"\nLatest_version: "</string>
+    <string name="settings_description">"\nDescription: "</string>
     <string name="settings_update_confirm">Update</string>
     <string name="settings_update_ng">No</string>
     <string name="action_save">Save</string>
@@ -34,5 +34,8 @@
     <string name="intent_title">Select App</string>
     <string name="rotate_right" translatable="false">rotate_right</string>
     <string name="rotate_left" translatable="false">rotate_left</string>
+    <string name="save_dialog_positive">Save</string>
+    <string name="save_dialog_title">Save photo to...</string>
+    <string name="save_dialog_negative">Cancel</string>
 
 </resources>

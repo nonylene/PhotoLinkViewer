@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
@@ -89,27 +90,10 @@ public class OptionFragment extends Fragment {
     class DlButtonClickListener implements View.OnClickListener {
 
         public void onClick(View v) {
-            String sitename = getArguments().getString("sitename");
-            String filename = getArguments().getString("filename");
-            //save file
-            ImageView imageView = (ImageView) getActivity().findViewById(R.id.imgview);
-            //pickup bitmap
-            Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
-            File root = Environment.getExternalStorageDirectory();
-            String directory = "PLViewer";
-            File dir = new File(root, directory + "/" + sitename);
-            Log.v("dir", dir.toString());
-            //make directory
-            dir.mkdirs();
-            File path = new File(dir, filename + ".png");
-            try {
-                FileOutputStream fo = new FileOutputStream(path);
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, fo);
-                fo.close();
-                Toast.makeText(getActivity(), "file saved to " + path.toString(), Toast.LENGTH_LONG).show();
-            } catch (IOException e) {
-                Log.e("error", e.toString());
-            }
+            // open dialog
+            DialogFragment dialogFragment = new SaveDialogFragment();
+            dialogFragment.setArguments(getArguments());
+            dialogFragment.show(getFragmentManager(), "Save");
         }
     }
 
@@ -207,6 +191,56 @@ public class OptionFragment extends Fragment {
         }
     }
 
+    public static class SaveDialogFragment extends DialogFragment {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // get site, file from bundle
+            final Bundle bundle = getArguments();
+            final String sitename = bundle.getString("sitename");
+            final String filename = bundle.getString("filename");
+            // set directory
+            final String directory = "PLViewer";
+            final File root = Environment.getExternalStorageDirectory();
+            final File dir = new File(root, directory + "/" + sitename);
+            dir.mkdirs();
+            // set custom view
+            View view = View.inflate(getActivity(), R.layout.save_path, null);
+            // set directory to text
+            TextView textView = (TextView) view.findViewById(R.id.path_TextView);
+            textView.setText(dir.toString());
+            // set pre_name to edit_text
+            EditText editText = (EditText) view.findViewById(R.id.path_EditText);
+            editText.setText(filename + ".png");
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setView(view)
+                    .setTitle(getString(R.string.save_dialog_title))
+                    .setPositiveButton(getString(R.string.save_dialog_positive), new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //pickup bitmap
+                            ImageView imageView = (ImageView) getActivity().findViewById(R.id.imgview);
+                            Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+                            // get filename
+                            EditText editText = (EditText) getDialog().findViewById(R.id.path_EditText);
+                            String filename = editText.getText().toString();
+                            File path = new File(dir, filename);
+                            try {
+                                //save file
+                                FileOutputStream fo = new FileOutputStream(path);
+                                bitmap.compress(Bitmap.CompressFormat.PNG, 100, fo);
+                                fo.close();
+                                Toast.makeText(getActivity(), "file saved to " + path.toString(), Toast.LENGTH_LONG).show();
+                            } catch (IOException e) {
+                                Log.e("error", e.toString());
+                            }
+                        }
+                    })
+                    .setNegativeButton(getString(R.string.save_dialog_negative), null);
+            return builder.create();
+        }
+    }
+
     class RotateRButtonClickListener implements View.OnClickListener {
         public void onClick(View v) {
             //get display size
@@ -218,7 +252,7 @@ public class OptionFragment extends Fragment {
             ImageView imageView = (ImageView) getActivity().findViewById(R.id.imgview);
             Matrix matrix = new Matrix();
             matrix.set(imageView.getImageMatrix());
-            matrix.postRotate(90, dispwidth/2,dispheight/2);
+            matrix.postRotate(90, dispwidth / 2, dispheight / 2);
             imageView.setImageMatrix(matrix);
         }
 
@@ -235,11 +269,12 @@ public class OptionFragment extends Fragment {
             ImageView imageView = (ImageView) getActivity().findViewById(R.id.imgview);
             Matrix matrix = new Matrix();
             matrix.set(imageView.getImageMatrix());
-            matrix.postRotate(-90, dispwidth/2,dispheight/2);
+            matrix.postRotate(-90, dispwidth / 2, dispheight / 2);
             imageView.setImageMatrix(matrix);
         }
 
     }
+
     @Override
     public void onDetach() {
         super.onDetach();

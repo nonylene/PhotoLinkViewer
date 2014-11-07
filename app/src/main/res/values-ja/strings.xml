@@ -13,9 +13,9 @@
     <string name="setting_update_check">アップデートチェック</string>
     <string name="settings_update_ok">最新のバージョンです ver.</string>
     <string name="settings_update_exist">最新バージョンがあります</string>
-    <string name="settings_current_ver">現在のバージョン: </string>
-    <string name="settings_description">\nアップデート内容: </string>
-    <string name="settings_latest_ver">\n最新のバージョン: </string>
+    <string name="settings_current_ver">"現在のバージョン: "</string>
+    <string name="settings_description">"\nアップデート内容: "</string>
+    <string name="settings_latest_ver">"\n最新のバージョン: "</string>
     <string name="settings_update_confirm">アップデート</string>
     <string name="settings_update_ng">しない</string>
     <string name="settings_zoom_summary">タップして調整</string>
@@ -26,5 +26,8 @@
     <string name="settings_4096_summary">一部端末では表示されません。</string>
     <string name="settings_4096_title">より大きいサイズの写真を見る</string>
     <string name="intent_title">アプリを選択</string>
+    <string name="save_dialog_negative">キャンセル</string>
+    <string name="save_dialog_positive">保存</string>
+    <string name="save_dialog_title">写真の保存先</string>
 
 </resources>

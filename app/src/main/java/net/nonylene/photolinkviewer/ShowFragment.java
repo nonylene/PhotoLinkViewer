@@ -414,10 +414,26 @@ public class ShowFragment extends Fragment {
                     hoge.Start("http://i.imgur.com/" + id + ".jpg");
                 } else if (url.contains("twimg")) {
                     Log.v("twimg", url);
+                    Pattern pattern = Pattern.compile("^https?://pbs\\.twimg\\.com/media/([\\w^\\.]+)\\.");
+                    Matcher matcher = pattern.matcher(url);
+                    if (matcher.find()) {
+                        Log.v("match", "success");
+                    }
+                    id = matcher.group(1);
+                    sitename = "twitter";
+                    filename = id;
                     AsyncExecute hoge = new AsyncExecute();
                     hoge.Start(url + ":orig");
                 } else {
-                    Log.v("default", "hoge");
+                    Log.v("other", url);
+                    Pattern pattern = Pattern.compile("/([\\w^\\.]+)\\.\\w*$");
+                    Matcher matcher = pattern.matcher(url);
+                    if (matcher.find()) {
+                        Log.v("match", "success");
+                    }
+                    id = matcher.group(1);
+                    sitename = "other";
+                    filename = id;
                     AsyncExecute hoge = new AsyncExecute();
                     hoge.Start(url);
                 }

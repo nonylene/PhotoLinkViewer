@@ -72,18 +72,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start|bottom"
-        android:orientation="vertical">
-
-        <ImageButton
-            android:id="@+id/rotate_rightbutton"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
-            android:layout_gravity="end|bottom"
-            android:layout_margin="4dp"
-            android:background="@null"
-            android:contentDescription="@string/rotate_right"
-            android:scaleType="fitXY"
-            android:src="@drawable/rotate_right_design" />
+        android:orientation="horizontal">
 
         <ImageButton
             android:id="@+id/rotate_leftbutton"
@@ -98,6 +87,18 @@
             android:contentDescription="@string/rotate_left"
             android:scaleType="fitXY"
             android:src="@drawable/rotate_left_design" />
+
+        <ImageButton
+            android:id="@+id/rotate_rightbutton"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="4dp"
+            android:background="@null"
+            android:contentDescription="@string/rotate_right"
+            android:scaleType="fitXY"
+            android:src="@drawable/rotate_right_design" />
+
     </LinearLayout>
 
 </FrameLayout>
