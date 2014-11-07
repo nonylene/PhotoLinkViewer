@@ -71,13 +71,13 @@ public class OptionFragment extends Fragment {
 
         public void onClick(View v) {
             if (open) {
-                baseButton.setImageResource(R.drawable.up_button);
+                baseButton.setImageResource(R.drawable.up_button_design);
                 dlButton.setVisibility(View.GONE);
                 setButton.setVisibility(View.GONE);
                 webButton.setVisibility(View.GONE);
                 open = false;
             } else {
-                baseButton.setImageResource(R.drawable.down_button);
+                baseButton.setImageResource(R.drawable.down_button_design);
                 dlButton.setVisibility(View.VISIBLE);
                 setButton.setVisibility(View.VISIBLE);
                 webButton.setVisibility(View.VISIBLE);

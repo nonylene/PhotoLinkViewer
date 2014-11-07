@@ -26,7 +26,7 @@
             android:background="@null"
             android:contentDescription="@string/option_fragment_open"
             android:scaleType="fitXY"
-            android:src="@drawable/browser"
+            android:src="@drawable/browser_button_design"
             android:visibility="gone" />
 
         <ImageButton
@@ -38,7 +38,7 @@
             android:background="@null"
             android:contentDescription="@string/option_fragment_settings"
             android:scaleType="fitXY"
-            android:src="@drawable/setting"
+            android:src="@drawable/setting_button_design"
             android:visibility="gone" />
 
         <ImageButton
@@ -50,7 +50,7 @@
             android:background="@null"
             android:contentDescription="@string/option_fragment_download"
             android:scaleType="fitXY"
-            android:src="@drawable/download"
+            android:src="@drawable/download_button_design"
             android:visibility="gone" />
 
         <ImageButton
@@ -65,7 +65,7 @@
             android:background="@null"
             android:contentDescription="@string/option_fragment_openclose"
             android:scaleType="fitXY"
-            android:src="@drawable/up_button" />
+            android:src="@drawable/up_button_design" />
     </LinearLayout>
 
     <LinearLayout
@@ -83,7 +83,7 @@
             android:background="@null"
             android:contentDescription="@string/rotate_right"
             android:scaleType="fitXY"
-            android:src="@drawable/rotate_right" />
+            android:src="@drawable/rotate_right_design" />
 
         <ImageButton
             android:id="@+id/rotate_leftbutton"
@@ -97,7 +97,7 @@
             android:background="@null"
             android:contentDescription="@string/rotate_left"
             android:scaleType="fitXY"
-            android:src="@drawable/rotate_left" />
+            android:src="@drawable/rotate_left_design" />
     </LinearLayout>
 
 </FrameLayout>

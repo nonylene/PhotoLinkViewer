@@ -113,7 +113,7 @@ public class ShowFragment extends Fragment {
             matrix.getValues(values);
             //set base zoom param
             basezoom = values[Matrix.MSCALE_X];
-            if (basezoom == 0){
+            if (basezoom == 0) {
                 basezoom = Math.abs(values[Matrix.MSKEW_X]);
             }
             if (first) {
@@ -137,7 +137,7 @@ public class ShowFragment extends Fragment {
             float scale = new_zoom / old_zoom;
             old_zoom = new_zoom;
             if (new_zoom > firstzoom / basezoom * 0.8) {
-                matrix.postScale(scale,scale,touchX,touchY);
+                matrix.postScale(scale, scale, touchX, touchY);
                 imageView.setImageMatrix(matrix);
             }
             return super.onScale(detector);
