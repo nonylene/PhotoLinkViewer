@@ -42,8 +42,10 @@ public class AsyncHttp extends AsyncTaskLoader<Bitmap> {
                 BitmapFactory.Options options2 = new BitmapFactory.Options();
                 options2.inSampleSize = size;
                 bitmap = BitmapFactory.decodeStream(inputStream, null, options2);
-                inputStream.close();
+            }else{
+                bitmap = BitmapFactory.decodeStream(inputStream);
             }
+            inputStream.close();
             return bitmap;
         } catch (IOException e) {
             return bitmap;

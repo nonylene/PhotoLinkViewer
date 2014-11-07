@@ -65,8 +65,4 @@ public class Show extends Activity implements ShowFragment.OnFragmentInteraction
         fragmentTransaction.commit();
     }
 
-    public void onDestroy(){
-        super.onDestroy();
-        System.gc();
-    }
 }
