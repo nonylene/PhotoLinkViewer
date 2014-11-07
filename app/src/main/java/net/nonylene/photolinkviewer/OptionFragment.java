@@ -7,6 +7,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
+import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -14,6 +16,7 @@ import android.os.Bundle;
 import android.app.Fragment;
 import android.os.Environment;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +41,8 @@ public class OptionFragment extends Fragment {
     private ImageButton dlButton;
     private ImageButton setButton;
     private ImageButton webButton;
+    private ImageButton rotateRButton;
+    private ImageButton rotateLButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,10 +56,14 @@ public class OptionFragment extends Fragment {
         dlButton = (ImageButton) view.findViewById(R.id.dlbutton);
         setButton = (ImageButton) view.findViewById(R.id.setbutton);
         webButton = (ImageButton) view.findViewById(R.id.webbutton);
+        rotateRButton = (ImageButton) view.findViewById(R.id.rotate_rightbutton);
+        rotateLButton = (ImageButton) view.findViewById(R.id.rotate_leftbutton);
         baseButton.setOnClickListener(new BaseButtonClickListener());
         dlButton.setOnClickListener(new DlButtonClickListener());
         setButton.setOnClickListener(new SetButtonClickListener());
         webButton.setOnClickListener(new WebButtonClickListener());
+        rotateRButton.setOnClickListener(new RotateRButtonClickListener());
+        rotateLButton.setOnClickListener(new RotateLButtonClickListener());
         return view;
     }
 
@@ -198,6 +207,39 @@ public class OptionFragment extends Fragment {
         }
     }
 
+    class RotateRButtonClickListener implements View.OnClickListener {
+        public void onClick(View v) {
+            //get display size
+            Display display = getActivity().getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            int dispwidth = size.x;
+            int dispheight = size.y;
+            ImageView imageView = (ImageView) getActivity().findViewById(R.id.imgview);
+            Matrix matrix = new Matrix();
+            matrix.set(imageView.getImageMatrix());
+            matrix.postRotate(90, dispwidth/2,dispheight/2);
+            imageView.setImageMatrix(matrix);
+        }
+
+    }
+
+    class RotateLButtonClickListener implements View.OnClickListener {
+        public void onClick(View v) {
+            //get display size
+            Display display = getActivity().getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            int dispwidth = size.x;
+            int dispheight = size.y;
+            ImageView imageView = (ImageView) getActivity().findViewById(R.id.imgview);
+            Matrix matrix = new Matrix();
+            matrix.set(imageView.getImageMatrix());
+            matrix.postRotate(-90, dispwidth/2,dispheight/2);
+            imageView.setImageMatrix(matrix);
+        }
+
+    }
     @Override
     public void onDetach() {
         super.onDetach();

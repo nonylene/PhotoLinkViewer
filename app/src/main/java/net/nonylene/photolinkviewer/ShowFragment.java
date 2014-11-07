@@ -47,6 +47,7 @@ public class ShowFragment extends Fragment {
     private View view;
     private ImageView imageView;
     private OnFragmentInteractionListener mListener;
+    private SharedPreferences preferences;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,6 +57,7 @@ public class ShowFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.show_fragment, container, false);
+        preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         imageView = (ImageView) view.findViewById(R.id.imgview);
         final ScaleGestureDetector scaleGestureDetector = new ScaleGestureDetector(getActivity(), new simpleOnScaleGestureListener());
         final GestureDetector GestureDetector = new GestureDetector(getActivity(), new simpleOnGestureListener());
@@ -94,12 +96,10 @@ public class ShowFragment extends Fragment {
     class simpleOnScaleGestureListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
         private float touchX;
         private float touchY;
-        private float initX;
-        private float initY;
         private float basezoom;
         private float firstzoom;
         private boolean first = true;
-        private float[] values = new float[9];
+        private float old_zoom;
 
         @Override
         public boolean onScaleBegin(ScaleGestureDetector detector) {
@@ -107,41 +107,37 @@ public class ShowFragment extends Fragment {
             touchX = detector.getFocusX();
             touchY = detector.getFocusY();
             //get current status
+            float[] values = new float[9];
             Matrix matrix = new Matrix();
             matrix.set(imageView.getImageMatrix());
             matrix.getValues(values);
             //set base zoom param
             basezoom = values[Matrix.MSCALE_X];
+            if (basezoom == 0){
+                basezoom = Math.abs(values[Matrix.MSKEW_X]);
+            }
             if (first) {
                 firstzoom = basezoom;
                 first = false;
             }
-            initX = values[Matrix.MTRANS_X];
-            initY = values[Matrix.MTRANS_Y];
+            old_zoom = 1;
             return super.onScaleBegin(detector);
         }
 
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
             Matrix matrix = new Matrix();
+            imageView = (ImageView) view.findViewById(R.id.imgview);
             matrix.set(imageView.getImageMatrix());
             // adjust zoom speed
             // If using preference_fragment, value is saved to DefaultSharedPref.
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
             float zoomspeed = Float.parseFloat(preferences.getString("zoom_speed", "1.4"));
-            float scalefactor = (float) Math.pow(detector.getScaleFactor(), zoomspeed);
-            // photo's zoom scale (base is needed)
-            float scale = scalefactor * basezoom;
-            if (scale > firstzoom * 0.8) {
-                matrix.getValues(values);
-                // define new size, point
-                values[Matrix.MSCALE_X] = scale;
-                values[Matrix.MSCALE_Y] = scale;
-                float transX = touchX - scalefactor * (touchX - initX);
-                float transY = touchY - scalefactor * (touchY - initY);
-                values[Matrix.MTRANS_X] = transX;
-                values[Matrix.MTRANS_Y] = transY;
-                matrix.setValues(values);
+            float new_zoom = (float) Math.pow(detector.getScaleFactor(), zoomspeed);
+            // photo's zoom scale (is relative to old zoom value.)
+            float scale = new_zoom / old_zoom;
+            old_zoom = new_zoom;
+            if (new_zoom > firstzoom / basezoom * 0.8) {
+                matrix.postScale(scale,scale,touchX,touchY);
                 imageView.setImageMatrix(matrix);
             }
             return super.onScale(detector);
@@ -167,9 +163,8 @@ public class ShowFragment extends Fragment {
             try {
                 String c = bundle.getString("url");
                 URL url = new URL(c);
-                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 int max_size = 2048;
-                if (sharedPreferences.getBoolean("view_4096", false)) {
+                if (preferences.getBoolean("view_4096", false)) {
                     max_size = 4096;
                 }
                 return new AsyncHttp(getActivity().getApplicationContext(), url, max_size);

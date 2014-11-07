@@ -68,4 +68,36 @@
             android:src="@drawable/up_button" />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start|bottom"
+        android:orientation="vertical">
+
+        <ImageButton
+            android:id="@+id/rotate_rightbutton"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="4dp"
+            android:background="@null"
+            android:contentDescription="@string/rotate_right"
+            android:scaleType="fitXY"
+            android:src="@drawable/rotate_right" />
+
+        <ImageButton
+            android:id="@+id/rotate_leftbutton"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_gravity="end|bottom"
+            android:layout_marginBottom="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="8dp"
+            android:background="@null"
+            android:contentDescription="@string/rotate_left"
+            android:scaleType="fitXY"
+            android:src="@drawable/rotate_left" />
+    </LinearLayout>
+
 </FrameLayout>

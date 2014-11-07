@@ -32,5 +32,7 @@
     <string name="settings_4096_summary">Some devices cannot display big size photo</string>
     <string name="settings_4096_title">VIew more detailed photo</string>
     <string name="intent_title">Select App</string>
+    <string name="rotate_right">rotate_right</string>
+    <string name="rotate_left">rotate_left</string>
 
 </resources>
