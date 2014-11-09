@@ -26,7 +26,7 @@
     <string name="action_settings">Settings</string>
     <string name="settings_zoom_summary">Tap to set</string>
     <string name="settings_zoom_dtitle">Default value is 1.4</string>
-    <string name="settings_zoom_title">Zoom speed</string>
+    <string name="settings_zoom_title">Zoom scale for distance of fingers</string>
     <string name="settings_flickr_summary">If photo is too big, follow next setting</string>
     <string name="settings_flickr_title">View original photo on Flickr</string>
     <string name="settings_4096_summary">Some devices cannot display big size photo</string>

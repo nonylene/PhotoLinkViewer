@@ -101,7 +101,7 @@ public class ShowFragment extends Fragment {
             final float touchX = e.getX();
             final float touchY = e.getY();
             ScaleAnimation scaleAnimation = new ScaleAnimation(1,2,1,2,touchX,touchY);
-            scaleAnimation.setDuration(500);
+            scaleAnimation.setDuration(200);
             scaleAnimation.setFillEnabled(true);
             scaleAnimation.setAnimationListener(new Animation.AnimationListener() {
                 @Override
