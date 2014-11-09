@@ -20,6 +20,8 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -48,6 +50,7 @@ public class ShowFragment extends Fragment {
     private ImageView imageView;
     private OnFragmentInteractionListener mListener;
     private SharedPreferences preferences;
+    private float firstzoom = 1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -77,6 +80,7 @@ public class ShowFragment extends Fragment {
     }
 
     class simpleOnGestureListener extends GestureDetector.SimpleOnGestureListener {
+
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
             // drag photo
@@ -91,14 +95,41 @@ public class ShowFragment extends Fragment {
             imageView.setImageMatrix(matrix);
             return super.onScroll(e1, e2, distanceX, distanceY);
         }
+
+        @Override
+        public boolean onDoubleTap(MotionEvent e){
+            final float touchX = e.getX();
+            final float touchY = e.getY();
+            ScaleAnimation scaleAnimation = new ScaleAnimation(1,2,1,2,touchX,touchY);
+            scaleAnimation.setDuration(500);
+            scaleAnimation.setFillEnabled(true);
+            scaleAnimation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    final Matrix matrix = new Matrix();
+                    matrix.set(imageView.getImageMatrix());
+                    matrix.postScale(2,2,touchX,touchY);
+                    imageView.setImageMatrix(matrix);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+                }
+            });
+            imageView.startAnimation(scaleAnimation);
+            // drag photo
+            return super.onDoubleTap(e);
+        }
     }
 
     class simpleOnScaleGestureListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
         private float touchX;
         private float touchY;
         private float basezoom;
-        private float firstzoom;
-        private boolean first = true;
         private float old_zoom;
 
         @Override
@@ -116,10 +147,7 @@ public class ShowFragment extends Fragment {
             if (basezoom == 0) {
                 basezoom = Math.abs(values[Matrix.MSKEW_X]);
             }
-            if (first) {
-                firstzoom = basezoom;
-                first = false;
-            }
+            Log.v("firstzoom", String.valueOf(firstzoom) );
             old_zoom = 1;
             return super.onScaleBegin(detector);
         }
@@ -201,6 +229,7 @@ public class ShowFragment extends Fragment {
             float initY;
             if (zoom < 1) {
                 //zoom
+                firstzoom = zoom;
                 matrix.setScale(zoom, zoom);
                 if (wid < hei) {
                     //adjust width
@@ -297,8 +326,8 @@ public class ShowFragment extends Fragment {
         //purse url
 
         //directory,filename to save
-        String sitename = null;
-        String filename = null;
+        String sitename;
+        String filename;
 
         try {
             String id = null;
