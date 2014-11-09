@@ -70,6 +70,7 @@
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
 
+                <!--
                 <data
                     android:host="twitter.com"
                     android:pathPattern=".*status.*photo.*"
@@ -77,7 +78,7 @@
                 <data
                     android:host="twitter.com"
                     android:pathPattern=".*status.*photo.*"
-                    android:scheme="https"/>
+                    android:scheme="https"/>-->
                 <data
                     android:host="*"
                     android:pathPattern=".*\\.png"

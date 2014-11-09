@@ -97,10 +97,10 @@ public class ShowFragment extends Fragment {
         }
 
         @Override
-        public boolean onDoubleTap(MotionEvent e){
+        public boolean onDoubleTap(MotionEvent e) {
             final float touchX = e.getX();
             final float touchY = e.getY();
-            ScaleAnimation scaleAnimation = new ScaleAnimation(1,2,1,2,touchX,touchY);
+            ScaleAnimation scaleAnimation = new ScaleAnimation(1, 2, 1, 2, touchX, touchY);
             scaleAnimation.setDuration(200);
             scaleAnimation.setFillEnabled(true);
             scaleAnimation.setAnimationListener(new Animation.AnimationListener() {
@@ -112,7 +112,7 @@ public class ShowFragment extends Fragment {
                 public void onAnimationEnd(Animation animation) {
                     final Matrix matrix = new Matrix();
                     matrix.set(imageView.getImageMatrix());
-                    matrix.postScale(2,2,touchX,touchY);
+                    matrix.postScale(2, 2, touchX, touchY);
                     imageView.setImageMatrix(matrix);
                 }
 
@@ -147,7 +147,7 @@ public class ShowFragment extends Fragment {
             if (basezoom == 0) {
                 basezoom = Math.abs(values[Matrix.MSKEW_X]);
             }
-            Log.v("firstzoom", String.valueOf(firstzoom) );
+            Log.v("firstzoom", String.valueOf(firstzoom));
             old_zoom = 1;
             return super.onScaleBegin(detector);
         }
@@ -331,7 +331,7 @@ public class ShowFragment extends Fragment {
 
         try {
             String id = null;
-            if (url.contains("flic")) {
+            if (url.contains("flickr.com") || url.contains("flic.kr")) {
                 Log.v("flickr", url);
                 if (url.contains("flickr")) {
                     Pattern pattern = Pattern.compile("^https?://[wm]w*\\.flickr\\.com/?#?/photos/[\\w@]+/(\\d+)");
@@ -356,7 +356,7 @@ public class ShowFragment extends Fragment {
                 Log.v("flickrAPI", request);
                 AsyncJSONExecute hoge = new AsyncJSONExecute();
                 hoge.Start(request);
-            } else if (url.contains("twitter")) {
+            } else if (url.contains("twitter.com")) {
                 Log.v("twitter", url);
                 Pattern pattern = Pattern.compile("^https?://twitter\\.com/\\w+/status/(\\d+)");
                 Matcher matcher = pattern.matcher(url);
@@ -380,7 +380,7 @@ public class ShowFragment extends Fragment {
                 twitter.addListener(twitterListener);
                 twitter.showStatus(Long.parseLong(id));
             } else {
-                if (url.contains("twipple")) {
+                if (url.contains("twipple.jp")) {
                     Log.v("twipple", url);
                     Pattern pattern = Pattern.compile("^https?://p\\.twipple\\.jp/(\\w+)");
                     Matcher matcher = pattern.matcher(url);
@@ -404,7 +404,7 @@ public class ShowFragment extends Fragment {
                     filename = id;
                     AsyncExecute hoge = new AsyncExecute();
                     hoge.Start("http://img.ly/show/full/" + id);
-                } else if (url.contains("instagr")) {
+                } else if (url.contains("instagr.am")) {
                     Log.v("instagram", url);
                     Pattern pattern = Pattern.compile("^https?://instagr\\.?am[\\.com]*/p/(\\w+)");
                     Matcher matcher = pattern.matcher(url);
@@ -416,7 +416,7 @@ public class ShowFragment extends Fragment {
                     filename = id;
                     AsyncExecute hoge = new AsyncExecute();
                     hoge.Start("http://instagram.com/p/" + id + "/media/?size=l");
-                } else if (url.contains("gyazo")) {
+                } else if (url.contains("gyazo.com")) {
                     Log.v("gyazo", url);
                     Pattern pattern = Pattern.compile("^https?://gyazo\\.com/(\\w+)");
                     Matcher matcher = pattern.matcher(url);
@@ -429,7 +429,7 @@ public class ShowFragment extends Fragment {
                     AsyncExecute hoge = new AsyncExecute();
                     //redirect followed if new protocol is the same as old one.
                     hoge.Start("https://gyazo.com/" + id + "/raw");
-                } else if (url.contains("imgur")) {
+                } else if (url.contains("imgur.com")) {
                     Log.v("gyazo", url);
                     Pattern pattern = Pattern.compile("^https?://.*imgur\\.com/([\\w^\\.]+)");
                     Matcher matcher = pattern.matcher(url);
@@ -441,7 +441,7 @@ public class ShowFragment extends Fragment {
                     filename = id;
                     AsyncExecute hoge = new AsyncExecute();
                     hoge.Start("http://i.imgur.com/" + id + ".jpg");
-                } else if (url.contains("twimg")) {
+                } else if (url.contains("twimg.com")) {
                     Log.v("twimg", url);
                     Pattern pattern = Pattern.compile("^https?://pbs\\.twimg\\.com/media/([^\\.]+)\\.");
                     Matcher matcher = pattern.matcher(url);
