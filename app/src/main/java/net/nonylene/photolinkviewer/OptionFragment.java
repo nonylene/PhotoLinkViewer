@@ -139,14 +139,13 @@ public class OptionFragment extends Fragment {
                     int iconSize = (int) (40 * dp);
                     int viewSize = (int) (50 * dp);
                     int paddingSize = (int) (15 * dp);
-                    // resize app icon
-                    Drawable drawable = appsList.get(position).icon;
-                    Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
-                    Drawable appIcon = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, iconSize, iconSize, false));
+                    // resize app icon (bitmap_factory makes low-quality images)
+                    Drawable appIcon = appsList.get(position).icon;
+                    appIcon.setBounds(0, 0, iconSize, iconSize);
                     // resize text size
                     textView.setTextSize(20);
                     // set app-icon and bounds
-                    textView.setCompoundDrawablesWithIntrinsicBounds(appIcon, null, null, null);
+                    textView.setCompoundDrawables(appIcon, null, null, null);
                     textView.setCompoundDrawablePadding(paddingSize);
                     // set textView-height
                     textView.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, viewSize));
@@ -282,6 +281,8 @@ public class OptionFragment extends Fragment {
         dlButton.setImageBitmap(null);
         setButton.setImageBitmap(null);
         webButton.setImageBitmap(null);
+        rotateRButton.setImageBitmap(null);
+        rotateLButton.setImageBitmap(null);
     }
 
 }
