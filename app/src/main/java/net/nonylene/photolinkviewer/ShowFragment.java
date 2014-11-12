@@ -404,7 +404,7 @@ public class ShowFragment extends Fragment {
                     filename = id;
                     AsyncExecute hoge = new AsyncExecute();
                     hoge.Start("http://img.ly/show/full/" + id);
-                } else if (url.contains("instagr.am")) {
+                } else if (url.contains("instagram.com") || url.contains("instagr.am") ) {
                     Log.v("instagram", url);
                     Pattern pattern = Pattern.compile("^https?://instagr\\.?am[\\.com]*/p/(\\w+)");
                     Matcher matcher = pattern.matcher(url);
