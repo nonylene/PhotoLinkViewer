@@ -3,13 +3,13 @@ package net.nonylene.photolinkviewer;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.DownloadManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
-import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Point;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -30,8 +30,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -197,6 +195,7 @@ public class OptionFragment extends Fragment {
             final Bundle bundle = getArguments();
             final String sitename = bundle.getString("sitename");
             final String filename = bundle.getString("filename");
+            final String url = bundle.getString("url");
             // set directory
             final String directory = "PLViewer";
             final File root = Environment.getExternalStorageDirectory();
@@ -217,20 +216,21 @@ public class OptionFragment extends Fragment {
 
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            //pickup bitmap
-                            ImageView imageView = (ImageView) getActivity().findViewById(R.id.imgview);
-                            Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
                             // get filename
                             EditText editText = (EditText) getDialog().findViewById(R.id.path_EditText);
                             String filename = editText.getText().toString();
                             File path = new File(dir, filename);
                             try {
                                 //save file
-                                FileOutputStream fo = new FileOutputStream(path);
-                                bitmap.compress(Bitmap.CompressFormat.PNG, 100, fo);
-                                fo.close();
+                                Uri uri = Uri.parse(url);
+                                DownloadManager downloadManager = (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
+                                DownloadManager.Request request = new DownloadManager.Request(uri);
+                                request.setDestinationUri(Uri.fromFile(path));
+                                request.setTitle("PhotoLinkViewer");
+                                request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
+                                Long id = downloadManager.enqueue(request);
                                 Toast.makeText(getActivity(), "file saved to " + path.toString(), Toast.LENGTH_LONG).show();
-                            } catch (IOException e) {
+                            } catch (Exception e) {
                                 Log.e("error", e.toString());
                             }
                         }
