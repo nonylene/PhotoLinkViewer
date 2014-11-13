@@ -228,8 +228,8 @@ public class OptionFragment extends Fragment {
                                 request.setDestinationUri(Uri.fromFile(path));
                                 request.setTitle("PhotoLinkViewer");
                                 request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
-                                Long id = downloadManager.enqueue(request);
-                                Toast.makeText(getActivity(), "file saved to " + path.toString(), Toast.LENGTH_LONG).show();
+                                downloadManager.enqueue(request);
+                                Toast.makeText(getActivity(), getString(R.string.download_photo_title) + path.toString(), Toast.LENGTH_LONG).show();
                             } catch (Exception e) {
                                 Log.e("error", e.toString());
                             }
