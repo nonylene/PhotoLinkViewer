@@ -16,8 +16,8 @@ public class PLVImageView extends ImageView {
         super(context, attrs, defStyle);
     }
 
-    public void setUrl(URL url, int size) {
-        AsyncBitmap asyncBitmap = new AsyncBitmap(this, 2048, size);
+    public void setUrl(URL url, int width, int height) {
+        AsyncBitmap asyncBitmap = new AsyncBitmap(this, 2048, width, height);
         asyncBitmap.execute(url);
     }
 

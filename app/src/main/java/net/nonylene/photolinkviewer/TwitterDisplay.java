@@ -83,7 +83,7 @@ public class TwitterDisplay extends Activity {
                     float dp = getResources().getDisplayMetrics().density;
                     int size = (int) (50 * dp);
                     try {
-                        plvImageView.setUrl(new URL(status.getUser().getBiggerProfileImageURL()), size);
+                        plvImageView.setUrl(new URL(status.getUser().getBiggerProfileImageURL()), size, size);
                     }catch (Exception e){
                         Log.e("error",e.toString());
                     }

@@ -14,8 +14,8 @@
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:layout_gravity="center"
-        android:background="#f5f5f5"
         android:layout_margin="20dp"
+        android:background="#f5f5f5"
         android:orientation="vertical">
 
         <LinearLayout
@@ -26,9 +26,9 @@
             <net.nonylene.photolinkviewer.PLVImageView
                 android:id="@+id/twImageView"
                 android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_margin="8dp"
-                android:scaleType="center"
-                android:layout_height="wrap_content"/>
+                android:scaleType="matrix"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"

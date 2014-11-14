@@ -2,6 +2,7 @@ package net.nonylene.photolinkviewer;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.os.AsyncTask;
 
 import java.io.IOException;
@@ -11,21 +12,26 @@ import java.net.URL;
 public class AsyncBitmap extends AsyncTask<URL, Integer, Bitmap> {
     private PLVImageView plvImageView;
     private int max_size;
-    private int size = 0;
+    private float width = 0;
+    private float height = 0;
+    private int picwidth;
+    private int picheight;
 
-    public AsyncBitmap (PLVImageView plvImageView, int max_size){
+    public AsyncBitmap(PLVImageView plvImageView, int max_size) {
         this.plvImageView = plvImageView;
         this.max_size = max_size;
     }
 
-    public AsyncBitmap (PLVImageView plvImageView, int max_size, int size){
+    public AsyncBitmap(PLVImageView plvImageView, int max_size, float width, float height) {
         this.plvImageView = plvImageView;
         this.max_size = max_size;
-        this.size = size;
+        this.width = width;
+        this.height = height;
+
     }
 
     @Override
-    protected Bitmap doInBackground(URL... url){
+    protected Bitmap doInBackground(URL... url) {
         Bitmap bitmap = null;
         try {
             // get bitmap size
@@ -43,32 +49,44 @@ public class AsyncBitmap extends AsyncTask<URL, Integer, Bitmap> {
                 BitmapFactory.Options options2 = new BitmapFactory.Options();
                 options2.inSampleSize = size;
                 bitmap = BitmapFactory.decodeStream(inputStream, null, options2);
-            }else{
+            } else {
                 bitmap = BitmapFactory.decodeStream(inputStream);
             }
+            picwidth = bitmap.getWidth();
+            picheight = bitmap.getHeight();
             inputStream.close();
-            // scale bitmap
-            if (size != 0){
-                int width;
-                int height;
-                if (origheight < origwidth){
-                    width = size;
-                    height = size * origheight / origwidth;
-                }else{
-                    width = size * origwidth / origheight;
-                    height = size;
-                }
-                bitmap = Bitmap.createScaledBitmap(bitmap,width,height, false );
-            }
             return bitmap;
         } catch (IOException e) {
             return bitmap;
         }
     }
 
-
-    protected void onPostExecute(Bitmap bitmap){
+    @Override
+    protected void onPostExecute(Bitmap bitmap) {
         plvImageView.setImageBitmap(bitmap);
+        if (width != 0) {
+            //get matrix from imageview
+            Matrix matrix = new Matrix();
+            matrix.set(plvImageView.getMatrix());
+            //get display size
+            float wid = width / picwidth;
+            float hei = height / picheight;
+            float zoom = Math.min(wid, hei);
+            float initX;
+            float initY;
+            matrix.setScale(zoom, zoom);
+            if (wid < hei) {
+                //adjust width
+                initX = 0;
+                initY = (height - picheight * wid) / 2;
+            } else {
+                //adjust height
+                initX = (width - picwidth * hei) / 2;
+                initY = 0;
+            }
+            matrix.postTranslate(initX, initY);
+            plvImageView.setImageMatrix(matrix);
+        }
     }
 
 }
