@@ -129,7 +129,7 @@
                     android:scheme="http"/>
                 <data
                     android:host="twitter.com"
-                    android:pathPattern=".*status.*photo.*"
+                    android:pathPattern="/.*/statuses/.*"
                     android:scheme="https"/>
             </intent-filter>
 
