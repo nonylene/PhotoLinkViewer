@@ -2,7 +2,6 @@ package net.nonylene.photolinkviewer;
 
 import android.app.Activity;
 import android.app.LoaderManager;
-import android.content.Context;
 import android.content.Loader;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -10,8 +9,9 @@ import android.graphics.Matrix;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Handler;
+import android.os.Looper;
 import android.preference.PreferenceManager;
-import android.util.Base64;
 import android.util.Log;
 import android.view.Display;
 import android.view.GestureDetector;
@@ -26,6 +26,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,16 +34,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.crypto.spec.SecretKeySpec;
-
-import twitter4j.AsyncTwitter;
-import twitter4j.AsyncTwitterFactory;
-import twitter4j.MediaEntity;
-import twitter4j.Status;
-import twitter4j.TwitterAdapter;
-import twitter4j.TwitterListener;
-import twitter4j.auth.AccessToken;
 
 public class ShowFragment extends Fragment {
 
@@ -286,20 +277,34 @@ public class ShowFragment extends Fragment {
                 String farm = photo.getString("farm");
                 String server = photo.getString("server");
                 String id = photo.getString("id");
+                JSONObject urls = new JSONObject(photo.getString("urls"));
+                JSONArray urlArray = new JSONArray(urls.getString("url"));
+                String url = urlArray.getJSONObject(0).getString("_content");
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                String url;
+                String file_url;
                 if (sharedPreferences.getBoolean("flickr_original", false)) {
                     String original_secret = photo.getString("originalsecret");
                     String original_format = photo.getString("originalformat");
-                    url = "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + original_secret + "_o." + original_format;
+                    file_url = "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + original_secret + "_o." + original_format;
                 } else {
                     String secret = photo.getString("secret");
                     //license
-                    url = "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + secret + "_b.jpg";
+                    file_url = "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + secret + "_b.jpg";
                 }
                 Log.v("URL", url);
+                final Bundle bundle = new Bundle();
+                bundle.putString("url", url);
+                bundle.putString("file_url", file_url);
+                bundle.putString("sitename", "flickr");
+                bundle.putString("filename", id);
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mListener.onPurseFinished(bundle);
+                    }
+                });
                 AsyncExecute hoge = new AsyncExecute();
-                hoge.Start(url);
+                hoge.Start(file_url);
             } catch (JSONException e) {
                 Log.e("JSONError", e.toString());
             }
@@ -311,23 +316,13 @@ public class ShowFragment extends Fragment {
         }
     }
 
-    private TwitterListener twitterListener = new TwitterAdapter() {
-        @Override
-        public void gotShowStatus(Status status) {
-            MediaEntity[] mediaEntities = status.getMediaEntities();
-            Log.v("media", mediaEntities[0].getMediaURL());
-            String url = mediaEntities[0].getMediaURL();
-            AsyncExecute hoge = new AsyncExecute();
-            hoge.Start(url + ":orig");
-        }
-    };
-
     public void URLPurser(String url) {
         //purse url
 
         //directory,filename to save
         String sitename;
         String filename;
+        String file_url;
 
         try {
             String id = null;
@@ -356,29 +351,6 @@ public class ShowFragment extends Fragment {
                 Log.v("flickrAPI", request);
                 AsyncJSONExecute hoge = new AsyncJSONExecute();
                 hoge.Start(request);
-            } else if (url.contains("twitter.com")) {
-                Log.v("twitter", url);
-                Pattern pattern = Pattern.compile("^https?://twitter\\.com/\\w+/status/(\\d+)");
-                Matcher matcher = pattern.matcher(url);
-                if (matcher.find()) {
-                    Log.v("match", "success");
-                }
-                id = matcher.group(1);
-                sitename = "twitter";
-                filename = id;
-                SharedPreferences sharedPreferences = getActivity().getSharedPreferences("preference", Context.MODE_PRIVATE);
-                String apikey = (String) getText(R.string.twitter_key);
-                String apisecret = (String) getText(R.string.twitter_secret);
-                byte[] keyboo = Base64.decode(sharedPreferences.getString("key", null), Base64.DEFAULT);
-                SecretKeySpec key = new SecretKeySpec(keyboo, 0, keyboo.length, "AES");
-                byte[] token = Base64.decode(sharedPreferences.getString("ttoken", null), Base64.DEFAULT);
-                byte[] token_secret = Base64.decode(sharedPreferences.getString("ttokensecret", null), Base64.DEFAULT);
-                AccessToken accessToken = new AccessToken(Encryption.decrypt(token, key), Encryption.decrypt(token_secret, key));
-                AsyncTwitter twitter = new AsyncTwitterFactory().getInstance();
-                twitter.setOAuthConsumer(apikey, apisecret);
-                twitter.setOAuthAccessToken(accessToken);
-                twitter.addListener(twitterListener);
-                twitter.showStatus(Long.parseLong(id));
             } else {
                 if (url.contains("twipple.jp")) {
                     Log.v("twipple", url);
@@ -390,8 +362,7 @@ public class ShowFragment extends Fragment {
                     id = matcher.group(1);
                     sitename = "twipple";
                     filename = id;
-                    AsyncExecute hoge = new AsyncExecute();
-                    hoge.Start("http://p.twipple.jp/show/orig/" + id);
+                    file_url = "http://p.twipple.jp/show/orig/" + id;
                 } else if (url.contains("img.ly")) {
                     Log.v("img.ly", url);
                     Pattern pattern = Pattern.compile("^https?://img\\.ly/(\\w+)");
@@ -402,9 +373,8 @@ public class ShowFragment extends Fragment {
                     id = matcher.group(1);
                     sitename = "img.ly";
                     filename = id;
-                    AsyncExecute hoge = new AsyncExecute();
-                    hoge.Start("http://img.ly/show/full/" + id);
-                } else if (url.contains("instagram.com") || url.contains("instagr.am") ) {
+                    file_url = "http://img.ly/show/full/" + id;
+                } else if (url.contains("instagram.com") || url.contains("instagr.am")) {
                     Log.v("instagram", url);
                     Pattern pattern = Pattern.compile("^https?://instagr\\.?am[\\.com]*/p/(\\w+)");
                     Matcher matcher = pattern.matcher(url);
@@ -414,8 +384,7 @@ public class ShowFragment extends Fragment {
                     id = matcher.group(1);
                     sitename = "instagram";
                     filename = id;
-                    AsyncExecute hoge = new AsyncExecute();
-                    hoge.Start("http://instagram.com/p/" + id + "/media/?size=l");
+                    file_url = "http://instagram.com/p/" + id + "/media/?size=l";
                 } else if (url.contains("gyazo.com")) {
                     Log.v("gyazo", url);
                     Pattern pattern = Pattern.compile("^https?://gyazo\\.com/(\\w+)");
@@ -426,9 +395,8 @@ public class ShowFragment extends Fragment {
                     id = matcher.group(1);
                     sitename = "gyazo";
                     filename = id;
-                    AsyncExecute hoge = new AsyncExecute();
                     //redirect followed if new protocol is the same as old one.
-                    hoge.Start("https://gyazo.com/" + id + "/raw");
+                    file_url = "https://gyazo.com/" + id + "/raw";
                 } else if (url.contains("imgur.com")) {
                     Log.v("gyazo", url);
                     Pattern pattern = Pattern.compile("^https?://.*imgur\\.com/([\\w^\\.]+)");
@@ -439,8 +407,7 @@ public class ShowFragment extends Fragment {
                     id = matcher.group(1);
                     sitename = "imgur";
                     filename = id;
-                    AsyncExecute hoge = new AsyncExecute();
-                    hoge.Start("http://i.imgur.com/" + id + ".jpg");
+                    file_url = "http://i.imgur.com/" + id + ".jpg";
                 } else if (url.contains("twimg.com")) {
                     Log.v("twimg", url);
                     Pattern pattern = Pattern.compile("^https?://pbs\\.twimg\\.com/media/([^\\.]+)\\.");
@@ -451,8 +418,7 @@ public class ShowFragment extends Fragment {
                     id = matcher.group(1);
                     sitename = "twitter";
                     filename = id;
-                    AsyncExecute hoge = new AsyncExecute();
-                    hoge.Start(url + ":orig");
+                    file_url = url + ":orig";
                 } else {
                     Log.v("other", url);
                     Pattern pattern = Pattern.compile("/([\\w^\\.]+)\\.\\w*$");
@@ -463,15 +429,17 @@ public class ShowFragment extends Fragment {
                     id = matcher.group(1);
                     sitename = "other";
                     filename = id;
-                    AsyncExecute hoge = new AsyncExecute();
-                    hoge.Start(url);
+                    file_url = url;
                 }
+                AsyncExecute asyncExecute = new AsyncExecute();
+                asyncExecute.Start(file_url);
+                Bundle bundle = new Bundle();
+                bundle.putString("url", url);
+                bundle.putString("file_url", file_url);
+                bundle.putString("sitename", sitename);
+                bundle.putString("filename", filename);
+                mListener.onPurseFinished(bundle);
             }
-            Bundle bundle = new Bundle();
-            bundle.putString("url", url);
-            bundle.putString("sitename", sitename);
-            bundle.putString("filename", filename);
-            mListener.onPurseFinished(bundle);
         } catch (Exception e) {
             Log.e("IOException", e.toString());
         }

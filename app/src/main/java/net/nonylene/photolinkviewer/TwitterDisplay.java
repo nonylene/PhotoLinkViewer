@@ -80,8 +80,7 @@ public class TwitterDisplay extends Activity {
                     dayView.setText(status.getCreatedAt().toString());
                     PLVImageView plvImageView = (PLVImageView) findViewById(R.id.twImageView);
                     // get dp
-                    float dp = getResources().getDisplayMetrics().density;
-                    int size = (int) (50 * dp);
+                    int size = plvImageView.getWidth();
                     try {
                         plvImageView.setUrl(new URL(status.getUser().getBiggerProfileImageURL()), size, size);
                     }catch (Exception e){

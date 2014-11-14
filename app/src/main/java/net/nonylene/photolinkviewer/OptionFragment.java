@@ -195,7 +195,7 @@ public class OptionFragment extends Fragment {
             final Bundle bundle = getArguments();
             final String sitename = bundle.getString("sitename");
             final String filename = bundle.getString("filename");
-            final String url = bundle.getString("url");
+            final String url = bundle.getString("file_url");
             // set directory
             final String directory = "PLViewer";
             final File root = Environment.getExternalStorageDirectory();
