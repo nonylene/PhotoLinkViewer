@@ -343,8 +343,6 @@ public class ShowFragment extends Fragment {
                     }
                     id = Base58.decode(matcher.group(1));
                 }
-                sitename = "flickr";
-                filename = id;
                 String api_key = (String) getText(R.string.flickr_key);
                 String request = "https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&format=json&api_key=" + api_key +
                         "&photo_id=" + id;

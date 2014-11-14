@@ -10,58 +10,62 @@
              android:paddingTop="@dimen/activity_vertical_margin"
              tools:context=".TwitterDisplay">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_margin="20dp"
-        android:background="#f5f5f5"
-        android:orientation="vertical">
+        android:layout_marginBottom="50dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp"
+
+        android:layout_marginTop="50dp"
+        android:background="#f5f5f5">
 
         <LinearLayout
+            android:id="@+id/baseLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
-            <net.nonylene.photolinkviewer.PLVImageView
-                android:id="@+id/twImageView"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_margin="8dp"
-                android:scaleType="matrix"/>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_marginBottom="4dp"
+                android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/twSN"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                <net.nonylene.photolinkviewer.PLVImageView
+                    android:id="@+id/twImageView"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_margin="8dp"
+                    android:scaleType="matrix"/>
 
-                <TextView
-                    android:id="@+id/twTxt"
+                <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/twDay"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    <TextView
+                        android:id="@+id/twSN"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:id="@+id/twTxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:id="@+id/twDay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
             </LinearLayout>
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
-    </LinearLayout>
-
+    </ScrollView>
 
 </FrameLayout>

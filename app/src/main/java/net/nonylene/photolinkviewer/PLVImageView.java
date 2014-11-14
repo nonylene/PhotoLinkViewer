@@ -8,6 +8,10 @@ import java.net.URL;
 
 public class PLVImageView extends ImageView {
 
+    public PLVImageView(Context context) {
+        super(context);
+    }
+
     public PLVImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
