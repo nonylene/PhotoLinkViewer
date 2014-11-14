@@ -5,7 +5,7 @@
     <string name="pref_twitter_summary">twitter認証を解除します</string>
     <string name="toauth_failed_token">tokenの取得に失敗しました</string>
     <string name="toauth_succeeded_token">tokenの取得に成功しました</string>
-    <string name="initial_dialog">対応サイト\nflickr, imgly, twipple, instagram, gyazo, twitter, imgur\n※gifには非対応\n\n操作方法\nURLのIntentから開いてください。保存ボタンを押すとPLViewerのディレクトリにpngとして保存されます。\n\ntwitterの画像を取得するには認証が必要です。ただまだ複数画像に対応してないので認証する必要性は少ないです。認証しますか？</string>
+    <string name="initial_dialog">対応サイト\nflickr, imgly, twipple, instagram, gyazo, twitter, imgur\n※gifには非対応\n\n操作方法\nURLのIntentから開いてください。保存ボタンを押すと指定したディレクトリにpngとして保存されます。\n\ntwitterの画像を取得するには認証が必要です。認証しますか？</string>
     <string name="initial_dialog_no">認証しない</string>
     <string name="setting_update_summary">タップして確認</string>
     <string name="setting_update_check">アップデートチェック</string>
@@ -29,5 +29,15 @@
     <string name="save_dialog_title">写真の保存先</string>
     <string name="download_photo_title">"画像を保存しました: "</string>
     <string name="settings_update_install">アップデート</string>
+    <string name="setting_dir_dialogtitle">デフォルト: PLViewer/</string>
+    <string name="setting_dir_summary">タップして設定</string>
+    <string name="setting_dir_title">ダウンロード場所の変更</string>
+    <string name="setting_mkdir_dialogtitle">選択してください</string>
+    <string name="setting_mkdir_summary">タップして設定</string>
+    <string name="setting_mkdir_title">ファイル名の変更</string>
+    <array name="filename">
+        <item>\'sitename\'/\'id\'.png (ディレクトリ作成)</item>
+        <item>\'sitename\'-\'id\'.png (ディレクトリ作成しない)</item>
+    </array>
 
 </resources>

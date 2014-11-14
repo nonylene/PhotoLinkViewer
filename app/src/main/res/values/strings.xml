@@ -5,7 +5,7 @@
     <string name="pref_twitter_title">Reset twitter OAuth</string>
     <string name="toauth_failed_token">failed to get token!</string>
     <string name="toauth_succeeded_token">succeeded to get token!</string>
-    <string name="initial_dialog">Compatible with\nflickr, imgly, twipple, instagram, gyazo, twitter, imgur\n-not GIF videos\n\nHow to use\n\nOpen from intent with URL. When you press SAVE button, photo will be saved in PLViewer directory as PNG file.\n\nIf you want to view twitter photos, you must authorize to twitter. However, you cannot view multiple photo yet. So you don\'t have to authorize. Do you authorize?</string>
+    <string name="initial_dialog">Compatible with\nflickr, imgly, twipple, instagram, gyazo, twitter, imgur\n-not GIF videos\n\nHow to use\n\nOpen from intent with URL. When you press SAVE button, photo will be saved in specified directory as PNG file.\n\nIf you want to view twitter photos, you must authorize to twitter. Do you authorize?</string>
     <string name="initial_dialog_ok" translatable="false">OK</string>
     <string name="initial_dialog_no">NO</string>
     <string name="option_fragment_open" translatable="false">Open with new Browser</string>
@@ -38,5 +38,19 @@
     <string name="title_activity_twitter_display" translatable="false">TwitterDisplay</string>
     <string name="download_photo_title">"file saved to "</string>
     <string name="settings_update_install">Update</string>
+    <string name="setting_dir_dialogtitle">Default value is PLViewer/</string>
+    <string name="setting_dir_summary">Tap to set</string>
+    <string name="setting_dir_title">Change download directory</string>
+    <string name="setting_mkdir_dialogtitle">Select filename</string>
+    <string name="setting_mkdir_summary">Tap to select</string>
+    <string name="setting_mkdir_title">Change filename</string>
+    <array name="filename">
+        <item>\'sitename\'/\'id\'.png (make directory)</item>
+        <item>\'sitename\'-\'id\'.png (not make directory)</item>
+    </array>
+    <array name="filename_value">
+        <item>mkdir</item>
+        <item>nodir</item>
+    </array>
 
 </resources>

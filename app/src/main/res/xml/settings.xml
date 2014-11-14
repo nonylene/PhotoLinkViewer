@@ -17,19 +17,37 @@
         android:title="@string/setting_update_check"/>
 
     <EditTextPreference
-        android:key="zoom_speed"
-        android:summary="@string/settings_zoom_summary"
+        android:defaultValue="1.4"
         android:dialogTitle="@string/settings_zoom_dtitle"
         android:inputType="numberDecimal"
-        android:title="@string/settings_zoom_title" />
+        android:key="zoom_speed"
+        android:summary="@string/settings_zoom_summary"
+        android:title="@string/settings_zoom_title"/>
 
     <CheckBoxPreference
         android:key="flickr_original"
         android:summary="@string/settings_flickr_summary"
-        android:title="@string/settings_flickr_title" />
+        android:title="@string/settings_flickr_title"/>
 
     <CheckBoxPreference
         android:key="view_4096"
         android:summary="@string/settings_4096_summary"
-        android:title="@string/settings_4096_title" />
+        android:title="@string/settings_4096_title"/>
+
+    <EditTextPreference
+        android:defaultValue="PLViewer/"
+        android:dialogTitle="@string/setting_dir_dialogtitle"
+        android:key='download_dir'
+        android:summary="@string/setting_dir_summary"
+        android:title="@string/setting_dir_title"/>
+
+    <ListPreference
+        android:dialogTitle="@string/setting_mkdir_dialogtitle"
+        android:entries="@array/filename"
+        android:entryValues="@array/filename_value"
+        android:defaultValue="mkdir"
+        android:key="download_file"
+        android:summary="@string/setting_mkdir_summary"
+        android:title="@string/setting_mkdir_title" />
+
 </PreferenceScreen>

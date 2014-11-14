@@ -7,6 +7,7 @@ import android.app.DownloadManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ResolveInfo;
 import android.graphics.Matrix;
 import android.graphics.Point;
@@ -15,6 +16,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -191,15 +193,26 @@ public class OptionFragment extends Fragment {
     public static class SaveDialogFragment extends DialogFragment {
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // get site, file from bundle
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            final String filename;
+            final File dir;
+            // get site and url from bundle
             final Bundle bundle = getArguments();
             final String sitename = bundle.getString("sitename");
-            final String filename = bundle.getString("filename");
             final String url = bundle.getString("file_url");
-            // set directory
-            final String directory = "PLViewer";
+            // set download directory
+            final String directory = preferences.getString("download_dir", "PLViewer");
             final File root = Environment.getExternalStorageDirectory();
-            final File dir = new File(root, directory + "/" + sitename);
+            // set filename (follow setting)
+            if (preferences.getString("download_file","mkdir").equals("mkdir")){
+                // make directory
+                dir = new File(root, directory + "/" + sitename);
+                filename = bundle.getString("filename");
+            }else {
+                // not make directory
+                dir = new File(root, directory );
+                filename = sitename + "-" + bundle.getString("filename");
+            }
             dir.mkdirs();
             // set custom view
             View view = View.inflate(getActivity(), R.layout.save_path, null);
@@ -223,6 +236,7 @@ public class OptionFragment extends Fragment {
                             try {
                                 //save file
                                 Uri uri = Uri.parse(url);
+                                // use download manager
                                 DownloadManager downloadManager = (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
                                 DownloadManager.Request request = new DownloadManager.Request(uri);
                                 request.setDestinationUri(Uri.fromFile(path));
