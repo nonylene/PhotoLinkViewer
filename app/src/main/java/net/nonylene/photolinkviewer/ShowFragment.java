@@ -374,7 +374,7 @@ public class ShowFragment extends Fragment {
                     file_url = "http://img.ly/show/full/" + id;
                 } else if (url.contains("instagram.com") || url.contains("instagr.am")) {
                     Log.v("instagram", url);
-                    Pattern pattern = Pattern.compile("^https?://instagr\\.?am[\\.com]*/p/(\\w+)");
+                    Pattern pattern = Pattern.compile("^https?://instagr\\.?am[\\.com]*/p/([^/]+)");
                     Matcher matcher = pattern.matcher(url);
                     if (matcher.find()) {
                         Log.v("match", "success");
@@ -429,6 +429,7 @@ public class ShowFragment extends Fragment {
                     filename = id;
                     file_url = url;
                 }
+                Log.d("fileurl", file_url);
                 AsyncExecute asyncExecute = new AsyncExecute();
                 asyncExecute.Start(file_url);
                 Bundle bundle = new Bundle();
