@@ -44,6 +44,7 @@
     <string name="setting_mkdir_dialogtitle">Select filename</string>
     <string name="setting_mkdir_summary">Tap to select</string>
     <string name="setting_mkdir_title">Change filename</string>
+    <string name="twitter_display_oauth">please oAuth!</string>
     <array name="filename">
         <item>\'sitename\'/\'id\'.png (make directory)</item>
         <item>\'sitename\'-\'id\'.png (not make directory)</item>

@@ -55,17 +55,23 @@ public class TwitterDisplay extends Activity {
                 SharedPreferences sharedPreferences = getSharedPreferences("preference", Context.MODE_PRIVATE);
                 String apikey = (String) getText(R.string.twitter_key);
                 String apisecret = (String) getText(R.string.twitter_secret);
-                byte[] keyboo = Base64.decode(sharedPreferences.getString("key", null), Base64.DEFAULT);
-                SecretKeySpec key = new SecretKeySpec(keyboo, 0, keyboo.length, "AES");
-                byte[] token = Base64.decode(sharedPreferences.getString("ttoken", null), Base64.DEFAULT);
-                byte[] token_secret = Base64.decode(sharedPreferences.getString("ttokensecret", null), Base64.DEFAULT);
-                AccessToken accessToken = new AccessToken(Encryption.decrypt(token, key), Encryption.decrypt(token_secret, key));
-                // get twitter async
-                AsyncTwitter twitter = new AsyncTwitterFactory().getInstance();
-                twitter.setOAuthConsumer(apikey, apisecret);
-                twitter.setOAuthAccessToken(accessToken);
-                twitter.addListener(twitterListener);
-                twitter.showStatus(Long.parseLong(id));
+                String tokenkey = sharedPreferences.getString("key", null);
+                if (tokenkey != null) {
+                    byte[] keyboo = Base64.decode(tokenkey, Base64.DEFAULT);
+                    SecretKeySpec key = new SecretKeySpec(keyboo, 0, keyboo.length, "AES");
+                    byte[] token = Base64.decode(sharedPreferences.getString("ttoken", null), Base64.DEFAULT);
+                    byte[] token_secret = Base64.decode(sharedPreferences.getString("ttokensecret", null), Base64.DEFAULT);
+                    AccessToken accessToken = new AccessToken(Encryption.decrypt(token, key), Encryption.decrypt(token_secret, key));
+                    // get twitter async
+                    AsyncTwitter twitter = new AsyncTwitterFactory().getInstance();
+                    twitter.setOAuthConsumer(apikey, apisecret);
+                    twitter.setOAuthAccessToken(accessToken);
+                    twitter.addListener(twitterListener);
+                    twitter.showStatus(Long.parseLong(id));
+                } else {
+                    Toast.makeText(getApplicationContext(), getString(R.string.twitter_display_oauth), Toast.LENGTH_LONG).show();
+                    finish();
+                }
 
             }
         } else {

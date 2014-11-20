@@ -39,5 +39,6 @@
         <item>\'sitename\'/\'id\'.png (ディレクトリ作成)</item>
         <item>\'sitename\'-\'id\'.png (ディレクトリ作成しない)</item>
     </array>
+    <string name="twitter_display_oauth">認証してください</string>
 
 </resources>
