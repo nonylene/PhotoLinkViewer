@@ -25,6 +25,7 @@ import android.view.animation.ScaleAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -439,8 +440,16 @@ public class ShowFragment extends Fragment {
                 bundle.putString("filename", filename);
                 mListener.onPurseFinished(bundle);
             }
-        } catch (Exception e) {
-            Log.e("IOException", e.toString());
+        } catch (IllegalStateException e) {
+            Toast.makeText(view.getContext(), getString(R.string.url_purse_toast), Toast.LENGTH_LONG).show();
+            // remove progressbar
+            FrameLayout frameLayout = (FrameLayout) view.findViewById(R.id.showframe);
+            ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.showprogress);
+            frameLayout.removeView(progressBar);
+            // option buttons
+            Bundle bundle = new Bundle();
+            bundle.putString("url", url);
+            mListener.onPurseFinished(bundle);
         }
     }
 
