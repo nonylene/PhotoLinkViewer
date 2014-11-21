@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -58,6 +59,7 @@ public class TwitterDisplay extends Activity {
                 String apisecret = (String) getText(R.string.twitter_secret);
                 String tokenkey = sharedPreferences.getString("key", null);
                 if (tokenkey != null) {
+                    // oAuthed
                     byte[] keyboo = Base64.decode(tokenkey, Base64.DEFAULT);
                     SecretKeySpec key = new SecretKeySpec(keyboo, 0, keyboo.length, "AES");
                     byte[] token = Base64.decode(sharedPreferences.getString("ttoken", null), Base64.DEFAULT);
@@ -88,25 +90,41 @@ public class TwitterDisplay extends Activity {
                 public void run() {
                     // put status on text
                     TextView textView = (TextView) findViewById(R.id.twTxt);
-                    textView.setText(status.getText());
                     TextView snView = (TextView) findViewById(R.id.twSN);
-                    snView.setText(status.getUser().getScreenName());
                     TextView dayView = (TextView) findViewById(R.id.twDay);
-                    dayView.setText(status.getCreatedAt().toString());
-                    // get icon
-                    PLVImageView plvImageView = (PLVImageView) findViewById(R.id.twImageView);
-                    // get dp
-                    int size = plvImageView.getWidth();
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                    URL iconUrl;
+
                     try {
-                        // set media entity
-                        plvImageView.setUrl(new URL(status.getUser().getBiggerProfileImageURL()), size, size);
-                        MediaEntity[] mediaEntities = status.getExtendedMediaEntities();
-                        for (MediaEntity mediaEntity : mediaEntities) {
-                            final String url = mediaEntity.getMediaURL();
-                            addView(url);
+                        //retweet check
+                        if (status.isRetweet()) {
+                            Status retweetedStatus = status.getRetweetedStatus();
+                            textView.setText(retweetedStatus.getText());
+                            snView.setText(retweetedStatus.getUser().getScreenName());
+                            String statusDate = dateFormat.format(retweetedStatus.getCreatedAt());
+                            dayView.setText(statusDate);
+                            iconUrl = new URL(retweetedStatus.getUser().getBiggerProfileImageURL());
+                        } else {
+                            textView.setText(status.getText());
+                            snView.setText(status.getUser().getScreenName());
+                            String statusDate = dateFormat.format(status.getCreatedAt());
+                            dayView.setText(statusDate);
+                            iconUrl = new URL(status.getUser().getBiggerProfileImageURL());
                         }
+                        // get icon
+                        PLVImageView plvImageView = (PLVImageView) findViewById(R.id.twImageView);
+                        // get dp
+                        int size = plvImageView.getWidth();
+                        plvImageView.setUrl(iconUrl, size, size);
                     } catch (MalformedURLException e) {
                         Log.e("URLError", e.toString());
+                    }
+
+                    // set media entity
+                    MediaEntity[] mediaEntities = status.getExtendedMediaEntities();
+                    for (MediaEntity mediaEntity : mediaEntities) {
+                        final String url = mediaEntity.getMediaURL();
+                        addView(url);
                     }
                 }
 
