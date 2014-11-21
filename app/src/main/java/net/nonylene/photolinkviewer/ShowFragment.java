@@ -448,6 +448,7 @@ public class ShowFragment extends Fragment {
                 bundle.putString("file_url", file_url);
                 bundle.putString("sitename", sitename);
                 bundle.putString("filename", filename);
+                mListener.onPurseFinished(bundle);
             }
         } catch (IllegalStateException e) {
             // regex error
@@ -457,9 +458,9 @@ public class ShowFragment extends Fragment {
             FrameLayout frameLayout = (FrameLayout) view.findViewById(R.id.showframe);
             ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.showprogress);
             frameLayout.removeView(progressBar);
+            mListener.onPurseFinished(bundle);
         }
         // option buttons
-        mListener.onPurseFinished(bundle);
     }
 
     //this is needed to return bundle

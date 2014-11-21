@@ -14,7 +14,7 @@
     <string name="settings_current_ver">"現在のバージョン: "</string>
     <string name="settings_description">"\nアップデート内容: "</string>
     <string name="settings_latest_ver">"\n最新のバージョン: "</string>
-    <string name="settings_update_confirm">ダウンロート</string>
+    <string name="settings_update_confirm">ダウンロード</string>
     <string name="settings_update_ng">キャンセル</string>
     <string name="settings_zoom_summary">タップして調整</string>
     <string name="settings_zoom_dtitle">デフォルト: 1.4</string>
