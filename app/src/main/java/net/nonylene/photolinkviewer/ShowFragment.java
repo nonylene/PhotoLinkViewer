@@ -196,50 +196,54 @@ public class ShowFragment extends Fragment {
 
         @Override
         public void onLoadFinished(Loader<Bitmap> loader, Bitmap bitmap) {
-            //remove progressbar
-            FrameLayout frameLayout = (FrameLayout) view.findViewById(R.id.showframe);
-            ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.showprogress);
-            frameLayout.removeView(progressBar);
-            //get bitmap size
-            float origwidth = bitmap.getWidth();
-            float origheight = bitmap.getHeight();
-            //set image
-            imageView.setImageBitmap(bitmap);
-            //get matrix from imageview
-            Matrix matrix = new Matrix();
-            matrix.set(imageView.getMatrix());
-            //get display size
-            Display display = getActivity().getWindowManager().getDefaultDisplay();
-            Point size = new Point();
-            display.getSize(size);
-            int dispwidth = size.x;
-            int dispheight = size.y;
-            float wid = dispwidth / origwidth;
-            float hei = dispheight / origheight;
-            float zoom = Math.min(wid, hei);
-            float initX;
-            float initY;
-            if (zoom < 1) {
-                //zoom
-                firstzoom = zoom;
-                matrix.setScale(zoom, zoom);
-                if (wid < hei) {
-                    //adjust width
-                    initX = 0;
-                    initY = (dispheight - origheight * wid) / 2;
+            if (bitmap != null) {
+                //remove progressbar
+                FrameLayout frameLayout = (FrameLayout) view.findViewById(R.id.showframe);
+                ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.showprogress);
+                frameLayout.removeView(progressBar);
+                //get bitmap size
+                float origwidth = bitmap.getWidth();
+                float origheight = bitmap.getHeight();
+                //set image
+                imageView.setImageBitmap(bitmap);
+                //get matrix from imageview
+                Matrix matrix = new Matrix();
+                matrix.set(imageView.getMatrix());
+                //get display size
+                Display display = getActivity().getWindowManager().getDefaultDisplay();
+                Point size = new Point();
+                display.getSize(size);
+                int dispwidth = size.x;
+                int dispheight = size.y;
+                float wid = dispwidth / origwidth;
+                float hei = dispheight / origheight;
+                float zoom = Math.min(wid, hei);
+                float initX;
+                float initY;
+                if (zoom < 1) {
+                    //zoom
+                    firstzoom = zoom;
+                    matrix.setScale(zoom, zoom);
+                    if (wid < hei) {
+                        //adjust width
+                        initX = 0;
+                        initY = (dispheight - origheight * wid) / 2;
+                    } else {
+                        //adjust height
+                        initX = (dispwidth - origwidth * hei) / 2;
+                        initY = 0;
+                    }
                 } else {
-                    //adjust height
-                    initX = (dispwidth - origwidth * hei) / 2;
-                    initY = 0;
+                    //move
+                    initX = (dispwidth - origwidth) / 2;
+                    initY = (dispheight - origheight) / 2;
                 }
-            } else {
-                //move
-                initX = (dispwidth - origwidth) / 2;
-                initY = (dispheight - origheight) / 2;
-            }
 
-            matrix.postTranslate(initX, initY);
-            imageView.setImageMatrix(matrix);
+                matrix.postTranslate(initX, initY);
+                imageView.setImageMatrix(matrix);
+            } else {
+                Toast.makeText(view.getContext(), getString(R.string.show_bitamap_error), Toast.LENGTH_LONG).show();
+            }
         }
 
         @Override
@@ -264,7 +268,7 @@ public class ShowFragment extends Fragment {
                 URL url = new URL(c);
                 return new AsyncJSON(getActivity().getApplicationContext(), url);
             } catch (IOException e) {
-                Log.e("JSONLoaderError", e.toString());
+                Log.e("AsyncJSONLoaderError", e.toString());
                 return null;
             }
         }
@@ -307,7 +311,13 @@ public class ShowFragment extends Fragment {
                 AsyncExecute hoge = new AsyncExecute();
                 hoge.Start(file_url);
             } catch (JSONException e) {
-                Log.e("JSONError", e.toString());
+                Log.e("JSONParseError", e.toString());
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(view.getContext(), getString(R.string.show_flickrjson_toast), Toast.LENGTH_LONG).show();
+                    }
+                });
             }
         }
 
@@ -324,6 +334,8 @@ public class ShowFragment extends Fragment {
         String sitename;
         String filename;
         String file_url;
+        Bundle bundle = new Bundle();
+        bundle.putString("url", url);
 
         try {
             String id = null;
@@ -433,24 +445,21 @@ public class ShowFragment extends Fragment {
                 Log.d("fileurl", file_url);
                 AsyncExecute asyncExecute = new AsyncExecute();
                 asyncExecute.Start(file_url);
-                Bundle bundle = new Bundle();
-                bundle.putString("url", url);
                 bundle.putString("file_url", file_url);
                 bundle.putString("sitename", sitename);
                 bundle.putString("filename", filename);
-                mListener.onPurseFinished(bundle);
             }
         } catch (IllegalStateException e) {
+            // regex error
             Toast.makeText(view.getContext(), getString(R.string.url_purse_toast), Toast.LENGTH_LONG).show();
+            Log.e("regex error", e.toString());
             // remove progressbar
             FrameLayout frameLayout = (FrameLayout) view.findViewById(R.id.showframe);
             ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.showprogress);
             frameLayout.removeView(progressBar);
-            // option buttons
-            Bundle bundle = new Bundle();
-            bundle.putString("url", url);
-            mListener.onPurseFinished(bundle);
         }
+        // option buttons
+        mListener.onPurseFinished(bundle);
     }
 
     //this is needed to return bundle

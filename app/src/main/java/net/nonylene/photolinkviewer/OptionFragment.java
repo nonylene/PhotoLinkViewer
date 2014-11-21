@@ -17,7 +17,6 @@ import android.os.Bundle;
 import android.app.Fragment;
 import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -233,20 +232,16 @@ public class OptionFragment extends Fragment {
                             EditText editText = (EditText) getDialog().findViewById(R.id.path_EditText);
                             String filename = editText.getText().toString();
                             File path = new File(dir, filename);
-                            try {
-                                //save file
-                                Uri uri = Uri.parse(url);
-                                // use download manager
-                                DownloadManager downloadManager = (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
-                                DownloadManager.Request request = new DownloadManager.Request(uri);
-                                request.setDestinationUri(Uri.fromFile(path));
-                                request.setTitle("PhotoLinkViewer");
-                                request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
-                                downloadManager.enqueue(request);
-                                Toast.makeText(getActivity(), getString(R.string.download_photo_title) + path.toString(), Toast.LENGTH_LONG).show();
-                            } catch (Exception e) {
-                                Log.e("error", e.toString());
-                            }
+                            //save file
+                            Uri uri = Uri.parse(url);
+                            // use download manager
+                            DownloadManager downloadManager = (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
+                            DownloadManager.Request request = new DownloadManager.Request(uri);
+                            request.setDestinationUri(Uri.fromFile(path));
+                            request.setTitle("PhotoLinkViewer");
+                            request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
+                            downloadManager.enqueue(request);
+                            Toast.makeText(getActivity(), getString(R.string.download_photo_title) + path.toString(), Toast.LENGTH_LONG).show();
                         }
                     })
                     .setNegativeButton(getString(R.string.save_dialog_negative), null);

@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -104,8 +105,8 @@ public class TwitterDisplay extends Activity {
                             final String url = mediaEntity.getMediaURL();
                             addView(url);
                         }
-                    } catch (Exception e) {
-                        Log.e("error", e.toString());
+                    } catch (MalformedURLException e) {
+                        Log.e("URLError", e.toString());
                     }
                 }
 
@@ -155,8 +156,8 @@ public class TwitterDisplay extends Activity {
                         });
                         imageView.setUrl(new URL(url), size, size);
                         currentLayout.addView(imageView);
-                    } catch (Exception e) {
-                        Log.e("addError", e.toString());
+                    } catch (MalformedURLException e) {
+                        Log.e("URLError", e.toString());
                     }
                 }
             });
