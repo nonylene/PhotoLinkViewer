@@ -34,10 +34,12 @@ import twitter4j.auth.AccessToken;
 
 
 public class TwitterDisplay extends Activity {
+    Activity activity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        activity = this;
         // get intent and purse url
         if (Intent.ACTION_VIEW.equals(getIntent().getAction())) {
             Bundle bundle = new Bundle();
@@ -95,6 +97,7 @@ public class TwitterDisplay extends Activity {
                         Uri uri = Uri.parse(mediaEntities[0].getMediaURL());
                         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                         startActivity(intent);
+                        activity.finish();
                     }else {
                         setContentView(R.layout.activity_twitter_display);
                         // put status on text
