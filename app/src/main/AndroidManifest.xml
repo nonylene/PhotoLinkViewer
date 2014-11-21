@@ -20,34 +20,10 @@
                 <category android:name="android.intent.category.BROWSABLE"/>
 
                 <data
-                    android:host="www.flickr.com"
-                    android:scheme="http"/>
-                <data
-                    android:host="www.flickr.com"
-                    android:scheme="https"/>
-                <data
-                    android:host="m.flickr.com"
-                    android:scheme="http"/>
-                <data
-                    android:host="m.flickr.com"
-                    android:scheme="https"/>
-                <data
-                    android:host="flic.kr"
-                    android:scheme="http"/>
-                <data
-                    android:host="flic.kr"
-                    android:scheme="https"/>
-                <data
                     android:host="p.twipple.jp"
                     android:scheme="http"/>
                 <data
                     android:host="img.ly"
-                    android:scheme="http"/>
-                <data
-                    android:host="instagram.com"
-                    android:scheme="http"/>
-                <data
-                    android:host="instagr.am"
                     android:scheme="http"/>
                 <data
                     android:host="gyazo.com"
@@ -59,11 +35,20 @@
                     android:host="imgur.com"
                     android:scheme="http"/>
                 <data
+                    android:host="imgur.com"
+                    android:scheme="https"/>
+                <data
                     android:host="m.imgur.com"
                     android:scheme="http"/>
                 <data
+                    android:host="m.imgur.com"
+                    android:scheme="https"/>
+                <data
                     android:host="www.imgur.com"
                     android:scheme="http"/>
+                <data
+                    android:host="www.imgur.com"
+                    android:scheme="https"/>
             </intent-filter>
 
             <!-- separating because of unavailable of intent -->
@@ -73,6 +58,30 @@
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
 
+                <data
+                    android:host="www.flickr.com"
+                    android:pathPattern="/photos/.*/..*"
+                    android:scheme="http"/>
+                <data
+                    android:host="www.flickr.com"
+                    android:pathPattern="/photos/.*/..*"
+                    android:scheme="https"/>
+                <data
+                    android:host="flic.kr"
+                    android:pathPattern="/p/..*"
+                    android:scheme="http"/>
+                <data
+                    android:host="flic.kr"
+                    android:pathPattern="/p/..*"
+                    android:scheme="https"/>
+                <data
+                    android:host="instagram.com"
+                    android:pathPattern="/p/..*"
+                    android:scheme="http"/>
+                <data
+                    android:host="instagr.am"
+                    android:pathPattern="/p/..*"
+                    android:scheme="http"/>
                 <data
                     android:host="*"
                     android:pathPattern=".*\\.png"
@@ -125,11 +134,11 @@
 
                 <data
                     android:host="twitter.com"
-                    android:pathPattern="/.*/status.*/.*"
+                    android:pathPattern="/.*/status.*/..*"
                     android:scheme="http"/>
                 <data
                     android:host="twitter.com"
-                    android:pathPattern="/.*/status.*/.*"
+                    android:pathPattern="/.*/status.*/..*"
                     android:scheme="https"/>
             </intent-filter>
 
