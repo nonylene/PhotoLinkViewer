@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Base64;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,6 +41,7 @@ public class TwitterDisplay extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_twitter_display);
         activity = this;
         // get intent and purse url
         if (Intent.ACTION_VIEW.equals(getIntent().getAction())) {
@@ -98,8 +101,10 @@ public class TwitterDisplay extends Activity {
                         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                         startActivity(intent);
                         activity.finish();
-                    }else {
-                        setContentView(R.layout.activity_twitter_display);
+                    } else {
+                        ScrollView scrollView = (ScrollView) findViewById(R.id.twitterScrollView);
+                        // transparent to f5
+                        scrollView.setBackgroundColor(Color.parseColor("#F5F5F5"));
                         // put status on text
                         TextView textView = (TextView) findViewById(R.id.twTxt);
                         TextView snView = (TextView) findViewById(R.id.twSN);

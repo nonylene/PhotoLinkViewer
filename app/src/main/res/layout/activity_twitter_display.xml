@@ -11,15 +11,15 @@
              tools:context=".TwitterDisplay">
 
     <ScrollView
+        android:id="@+id/twitterScrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginBottom="50dp"
         android:layout_marginEnd="20dp"
         android:layout_marginStart="20dp"
-
         android:layout_marginTop="50dp"
-        android:background="#f5f5f5">
+        android:background="#00000000">
 
         <LinearLayout
             android:id="@+id/baseLayout"
