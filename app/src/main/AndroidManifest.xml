@@ -104,6 +104,14 @@
                     android:host="*"
                     android:pathPattern=".*\\.jpg"
                     android:scheme="https"/>
+                <data
+                    android:host="*"
+                    android:pathPattern=".*\\.jpeg"
+                    android:scheme="http"/>
+                <data
+                    android:host="*"
+                    android:pathPattern=".*\\.jpeg"
+                    android:scheme="https"/>
             </intent-filter>
         </activity>
         <activity

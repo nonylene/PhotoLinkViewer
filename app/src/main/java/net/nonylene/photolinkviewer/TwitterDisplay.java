@@ -38,7 +38,6 @@ public class TwitterDisplay extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_twitter_display);
         // get intent and purse url
         if (Intent.ACTION_VIEW.equals(getIntent().getAction())) {
             Bundle bundle = new Bundle();
@@ -88,43 +87,52 @@ public class TwitterDisplay extends Activity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    // put status on text
-                    TextView textView = (TextView) findViewById(R.id.twTxt);
-                    TextView snView = (TextView) findViewById(R.id.twSN);
-                    TextView dayView = (TextView) findViewById(R.id.twDay);
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-                    URL iconUrl;
-
-                    try {
-                        //retweet check
-                        if (status.isRetweet()) {
-                            Status retweetedStatus = status.getRetweetedStatus();
-                            textView.setText(retweetedStatus.getText());
-                            snView.setText(retweetedStatus.getUser().getScreenName());
-                            String statusDate = dateFormat.format(retweetedStatus.getCreatedAt());
-                            dayView.setText(statusDate);
-                            iconUrl = new URL(retweetedStatus.getUser().getBiggerProfileImageURL());
-                        } else {
-                            textView.setText(status.getText());
-                            snView.setText(status.getUser().getScreenName());
-                            String statusDate = dateFormat.format(status.getCreatedAt());
-                            dayView.setText(statusDate);
-                            iconUrl = new URL(status.getUser().getBiggerProfileImageURL());
-                        }
-                        // get icon
-                        PLVImageView plvImageView = (PLVImageView) findViewById(R.id.twImageView);
-                        // get dp
-                        int size = plvImageView.getWidth();
-                        plvImageView.setUrl(iconUrl, size, size);
-                    } catch (MalformedURLException e) {
-                        Log.e("URLError", e.toString());
-                    }
-
                     // set media entity
                     MediaEntity[] mediaEntities = status.getExtendedMediaEntities();
-                    for (MediaEntity mediaEntity : mediaEntities) {
-                        final String url = mediaEntity.getMediaURL();
-                        addView(url);
+
+                    // if number of media entity is one, intent directly
+                    if (mediaEntities.length == 1) {
+                        Uri uri = Uri.parse(mediaEntities[0].getMediaURL());
+                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                        startActivity(intent);
+                    }else {
+                        setContentView(R.layout.activity_twitter_display);
+                        // put status on text
+                        TextView textView = (TextView) findViewById(R.id.twTxt);
+                        TextView snView = (TextView) findViewById(R.id.twSN);
+                        TextView dayView = (TextView) findViewById(R.id.twDay);
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                        URL iconUrl;
+
+                        try {
+                            //retweet check
+                            if (status.isRetweet()) {
+                                Status retweetedStatus = status.getRetweetedStatus();
+                                textView.setText(retweetedStatus.getText());
+                                snView.setText(retweetedStatus.getUser().getScreenName());
+                                String statusDate = dateFormat.format(retweetedStatus.getCreatedAt());
+                                dayView.setText(statusDate);
+                                iconUrl = new URL(retweetedStatus.getUser().getBiggerProfileImageURL());
+                            } else {
+                                textView.setText(status.getText());
+                                snView.setText(status.getUser().getScreenName());
+                                String statusDate = dateFormat.format(status.getCreatedAt());
+                                dayView.setText(statusDate);
+                                iconUrl = new URL(status.getUser().getBiggerProfileImageURL());
+                            }
+                            // get icon
+                            PLVImageView plvImageView = (PLVImageView) findViewById(R.id.twImageView);
+                            // get dp
+                            int size = plvImageView.getWidth();
+                            plvImageView.setUrl(iconUrl, size, size);
+                        } catch (MalformedURLException e) {
+                            Log.e("URLError", e.toString());
+                        }
+
+                        for (MediaEntity mediaEntity : mediaEntities) {
+                            final String url = mediaEntity.getMediaURL();
+                            addView(url);
+                        }
                     }
                 }
 

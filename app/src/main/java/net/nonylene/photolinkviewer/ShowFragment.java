@@ -419,7 +419,7 @@ public class ShowFragment extends Fragment {
                     sitename = "imgur";
                     filename = id;
                     file_url = "http://i.imgur.com/" + id + ".jpg";
-                } else if (url.contains("twimg.com")) {
+                } else if (url.contains("twimg.com/media/")) {
                     Log.v("twimg", url);
                     Pattern pattern = Pattern.compile("^https?://pbs\\.twimg\\.com/media/([^\\.]+)\\.");
                     Matcher matcher = pattern.matcher(url);
@@ -432,7 +432,7 @@ public class ShowFragment extends Fragment {
                     file_url = url + ":orig";
                 } else {
                     Log.v("other", url);
-                    Pattern pattern = Pattern.compile("/([\\w^\\.]+)\\.\\w*$");
+                    Pattern pattern = Pattern.compile("/([^\\.]+)\\.\\w*$");
                     Matcher matcher = pattern.matcher(url);
                     if (matcher.find()) {
                         Log.v("match", "success");
