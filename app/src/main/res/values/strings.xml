@@ -48,6 +48,7 @@
     <string name="url_purse_toast">URL purse error</string>
     <string name="show_bitamap_error">error!</string>
     <string name="show_flickrjson_toast">flickr JSON Parse Error!</string>
+    <string name="twitter_error_toast">twitter error</string>
     <array name="filename">
         <item>\'sitename\'/\'id\'.png (make directory)</item>
         <item>\'sitename\'-\'id\'.png (not make directory)</item>

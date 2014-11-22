@@ -31,7 +31,9 @@ import twitter4j.AsyncTwitterFactory;
 import twitter4j.MediaEntity;
 import twitter4j.Status;
 import twitter4j.TwitterAdapter;
+import twitter4j.TwitterException;
 import twitter4j.TwitterListener;
+import twitter4j.TwitterMethod;
 import twitter4j.auth.AccessToken;
 
 
@@ -87,6 +89,18 @@ public class TwitterDisplay extends Activity {
     }
 
     private TwitterListener twitterListener = new TwitterAdapter() {
+
+        @Override
+        public void onException (TwitterException e, TwitterMethod twitterMethod){
+            Log.e("twitterException", e.toString());
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getApplicationContext(), getString(R.string.twitter_error_toast), Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+
         @Override
         public void gotShowStatus(final Status status) {
             runOnUiThread(new Runnable() {
