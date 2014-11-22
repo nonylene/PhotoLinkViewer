@@ -17,6 +17,7 @@ public class Show extends Activity implements ShowFragment.OnFragmentInteraction
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_show);
         SharedPreferences preferences = getSharedPreferences("preference", MODE_PRIVATE);
         if (!preferences.getBoolean("Initialized", false)) {
             DialogFragment fragment = new InitDialogFragment();
@@ -29,10 +30,13 @@ public class Show extends Activity implements ShowFragment.OnFragmentInteraction
             Uri uri = getIntent().getData();
             String url = uri.toString();
             bundle.putString("url", url);
-            ShowFragment showFragment = new ShowFragment();
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            OptionFragment optionFragment = new OptionFragment();
+            optionFragment.setArguments(bundle);
+            fragmentTransaction.add(R.id.root_layout, optionFragment);
+            ShowFragment showFragment = new ShowFragment();
             showFragment.setArguments(bundle);
-            fragmentTransaction.replace(android.R.id.content, showFragment);
+            fragmentTransaction.replace(R.id.show_frag_replace, showFragment);
             fragmentTransaction.commit();
         } else {
             Toast.makeText(this, "Intent Error!", Toast.LENGTH_LONG).show();
@@ -57,12 +61,8 @@ public class Show extends Activity implements ShowFragment.OnFragmentInteraction
         }
     }
 
-    public void onPurseFinished(Bundle bundle) {
-        OptionFragment optionFragment = new OptionFragment();
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        optionFragment.setArguments(bundle);
-        fragmentTransaction.add(android.R.id.content, optionFragment);
-        fragmentTransaction.commit();
+    public void onPurseFinished(final Bundle bundle) {
+        // write process when called from fragment
     }
 
 }

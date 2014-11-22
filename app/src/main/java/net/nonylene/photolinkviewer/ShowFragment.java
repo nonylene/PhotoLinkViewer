@@ -1,6 +1,7 @@
 package net.nonylene.photolinkviewer;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.app.LoaderManager;
 import android.content.Loader;
 import android.content.SharedPreferences;
@@ -23,6 +24,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -334,8 +336,6 @@ public class ShowFragment extends Fragment {
         String sitename;
         String filename;
         String file_url;
-        Bundle bundle = new Bundle();
-        bundle.putString("url", url);
 
         try {
             String id = null;
@@ -445,10 +445,21 @@ public class ShowFragment extends Fragment {
                 Log.d("fileurl", file_url);
                 AsyncExecute asyncExecute = new AsyncExecute();
                 asyncExecute.Start(file_url);
+                final Bundle bundle = new Bundle();
+                bundle.putString("url", url);
                 bundle.putString("file_url", file_url);
                 bundle.putString("sitename", sitename);
                 bundle.putString("filename", filename);
-                mListener.onPurseFinished(bundle);
+                ImageButton dlButton = (ImageButton) getActivity().findViewById(R.id.dlbutton);
+                dlButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // open dialog
+                        DialogFragment dialogFragment = new SaveDialogFragment();
+                        dialogFragment.setArguments(bundle);
+                        dialogFragment.show(getFragmentManager(), "Save");
+                    }
+                });
             }
         } catch (IllegalStateException e) {
             // regex error
@@ -458,7 +469,6 @@ public class ShowFragment extends Fragment {
             FrameLayout frameLayout = (FrameLayout) view.findViewById(R.id.showframe);
             ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.showprogress);
             frameLayout.removeView(progressBar);
-            mListener.onPurseFinished(bundle);
         }
         // option buttons
     }
