@@ -25,6 +25,5 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'org.twitter4j:twitter4j-core:4.0.+'
-    compile 'org.twitter4j:twitter4j-stream:4.0.+'
     compile 'org.twitter4j:twitter4j-async:4.0.+'
 }
