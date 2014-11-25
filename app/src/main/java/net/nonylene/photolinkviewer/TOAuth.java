@@ -16,7 +16,9 @@ import java.security.Key;
 import twitter4j.AsyncTwitter;
 import twitter4j.AsyncTwitterFactory;
 import twitter4j.TwitterAdapter;
+import twitter4j.TwitterException;
 import twitter4j.TwitterListener;
+import twitter4j.TwitterMethod;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 
@@ -34,6 +36,11 @@ public class TOAuth extends Activity {
     }
 
     private TwitterListener twitterListener = new TwitterAdapter() {
+
+        @Override
+        public void onException (TwitterException exception, TwitterMethod method){
+            Log.e("twitter",exception.toString());
+        }
 
         @Override
         public void gotOAuthRequestToken(RequestToken token) {
@@ -55,6 +62,7 @@ public class TOAuth extends Activity {
                 preferences.edit().putString("key", keys).apply();
                 preferences.edit().putString("ttoken", twitter_token).apply();
                 preferences.edit().putString("ttokensecret", twitter_tsecret).apply();
+                preferences.edit().putBoolean("authorized", true).apply();
                 //putting cue to UI Thread
                 runOnUiThread(new Runnable() {
                     @Override

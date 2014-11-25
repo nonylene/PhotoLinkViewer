@@ -47,11 +47,13 @@ public class TwitterDisplay extends Activity {
         setContentView(R.layout.activity_twitter_display);
         activity = this;
         // get intent and purse url
+        SharedPreferences sharedPreferences = getSharedPreferences("preference", Context.MODE_PRIVATE);
         if (Intent.ACTION_VIEW.equals(getIntent().getAction())) {
             Bundle bundle = new Bundle();
             Uri uri = getIntent().getData();
             String url = uri.toString();
             bundle.putString("url", url);
+            // option fragment
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
             OptionFragment optionFragment = new OptionFragment();
             optionFragment.setArguments(bundle);
@@ -65,11 +67,10 @@ public class TwitterDisplay extends Activity {
                 }
                 String id = matcher.group(1);
                 // get twitter CK/CS/AT/AS
-                SharedPreferences sharedPreferences = getSharedPreferences("preference", Context.MODE_PRIVATE);
                 String apikey = (String) getText(R.string.twitter_key);
                 String apisecret = (String) getText(R.string.twitter_secret);
                 String tokenkey = sharedPreferences.getString("key", null);
-                if (tokenkey != null) {
+                if (sharedPreferences.getBoolean("authorized",false)) {
                     // oAuthed
                     byte[] keyboo = Base64.decode(tokenkey, Base64.DEFAULT);
                     SecretKeySpec key = new SecretKeySpec(keyboo, 0, keyboo.length, "AES");
@@ -84,6 +85,8 @@ public class TwitterDisplay extends Activity {
                     twitter.showStatus(Long.parseLong(id));
                 } else {
                     Toast.makeText(getApplicationContext(), getString(R.string.twitter_display_oauth), Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(this, TOAuth.class);
+                    startActivity(intent);
                 }
             }
         } else {
@@ -112,7 +115,7 @@ public class TwitterDisplay extends Activity {
                     // set media entity
                     MediaEntity[] mediaEntities = status.getExtendedMediaEntities();
 
-                    // if number of media entity is one, intent directly
+                    // if number of media entity is one, show fragment directly
                     if (mediaEntities.length == 1) {
                         Bundle bundle = new Bundle();
                         bundle.putString("url", mediaEntities[0].getMediaURL());
@@ -201,7 +204,7 @@ public class TwitterDisplay extends Activity {
                         imageView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                // put intent url
+                                // go to show fragment
                                 Bundle bundle = new Bundle();
                                 bundle.putString("url", url);
                                 FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
