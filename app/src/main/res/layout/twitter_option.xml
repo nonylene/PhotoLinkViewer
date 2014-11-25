@@ -13,9 +13,9 @@
         android:layout_gravity="top|bottom"
         android:layout_margin="4dp"
         android:background="@null"
-        android:contentDescription="test"
+        android:contentDescription="@string/retweet_button_description"
         android:scaleType="fitXY"
-        android:src="@drawable/browser_button_design"/>
+        android:src="@drawable/retweet_button_design"/>
 
     <ImageButton
         android:id="@+id/favorite_button"
@@ -24,7 +24,7 @@
         android:layout_gravity="top|bottom"
         android:layout_margin="4dp"
         android:background="@null"
-        android:contentDescription="test"
+        android:contentDescription="@string/favorite_button_description"
         android:scaleType="fitXY"
-        android:src="@drawable/browser_button_design"/>
+        android:src="@drawable/favorite_button_design"/>
 </LinearLayout>
