@@ -20,6 +20,7 @@ import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
@@ -61,17 +62,14 @@ public class OptionFragment extends Fragment {
         private Boolean open = false;
 
         public void onClick(View v) {
+            LinearLayout buttons = (LinearLayout) view.findViewById(R.id.buttons);
             if (open) {
                 baseButton.setImageResource(R.drawable.up_button_design);
-                dlButton.setVisibility(View.GONE);
-                setButton.setVisibility(View.GONE);
-                webButton.setVisibility(View.GONE);
+                buttons.setVisibility(View.GONE);
                 open = false;
             } else {
                 baseButton.setImageResource(R.drawable.down_button_design);
-                dlButton.setVisibility(View.VISIBLE);
-                setButton.setVisibility(View.VISIBLE);
-                webButton.setVisibility(View.VISIBLE);
+                buttons.setVisibility(View.VISIBLE);
                 open = true;
             }
         }

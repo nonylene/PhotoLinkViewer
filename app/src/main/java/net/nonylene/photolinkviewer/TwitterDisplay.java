@@ -1,6 +1,7 @@
 package net.nonylene.photolinkviewer;
 
 import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -51,6 +52,10 @@ public class TwitterDisplay extends Activity {
             Uri uri = getIntent().getData();
             String url = uri.toString();
             bundle.putString("url", url);
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            OptionFragment optionFragment = new OptionFragment();
+            optionFragment.setArguments(bundle);
+            fragmentTransaction.add(android.R.id.content, optionFragment).commit();
             if (url.contains("twitter.com")) {
                 Log.v("twitter", url);
                 Pattern pattern = Pattern.compile("^https?://twitter\\.com/\\w+/status[es]*/(\\d+)");
@@ -79,9 +84,7 @@ public class TwitterDisplay extends Activity {
                     twitter.showStatus(Long.parseLong(id));
                 } else {
                     Toast.makeText(getApplicationContext(), getString(R.string.twitter_display_oauth), Toast.LENGTH_LONG).show();
-                    finish();
                 }
-
             }
         } else {
             Toast.makeText(this, "Intent Error!", Toast.LENGTH_LONG).show();

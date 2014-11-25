@@ -17,6 +17,13 @@
         android:layout_gravity="end|bottom"
         android:orientation="vertical">
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/buttons"
+            android:visibility="gone">
+
         <ImageButton
             android:id="@+id/webbutton"
             android:layout_width="72dp"
@@ -26,8 +33,7 @@
             android:background="@null"
             android:contentDescription="@string/option_fragment_open"
             android:scaleType="fitXY"
-            android:src="@drawable/browser_button_design"
-            android:visibility="gone" />
+            android:src="@drawable/browser_button_design" />
 
         <ImageButton
             android:id="@+id/setbutton"
@@ -38,8 +44,7 @@
             android:background="@null"
             android:contentDescription="@string/option_fragment_settings"
             android:scaleType="fitXY"
-            android:src="@drawable/setting_button_design"
-            android:visibility="gone" />
+            android:src="@drawable/setting_button_design" />
 
         <ImageButton
             android:id="@+id/dlbutton"
@@ -51,7 +56,8 @@
             android:contentDescription="@string/option_fragment_download"
             android:scaleType="fitXY"
             android:src="@drawable/download_button_design"
-            android:visibility="gone" />
+            android:visibility="gone"/>
+        </LinearLayout>
 
         <ImageButton
             android:id="@+id/basebutton"

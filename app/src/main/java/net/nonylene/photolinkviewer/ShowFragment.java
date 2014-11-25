@@ -451,6 +451,7 @@ public class ShowFragment extends Fragment {
                 bundle.putString("sitename", sitename);
                 bundle.putString("filename", filename);
                 ImageButton dlButton = (ImageButton) getActivity().findViewById(R.id.dlbutton);
+                dlButton.setVisibility(View.VISIBLE);
                 dlButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
