@@ -28,7 +28,6 @@ import java.util.List;
 
 public class OptionFragment extends Fragment {
     private View view;
-    private Boolean open = false;
     private ImageButton baseButton;
     private ImageButton dlButton;
     private ImageButton setButton;
@@ -59,6 +58,7 @@ public class OptionFragment extends Fragment {
     }
 
     class BaseButtonClickListener implements View.OnClickListener {
+        private Boolean open = false;
 
         public void onClick(View v) {
             if (open) {

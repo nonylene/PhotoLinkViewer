@@ -363,7 +363,18 @@ public class ShowFragment extends Fragment {
                 AsyncJSONExecute hoge = new AsyncJSONExecute();
                 hoge.Start(request);
             } else {
-                if (url.contains("twipple.jp")) {
+                if (url.contains("twimg.com/media/")) {
+                    Log.v("twimg", url);
+                    Pattern pattern = Pattern.compile("^https?://pbs\\.twimg\\.com/media/([^\\.]+)\\.");
+                    Matcher matcher = pattern.matcher(url);
+                    if (matcher.find()) {
+                        Log.v("match", "success");
+                    }
+                    id = matcher.group(1);
+                    sitename = "twitter";
+                    filename = id;
+                    file_url = url + ":orig";
+                } else if (url.contains("twipple.jp")) {
                     Log.v("twipple", url);
                     Pattern pattern = Pattern.compile("^https?://p\\.twipple\\.jp/(\\w+)");
                     Matcher matcher = pattern.matcher(url);
@@ -398,7 +409,7 @@ public class ShowFragment extends Fragment {
                     file_url = "http://instagram.com/p/" + id + "/media/?size=l";
                 } else if (url.contains("gyazo.com")) {
                     Log.v("gyazo", url);
-                    Pattern pattern = Pattern.compile("^https?://gyazo\\.com/(\\w+)");
+                    Pattern pattern = Pattern.compile("^https?://.*gyazo\\.com/(\\w+)");
                     Matcher matcher = pattern.matcher(url);
                     if (matcher.find()) {
                         Log.v("match", "success");
@@ -419,17 +430,6 @@ public class ShowFragment extends Fragment {
                     sitename = "imgur";
                     filename = id;
                     file_url = "http://i.imgur.com/" + id + ".jpg";
-                } else if (url.contains("twimg.com/media/")) {
-                    Log.v("twimg", url);
-                    Pattern pattern = Pattern.compile("^https?://pbs\\.twimg\\.com/media/([^\\.]+)\\.");
-                    Matcher matcher = pattern.matcher(url);
-                    if (matcher.find()) {
-                        Log.v("match", "success");
-                    }
-                    id = matcher.group(1);
-                    sitename = "twitter";
-                    filename = id;
-                    file_url = url + ":orig";
                 } else {
                     Log.v("other", url);
                     Pattern pattern = Pattern.compile("/([^\\.]+)\\.\\w*$");
