@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="end|top"
+    android:orientation="vertical">
+
+    <ImageButton
+        android:id="@+id/retweet_button"
+        android:layout_width="@dimen/image_button_size"
+        android:layout_height="@dimen/image_button_size"
+        android:layout_gravity="top|bottom"
+        android:layout_margin="4dp"
+        android:background="@null"
+        android:contentDescription="test"
+        android:scaleType="fitXY"
+        android:src="@drawable/browser_button_design"/>
+
+    <ImageButton
+        android:id="@+id/favorite_button"
+        android:layout_width="@dimen/image_button_size"
+        android:layout_height="@dimen/image_button_size"
+        android:layout_gravity="top|bottom"
+        android:layout_margin="4dp"
+        android:background="@null"
+        android:contentDescription="test"
+        android:scaleType="fitXY"
+        android:src="@drawable/browser_button_design"/>
+</LinearLayout>

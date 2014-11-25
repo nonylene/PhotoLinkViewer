@@ -1,6 +1,5 @@
 package net.nonylene.photolinkviewer;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -12,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import javax.crypto.spec.SecretKeySpec;
@@ -25,20 +25,20 @@ import twitter4j.TwitterListener;
 import twitter4j.TwitterMethod;
 import twitter4j.auth.AccessToken;
 
-public class TwitterOptionFragment extends Fragment {
+public class TwitterOptionFragment extends OptionFragment {
     private View view;
     private ImageButton retweet_button;
+    private ImageButton favorite_button;
     private AsyncTwitter twitter;
     private SharedPreferences sharedPreferences;
     private Long id_long;
 
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.twitter_option_fragment, container, false);
+        view = super.onCreateView(inflater, container, savedInstanceState);
+        LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.buttons);
+        View twitterView = inflater.inflate(R.layout.twitter_option, linearLayout, false);
+        linearLayout.addView(twitterView);
         id_long = getArguments().getLong("id_long");
         sharedPreferences = getActivity().getSharedPreferences("preference", Context.MODE_PRIVATE);
         // get twitter CK/CS/AT/AS
@@ -63,6 +63,13 @@ public class TwitterOptionFragment extends Fragment {
                 twitter.retweetStatus(id_long);
             }
         });
+        favorite_button = (ImageButton) view.findViewById(R.id.favorite_button);
+        favorite_button.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                twitter.createFavorite(id_long);
+            }
+        });
         return view;
     }
 
@@ -84,6 +91,17 @@ public class TwitterOptionFragment extends Fragment {
                 @Override
                 public void run() {
                     Toast.makeText(view.getContext(), "retweeted!", Toast.LENGTH_LONG).show();
+                }
+            });
+
+        }
+
+        @Override
+        public void createdFavorite(Status status){
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(view.getContext(), "favorited!", Toast.LENGTH_LONG).show();
                 }
             });
 
