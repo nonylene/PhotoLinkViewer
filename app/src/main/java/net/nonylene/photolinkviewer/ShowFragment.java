@@ -1,6 +1,5 @@
 package net.nonylene.photolinkviewer;
 
-import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.LoaderManager;
 import android.content.Loader;
@@ -42,7 +41,6 @@ public class ShowFragment extends Fragment {
 
     private View view;
     private ImageView imageView;
-    private OnFragmentInteractionListener mListener;
     private SharedPreferences preferences;
     private float firstzoom = 1;
 
@@ -304,12 +302,6 @@ public class ShowFragment extends Fragment {
                 bundle.putString("file_url", file_url);
                 bundle.putString("sitename", "flickr");
                 bundle.putString("filename", id);
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    @Override
-                    public void run() {
-                        mListener.onPurseFinished(bundle);
-                    }
-                });
                 AsyncExecute hoge = new AsyncExecute();
                 hoge.Start(file_url);
             } catch (JSONException e) {
@@ -472,22 +464,6 @@ public class ShowFragment extends Fragment {
             frameLayout.removeView(progressBar);
         }
         // option buttons
-    }
-
-    //this is needed to return bundle
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    public interface OnFragmentInteractionListener {
-        public void onPurseFinished(Bundle bundle);
     }
 
     @Override

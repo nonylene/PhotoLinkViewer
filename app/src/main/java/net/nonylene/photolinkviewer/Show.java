@@ -12,7 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Toast;
 
-public class Show extends Activity implements ShowFragment.OnFragmentInteractionListener {
+public class Show extends Activity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,10 +59,6 @@ public class Show extends Activity implements ShowFragment.OnFragmentInteraction
                     .setNegativeButton(getString(R.string.initial_dialog_no), null);
             return builder.create();
         }
-    }
-
-    public void onPurseFinished(final Bundle bundle) {
-        // write process when called from fragment
     }
 
 }

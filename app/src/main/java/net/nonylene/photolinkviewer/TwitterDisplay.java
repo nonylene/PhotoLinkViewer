@@ -55,7 +55,7 @@ public class TwitterDisplay extends Activity {
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
             OptionFragment optionFragment = new OptionFragment();
             optionFragment.setArguments(bundle);
-            fragmentTransaction.add(android.R.id.content, optionFragment).commit();
+            fragmentTransaction.add(R.id.root_layout, optionFragment).commit();
             if (url.contains("twitter.com")) {
                 Log.v("twitter", url);
                 Pattern pattern = Pattern.compile("^https?://twitter\\.com/\\w+/status[es]*/(\\d+)");
@@ -94,7 +94,7 @@ public class TwitterDisplay extends Activity {
     private TwitterListener twitterListener = new TwitterAdapter() {
 
         @Override
-        public void onException (TwitterException e, TwitterMethod twitterMethod){
+        public void onException(TwitterException e, TwitterMethod twitterMethod) {
             Log.e("twitterException", e.toString());
             runOnUiThread(new Runnable() {
                 @Override
@@ -114,10 +114,12 @@ public class TwitterDisplay extends Activity {
 
                     // if number of media entity is one, intent directly
                     if (mediaEntities.length == 1) {
-                        Uri uri = Uri.parse(mediaEntities[0].getMediaURL());
-                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                        startActivity(intent);
-                        activity.finish();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("url", mediaEntities[0].getMediaURL());
+                        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                        ShowFragment showFragment = new ShowFragment();
+                        showFragment.setArguments(bundle);
+                        fragmentTransaction.replace(R.id.show_frag_replace, showFragment).commit();
                     } else {
                         ScrollView scrollView = (ScrollView) findViewById(R.id.twitterScrollView);
                         // transparent to f5
@@ -200,9 +202,12 @@ public class TwitterDisplay extends Activity {
                             @Override
                             public void onClick(View v) {
                                 // put intent url
-                                Uri uri = Uri.parse(url);
-                                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                                startActivity(intent);
+                                Bundle bundle = new Bundle();
+                                bundle.putString("url", url);
+                                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                                ShowFragment showFragment = new ShowFragment();
+                                showFragment.setArguments(bundle);
+                                fragmentTransaction.replace(R.id.show_frag_replace, showFragment).commit();
                             }
                         });
                         imageView.setUrl(new URL(url), size, size);
