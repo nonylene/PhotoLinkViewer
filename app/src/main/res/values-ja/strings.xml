@@ -3,7 +3,7 @@
 
     <string name="pref_twitter_title">twitter認証の解除</string>
     <string name="pref_twitter_summary">twitter認証を解除します</string>
-    <string name="toauth_failed_token">tokenの取得に失敗しました</string>
+    <string name="toauth_failed_encode">エンコードエラー</string>
     <string name="toauth_succeeded_token">tokenの取得に成功しました</string>
     <string name="initial_dialog">対応サイト\nflickr, imgly, twipple, instagram, gyazo, twitter, imgur\n※gifには非対応\n\n操作方法\nURLのIntentから開いてください。保存ボタンを押すと指定したディレクトリにpngとして保存されます。\n\ntwitterの画像を取得するには認証が必要です。認証しますか？</string>
     <string name="initial_dialog_no">認証しない</string>
@@ -39,9 +39,11 @@
         <item>\'sitename\'/\'id\'.png (ディレクトリ作成)</item>
         <item>\'sitename\'-\'id\'.png (ディレクトリ作成しない)</item>
     </array>
-    <string name="twitter_display_oauth">認証してください</string>
+    <string name="twitter_display_oauth">twitter認証してください</string>
     <string name="show_bitamap_error">読み込みできませんでした</string>
     <string name="url_purse_toast">URL解析エラー</string>
     <string name="show_flickrjson_toast">flickr解析エラー</string>
+    <string name="twitter_error_toast">twitter認証エラー</string>
+    <string name="toauth_failed_token">tokenの取得に失敗しました</string>
 
 </resources>

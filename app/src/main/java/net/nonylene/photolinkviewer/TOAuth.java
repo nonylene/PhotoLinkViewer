@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.io.UnsupportedEncodingException;
 import java.security.Key;
 
 import twitter4j.AsyncTwitter;
@@ -71,13 +72,13 @@ public class TOAuth extends Activity {
                         finish();
                     }
                 });
-            } catch (Exception e) {
+            } catch (UnsupportedEncodingException e) {
                 Log.e("gettoken", e.toString());
                 //putting cue to UI Thread
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(TOAuth.this, getString(R.string.toauth_failed_token), Toast.LENGTH_LONG).show();
+                        Toast.makeText(TOAuth.this, getString(R.string.toauth_failed_encode), Toast.LENGTH_LONG).show();
                     }
                 });
             }

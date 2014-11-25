@@ -39,13 +39,12 @@ import twitter4j.auth.AccessToken;
 
 
 public class TwitterDisplay extends Activity {
-    Activity activity;
+    private AsyncTwitter twitter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_twitter_display);
-        activity = this;
         // get intent and purse url
         SharedPreferences sharedPreferences = getSharedPreferences("preference", Context.MODE_PRIVATE);
         if (Intent.ACTION_VIEW.equals(getIntent().getAction())) {
@@ -66,11 +65,12 @@ public class TwitterDisplay extends Activity {
                     Log.v("match", "success");
                 }
                 String id = matcher.group(1);
+                Long id_long = Long.parseLong(id);
                 // get twitter CK/CS/AT/AS
                 String apikey = (String) getText(R.string.twitter_key);
                 String apisecret = (String) getText(R.string.twitter_secret);
                 String tokenkey = sharedPreferences.getString("key", null);
-                if (sharedPreferences.getBoolean("authorized",false)) {
+                if (sharedPreferences.getBoolean("authorized", false)) {
                     // oAuthed
                     byte[] keyboo = Base64.decode(tokenkey, Base64.DEFAULT);
                     SecretKeySpec key = new SecretKeySpec(keyboo, 0, keyboo.length, "AES");
@@ -78,11 +78,15 @@ public class TwitterDisplay extends Activity {
                     byte[] token_secret = Base64.decode(sharedPreferences.getString("ttokensecret", null), Base64.DEFAULT);
                     AccessToken accessToken = new AccessToken(Encryption.decrypt(token, key), Encryption.decrypt(token_secret, key));
                     // get twitter async
-                    AsyncTwitter twitter = new AsyncTwitterFactory().getInstance();
+                    twitter = new AsyncTwitterFactory().getInstance();
                     twitter.setOAuthConsumer(apikey, apisecret);
                     twitter.setOAuthAccessToken(accessToken);
                     twitter.addListener(twitterListener);
-                    twitter.showStatus(Long.parseLong(id));
+                    twitter.showStatus(id_long);
+                    bundle.putLong("id_long", id_long);
+                    TwitterOptionFragment twitterOptionFragment = new TwitterOptionFragment();
+                    twitterOptionFragment.setArguments(bundle);
+                    getFragmentManager().beginTransaction().add(R.id.root_layout, twitterOptionFragment).commit();
                 } else {
                     Toast.makeText(getApplicationContext(), getString(R.string.twitter_display_oauth), Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(this, TOAuth.class);

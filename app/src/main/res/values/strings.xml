@@ -3,6 +3,7 @@
 
     <string name="app_name" translatable="false">PhotoLinkViewer</string>
     <string name="pref_twitter_title">Reset twitter OAuth</string>
+    <string name="toauth_failed_encode">Encode error</string>
     <string name="toauth_failed_token">failed to get token!</string>
     <string name="toauth_succeeded_token">succeeded to get token!</string>
     <string name="initial_dialog">Compatible with\nflickr, imgly, twipple, instagram, gyazo, twitter, imgur\n-not GIF videos\n\nHow to use\n\nOpen from intent with URL. When you press SAVE button, photo will be saved in specified directory as PNG file.\n\nIf you want to view twitter photos, you must authorize to twitter. Do you authorize?</string>
