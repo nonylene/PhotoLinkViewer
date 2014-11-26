@@ -91,6 +91,7 @@ public class TOAuth extends Activity {
                 SharedPreferences preferences = getSharedPreferences("preference", MODE_PRIVATE);
                 preferences.edit().putBoolean("authorized", true).apply();
                 preferences.edit().putInt("account", 1).apply();
+                preferences.edit().putString("screen_name", screenName).apply();
                 //putting cue to UI Thread
                 runOnUiThread(new Runnable() {
                     @Override

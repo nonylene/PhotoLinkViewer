@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -80,15 +82,17 @@ public class TwitterOptionFragment extends OptionFragment {
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override
                         public void run() {
-                                Toast.makeText(activity.getApplicationContext(), getString(R.string.toast_favorite), Toast.LENGTH_LONG).show();
+                            Toast.makeText(activity.getApplicationContext(), getString(R.string.toast_favorite), Toast.LENGTH_LONG).show();
                         }
                     });
                 }
             });
 
+            SharedPreferences sharedPreferences  = activity.getSharedPreferences("preference", Context.MODE_PRIVATE);
+            String screenName = sharedPreferences.getString("screen_name", null);
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle(getString(R.string.favorite_dialog_title))
-                    .setMessage(getString(R.string.favorite_dialog_message))
+                    .setMessage("@" + screenName + "\n" + getString(R.string.favorite_dialog_message))
                     .setPositiveButton(getString(R.string.favorite_dialog_ok), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -131,9 +135,11 @@ public class TwitterOptionFragment extends OptionFragment {
                 }
             });
 
+            SharedPreferences sharedPreferences  = activity.getSharedPreferences("preference", Context.MODE_PRIVATE);
+            String screenName = sharedPreferences.getString("screen_name", null);
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle(getString(R.string.retweet_dialog_title))
-                    .setMessage(getString(R.string.retweet_dialog_message))
+                    .setMessage("@" + screenName + "\n" + getString(R.string.retweet_dialog_message))
                     .setPositiveButton(getString(R.string.retweet_dialog_ok), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
