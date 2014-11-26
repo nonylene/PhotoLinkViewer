@@ -90,6 +90,7 @@ public class TOAuth extends Activity {
                 // set oauth_completed frag
                 SharedPreferences preferences = getSharedPreferences("preference", MODE_PRIVATE);
                 preferences.edit().putBoolean("authorized", true).apply();
+                preferences.edit().putInt("account", 1).apply();
                 //putting cue to UI Thread
                 runOnUiThread(new Runnable() {
                     @Override

@@ -5,10 +5,10 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteException;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,17 +25,13 @@ import java.text.SimpleDateFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.crypto.spec.SecretKeySpec;
-
 import twitter4j.AsyncTwitter;
-import twitter4j.AsyncTwitterFactory;
 import twitter4j.MediaEntity;
 import twitter4j.Status;
 import twitter4j.TwitterAdapter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterListener;
 import twitter4j.TwitterMethod;
-import twitter4j.auth.AccessToken;
 
 
 public class TwitterDisplay extends Activity {
@@ -66,28 +62,20 @@ public class TwitterDisplay extends Activity {
                 }
                 String id = matcher.group(1);
                 Long id_long = Long.parseLong(id);
-                // get twitter CK/CS/AT/AS
-                String apikey = (String) getText(R.string.twitter_key);
-                String apisecret = (String) getText(R.string.twitter_secret);
-                String tokenkey = sharedPreferences.getString("key", null);
                 if (sharedPreferences.getBoolean("authorized", false)) {
                     // oAuthed
-                    byte[] keyboo = Base64.decode(tokenkey, Base64.DEFAULT);
-                    SecretKeySpec key = new SecretKeySpec(keyboo, 0, keyboo.length, "AES");
-                    byte[] token = Base64.decode(sharedPreferences.getString("ttoken", null), Base64.DEFAULT);
-                    byte[] token_secret = Base64.decode(sharedPreferences.getString("ttokensecret", null), Base64.DEFAULT);
-                    AccessToken accessToken = new AccessToken(Encryption.decrypt(token, key), Encryption.decrypt(token_secret, key));
-                    // get twitter async
-                    twitter = new AsyncTwitterFactory().getInstance();
-                    twitter.setOAuthConsumer(apikey, apisecret);
-                    twitter.setOAuthAccessToken(accessToken);
-                    twitter.addListener(twitterListener);
-                    twitter.showStatus(id_long);
-                    bundle.putSerializable("twitter", twitter);
-                    bundle.putLong("id_long", id_long);
-                    TwitterOptionFragment twitterOptionFragment = new TwitterOptionFragment();
-                    twitterOptionFragment.setArguments(bundle);
-                    getFragmentManager().beginTransaction().add(R.id.root_layout, twitterOptionFragment).commit();
+                    try {
+                        // get twitter async
+                        twitter = MyAsyncTwitter.getAsyncTwitter(getApplicationContext());
+                        twitter.addListener(twitterListener);
+                        twitter.showStatus(id_long);
+                        bundle.putLong("id_long", id_long);
+                        TwitterOptionFragment twitterOptionFragment = new TwitterOptionFragment();
+                        twitterOptionFragment.setArguments(bundle);
+                        getFragmentManager().beginTransaction().add(R.id.root_layout, twitterOptionFragment).commit();
+                    } catch (SQLiteException e) {
+                        Log.e("SQL", e.toString());
+                    }
                 } else {
                     Toast.makeText(getApplicationContext(), getString(R.string.twitter_display_oauth), Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(this, TOAuth.class);
