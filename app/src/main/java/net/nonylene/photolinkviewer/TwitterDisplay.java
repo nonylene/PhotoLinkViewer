@@ -83,6 +83,7 @@ public class TwitterDisplay extends Activity {
                     twitter.setOAuthAccessToken(accessToken);
                     twitter.addListener(twitterListener);
                     twitter.showStatus(id_long);
+                    bundle.putSerializable("twitter", twitter);
                     bundle.putLong("id_long", id_long);
                     TwitterOptionFragment twitterOptionFragment = new TwitterOptionFragment();
                     twitterOptionFragment.setArguments(bundle);
@@ -224,6 +225,28 @@ public class TwitterDisplay extends Activity {
                     }
                 }
             });
+        }
+
+        @Override
+        public void retweetedStatus(Status status) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getApplicationContext(), getString(R.string.toast_retweet), Toast.LENGTH_LONG).show();
+                }
+            });
+
+        }
+
+        @Override
+        public void createdFavorite(Status status) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getApplicationContext(), getString(R.string.toast_favorite), Toast.LENGTH_LONG).show();
+                }
+            });
+
         }
     };
 
