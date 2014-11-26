@@ -53,8 +53,8 @@
     <string name="favorite_button_description" translatable="false">favorite</string>
     <string name="retweet_button_description" translatable="false">retweet</string>
     <string name="initial_dialog_title">Thank you for install</string>
-    <string name="toast_retweet">retweeted !</string>
-    <string name="toast_favorite">favorited !</string>
+    <string name="toast_retweet">retweeted!</string>
+    <string name="toast_favorite">favorited!</string>
     <string name="favorite_dialog_title">Favorite</string>
     <string name="favorite_dialog_message">Favorite this tweet?</string>
     <string name="favorite_dialog_ok">OK</string>
@@ -63,6 +63,7 @@
     <string name="retweet_dialog_message">Retweet this tweet?</string>
     <string name="retweet_dialog_ok">OK</string>
     <string name="retweet_dialog_ng">Cancel</string>
+    <string name="toauth_failed_twitter4j">twitter error!</string>
     <array name="filename">
         <item>\'sitename\'/\'id\'.png (make directory)</item>
         <item>\'sitename\'-\'id\'.png (not make directory)</item>

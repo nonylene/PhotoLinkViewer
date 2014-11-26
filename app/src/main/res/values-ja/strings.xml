@@ -56,5 +56,6 @@
     <string name="retweet_dialog_ng">キャンセル</string>
     <string name="retweet_dialog_ok">OK</string>
     <string name="retweet_dialog_title">リツイート</string>
+    <string name="toauth_failed_twitter4j">twitterエラー</string>
 
 </resources>
