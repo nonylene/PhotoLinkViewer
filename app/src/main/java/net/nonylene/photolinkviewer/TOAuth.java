@@ -81,7 +81,7 @@ public class TOAuth extends Activity {
                 // open database
                 MySQLiteOpenHelper sqLiteOpenHelper = new MySQLiteOpenHelper(getApplicationContext());
                 SQLiteDatabase database = sqLiteOpenHelper.getWritableDatabase();
-                database.execSQL("create table if not exists accounts (user_name ,user_id, token, token_secret, key)");
+                database.execSQL("create table if not exists accounts (user_name unique, user_id integer unique, token, token_secret, key)");
                 database.beginTransaction();
                 database.delete("accounts", "user_id = " + String.valueOf(myId), null);
                 database.insert("accounts", null, values);

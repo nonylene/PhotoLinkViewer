@@ -20,9 +20,11 @@ public class MyAsyncTwitter {
            String apikey = (String) context.getText(R.string.twitter_key);
            String apisecret = (String) context.getText(R.string.twitter_secret);
            int account = sharedPreferences.getInt("account", 0);
+           // sql
            MySQLiteOpenHelper sqLiteOpenHelper = new MySQLiteOpenHelper(context);
            SQLiteDatabase database = sqLiteOpenHelper.getReadableDatabase();
            Cursor cursor = database.rawQuery("select token, token_secret, key from accounts where rowid = ?", new String[]{String.valueOf(account)});
+           // rowid only one row
            cursor.moveToFirst();
            String tokenkey = cursor.getString(2);
            byte[] keyboo = Base64.decode(tokenkey, Base64.DEFAULT);

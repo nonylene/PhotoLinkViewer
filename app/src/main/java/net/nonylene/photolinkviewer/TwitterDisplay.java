@@ -115,7 +115,8 @@ public class TwitterDisplay extends Activity {
                         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
                         ShowFragment showFragment = new ShowFragment();
                         showFragment.setArguments(bundle);
-                        fragmentTransaction.replace(R.id.show_frag_replace, showFragment).commit();
+                        fragmentTransaction.replace(R.id.show_frag_replace, showFragment);
+                        fragmentTransaction.commit();
                     } else {
                         ScrollView scrollView = (ScrollView) findViewById(R.id.twitterScrollView);
                         // transparent to f5
@@ -203,7 +204,10 @@ public class TwitterDisplay extends Activity {
                                 FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
                                 ShowFragment showFragment = new ShowFragment();
                                 showFragment.setArguments(bundle);
-                                fragmentTransaction.replace(R.id.show_frag_replace, showFragment).commit();
+                                fragmentTransaction.replace(R.id.show_frag_replace, showFragment);
+                                // back to this screen when back pressed
+                                fragmentTransaction.addToBackStack(null);
+                                fragmentTransaction.commit();
                             }
                         });
                         imageView.setUrl(new URL(url), size, size);
@@ -215,27 +219,6 @@ public class TwitterDisplay extends Activity {
             });
         }
 
-        @Override
-        public void retweetedStatus(Status status) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(getApplicationContext(), getString(R.string.toast_retweet), Toast.LENGTH_LONG).show();
-                }
-            });
-
-        }
-
-        @Override
-        public void createdFavorite(Status status) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(getApplicationContext(), getString(R.string.toast_favorite), Toast.LENGTH_LONG).show();
-                }
-            });
-
-        }
     };
 
 }
