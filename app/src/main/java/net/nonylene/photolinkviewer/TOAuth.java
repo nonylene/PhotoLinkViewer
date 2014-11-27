@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.net.Uri;
@@ -12,6 +13,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import java.io.UnsupportedEncodingException;
@@ -39,6 +41,21 @@ public class TOAuth extends Activity {
         setContentView(R.layout.toauth);
         Button button1 = (Button) findViewById(R.id.oAuthButton);
         button1.setOnClickListener(new Button1ClickListener());
+        setListView();
+    }
+
+    private void setListView() {
+        try {
+            MySQLiteOpenHelper sqLiteOpenHelper = new MySQLiteOpenHelper(getApplicationContext());
+            SQLiteDatabase database = sqLiteOpenHelper.getWritableDatabase();
+            Cursor cursor = database.rawQuery("select rowid _id, * from accounts", null);
+            MyCursorAdapter myCursorAdapter = new MyCursorAdapter(getApplicationContext(), cursor, true);
+            ListView listView = (ListView) findViewById(R.id.accounts_list);
+            listView.setAdapter(myCursorAdapter);
+            database.close();
+        } catch (SQLiteException e) {
+            Log.e("SQLite", e.toString());
+        }
     }
 
     private TwitterListener twitterListener = new TwitterAdapter() {
@@ -73,20 +90,21 @@ public class TOAuth extends Activity {
                 String keys = Base64.encodeToString(key.getEncoded(), Base64.DEFAULT);
                 // save encrypted keys
                 ContentValues values = new ContentValues();
-                values.put("user_name", screenName);
-                values.put("user_id", myId);
+                values.put("userName", screenName);
+                values.put("userId", myId);
                 values.put("token", twitter_token);
                 values.put("token_secret", twitter_tsecret);
                 values.put("key", keys);
                 // open database
                 MySQLiteOpenHelper sqLiteOpenHelper = new MySQLiteOpenHelper(getApplicationContext());
                 SQLiteDatabase database = sqLiteOpenHelper.getWritableDatabase();
-                database.execSQL("create table if not exists accounts (user_name unique, user_id integer unique, token, token_secret, key)");
+                database.execSQL("create table if not exists accounts (userName unique, userId integer unique, token, token_secret, key)");
                 database.beginTransaction();
-                database.delete("accounts", "user_id = " + String.valueOf(myId), null);
+                database.delete("accounts", "userId = " + String.valueOf(myId), null);
                 database.insert("accounts", null, values);
                 database.setTransactionSuccessful();
                 database.endTransaction();
+                database.close();
                 // set oauth_completed frag
                 SharedPreferences preferences = getSharedPreferences("preference", MODE_PRIVATE);
                 preferences.edit().putBoolean("authorized", true).apply();
