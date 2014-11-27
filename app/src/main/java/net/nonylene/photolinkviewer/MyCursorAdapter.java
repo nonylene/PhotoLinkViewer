@@ -9,8 +9,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckedTextView;
 import android.widget.CursorAdapter;
-import android.widget.TextView;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -35,7 +35,6 @@ public class MyCursorAdapter extends CursorAdapter {
     @Override
     public void bindView(final View view, final Context context, Cursor cursor) {
         final Long id_long = cursor.getLong(cursor.getColumnIndex("userId"));
-        Log.d("id", String.valueOf(id_long));
         AsyncTwitter asyncTwitter = MyAsyncTwitter.getAsyncTwitter(context);
         asyncTwitter.addListener(new TwitterAdapter() {
             @Override
@@ -44,7 +43,7 @@ public class MyCursorAdapter extends CursorAdapter {
                     PLVImageView plvImageView = (PLVImageView) view.findViewById(R.id.icon);
                     URL url = new URL(user.getBiggerProfileImageURL());
                     plvImageView.setUrl(url);
-                    TextView textView = (TextView) view.findViewById(R.id.screen);
+                    CheckedTextView textView = (CheckedTextView) view.findViewById(R.id.screen);
                     textView.setText(user.getScreenName());
                     ContentValues values = new ContentValues();
                     values.put("userName", user.getScreenName());

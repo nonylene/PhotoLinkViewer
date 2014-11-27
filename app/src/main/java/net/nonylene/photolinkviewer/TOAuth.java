@@ -2,6 +2,7 @@ package net.nonylene.photolinkviewer;
 
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -52,6 +54,15 @@ public class TOAuth extends Activity {
             MyCursorAdapter myCursorAdapter = new MyCursorAdapter(getApplicationContext(), cursor, true);
             ListView listView = (ListView) findViewById(R.id.accounts_list);
             listView.setAdapter(myCursorAdapter);
+            listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+            final SharedPreferences sharedPreferences = getSharedPreferences("preference", Context.MODE_PRIVATE);
+            listView.setItemChecked(sharedPreferences.getInt("account", 1) -1 , true);
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    sharedPreferences.edit().putInt("account",position+1).apply();
+                }
+            });
             database.close();
         } catch (SQLiteException e) {
             Log.e("SQLite", e.toString());
@@ -76,9 +87,10 @@ public class TOAuth extends Activity {
         @Override
         public void gotOAuthAccessToken(AccessToken token) {
             try {
+                Log.v("hoge","hoge");
                 String apikey = (String) getText(R.string.twitter_key);
                 String apisecret = (String) getText(R.string.twitter_secret);
-                Twitter twitterNotAsync = TwitterFactory.getSingleton();
+                Twitter twitterNotAsync = new TwitterFactory().getInstance();
                 twitterNotAsync.setOAuthConsumer(apikey, apisecret);
                 twitterNotAsync.setOAuthAccessToken(token);
                 final String screenName = twitterNotAsync.getScreenName();
@@ -108,14 +120,12 @@ public class TOAuth extends Activity {
                 // set oauth_completed frag
                 SharedPreferences preferences = getSharedPreferences("preference", MODE_PRIVATE);
                 preferences.edit().putBoolean("authorized", true).apply();
-                preferences.edit().putInt("account", 1).apply();
                 preferences.edit().putString("screen_name", screenName).apply();
                 //putting cue to UI Thread
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         Toast.makeText(TOAuth.this, getString(R.string.toauth_succeeded_token) + " " + screenName, Toast.LENGTH_LONG).show();
-                        finish();
                     }
                 });
             } catch (UnsupportedEncodingException e) {
@@ -164,11 +174,13 @@ public class TOAuth extends Activity {
     @Override
     protected void onNewIntent(Intent intent) {
         Uri uri = intent.getData();
-        String oauth = uri.getQueryParameter("oauth_verifier");
-        if (oauth != null) {
-            twitter.getOAuthAccessTokenAsync(requestToken, oauth);
-        } else {
-            Toast.makeText(TOAuth.this, getString(R.string.toauth_failed_token), Toast.LENGTH_LONG).show();
+        if (uri != null) {
+            String oauth = uri.getQueryParameter("oauth_verifier");
+            if (oauth != null) {
+                twitter.getOAuthAccessTokenAsync(requestToken, oauth);
+            } else {
+                Toast.makeText(TOAuth.this, getString(R.string.toauth_failed_token), Toast.LENGTH_LONG).show();
+            }
         }
     }
 }

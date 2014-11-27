@@ -19,7 +19,7 @@ public class MyAsyncTwitter {
         SharedPreferences sharedPreferences = context.getSharedPreferences("preference", Context.MODE_PRIVATE);
         String apikey = (String) context.getText(R.string.twitter_key);
         String apisecret = (String) context.getText(R.string.twitter_secret);
-        int account = sharedPreferences.getInt("account", 0);
+        int account = sharedPreferences.getInt("account", 1);
         // sql
         MySQLiteOpenHelper sqLiteOpenHelper = new MySQLiteOpenHelper(context);
         SQLiteDatabase database = sqLiteOpenHelper.getReadableDatabase();
