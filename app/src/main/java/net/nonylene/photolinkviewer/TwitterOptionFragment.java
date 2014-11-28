@@ -1,6 +1,5 @@
 package net.nonylene.photolinkviewer;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -64,7 +63,8 @@ public class TwitterOptionFragment extends OptionFragment {
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             final AsyncTwitter twitter = MyAsyncTwitter.getAsyncTwitter(getActivity().getApplicationContext());
             final Long id_long = getArguments().getLong("id_long");
-            final Activity activity = getActivity();
+            final Toast toast_error = Toast.makeText(getActivity(), getString(R.string.twitter_error_toast), Toast.LENGTH_LONG);
+            final Toast toast_completed = Toast.makeText(getActivity(), getString(R.string.twitter_error_toast), Toast.LENGTH_LONG);
             twitter.addListener(new TwitterAdapter() {
                 @Override
                 public void onException(TwitterException e, TwitterMethod twitterMethod) {
@@ -72,7 +72,7 @@ public class TwitterOptionFragment extends OptionFragment {
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(activity.getApplicationContext(), getString(R.string.twitter_error_toast), Toast.LENGTH_LONG).show();
+                            toast_error.show();
                         }
                     });
                 }
@@ -82,13 +82,13 @@ public class TwitterOptionFragment extends OptionFragment {
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(activity.getApplicationContext(), getString(R.string.toast_favorite), Toast.LENGTH_LONG).show();
+                            toast_completed.show();
                         }
                     });
                 }
             });
 
-            SharedPreferences sharedPreferences  = activity.getSharedPreferences("preference", Context.MODE_PRIVATE);
+            SharedPreferences sharedPreferences = getActivity().getSharedPreferences("preference", Context.MODE_PRIVATE);
             String screenName = sharedPreferences.getString("screen_name", null);
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle(getString(R.string.favorite_dialog_title))
@@ -109,9 +109,10 @@ public class TwitterOptionFragment extends OptionFragment {
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-            final AsyncTwitter twitter = (AsyncTwitter) getArguments().getSerializable("twitter");
+            final AsyncTwitter twitter = MyAsyncTwitter.getAsyncTwitter(getActivity().getApplicationContext());
             final Long id_long = getArguments().getLong("id_long");
-            final Activity activity = getActivity();
+            final Toast toast_error = Toast.makeText(getActivity(), getString(R.string.twitter_error_toast), Toast.LENGTH_LONG);
+            final Toast toast_completed = Toast.makeText(getActivity(), getString(R.string.twitter_error_toast), Toast.LENGTH_LONG);
             twitter.addListener(new TwitterAdapter() {
                 @Override
                 public void onException(TwitterException e, TwitterMethod twitterMethod) {
@@ -119,7 +120,7 @@ public class TwitterOptionFragment extends OptionFragment {
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(activity.getApplicationContext(), getString(R.string.twitter_error_toast), Toast.LENGTH_LONG).show();
+                            toast_error.show();
                         }
                     });
                 }
@@ -129,13 +130,13 @@ public class TwitterOptionFragment extends OptionFragment {
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(activity.getApplicationContext(), getString(R.string.toast_retweet), Toast.LENGTH_LONG).show();
+                            toast_completed.show();
                         }
                     });
                 }
             });
 
-            SharedPreferences sharedPreferences  = activity.getSharedPreferences("preference", Context.MODE_PRIVATE);
+            SharedPreferences sharedPreferences = getActivity().getSharedPreferences("preference", Context.MODE_PRIVATE);
             String screenName = sharedPreferences.getString("screen_name", null);
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle(getString(R.string.retweet_dialog_title))
