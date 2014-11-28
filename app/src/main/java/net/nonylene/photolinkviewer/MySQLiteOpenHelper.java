@@ -10,9 +10,12 @@ public class MySQLiteOpenHelper extends SQLiteOpenHelper {
         super(context, "PLVDB", null, 1);
     }
 
+    @Override
     public void onCreate(SQLiteDatabase db) {
     }
 
+    @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        onCreate(db);
     }
 }

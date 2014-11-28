@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -29,6 +30,7 @@ import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.TwitterListener;
 import twitter4j.TwitterMethod;
+import twitter4j.User;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 
@@ -36,36 +38,74 @@ public class TOAuth extends Activity {
 
     private AsyncTwitter twitter;
     private RequestToken requestToken;
+    private MyCursorAdapter myCursorAdapter;
+    private MySQLiteOpenHelper sqLiteOpenHelper;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.toauth);
-        Button button1 = (Button) findViewById(R.id.oAuthButton);
-        button1.setOnClickListener(new Button1ClickListener());
+        // oauth button
+        Button oAuthButton = (Button) findViewById(R.id.oAuthButton);
+        oAuthButton.setOnClickListener(new Button1ClickListener());
+        // update button
+        Button update = (Button) findViewById(R.id.update_button);
+        update.setOnClickListener(new UpdateButtonClickListener());
+        sqLiteOpenHelper = new MySQLiteOpenHelper(getApplicationContext());
+        // create table accounts
+        SQLiteDatabase database = sqLiteOpenHelper.getWritableDatabase();
+        database.execSQL("create table if not exists accounts (userName unique, userId integer unique, token, token_secret, key, icon)");
+        database.close();
         setListView();
     }
 
     private void setListView() {
-        try {
-            MySQLiteOpenHelper sqLiteOpenHelper = new MySQLiteOpenHelper(getApplicationContext());
-            SQLiteDatabase database = sqLiteOpenHelper.getWritableDatabase();
-            Cursor cursor = database.rawQuery("select rowid _id, * from accounts", null);
-            MyCursorAdapter myCursorAdapter = new MyCursorAdapter(getApplicationContext(), cursor, true);
-            ListView listView = (ListView) findViewById(R.id.accounts_list);
-            listView.setAdapter(myCursorAdapter);
-            listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-            final SharedPreferences sharedPreferences = getSharedPreferences("preference", Context.MODE_PRIVATE);
-            listView.setItemChecked(sharedPreferences.getInt("account", 1) -1 , true);
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    sharedPreferences.edit().putInt("account",position+1).apply();
+        final ListView listView = (ListView) findViewById(R.id.accounts_list);
+        // radio button
+        listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        final SharedPreferences sharedPreferences = getSharedPreferences("preference", Context.MODE_PRIVATE);
+        // choose account
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                sharedPreferences.edit().putInt("account", position + 1).apply();
+                Cursor cursor = (Cursor) listView.getItemAtPosition(position);
+                String screen_name = cursor.getString(cursor.getColumnIndex("userName"));
+                sharedPreferences.edit().putString("screen_name", screen_name).apply();
+            }
+        });
+        // not to lock
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    SQLiteDatabase database = sqLiteOpenHelper.getReadableDatabase();
+                    Cursor cursor = database.rawQuery("select rowid _id, * from accounts", null);
+                    myCursorAdapter = new MyCursorAdapter(getApplicationContext(), cursor, true);
+                    listView.setAdapter(myCursorAdapter);
+                    // check current radio button
+                    listView.setItemChecked(sharedPreferences.getInt("account", 1) - 1, true);
+                    database.close();
+                } catch (SQLiteException e) {
+                    Log.e("SQLite", e.toString());
                 }
-            });
-            database.close();
-        } catch (SQLiteException e) {
-            Log.e("SQLite", e.toString());
+            }
+        });
+    }
+
+
+    class Button1ClickListener implements View.OnClickListener {
+        public void onClick(View v) {
+            try {
+                twitter = new AsyncTwitterFactory().getInstance();
+                String apikey = (String) getText(R.string.twitter_key);
+                String apisecret = (String) getText(R.string.twitter_secret);
+                twitter.setOAuthConsumer(apikey, apisecret);
+                twitter.addListener(twitterListener);
+                twitter.getOAuthRequestTokenAsync("plviewer://callback");
+            } catch (Exception e) {
+                Log.e("twitter", e.toString());
+            }
         }
     }
 
@@ -87,36 +127,48 @@ public class TOAuth extends Activity {
         @Override
         public void gotOAuthAccessToken(AccessToken token) {
             try {
-                Log.v("hoge","hoge");
                 String apikey = (String) getText(R.string.twitter_key);
                 String apisecret = (String) getText(R.string.twitter_secret);
+                // get oauthed user_name and user_id and icon_url
                 Twitter twitterNotAsync = new TwitterFactory().getInstance();
                 twitterNotAsync.setOAuthConsumer(apikey, apisecret);
                 twitterNotAsync.setOAuthAccessToken(token);
-                final String screenName = twitterNotAsync.getScreenName();
                 Long myId = twitterNotAsync.getId();
+                User user = twitterNotAsync.showUser(myId);
+                final String screenName = user.getScreenName();
+                String icon = user.getBiggerProfileImageURL();
                 // encrypt twitter tokens by key
                 Key key = Encryption.generate();
                 String twitter_token = Encryption.encrypt(token.getToken().getBytes("UTF-8"), key);
                 String twitter_tsecret = Encryption.encrypt(token.getTokenSecret().getBytes("UTF-8"), key);
                 String keys = Base64.encodeToString(key.getEncoded(), Base64.DEFAULT);
-                // save encrypted keys
+                // save encrypted keys to database
                 ContentValues values = new ContentValues();
                 values.put("userName", screenName);
                 values.put("userId", myId);
                 values.put("token", twitter_token);
                 values.put("token_secret", twitter_tsecret);
                 values.put("key", keys);
+                values.put("icon", icon);
                 // open database
-                MySQLiteOpenHelper sqLiteOpenHelper = new MySQLiteOpenHelper(getApplicationContext());
-                SQLiteDatabase database = sqLiteOpenHelper.getWritableDatabase();
-                database.execSQL("create table if not exists accounts (userName unique, userId integer unique, token, token_secret, key)");
+                final SQLiteDatabase database = sqLiteOpenHelper.getWritableDatabase();
                 database.beginTransaction();
+                // if exists...
                 database.delete("accounts", "userId = " + String.valueOf(myId), null);
+                // insert account information
                 database.insert("accounts", null, values);
+                // commit
                 database.setTransactionSuccessful();
+                final Cursor cursor = database.rawQuery("select rowid _id, * from accounts", null);
                 database.endTransaction();
-                database.close();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // renew listView
+                        // i want to use content provider and cursor loader in future.
+                        myCursorAdapter.swapCursor(cursor);
+                    }
+                });
                 // set oauth_completed frag
                 SharedPreferences preferences = getSharedPreferences("preference", MODE_PRIVATE);
                 preferences.edit().putBoolean("authorized", true).apply();
@@ -155,22 +207,6 @@ public class TOAuth extends Activity {
 
     };
 
-
-    class Button1ClickListener implements View.OnClickListener {
-        public void onClick(View v) {
-            try {
-                twitter = new AsyncTwitterFactory().getInstance();
-                String apikey = (String) getText(R.string.twitter_key);
-                String apisecret = (String) getText(R.string.twitter_secret);
-                twitter.setOAuthConsumer(apikey, apisecret);
-                twitter.addListener(twitterListener);
-                twitter.getOAuthRequestTokenAsync("plviewer://callback");
-            } catch (Exception e) {
-                Log.e("twitter", e.toString());
-            }
-        }
-    }
-
     @Override
     protected void onNewIntent(Intent intent) {
         Uri uri = intent.getData();
@@ -183,4 +219,48 @@ public class TOAuth extends Activity {
             }
         }
     }
+
+    class UpdateButtonClickListener implements View.OnClickListener {
+        public void onClick(View v) {
+            SharedPreferences sharedPreferences = getSharedPreferences("preference", MODE_PRIVATE);
+            if (sharedPreferences.getBoolean("authorized", false)) {
+                AsyncTwitter twitter = MyAsyncTwitter.getAsyncTwitter(getApplicationContext());
+                final SQLiteDatabase database = sqLiteOpenHelper.getWritableDatabase();
+                Cursor cursor = database.rawQuery("select rowid _id, userId from accounts", null);
+                twitter.addListener(new TwitterAdapter() {
+                    @Override
+                    public void gotUserDetail(final User user) {
+                        try {
+                            ContentValues values = new ContentValues();
+                            values.put("userName", user.getScreenName());
+                            values.put("icon", user.getBiggerProfileImageURL());
+                            Log.d("hoge", user.getBiggerProfileImageURL());
+                            // open database
+                            database.beginTransaction();
+                            database.update("accounts", values, "userId = ?", new String[]{String.valueOf(user.getId())});
+                            database.setTransactionSuccessful();
+                            database.endTransaction();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    // renew ui
+                                    Cursor cursor = database.rawQuery("select rowid _id, * from accounts", null);
+                                    myCursorAdapter.swapCursor(cursor);
+                                }
+                            });
+                        } catch (SQLiteException e) {
+                            Log.e("SQL", e.toString());
+                        }
+                    }
+                });
+                // move cursor focus
+                cursor.moveToFirst();
+                twitter.showUser(cursor.getLong(cursor.getColumnIndex("userId")));
+                while (cursor.moveToNext()) {
+                    twitter.showUser(cursor.getLong(cursor.getColumnIndex("userId")));
+                }
+            }
+        }
+    }
+
 }
