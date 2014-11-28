@@ -3,6 +3,7 @@ package net.nonylene.photolinkviewer;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -14,7 +15,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import twitter4j.AsyncTwitter;
@@ -23,19 +23,15 @@ import twitter4j.TwitterAdapter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterMethod;
 
-public class TwitterOptionFragment extends OptionFragment {
-    private View view;
+public class TwitterOptionFragment extends Fragment {
     private ImageButton retweet_button;
     private ImageButton favorite_button;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = super.onCreateView(inflater, container, savedInstanceState);
         final Bundle bundle = getArguments();
         // add twitter buttons
-        LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.buttons);
-        View twitterView = inflater.inflate(R.layout.twitter_option, linearLayout, false);
-        linearLayout.addView(twitterView);
+        View view = inflater.inflate(R.layout.twitter_option, container, false);
         retweet_button = (ImageButton) view.findViewById(R.id.retweet_button);
         retweet_button.setOnClickListener(new View.OnClickListener() {
             @Override

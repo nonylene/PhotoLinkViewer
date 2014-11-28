@@ -72,7 +72,7 @@ public class TwitterDisplay extends Activity {
                         bundle.putLong("id_long", id_long);
                         TwitterOptionFragment twitterOptionFragment = new TwitterOptionFragment();
                         twitterOptionFragment.setArguments(bundle);
-                        getFragmentManager().beginTransaction().add(R.id.root_layout, twitterOptionFragment).commit();
+                        getFragmentManager().beginTransaction().add(R.id.buttons, twitterOptionFragment).commit();
                     } catch (SQLiteException e) {
                         Log.e("SQL", e.toString());
                     }

@@ -25,6 +25,7 @@ import android.view.animation.ScaleAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -241,6 +242,8 @@ public class ShowFragment extends Fragment {
 
                 matrix.postTranslate(initX, initY);
                 imageView.setImageMatrix(matrix);
+                LinearLayout linearLayout = (LinearLayout) getActivity().findViewById(R.id.rotate_root);
+                linearLayout.setVisibility(View.VISIBLE);
             } else {
                 Toast.makeText(view.getContext(), getString(R.string.show_bitamap_error), Toast.LENGTH_LONG).show();
             }
@@ -442,17 +445,22 @@ public class ShowFragment extends Fragment {
                 bundle.putString("file_url", file_url);
                 bundle.putString("sitename", sitename);
                 bundle.putString("filename", filename);
+                // dl button
                 ImageButton dlButton = (ImageButton) getActivity().findViewById(R.id.dlbutton);
-                dlButton.setVisibility(View.VISIBLE);
-                dlButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // open dialog
-                        DialogFragment dialogFragment = new SaveDialogFragment();
-                        dialogFragment.setArguments(bundle);
-                        dialogFragment.show(getFragmentManager(), "Save");
-                    }
-                });
+                if (dlButton != null) {
+                    Log.d("ho","hoge");
+                    dlButton.setOnClickListener(new View.OnClickListener() {
+
+                        public void onClick(View v) {
+                            // open dialog
+                            Log.d("hoge","hoge");
+                            DialogFragment dialogFragment = new SaveDialogFragment();
+                            dialogFragment.setArguments(bundle);
+                            dialogFragment.show(getFragmentManager(), "Save");
+                        }
+                    });
+                    Log.d("ho","hoge");
+                }
             }
         } catch (IllegalStateException e) {
             // regex error
@@ -463,7 +471,6 @@ public class ShowFragment extends Fragment {
             ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.showprogress);
             frameLayout.removeView(progressBar);
         }
-        // option buttons
     }
 
     @Override
