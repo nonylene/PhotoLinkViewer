@@ -12,13 +12,13 @@
             android:id="@+id/oAuthButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="OAuth" />
+            android:text="@string/toauth_button" />
 
         <Button
             android:id="@+id/update_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Update" />
+            android:text="@string/toauth_update_button" />
         </LinearLayout>
 
     <ListView

@@ -60,7 +60,7 @@ public class TwitterOptionFragment extends Fragment {
             final AsyncTwitter twitter = MyAsyncTwitter.getAsyncTwitter(getActivity().getApplicationContext());
             final Long id_long = getArguments().getLong("id_long");
             final Toast toast_error = Toast.makeText(getActivity(), getString(R.string.twitter_error_toast), Toast.LENGTH_LONG);
-            final Toast toast_completed = Toast.makeText(getActivity(), getString(R.string.twitter_error_toast), Toast.LENGTH_LONG);
+            final Toast toast_completed = Toast.makeText(getActivity(), getString(R.string.twitter_favorite_toast), Toast.LENGTH_LONG);
             twitter.addListener(new TwitterAdapter() {
                 @Override
                 public void onException(TwitterException e, TwitterMethod twitterMethod) {
@@ -88,7 +88,7 @@ public class TwitterOptionFragment extends Fragment {
             String screenName = sharedPreferences.getString("screen_name", null);
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle(getString(R.string.favorite_dialog_title))
-                    .setMessage("@" + screenName + "\n" + getString(R.string.favorite_dialog_message))
+                    .setMessage(getString(R.string.favorite_dialog_message_account) + screenName + "\n" + getString(R.string.favorite_dialog_message))
                     .setPositiveButton(getString(R.string.favorite_dialog_ok), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -108,7 +108,7 @@ public class TwitterOptionFragment extends Fragment {
             final AsyncTwitter twitter = MyAsyncTwitter.getAsyncTwitter(getActivity().getApplicationContext());
             final Long id_long = getArguments().getLong("id_long");
             final Toast toast_error = Toast.makeText(getActivity(), getString(R.string.twitter_error_toast), Toast.LENGTH_LONG);
-            final Toast toast_completed = Toast.makeText(getActivity(), getString(R.string.twitter_error_toast), Toast.LENGTH_LONG);
+            final Toast toast_completed = Toast.makeText(getActivity(), getString(R.string.twitter_retweet_toast), Toast.LENGTH_LONG);
             twitter.addListener(new TwitterAdapter() {
                 @Override
                 public void onException(TwitterException e, TwitterMethod twitterMethod) {
@@ -136,7 +136,7 @@ public class TwitterOptionFragment extends Fragment {
             String screenName = sharedPreferences.getString("screen_name", null);
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle(getString(R.string.retweet_dialog_title))
-                    .setMessage("@" + screenName + "\n" + getString(R.string.retweet_dialog_message))
+                    .setMessage(getString(R.string.retweet_dialog_message_account) + screenName + "\n" + getString(R.string.retweet_dialog_message))
                     .setPositiveButton(getString(R.string.retweet_dialog_ok), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {

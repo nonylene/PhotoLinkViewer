@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name" translatable="false">PhotoLinkViewer</string>
-    <string name="pref_twitter_title">Reset twitter OAuth</string>
+    <string name="pref_twitter_title">twitter account</string>
     <string name="toauth_failed_encode">Encode error</string>
     <string name="toauth_failed_token">failed to get token!</string>
     <string name="toauth_succeeded_token">succeeded to get token!</string>
@@ -15,7 +15,7 @@
     <string name="option_fragment_openclose" translatable="false">Open/Close</string>
     <string name="setting_update_summary">Tap to update check</string>
     <string name="setting_update_check">Update Check</string>
-    <string name="pref_twitter_summary">Tap to reset</string>
+    <string name="pref_twitter_summary">Tap to choose</string>
     <string name="settings_update_ok">You are using latest version! ver.</string>
     <string name="settings_update_exist">There is updated version</string>
     <string name="settings_current_ver">"Current version: "</string>
@@ -56,7 +56,7 @@
     <string name="toast_retweet">retweeted!</string>
     <string name="toast_favorite">favorited!</string>
     <string name="favorite_dialog_title">Favorite</string>
-    <string name="favorite_dialog_message">Favorite this tweet?</string>
+    <string name="favorite_dialog_message">Add favorite this tweet?</string>
     <string name="favorite_dialog_ok">OK</string>
     <string name="favorite_dialog_ng">Cancel</string>
     <string name="retweet_dialog_title">Retweet</string>
@@ -64,6 +64,12 @@
     <string name="retweet_dialog_ok">OK</string>
     <string name="retweet_dialog_ng">Cancel</string>
     <string name="toauth_failed_twitter4j">twitter error!</string>
+    <string name="toauth_button">Add account</string>
+    <string name="toauth_update_button">Update account database</string>
+    <string name="retweet_dialog_message_account">account: \@</string>
+    <string name="favorite_dialog_message_account">account: \@</string>
+    <string name="twitter_favorite_toast">add favorite!</string>
+    <string name="twitter_retweet_toast">retweeted!</string>
     <array name="filename">
         <item>\'sitename\'/\'id\'.png (make directory)</item>
         <item>\'sitename\'-\'id\'.png (not make directory)</item>

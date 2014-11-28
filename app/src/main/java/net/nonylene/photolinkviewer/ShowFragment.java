@@ -445,22 +445,17 @@ public class ShowFragment extends Fragment {
                 bundle.putString("file_url", file_url);
                 bundle.putString("sitename", sitename);
                 bundle.putString("filename", filename);
-                // dl button
+                // dl button visibility and click
                 ImageButton dlButton = (ImageButton) getActivity().findViewById(R.id.dlbutton);
-                if (dlButton != null) {
-                    Log.d("ho","hoge");
-                    dlButton.setOnClickListener(new View.OnClickListener() {
-
-                        public void onClick(View v) {
-                            // open dialog
-                            Log.d("hoge","hoge");
-                            DialogFragment dialogFragment = new SaveDialogFragment();
-                            dialogFragment.setArguments(bundle);
-                            dialogFragment.show(getFragmentManager(), "Save");
-                        }
-                    });
-                    Log.d("ho","hoge");
-                }
+                dlButton.setVisibility(View.VISIBLE);
+                dlButton.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        // open dialog
+                        DialogFragment dialogFragment = new SaveDialogFragment();
+                        dialogFragment.setArguments(bundle);
+                        dialogFragment.show(getFragmentManager(), "Save");
+                    }
+                });
             }
         } catch (IllegalStateException e) {
             // regex error
