@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -118,6 +119,9 @@ public class TwitterDisplay extends Activity {
                         fragmentTransaction.replace(R.id.show_frag_replace, showFragment);
                         fragmentTransaction.commit();
                     } else {
+                        // change background color
+                        FrameLayout frameLayout = (FrameLayout) findViewById(R.id.root_layout);
+                        frameLayout.setBackgroundResource(R.color.background);
                         ScrollView scrollView = (ScrollView) findViewById(R.id.twitterScrollView);
                         // transparent to f5
                         scrollView.setBackgroundColor(Color.parseColor("#F5F5F5"));
