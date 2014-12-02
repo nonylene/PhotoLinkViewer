@@ -307,6 +307,18 @@ public class ShowFragment extends Fragment {
                 bundle.putString("filename", id);
                 AsyncExecute hoge = new AsyncExecute();
                 hoge.Start(file_url);
+                ImageButton dlButton = (ImageButton) getActivity().findViewById(R.id.dlbutton);
+                if (dlButton != null) {
+                    dlButton.setVisibility(View.VISIBLE);
+                }
+                dlButton.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        // open dialog
+                        DialogFragment dialogFragment = new SaveDialogFragment();
+                        dialogFragment.setArguments(bundle);
+                        dialogFragment.show(getFragmentManager(), "Save");
+                    }
+                });
             } catch (JSONException e) {
                 Log.e("JSONParseError", e.toString());
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
@@ -447,7 +459,9 @@ public class ShowFragment extends Fragment {
                 bundle.putString("filename", filename);
                 // dl button visibility and click
                 ImageButton dlButton = (ImageButton) getActivity().findViewById(R.id.dlbutton);
-                dlButton.setVisibility(View.VISIBLE);
+                if (dlButton != null) {
+                    dlButton.setVisibility(View.VISIBLE);
+                }
                 dlButton.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         // open dialog
@@ -472,5 +486,13 @@ public class ShowFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         imageView.setImageBitmap(null);
+        ImageButton dlButton = (ImageButton) getActivity().findViewById(R.id.dlbutton);
+        LinearLayout linearLayout = (LinearLayout) getActivity().findViewById(R.id.rotate_root);
+        if (dlButton != null) {
+            dlButton.setVisibility(View.GONE);
+        }
+        if (linearLayout != null) {
+            linearLayout.setVisibility(View.GONE);
+        }
     }
 }
