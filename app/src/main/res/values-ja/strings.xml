@@ -5,8 +5,6 @@
     <string name="pref_twitter_summary">twitterアカウントの設定</string>
     <string name="toauth_failed_encode">エンコードエラー</string>
     <string name="toauth_succeeded_token">tokenの取得に成功しました</string>
-    <string name="initial_dialog">対応サイト\nflickr, imgly, twipple, instagram, gyazo, twitter, imgur\n※gifには非対応\n\n操作方法\nURLのIntentから開いてください。保存ボタンを押すと指定したディレクトリにpngとして保存されます。\n\ntwitterの画像を取得するには認証が必要です。認証しますか？</string>
-    <string name="initial_dialog_no">認証しない</string>
     <string name="settings_zoom_summary">タップして調整</string>
     <string name="settings_zoom_dtitle">デフォルト: 1.4</string>
     <string name="settings_zoom_title">指の距離に対する拡大率</string>
@@ -35,7 +33,6 @@
     <string name="show_flickrjson_toast">flickr解析エラー</string>
     <string name="twitter_error_toast">twitter認証エラー</string>
     <string name="toauth_failed_token">tokenの取得に失敗しました</string>
-    <string name="initial_dialog_title">インストールありがとうございます</string>
     <string name="toast_favorite">お気に入りに登録しました</string>
     <string name="toast_retweet">リツイートしました</string>
     <string name="favorite_dialog_message">このツイートをお気に入り登録しますか？</string>
