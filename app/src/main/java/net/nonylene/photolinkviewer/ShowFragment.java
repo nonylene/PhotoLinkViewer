@@ -185,9 +185,6 @@ public class ShowFragment extends Fragment {
                 String c = bundle.getString("url");
                 URL url = new URL(c);
                 int max_size = 2048;
-                if (preferences.getBoolean("view_4096", false)) {
-                    max_size = 4096;
-                }
                 return new AsyncHttp(getActivity().getApplicationContext(), url, max_size);
             } catch (IOException e) {
                 Log.e("DrawableLoaderError", e.toString());
@@ -289,15 +286,20 @@ public class ShowFragment extends Fragment {
                 JSONArray urlArray = new JSONArray(urls.getString("url"));
                 String url = urlArray.getJSONObject(0).getString("_content");
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                String file_url;
-                if (sharedPreferences.getBoolean("flickr_original", false)) {
-                    String original_secret = photo.getString("originalsecret");
-                    String original_format = photo.getString("originalformat");
-                    file_url = "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + original_secret + "_o." + original_format;
-                } else {
-                    String secret = photo.getString("secret");
-                    //license
-                    file_url = "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + secret + "_b.jpg";
+                String file_url = null;
+                String secret = photo.getString("secret");
+                switch (sharedPreferences.getString("quality", "large")) {
+                    case "original":
+                        String original_secret = photo.getString("originalsecret");
+                        String original_format = photo.getString("originalformat");
+                        file_url = "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + original_secret + "_o." + original_format;
+                        break;
+                    case "large":
+                        file_url = "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + secret + "_b.jpg";
+                        break;
+                    case "medium":
+                        file_url = "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + secret + "_z.jpg";
+                        break;
                 }
                 Log.v("URL", url);
                 final Bundle bundle = new Bundle();
@@ -342,10 +344,12 @@ public class ShowFragment extends Fragment {
         //directory,filename to save
         String sitename;
         String filename;
-        String file_url;
+        String file_url = null;
 
         try {
             String id = null;
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String quality = sharedPreferences.getString("quality", "large");
             if (url.contains("flickr.com") || url.contains("flic.kr")) {
                 Log.v("flickr", url);
                 if (url.contains("flickr")) {
@@ -380,7 +384,17 @@ public class ShowFragment extends Fragment {
                     id = matcher.group(1);
                     sitename = "twitter";
                     filename = id;
-                    file_url = url + ":orig";
+                    switch (quality) {
+                        case "original":
+                            file_url = url + ":orig";
+                            break;
+                        case "large":
+                            file_url = url + ":large";
+                            break;
+                        case "medium":
+                            file_url = url;
+                            break;
+                    }
                 } else if (url.contains("twipple.jp")) {
                     Log.v("twipple", url);
                     Pattern pattern = Pattern.compile("^https?://p\\.twipple\\.jp/(\\w+)");
@@ -391,7 +405,17 @@ public class ShowFragment extends Fragment {
                     id = matcher.group(1);
                     sitename = "twipple";
                     filename = id;
-                    file_url = "http://p.twipple.jp/show/orig/" + id;
+                    switch (quality) {
+                        case "original":
+                            file_url = "http://p.twipple.jp/show/orig/" + id;
+                            break;
+                        case "large":
+                            file_url = "http://p.twipple.jp/show/large/" + id;
+                            break;
+                        case "medium":
+                            file_url = "http://p.twipple.jp/show/thumb/" + id;
+                            break;
+                    }
                 } else if (url.contains("img.ly")) {
                     Log.v("img.ly", url);
                     Pattern pattern = Pattern.compile("^https?://img\\.ly/(\\w+)");
@@ -402,7 +426,17 @@ public class ShowFragment extends Fragment {
                     id = matcher.group(1);
                     sitename = "img.ly";
                     filename = id;
-                    file_url = "http://img.ly/show/full/" + id;
+                    switch (quality) {
+                        case "original":
+                            file_url = "http://img.ly/show/full/" + id;
+                            break;
+                        case "large":
+                            file_url = "http://img.ly/show/large/" + id;
+                            break;
+                        case "medium":
+                            file_url = "http://img.ly/show/medium/" + id;
+                            break;
+                    }
                 } else if (url.contains("instagram.com") || url.contains("instagr.am")) {
                     Log.v("instagram", url);
                     Pattern pattern = Pattern.compile("^https?://instagr\\.?am[\\.com]*/p/([^/]+)");
@@ -413,7 +447,17 @@ public class ShowFragment extends Fragment {
                     id = matcher.group(1);
                     sitename = "instagram";
                     filename = id;
-                    file_url = "http://instagram.com/p/" + id + "/media/?size=l";
+                    switch (quality) {
+                        case "original":
+                            file_url = "http://instagram.com/p/" + id + "/media/?size=l";
+                            break;
+                        case "large":
+                            file_url = "http://instagram.com/p/" + id + "/media/?size=l";
+                            break;
+                        case "medium":
+                            file_url = "http://instagram.com/p/" + id + "/media/?size=m";
+                            break;
+                    }
                 } else if (url.contains("gyazo.com")) {
                     Log.v("gyazo", url);
                     Pattern pattern = Pattern.compile("^https?://.*gyazo\\.com/(\\w+)");

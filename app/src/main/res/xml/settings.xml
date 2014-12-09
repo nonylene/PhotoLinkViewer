@@ -2,6 +2,15 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <ListPreference
+        android:dialogTitle="@string/setting_quality_dialogtitle"
+        android:entries="@array/quality"
+        android:entryValues="@array/quality_value"
+        android:defaultValue="large"
+        android:key="quality"
+        android:summary="@string/setting_quality_summary"
+        android:title="@string/setting_quality_title" />
+
     <Preference
         android:summary="@string/pref_twitter_summary"
         android:title="@string/pref_twitter_title">
@@ -18,16 +27,6 @@
         android:key="zoom_speed"
         android:summary="@string/settings_zoom_summary"
         android:title="@string/settings_zoom_title"/>
-
-    <CheckBoxPreference
-        android:key="flickr_original"
-        android:summary="@string/settings_flickr_summary"
-        android:title="@string/settings_flickr_title"/>
-
-    <CheckBoxPreference
-        android:key="view_4096"
-        android:summary="@string/settings_4096_summary"
-        android:title="@string/settings_4096_title"/>
 
     <EditTextPreference
         android:defaultValue="PLViewer/"

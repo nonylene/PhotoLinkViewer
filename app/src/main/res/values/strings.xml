@@ -14,10 +14,6 @@
     <string name="settings_zoom_summary">Tap to set</string>
     <string name="settings_zoom_dtitle">Default value is 1.4</string>
     <string name="settings_zoom_title">Zoom scale for distance of fingers</string>
-    <string name="settings_flickr_summary">If photo is too big, follow next setting</string>
-    <string name="settings_flickr_title">View original photo on Flickr</string>
-    <string name="settings_4096_summary">Some devices cannot display big size photo</string>
-    <string name="settings_4096_title">View more detailed photo</string>
     <string name="intent_title">Select App</string>
     <string name="rotate_right" translatable="false">rotate_right</string>
     <string name="rotate_left" translatable="false">rotate_left</string>
@@ -56,13 +52,26 @@
     <string name="favorite_dialog_message_account">account: \@</string>
     <string name="twitter_favorite_toast">add favorite!</string>
     <string name="twitter_retweet_toast">retweeted!</string>
+    <string name="setting_quality_summary">Change quality of photo to reduce data usage.</string>
+    <string name="setting_quality_title">Change photo quality</string>
     <array name="filename">
         <item>\'sitename\'/\'id\'.png (make directory)</item>
         <item>\'sitename\'-\'id\'.png (not make directory)</item>
+    </array>
+    <array name="quality">
+        <item>original</item>
+        <item>large</item>
+        <item>medium</item>
+    </array>
+    <array name="quality_value">
+        <item>original</item>
+        <item>large</item>
+        <item>medium</item>
     </array>
     <array name="filename_value">
         <item>mkdir</item>
         <item>nodir</item>
     </array>
+    <string name="setting_quality_dialogtitle">Not applied on some sites</string>
 
 </resources>

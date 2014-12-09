@@ -8,10 +8,6 @@
     <string name="settings_zoom_summary">タップして調整</string>
     <string name="settings_zoom_dtitle">デフォルト: 1.4</string>
     <string name="settings_zoom_title">指の距離に対する拡大率</string>
-    <string name="settings_flickr_summary">画像が非常に大きい場合、次の設定に従います。</string>
-    <string name="settings_flickr_title">Flickr で原サイズの写真を見る</string>
-    <string name="settings_4096_summary">一部端末では表示されません。</string>
-    <string name="settings_4096_title">より大きいサイズの写真を見る</string>
     <string name="intent_title">アプリを選択</string>
     <string name="save_dialog_negative">キャンセル</string>
     <string name="save_dialog_positive">保存</string>
@@ -26,6 +22,11 @@
     <array name="filename">
         <item>\'sitename\'/\'id\'.png (ディレクトリ作成)</item>
         <item>\'sitename\'-\'id\'.png (ディレクトリ作成しない)</item>
+    </array>
+    <array name="quality">
+        <item>オリジナル</item>
+        <item>大</item>
+        <item>中</item>
     </array>
     <string name="twitter_display_oauth">twitter認証してください</string>
     <string name="show_bitamap_error">読み込みできませんでした</string>
@@ -50,5 +51,8 @@
     <string name="retweet_dialog_message_account">アカウント: \@</string>
     <string name="twitter_favorite_toast">お気に入りに登録しました</string>
     <string name="twitter_retweet_toast">リツイートしました</string>
+    <string name="setting_quality_dialogtitle">一部のサイトでは適応されません</string>
+    <string name="setting_quality_summary">画質を下げるとデータ量を削減できます。</string>
+    <string name="setting_quality_title">写真の画質の選択</string>
 
 </resources>
