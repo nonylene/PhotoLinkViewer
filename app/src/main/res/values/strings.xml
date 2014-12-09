@@ -13,16 +13,7 @@
     <string name="option_fragment_settings" translatable="false">Settings</string>
     <string name="option_fragment_download" translatable="false">Download</string>
     <string name="option_fragment_openclose" translatable="false">Open/Close</string>
-    <string name="setting_update_summary">Tap to update check</string>
-    <string name="setting_update_check">Update Check</string>
     <string name="pref_twitter_summary">Tap to choose</string>
-    <string name="settings_update_ok">You are using latest version! ver.</string>
-    <string name="settings_update_exist">There is updated version</string>
-    <string name="settings_current_ver">"Current version: "</string>
-    <string name="settings_latest_ver">"\nLatest_version: "</string>
-    <string name="settings_description">"\nDescription: "</string>
-    <string name="settings_update_confirm">Download</string>
-    <string name="settings_update_ng">Cancel</string>
     <string name="settings_zoom_summary">Tap to set</string>
     <string name="settings_zoom_dtitle">Default value is 1.4</string>
     <string name="settings_zoom_title">Zoom scale for distance of fingers</string>
@@ -38,7 +29,6 @@
     <string name="save_dialog_negative">Cancel</string>
     <string name="title_activity_twitter_display" translatable="false">TwitterDisplay</string>
     <string name="download_photo_title">"file saved to "</string>
-    <string name="settings_update_install">Update</string>
     <string name="setting_dir_dialogtitle">Default value is PLViewer/</string>
     <string name="setting_dir_summary">Tap to set</string>
     <string name="setting_dir_title">Change download directory</string>
