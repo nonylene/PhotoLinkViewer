@@ -52,7 +52,7 @@
     <string name="twitter_favorite_toast">お気に入りに登録しました</string>
     <string name="twitter_retweet_toast">リツイートしました</string>
     <string name="setting_quality_dialogtitle">一部のサイトでは適応されません</string>
-    <string name="setting_quality_summary">画質を下げるとデータ量を削減できます。</string>
+    <string name="setting_quality_summary">画質を下げるとデータ量を削減できます</string>
     <string name="setting_quality_title">写真の画質の選択</string>
 
 </resources>
