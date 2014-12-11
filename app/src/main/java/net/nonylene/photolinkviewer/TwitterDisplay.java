@@ -129,6 +129,8 @@ public class TwitterDisplay extends Activity {
                         TextView textView = (TextView) findViewById(R.id.twTxt);
                         TextView snView = (TextView) findViewById(R.id.twSN);
                         TextView dayView = (TextView) findViewById(R.id.twDay);
+                        TextView favView = (TextView) findViewById(R.id.favCount);
+                        TextView rtView = (TextView) findViewById(R.id.rtCount);
                         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
                         URL iconUrl;
 
@@ -141,16 +143,22 @@ public class TwitterDisplay extends Activity {
                                 finStatus = status;
                             }
                             textView.setText(finStatus.getText());
-                            snView.setText(finStatus.getUser().getScreenName());
+                            final String screen = finStatus.getUser().getScreenName();
+                            snView.setText(finStatus.getUser().getName() + " @" + screen);
                             String statusDate = dateFormat.format(finStatus.getCreatedAt());
                             dayView.setText(statusDate);
                             iconUrl = new URL(finStatus.getUser().getBiggerProfileImageURL());
-                            final String screen = finStatus.getUser().getScreenName();
+                            // fav and rt
+                            favView.setText("fav: " + String.valueOf(finStatus.getFavoriteCount()));
+                            rtView.setText("RT: " + String.valueOf(finStatus.getRetweetCount()));
                             // get icon
                             PLVImageView plvImageView = (PLVImageView) findViewById(R.id.twImageView);
-                            // get dp
+                            // get icon size
                             int size = plvImageView.getWidth();
-                            plvImageView.setUrl(iconUrl, size, size);
+                            int padding = plvImageView.getPaddingTop();
+                            // set icon
+                            plvImageView.setUrl(iconUrl, size - padding * 2, size - padding * 2);
+                            plvImageView.setBackgroundResource(R.drawable.twitter_image_design);
                             //show user when tapped
                             plvImageView.setOnClickListener(new View.OnClickListener() {
                                 @Override
