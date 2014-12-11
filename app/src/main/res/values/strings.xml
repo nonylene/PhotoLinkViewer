@@ -73,5 +73,12 @@
         <item>nodir</item>
     </array>
     <string name="setting_quality_dialogtitle">Not applied on some sites</string>
+    <string name="delete_dialog_title">Delete account</string>
+    <string name="delete_dialog_message_account">account: \@</string>
+    <string name="delete_dialog_message">Delete this account?</string>
+    <string name="delete_dialog_ok">OK</string>
+    <string name="delete_dialog_ng">Cancel</string>
+    <string name="delete_account_toast">Deleted successfully</string>
+    <string name="delete_failed_toast">Delete failed!</string>
 
 </resources>

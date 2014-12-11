@@ -1,8 +1,13 @@
 package net.nonylene.photolinkviewer;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -73,6 +78,20 @@ public class TOAuth extends Activity {
                 String screen_name = cursor.getString(cursor.getColumnIndex("userName"));
                 sharedPreferences.edit().putString("screen_name", screen_name).apply();
             }
+        });
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Cursor cursor = (Cursor) listView.getItemAtPosition(position);
+                String screen_name = cursor.getString(cursor.getColumnIndex("userName"));
+                Bundle bundle = new Bundle();
+                bundle.putString("screen_name", screen_name);
+                DeleteDialogFragment deleteDialogFragment = new DeleteDialogFragment();
+                deleteDialogFragment.setArguments(bundle);
+                deleteDialogFragment.show(getFragmentManager(), "delete");
+                return true;
+            }
+
         });
         // not to lock
         new Handler().post(new Runnable() {
@@ -218,6 +237,50 @@ public class TOAuth extends Activity {
                 Toast.makeText(TOAuth.this, getString(R.string.toauth_failed_token), Toast.LENGTH_LONG).show();
             }
         }
+    }
+
+    @SuppressLint("ValidFragment")
+    public class DeleteDialogFragment extends DialogFragment {
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            final String screenName = getArguments().getString("screen_name");
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle(getString(R.string.delete_dialog_title))
+                    .setMessage(getString(R.string.delete_dialog_message_account) + screenName + "\n" + getString(R.string.delete_dialog_message))
+                    .setPositiveButton(getString(R.string.delete_dialog_ok), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            try {
+                                final Toast toast = Toast.makeText(getActivity(), getString(R.string.delete_account_toast), Toast.LENGTH_LONG);
+                                SQLiteDatabase database = sqLiteOpenHelper.getWritableDatabase();
+                                database.beginTransaction();
+                                // quotation is required.
+                                database.delete("accounts", "userName = '" + screenName + "'", null);
+                                // commit
+                                database.setTransactionSuccessful();
+                                final Cursor new_cursor = database.rawQuery("select rowid _id, * from accounts", null);
+                                database.endTransaction();
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        // renew listView
+                                        // i want to use content provider and cursor loader in future.
+                                        myCursorAdapter.swapCursor(new_cursor);
+                                        toast.show();
+                                    }
+                                });
+                            } catch (SQLiteException e) {
+                                Log.e("SQLite", e.toString());
+                                Toast.makeText(getActivity(), getString(R.string.delete_failed_toast), Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    })
+                    .setNegativeButton(getString(R.string.delete_dialog_ng), null);
+            return builder.create();
+        }
+
     }
 
     class UpdateButtonClickListener implements View.OnClickListener {

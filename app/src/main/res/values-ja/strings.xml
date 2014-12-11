@@ -54,5 +54,12 @@
     <string name="setting_quality_dialogtitle">一部のサイトでは適応されません</string>
     <string name="setting_quality_summary">画質を下げるとデータ量を削減できます</string>
     <string name="setting_quality_title">写真の画質の選択</string>
+    <string name="delete_dialog_message_account">アカウント: \@</string>
+    <string name="delete_dialog_message">このアカウントを削除しますか？</string>
+    <string name="delete_dialog_ng">キャンセル</string>
+    <string name="delete_dialog_ok">OK</string>
+    <string name="delete_dialog_title">アカウント削除</string>
+    <string name="delete_account_toast">アカウントの削除に成功しました</string>
+    <string name="delete_failed_toast">アカウント削除に失敗しました</string>
 
 </resources>
