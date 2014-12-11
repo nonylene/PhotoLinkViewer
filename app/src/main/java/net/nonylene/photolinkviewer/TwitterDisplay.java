@@ -7,9 +7,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteException;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextPaint;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -33,6 +36,7 @@ import twitter4j.TwitterAdapter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterListener;
 import twitter4j.TwitterMethod;
+import twitter4j.URLEntity;
 
 
 public class TwitterDisplay extends Activity {
@@ -108,6 +112,7 @@ public class TwitterDisplay extends Activity {
                 public void run() {
                     // set media entity
                     MediaEntity[] mediaEntities = status.getExtendedMediaEntities();
+                    URLEntity[] urlEntities = status.getURLEntities();
 
                     // if number of media entity is one, show fragment directly
                     if (mediaEntities.length == 1) {
@@ -171,25 +176,71 @@ public class TwitterDisplay extends Activity {
                             Log.e("URLError", e.toString());
                         }
 
-                        for (MediaEntity mediaEntity : mediaEntities) {
-                            final String url = mediaEntity.getMediaURL();
-                            addView(url);
+                        for (URLEntity urlEntity : urlEntities) {
+                            Log.d("url", urlEntity.toString());
+                            String url = urlEntity.getExpandedURL();
+                            addUrl(url);
+                        }
+
+                        if (mediaEntities.length > 1) {
+
+                            addPhotoIcon();
+
+                            for (MediaEntity mediaEntity : mediaEntities) {
+                                String url = mediaEntity.getMediaURL();
+                                addView(url);
+                            }
                         }
                     }
                 }
 
+                public void addUrl(final String url) {
+                    LinearLayout urlLayout = (LinearLayout) findViewById(R.id.url_linear);
+                    // prev is last linear_layout
+                    TextView textView = (TextView) LayoutInflater.from(getApplicationContext()).inflate(R.layout.twitter_url, null);
+                    textView.setText(url);
+                    TextPaint textPaint = textView.getPaint();
+                    textPaint.setUnderlineText(true);
+                    Drawable linkIcon = getResources().getDrawable(R.drawable.link_icon);
+                    // get dp
+                    float dp = getResources().getDisplayMetrics().density;
+                    // set size
+                    int iconSize = (int) (20 * dp);
+                    int paddingSize = (int) (5 * dp);
+                    linkIcon.setBounds(0, 0, iconSize, iconSize);
+                    // set app-icon and bounds
+                    textView.setCompoundDrawables(linkIcon, null, null, null);
+                    textView.setCompoundDrawablePadding(paddingSize);
+                    textView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                            startActivity(intent);
+                        }
+                    });
+                    urlLayout.addView(textView);
+                }
+
+                public void addPhotoIcon() {
+                    ImageView imageView = (ImageView) findViewById(R.id.photo_icon);
+                    Drawable photoIcon = getResources().getDrawable(R.drawable.photo_icon);
+                    imageView.setImageDrawable(photoIcon);
+                    imageView.setVisibility(View.VISIBLE);
+                }
+
                 public void addView(final String url) {
                     try {
-                        LinearLayout baseLayout = (LinearLayout) findViewById(R.id.baseLayout);
+                        LinearLayout baseLayout = (LinearLayout) findViewById(R.id.photos);
                         // prev is last linear_layout
                         LinearLayout prevLayout = (LinearLayout) baseLayout.getChildAt(baseLayout.getChildCount() - 1);
                         LinearLayout currentLayout;
-                        if (prevLayout.getChildCount() > 1) {
+                        if (prevLayout == null || prevLayout.getChildCount() > 1) {
                             // make new linear_layout and put below prev
                             currentLayout = new LinearLayout(TwitterDisplay.this);
                             currentLayout.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
                             currentLayout.setOrientation(LinearLayout.HORIZONTAL);
                             baseLayout.addView(currentLayout);
+                            Log.d("hpoge", String.valueOf(baseLayout.getChildCount()));
                         } else {
                             // put new photo below prev photo (not new linear_layout)
                             currentLayout = prevLayout;

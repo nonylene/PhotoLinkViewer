@@ -49,6 +49,7 @@
                         android:id="@+id/twSN"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:textIsSelectable="true"
                         android:textSize="12sp"/>
 
                     <TextView
@@ -57,6 +58,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="1dp"
                         android:layout_marginTop="1dp"
+                        android:textIsSelectable="true"
                         android:textSize="14sp"/>
 
                     <LinearLayout
@@ -67,25 +69,54 @@
                             android:id="@+id/twDay"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="12sp"/>
+                            android:textIsSelectable="true"
+                            android:textSize="10sp"/>
 
                         <TextView
                             android:id="@+id/favCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
-                            android:textSize="12sp"/>
+                            android:textSize="10sp"/>
 
                         <TextView
                             android:id="@+id/rtCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="7dp"
-                            android:textSize="12sp"/>
+                            android:textSize="10sp"/>
 
                     </LinearLayout>
                 </LinearLayout>
 
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/url_linear"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/photo_icon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="4dp"
+                    android:visibility="gone"
+                    android:scaleType="fitCenter"/>
+
+                <LinearLayout
+                    android:id="@+id/photos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"/>
             </LinearLayout>
 
         </LinearLayout>
