@@ -134,25 +134,31 @@ public class TwitterDisplay extends Activity {
 
                         try {
                             //retweet check
+                            final Status finStatus;
                             if (status.isRetweet()) {
-                                Status retweetedStatus = status.getRetweetedStatus();
-                                textView.setText(retweetedStatus.getText());
-                                snView.setText(retweetedStatus.getUser().getScreenName());
-                                String statusDate = dateFormat.format(retweetedStatus.getCreatedAt());
-                                dayView.setText(statusDate);
-                                iconUrl = new URL(retweetedStatus.getUser().getBiggerProfileImageURL());
+                                finStatus = status.getRetweetedStatus();
                             } else {
-                                textView.setText(status.getText());
-                                snView.setText(status.getUser().getScreenName());
-                                String statusDate = dateFormat.format(status.getCreatedAt());
-                                dayView.setText(statusDate);
-                                iconUrl = new URL(status.getUser().getBiggerProfileImageURL());
+                                finStatus = status;
                             }
+                            textView.setText(finStatus.getText());
+                            snView.setText(finStatus.getUser().getScreenName());
+                            String statusDate = dateFormat.format(finStatus.getCreatedAt());
+                            dayView.setText(statusDate);
+                            iconUrl = new URL(finStatus.getUser().getBiggerProfileImageURL());
+                            final String screen = finStatus.getUser().getScreenName();
                             // get icon
                             PLVImageView plvImageView = (PLVImageView) findViewById(R.id.twImageView);
                             // get dp
                             int size = plvImageView.getWidth();
                             plvImageView.setUrl(iconUrl, size, size);
+                            //show user when tapped
+                            plvImageView.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://twitter.com/" + screen));
+                                    startActivity(intent);
+                                }
+                            });
                         } catch (MalformedURLException e) {
                             Log.e("URLError", e.toString());
                         }
