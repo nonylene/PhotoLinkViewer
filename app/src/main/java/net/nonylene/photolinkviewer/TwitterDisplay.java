@@ -15,7 +15,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -225,7 +224,6 @@ public class TwitterDisplay extends Activity {
                     ImageView imageView = (ImageView) findViewById(R.id.photo_icon);
                     Drawable photoIcon = getResources().getDrawable(R.drawable.photo_icon);
                     imageView.setImageDrawable(photoIcon);
-                    imageView.setVisibility(View.VISIBLE);
                 }
 
                 public void addView(final String url) {
@@ -237,15 +235,15 @@ public class TwitterDisplay extends Activity {
                         if (prevLayout == null || prevLayout.getChildCount() > 1) {
                             // make new linear_layout and put below prev
                             currentLayout = new LinearLayout(TwitterDisplay.this);
-                            currentLayout.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                            currentLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
                             currentLayout.setOrientation(LinearLayout.HORIZONTAL);
                             baseLayout.addView(currentLayout);
-                            Log.d("hpoge", String.valueOf(baseLayout.getChildCount()));
                         } else {
                             // put new photo below prev photo (not new linear_layout)
                             currentLayout = prevLayout;
                         }
                         int width = baseLayout.getWidth();
+                        Log.d("hoge",String.valueOf(width));
                         // get dp
                         float dp = getResources().getDisplayMetrics().density;
                         // set padding and margin
