@@ -40,6 +40,7 @@ import twitter4j.URLEntity;
 
 public class TwitterDisplay extends Activity {
     private AsyncTwitter twitter;
+    private String url;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +51,7 @@ public class TwitterDisplay extends Activity {
         if (Intent.ACTION_VIEW.equals(getIntent().getAction())) {
             Bundle bundle = new Bundle();
             Uri uri = getIntent().getData();
-            String url = uri.toString();
+            url = uri.toString();
             bundle.putString("url", url);
             // option fragment
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
@@ -114,7 +115,7 @@ public class TwitterDisplay extends Activity {
                     URLEntity[] urlEntities = status.getURLEntities();
 
                     // if number of media entity is one, show fragment directly
-                    if (mediaEntities.length == 1) {
+                    if (url.contains("/photo") && mediaEntities.length == 1) {
                         Bundle bundle = new Bundle();
                         bundle.putString("url", mediaEntities[0].getMediaURL());
                         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
@@ -181,7 +182,7 @@ public class TwitterDisplay extends Activity {
                             addUrl(url);
                         }
 
-                        if (mediaEntities.length > 1) {
+                        if (mediaEntities.length > 0) {
 
                             addPhotoIcon();
 
