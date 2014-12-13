@@ -74,7 +74,7 @@ public class TOAuth extends Activity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                changeAccount(id);
+                changeAccount((int) id);
             }
         });
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -103,7 +103,7 @@ public class TOAuth extends Activity {
                     // check current radio button
                     for (int i = 0; i < listView.getCount(); i++) {
                         Cursor c = (Cursor) listView.getItemAtPosition(i);
-                        if (c.getLong(c.getColumnIndex("_id")) == sharedPreferences.getLong("account", 0)) {
+                        if (c.getInt(c.getColumnIndex("_id")) == sharedPreferences.getInt("account", 0)) {
                             listView.setItemChecked(i, true);
                         }
                     }
@@ -333,10 +333,10 @@ public class TOAuth extends Activity {
         }
     }
 
-    private void changeAccount(long rowid) {
+    private void changeAccount(int rowid) {
         // save rowid and screen name to preference
         SharedPreferences sharedPreferences = getSharedPreferences("preference", MODE_PRIVATE);
-        sharedPreferences.edit().putLong("account", rowid).apply();
+        sharedPreferences.edit().putInt("account", rowid).apply();
         SQLiteDatabase database = sqLiteOpenHelper.getReadableDatabase();
         Cursor cursor = database.rawQuery("select userName from accounts where rowid = ?", new String[]{String.valueOf(rowid)});
         cursor.moveToFirst();
