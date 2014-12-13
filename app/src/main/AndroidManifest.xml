@@ -138,7 +138,6 @@
         </activity>
         <activity
             android:name="net.nonylene.photolinkviewer.TwitterDisplay"
-            android:label="@string/title_activity_twitter_display"
             android:theme="@style/Theme.Transparent">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>

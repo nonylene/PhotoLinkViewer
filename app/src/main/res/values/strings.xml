@@ -20,7 +20,6 @@
     <string name="save_dialog_positive">Save</string>
     <string name="save_dialog_title">Save photo to…</string>
     <string name="save_dialog_negative">Cancel</string>
-    <string name="title_activity_twitter_display" translatable="false">TwitterDisplay</string>
     <string name="download_photo_title">"file saved to "</string>
     <string name="setting_dir_dialogtitle">Default value is PLViewer/</string>
     <string name="setting_dir_summary">Tap to set</string>
