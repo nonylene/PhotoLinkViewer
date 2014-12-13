@@ -80,11 +80,18 @@ public class TwitterDisplay extends Activity {
                         getFragmentManager().beginTransaction().add(R.id.buttons, twitterOptionFragment).commit();
                     } catch (SQLiteException e) {
                         Log.e("SQL", e.toString());
+                    } catch (IndexOutOfBoundsException e) {
+                        Log.e("twitter", e.toString());
+                        Toast.makeText(getApplicationContext(), getString(R.string.twitter_async_select), Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(this, TOAuth.class);
+                        startActivity(intent);
+                        finish();
                     }
                 } else {
                     Toast.makeText(getApplicationContext(), getString(R.string.twitter_display_oauth), Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(this, TOAuth.class);
                     startActivity(intent);
+                    finish();
                 }
             }
         } else {
@@ -244,7 +251,7 @@ public class TwitterDisplay extends Activity {
                             currentLayout = prevLayout;
                         }
                         int width = baseLayout.getWidth();
-                        Log.d("hoge",String.valueOf(width));
+                        Log.d("hoge", String.valueOf(width));
                         // get dp
                         float dp = getResources().getDisplayMetrics().density;
                         // set padding and margin

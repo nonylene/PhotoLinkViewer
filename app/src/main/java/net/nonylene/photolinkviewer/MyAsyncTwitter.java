@@ -3,6 +3,7 @@ package net.nonylene.photolinkviewer;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.database.CursorIndexOutOfBoundsException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.util.Base64;
@@ -14,12 +15,12 @@ import twitter4j.AsyncTwitterFactory;
 import twitter4j.auth.AccessToken;
 
 public class MyAsyncTwitter {
-    public static AsyncTwitter getAsyncTwitter(Context context) throws SQLiteException {
+    public static AsyncTwitter getAsyncTwitter(Context context) throws SQLiteException, CursorIndexOutOfBoundsException {
         // oAuthed
         SharedPreferences sharedPreferences = context.getSharedPreferences("preference", Context.MODE_PRIVATE);
         String apikey = (String) context.getText(R.string.twitter_key);
         String apisecret = (String) context.getText(R.string.twitter_secret);
-        int account = sharedPreferences.getInt("account", 1);
+        long account = sharedPreferences.getLong("account", 0);
         // sql
         MySQLiteOpenHelper sqLiteOpenHelper = new MySQLiteOpenHelper(context);
         SQLiteDatabase database = sqLiteOpenHelper.getReadableDatabase();

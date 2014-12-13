@@ -61,5 +61,6 @@
     <string name="delete_dialog_title">アカウント削除</string>
     <string name="delete_account_toast">アカウントの削除に成功しました</string>
     <string name="delete_failed_toast">アカウント削除に失敗しました</string>
+    <string name="twitter_async_select">アカウントを正しく設定してください</string>
 
 </resources>

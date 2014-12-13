@@ -79,5 +79,6 @@
     <string name="delete_dialog_ng">Cancel</string>
     <string name="delete_account_toast">Deleted successfully</string>
     <string name="delete_failed_toast">Delete failed!</string>
+    <string name="twitter_async_select">Please set account correctly!</string>
 
 </resources>
