@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    android:id="@+id/videoshowframe"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:gravity="center_vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingEnd="@dimen/activity_horizontal_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingStart="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".Show">
+
+    <VideoView
+        android:id="@+id/videoview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:background="@color/background"/>
+
+    <ProgressBar
+        android:id="@+id/videoshowprogress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:orientation="vertical">
+
+        <ImageButton
+            android:id="@+id/webbutton"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="4dp"
+            android:background="@null"
+            android:contentDescription="@string/option_fragment_open"
+            android:scaleType="fitXY"
+            android:src="@drawable/browser_button_design"
+            android:visibility="gone"/>
+
+        <ImageButton
+            android:id="@+id/setbutton"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="4dp"
+            android:background="@null"
+            android:contentDescription="@string/option_fragment_settings"
+            android:scaleType="fitXY"
+            android:src="@drawable/setting_button_design"
+            android:visibility="gone"/>
+
+        <ImageButton
+            android:id="@+id/basebutton"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_gravity="end|bottom"
+            android:layout_marginBottom="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="15dp"
+            android:background="@null"
+            android:contentDescription="@string/option_fragment_openclose"
+            android:scaleType="fitXY"
+            android:src="@drawable/up_button_design"/>
+    </LinearLayout>
+
+</FrameLayout>
