@@ -15,6 +15,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Display;
 import android.view.GestureDetector;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -22,6 +23,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -170,7 +173,7 @@ public class ShowFragment extends Fragment {
         }
     }
 
-    public class AsyncExecute implements LoaderManager.LoaderCallbacks<Bitmap> {
+    public class AsyncExecute implements LoaderManager.LoaderCallbacks<AsyncHttpResult<Bitmap>> {
 
         public void Start(String url) {
             Bundle bundle = new Bundle();
@@ -180,7 +183,7 @@ public class ShowFragment extends Fragment {
         }
 
         @Override
-        public Loader<Bitmap> onCreateLoader(int id, Bundle bundle) {
+        public Loader<AsyncHttpResult<Bitmap>> onCreateLoader(int id, Bundle bundle) {
             try {
                 String c = bundle.getString("url");
                 URL url = new URL(c);
@@ -193,12 +196,21 @@ public class ShowFragment extends Fragment {
         }
 
         @Override
-        public void onLoadFinished(Loader<Bitmap> loader, Bitmap bitmap) {
+        public void onLoadFinished(Loader<AsyncHttpResult<Bitmap>> loader, AsyncHttpResult<Bitmap> result) {
+            //remove progressbar
+            FrameLayout frameLayout = (FrameLayout) view.findViewById(R.id.showframe);
+            ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.showprogress);
+            frameLayout.removeView(progressBar);
+
+            Bitmap bitmap = result.getBitmap();
+
+            Display display = getActivity().getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            int dispwidth = size.x;
+            int dispheight = size.y;
+
             if (bitmap != null) {
-                //remove progressbar
-                FrameLayout frameLayout = (FrameLayout) view.findViewById(R.id.showframe);
-                ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.showprogress);
-                frameLayout.removeView(progressBar);
                 //get bitmap size
                 float origwidth = bitmap.getWidth();
                 float origheight = bitmap.getHeight();
@@ -208,11 +220,6 @@ public class ShowFragment extends Fragment {
                 Matrix matrix = new Matrix();
                 matrix.set(imageView.getMatrix());
                 //get display size
-                Display display = getActivity().getWindowManager().getDefaultDisplay();
-                Point size = new Point();
-                display.getSize(size);
-                int dispwidth = size.x;
-                int dispheight = size.y;
                 float wid = dispwidth / origwidth;
                 float hei = dispheight / origheight;
                 float zoom = Math.min(wid, hei);
@@ -242,12 +249,29 @@ public class ShowFragment extends Fragment {
                 LinearLayout linearLayout = (LinearLayout) getActivity().findViewById(R.id.rotate_root);
                 linearLayout.setVisibility(View.VISIBLE);
             } else {
-                Toast.makeText(view.getContext(), getString(R.string.show_bitamap_error), Toast.LENGTH_LONG).show();
+                if (result.getException() instanceof GIFException) {
+                    // gif view by web view
+                    WebView webView = new WebView(getActivity());
+                    webView.getSettings().setUseWideViewPort(true);
+                    webView.getSettings().setLoadWithOverviewMode(true);
+                    FrameLayout.LayoutParams layoutParams;
+                    int width = (int) (dispwidth * 0.9);
+                    layoutParams = new FrameLayout.LayoutParams(width, width * result.getHeight() / result.getWidth());
+                    layoutParams.gravity = Gravity.CENTER;
+                    webView.setLayoutParams(layoutParams);
+                    webView.loadUrl(result.getUrl());
+                    webView.setBackgroundColor(0x00000000);
+                    WebSettings settings = webView.getSettings();
+                    settings.setBuiltInZoomControls(true);
+                    frameLayout.addView(webView);
+                } else {
+                    Toast.makeText(view.getContext(), getString(R.string.show_bitamap_error), Toast.LENGTH_LONG).show();
+                }
             }
         }
 
         @Override
-        public void onLoaderReset(Loader<Bitmap> loader) {
+        public void onLoaderReset(Loader<AsyncHttpResult<Bitmap>> loader) {
 
         }
     }

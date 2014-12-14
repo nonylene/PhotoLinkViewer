@@ -20,5 +20,10 @@
         android:layout_gravity="center"
         android:scaleType="matrix" />
 
+    <RelativeLayout
+        android:id="@+id/web_relative"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 </FrameLayout>
