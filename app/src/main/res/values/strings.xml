@@ -80,5 +80,7 @@
     <string name="delete_account_toast">Deleted successfully</string>
     <string name="delete_failed_toast">Delete failed!</string>
     <string name="twitter_async_select">Please set account correctly!</string>
+    <string name="vine_url_toast">Error!</string>
+    <string name="vine_json_toast">JSON error!</string>
 
 </resources>

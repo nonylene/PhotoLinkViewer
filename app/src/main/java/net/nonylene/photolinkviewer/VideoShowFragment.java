@@ -25,8 +25,10 @@ import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -106,7 +108,7 @@ public class VideoShowFragment extends Fragment {
             final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             List<ResolveInfo> resolveInfoList = getActivity().getPackageManager().queryIntentActivities(intent, 0);
             // organize data and save to app class
-            final List<Apps> appsList = new ArrayList<Apps>();
+            final List<Apps> appsList = new ArrayList<>();
             for (ResolveInfo resolveInfo : resolveInfoList) {
                 appsList.add(new Apps(resolveInfo));
             }
@@ -195,38 +197,46 @@ public class VideoShowFragment extends Fragment {
 
         @Override
         public void onLoadFinished(Loader<JSONObject> loader, JSONObject json) {
+            final FrameLayout frameLayout = (FrameLayout) view.findViewById(R.id.videoshowframe);
+            final ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.videoshowprogress);
+            if (json != null) {
 
-            try {
-                Log.v("json", json.toString(2));
-                JSONObject data = json.getJSONObject("data");
-                JSONObject records = data.getJSONArray("records").getJSONObject(0);
-                String file = records.getString("videoUrl");
-                Log.v("URL", file);
-                // view video
-                final VideoView videoView = (VideoView) view.findViewById(R.id.videoview);
-                videoView.setVideoURI(Uri.parse(file));
-                // touch to stop
-                videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                    @Override
-                    public void onPrepared(MediaPlayer mp) {
-                        //remove progressbar
-                        FrameLayout frameLayout = (FrameLayout) view.findViewById(R.id.videoshowframe);
-                        ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.videoshowprogress);
-                        frameLayout.removeView(progressBar);
-                        videoView.start();
-                    }
-                });
-                // loop
-                videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                    @Override
-                    public void onCompletion(MediaPlayer mp) {
-                        videoView.start();
-                    }
-                });
-                VideoOnTouchListener videoOnTouchListener = new VideoOnTouchListener();
-                videoView.setOnTouchListener(videoOnTouchListener);
-            } catch (Exception e) {
-                Log.e("JSONError", e.toString());
+                try {
+                    Log.v("json", json.toString(2));
+                    JSONObject data = json.getJSONObject("data");
+                    JSONObject records = data.getJSONArray("records").getJSONObject(0);
+                    String file = records.getString("videoUrl");
+                    Log.v("URL", file);
+                    // view video
+                    final VideoView videoView = (VideoView) view.findViewById(R.id.videoview);
+                    videoView.setVideoURI(Uri.parse(file));
+                    // touch to stop
+                    videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                        @Override
+                        public void onPrepared(MediaPlayer mp) {
+                            //remove progressbar
+                            frameLayout.removeView(progressBar);
+                            videoView.start();
+                        }
+                    });
+                    // loop
+                    videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                        @Override
+                        public void onCompletion(MediaPlayer mp) {
+                            videoView.start();
+                        }
+                    });
+                    VideoOnTouchListener videoOnTouchListener = new VideoOnTouchListener();
+                    videoView.setOnTouchListener(videoOnTouchListener);
+                } catch (JSONException e) {
+                    Log.e("JSONError", e.toString());
+                    frameLayout.removeView(progressBar);
+                    Toast.makeText(getActivity(), getString(R.string.vine_json_toast), Toast.LENGTH_LONG).show();
+                }
+            } else {
+                frameLayout.removeView(progressBar);
+                Toast.makeText(getActivity(), getString(R.string.vine_url_toast), Toast.LENGTH_LONG).show();
+
             }
         }
 

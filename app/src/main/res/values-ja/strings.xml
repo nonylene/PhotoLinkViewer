@@ -62,5 +62,7 @@
     <string name="delete_account_toast">アカウントの削除に成功しました</string>
     <string name="delete_failed_toast">アカウント削除に失敗しました</string>
     <string name="twitter_async_select">アカウントを正しく設定してください</string>
+    <string name="vine_json_toast">解析エラー</string>
+    <string name="vine_url_toast">エラー</string>
 
 </resources>
