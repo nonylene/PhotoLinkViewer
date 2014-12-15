@@ -207,8 +207,8 @@ public class ShowFragment extends Fragment {
             Display display = getActivity().getWindowManager().getDefaultDisplay();
             Point size = new Point();
             display.getSize(size);
-            int dispwidth = size.x;
-            int dispheight = size.y;
+            int dispWidth = size.x;
+            int dispHeight = size.y;
 
             if (bitmap != null) {
                 //get bitmap size
@@ -220,8 +220,8 @@ public class ShowFragment extends Fragment {
                 Matrix matrix = new Matrix();
                 matrix.set(imageView.getMatrix());
                 //get display size
-                float wid = dispwidth / origwidth;
-                float hei = dispheight / origheight;
+                float wid = dispWidth / origwidth;
+                float hei = dispHeight / origheight;
                 float zoom = Math.min(wid, hei);
                 float initX;
                 float initY;
@@ -232,16 +232,16 @@ public class ShowFragment extends Fragment {
                     if (wid < hei) {
                         //adjust width
                         initX = 0;
-                        initY = (dispheight - origheight * wid) / 2;
+                        initY = (dispHeight - origheight * wid) / 2;
                     } else {
                         //adjust height
-                        initX = (dispwidth - origwidth * hei) / 2;
+                        initX = (dispWidth - origwidth * hei) / 2;
                         initY = 0;
                     }
                 } else {
                     //move
-                    initX = (dispwidth - origwidth) / 2;
-                    initY = (dispheight - origheight) / 2;
+                    initX = (dispWidth - origwidth) / 2;
+                    initY = (dispHeight - origheight) / 2;
                 }
 
                 matrix.postTranslate(initX, initY);
@@ -255,8 +255,17 @@ public class ShowFragment extends Fragment {
                     webView.getSettings().setUseWideViewPort(true);
                     webView.getSettings().setLoadWithOverviewMode(true);
                     FrameLayout.LayoutParams layoutParams;
-                    int width = (int) (dispwidth * 0.9);
-                    layoutParams = new FrameLayout.LayoutParams(width, width * result.getHeight() / result.getWidth());
+                    int videoWidth = result.getWidth();
+                    int videoHeight = result.getHeight();
+                    if ((videoHeight > dispHeight * 0.9 && videoWidth  * dispHeight / dispHeight < dispWidth) || dispWidth * videoHeight / videoWidth > dispHeight ){
+                        // if height of video > disp_height * 0.9, check whether calculated width > disp_width . if this is true,
+                        // give priority to width. and, if check whether calculated height > disp_height, give priority to height.
+                        int height = (int) (dispHeight * 0.9);
+                        layoutParams = new FrameLayout.LayoutParams(height * videoWidth / videoHeight, height);
+                    }else{
+                        int width = (int) (dispWidth * 0.9);
+                        layoutParams = new FrameLayout.LayoutParams(width, width * videoHeight / videoWidth);
+                    }
                     layoutParams.gravity = Gravity.CENTER;
                     webView.setLayoutParams(layoutParams);
                     webView.loadUrl(result.getUrl());
