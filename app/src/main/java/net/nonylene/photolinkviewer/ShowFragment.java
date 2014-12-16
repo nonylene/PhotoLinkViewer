@@ -2,11 +2,14 @@ package net.nonylene.photolinkviewer;
 
 import android.app.DialogFragment;
 import android.app.LoaderManager;
+import android.content.Context;
 import android.content.Loader;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Point;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.os.Handler;
@@ -383,6 +386,14 @@ public class ShowFragment extends Fragment {
             String id = null;
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
             String quality = sharedPreferences.getString("quality", "large");
+
+            // get wifi status
+            ConnectivityManager manager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo info = manager.getActiveNetworkInfo();
+            if (info.getType() == ConnectivityManager.TYPE_WIFI){
+                quality = "original";
+            }
+
             if (url.contains("flickr.com") || url.contains("flic.kr")) {
                 Log.v("flickr", url);
                 if (url.contains("flickr")) {
