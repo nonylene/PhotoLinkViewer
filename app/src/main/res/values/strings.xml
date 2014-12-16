@@ -53,6 +53,7 @@
     <string name="twitter_retweet_toast">retweeted!</string>
     <string name="setting_quality_summary">Change quality of photo to reduce data usage.</string>
     <string name="setting_quality_title">Change photo quality</string>
+
     <array name="filename">
         <item>\'sitename\'/\'id\'.png (make directory)</item>
         <item>\'sitename\'-\'id\'.png (not make directory)</item>
@@ -71,6 +72,7 @@
         <item>mkdir</item>
         <item>nodir</item>
     </array>
+
     <string name="setting_quality_dialogtitle">Not applied on some sites</string>
     <string name="delete_dialog_title">Delete account</string>
     <string name="delete_dialog_message_account">account: \@</string>

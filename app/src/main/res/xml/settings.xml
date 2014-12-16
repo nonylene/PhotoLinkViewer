@@ -20,6 +20,15 @@
             android:targetPackage="net.nonylene.photolinkviewer"/>
     </Preference>
 
+    <Preference
+        android:summary="@string/pref_twitter_summary"
+        android:title="hoge">
+        <intent
+            android:action="android.intent.action.view"
+            android:targetClass="net.nonylene.photolinkviewer.ChangeQualityActivity"
+            android:targetPackage="net.nonylene.photolinkviewer"/>
+    </Preference>
+
     <EditTextPreference
         android:defaultValue="1.4"
         android:dialogTitle="@string/settings_zoom_dtitle"
