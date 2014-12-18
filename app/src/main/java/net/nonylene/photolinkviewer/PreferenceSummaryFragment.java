@@ -21,6 +21,10 @@ public class PreferenceSummaryFragment extends PreferenceFragment implements Sha
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        summaryView();
+    }
+
+    public void summaryView(){
         PreferenceScreen screen = getPreferenceScreen();
         for (int i = 0;i < screen.getPreferenceCount() ; i++){
             Preference preference = screen.getPreference(i);
@@ -39,7 +43,7 @@ public class PreferenceSummaryFragment extends PreferenceFragment implements Sha
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        Preference preference = getPreferenceScreen().findPreference(key);
+        Preference preference = findPreference(key);
         if (preference instanceof ListPreference){
             ListPreference listPreference = (ListPreference) preference;
             listPreference.setSummary(listPreference.getEntry());
