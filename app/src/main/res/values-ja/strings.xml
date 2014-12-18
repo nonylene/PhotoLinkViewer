@@ -66,8 +66,9 @@
     <string name="vine_url_toast">エラー</string>
     <string name="quality_setting_dialogtitle">画質を選んでください</string>
     <string name="batch_dialog_title">選んでください</string>
-    <string name="quality_batch_summary">一括設定</string>
-    <string name="quality_batch_title">画質を一括で設定します</string>
+    <string name="quality_batch_title">一括設定</string>
     <string name="quality_sites_categoryname">サイト別設定</string>
+    <string name="quality_batch_ng">キャンセル</string>
+    <string name="quality_batch_summary">画質を一括で設定します</string>
 
 </resources>

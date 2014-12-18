@@ -74,5 +74,6 @@
     <string name="quality_batch_title">Batch quality setting</string>
     <string name="quality_batch_summary">Set quality in a lump</string>
     <string name="quality_sites_categoryname">Setting by sitename</string>
+    <string name="quality_batch_ng">Cancel</string>
 
 </resources>

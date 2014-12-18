@@ -68,7 +68,7 @@ public class ChangeQualityActivity extends Activity {
                 public boolean onPreferenceClick(Preference preference) {
                     BatchDialogFragment batchDialogFragment = new BatchDialogFragment();
                     batchDialogFragment.setTargetFragment(LTEFragment.this, 1);
-                    batchDialogFragment.show(getFragmentManager(),"batch");
+                    batchDialogFragment.show(getFragmentManager(), "batch");
                     return false;
                 }
             });
@@ -80,6 +80,7 @@ public class ChangeQualityActivity extends Activity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 String[] items = getResources().getStringArray(R.array.quality);
                 builder.setTitle(getString(R.string.quality_setting_dialogtitle))
+                        .setNegativeButton(getString(R.string.quality_batch_ng), null)
                         .setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -95,20 +96,20 @@ public class ChangeQualityActivity extends Activity {
         @Override
         public void onActivityResult(int requestCode, int resultCode, Intent data) {
             super.onActivityResult(requestCode, resultCode, data);
-            switch (requestCode){
+            switch (requestCode) {
                 case 1:
                     batchSelected(resultCode);
                     break;
             }
         }
 
-        private void batchSelected(int resultCode){
+        private void batchSelected(int resultCode) {
             ListPreference flickrPreference = (ListPreference) findPreference("flickr_quality_3g");
             ListPreference twitterPreference = (ListPreference) findPreference("twitter_quality_3g");
             ListPreference twipplePreference = (ListPreference) findPreference("twipple_quality_3g");
             ListPreference imglyPreference = (ListPreference) findPreference("imgly_quality_3g");
             ListPreference instagramPreference = (ListPreference) findPreference("instagram_quality_3g");
-            switch (resultCode){
+            switch (resultCode) {
                 case 0:
                     flickrPreference.setValue("original");
                     twitterPreference.setValue("original");
