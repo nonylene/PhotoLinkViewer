@@ -5,16 +5,11 @@
         <item>\'sitename\'/\'id\'.png (make directory)</item>
         <item>\'sitename\'-\'id\'.png (not make directory)</item>
     </array>
-    <array name="quality">
+    <string-array name="quality">
         <item>original</item>
         <item>large</item>
         <item>medium</item>
-    </array>
-    <array name="quality_value">
-        <item>original</item>
-        <item>large</item>
-        <item>medium</item>
-    </array>
+    </string-array>
     <array name="filename_value">
         <item>mkdir</item>
         <item>nodir</item>

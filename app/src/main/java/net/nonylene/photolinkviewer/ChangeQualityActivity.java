@@ -66,8 +66,6 @@ public class ChangeQualityActivity extends Activity {
             preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    ListPreference listPreference = (ListPreference) findPreference("flickr_quality_3g");
-                    listPreference.setValue("original");
                     BatchDialogFragment batchDialogFragment = new BatchDialogFragment();
                     batchDialogFragment.setTargetFragment(LTEFragment.this, 1);
                     batchDialogFragment.show(getFragmentManager(),"batch");
@@ -80,9 +78,9 @@ public class ChangeQualityActivity extends Activity {
             @Override
             public Dialog onCreateDialog(Bundle savedInstanceState) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                String[] items = {"original", "large", "medium"};
-                builder.setTitle(getString(R.string.retweet_dialog_title))
-                        .setSingleChoiceItems(items, 0, new DialogInterface.OnClickListener() {
+                String[] items = getResources().getStringArray(R.array.quality);
+                builder.setTitle(getString(R.string.quality_setting_dialogtitle))
+                        .setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 getTargetFragment().onActivityResult(getTargetRequestCode(), which, null);
@@ -97,6 +95,44 @@ public class ChangeQualityActivity extends Activity {
         @Override
         public void onActivityResult(int requestCode, int resultCode, Intent data) {
             super.onActivityResult(requestCode, resultCode, data);
+            switch (requestCode){
+                case 1:
+                    batchSelected(resultCode);
+                    break;
+            }
+        }
+
+        private void batchSelected(int resultCode){
+            ListPreference flickrPreference = (ListPreference) findPreference("flickr_quality_3g");
+            ListPreference twitterPreference = (ListPreference) findPreference("twitter_quality_3g");
+            ListPreference twipplePreference = (ListPreference) findPreference("twipple_quality_3g");
+            ListPreference imglyPreference = (ListPreference) findPreference("imgly_quality_3g");
+            ListPreference instagramPreference = (ListPreference) findPreference("instagram_quality_3g");
+            switch (resultCode){
+                case 0:
+                    flickrPreference.setValue("original");
+                    twitterPreference.setValue("original");
+                    twipplePreference.setValue("original");
+                    imglyPreference.setValue("full");
+                    instagramPreference.setValue("large");
+                    break;
+                case 1:
+                    flickrPreference.setValue("large");
+                    twitterPreference.setValue("large");
+                    twipplePreference.setValue("large");
+                    imglyPreference.setValue("large");
+                    instagramPreference.setValue("large");
+                    break;
+                case 2:
+                    flickrPreference.setValue("medium");
+                    twitterPreference.setValue("medium");
+                    twipplePreference.setValue("thumb");
+                    imglyPreference.setValue("medium");
+                    instagramPreference.setValue("medium");
+                    break;
+            }
+
+
         }
     }
 

@@ -23,11 +23,11 @@
         <item>\'sitename\'/\'id\'.png (ディレクトリ作成)</item>
         <item>\'sitename\'-\'id\'.png (ディレクトリ作成しない)</item>
     </array>
-    <array name="quality">
+    <string-array name="quality">
         <item>オリジナル</item>
         <item>大</item>
         <item>中</item>
-    </array>
+    </string-array>
     <string name="twitter_display_oauth">twitter認証してください</string>
     <string name="show_bitamap_error">読み込みできませんでした</string>
     <string name="url_purse_toast">URL解析エラー</string>
@@ -65,5 +65,9 @@
     <string name="vine_json_toast">解析エラー</string>
     <string name="vine_url_toast">エラー</string>
     <string name="quality_setting_dialogtitle">画質を選んでください</string>
+    <string name="batch_dialog_title">選んでください</string>
+    <string name="quality_batch_summary">一括設定</string>
+    <string name="quality_batch_title">画質を一括で設定します</string>
+    <string name="quality_sites_categoryname">サイト別設定</string>
 
 </resources>

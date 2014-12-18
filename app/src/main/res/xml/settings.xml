@@ -2,13 +2,15 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <ListPreference
-        android:dialogTitle="@string/setting_quality_dialogtitle"
-        android:entries="@array/quality"
-        android:entryValues="@array/quality_value"
-        android:defaultValue="large"
-        android:key="quality"
-        android:title="@string/setting_quality_title" />
+    <Preference
+        android:title="@string/setting_quality_title"
+        android:summary="@string/setting_quality_summary"
+        >
+        <intent
+            android:action="android.intent.action.view"
+            android:targetClass="net.nonylene.photolinkviewer.ChangeQualityActivity"
+            android:targetPackage="net.nonylene.photolinkviewer"/>
+    </Preference>
 
     <Preference
         android:summary="@string/pref_twitter_summary"
@@ -16,15 +18,6 @@
         <intent
             android:action="android.intent.action.view"
             android:targetClass="net.nonylene.photolinkviewer.TOAuth"
-            android:targetPackage="net.nonylene.photolinkviewer"/>
-    </Preference>
-
-    <Preference
-        android:summary="@string/pref_twitter_summary"
-        android:title="hoge">
-        <intent
-            android:action="android.intent.action.view"
-            android:targetClass="net.nonylene.photolinkviewer.ChangeQualityActivity"
             android:targetPackage="net.nonylene.photolinkviewer"/>
     </Preference>
 
