@@ -53,26 +53,6 @@
     <string name="twitter_retweet_toast">retweeted!</string>
     <string name="setting_quality_summary">Change quality of photo to reduce data usage.</string>
     <string name="setting_quality_title">Change photo quality</string>
-
-    <array name="filename">
-        <item>\'sitename\'/\'id\'.png (make directory)</item>
-        <item>\'sitename\'-\'id\'.png (not make directory)</item>
-    </array>
-    <array name="quality">
-        <item>original</item>
-        <item>large</item>
-        <item>medium</item>
-    </array>
-    <array name="quality_value">
-        <item>original</item>
-        <item>large</item>
-        <item>medium</item>
-    </array>
-    <array name="filename_value">
-        <item>mkdir</item>
-        <item>nodir</item>
-    </array>
-
     <string name="setting_quality_dialogtitle">Not applied on some sites</string>
     <string name="delete_dialog_title">Delete account</string>
     <string name="delete_dialog_message_account">account: \@</string>
@@ -84,5 +64,11 @@
     <string name="twitter_async_select">Please set account correctly!</string>
     <string name="vine_url_toast">Error!</string>
     <string name="vine_json_toast">JSON error!</string>
+    <string name="quality_setting_dialogtitle">Please choose quality</string>
+    <string name="flickr_quality_title" translatable="false">flickr</string>
+    <string name="twipple_quality_title" translatable="false">twipple</string>
+    <string name="imgly_quality_title" translatable="false">img.ly</string>
+    <string name="instagram_quality_title" translatable="false">instagram</string>
+    <string name="twitter_quality_title" translatable="false">twitter</string>
 
 </resources>

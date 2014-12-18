@@ -64,5 +64,6 @@
     <string name="twitter_async_select">アカウントを正しく設定してください</string>
     <string name="vine_json_toast">解析エラー</string>
     <string name="vine_url_toast">エラー</string>
+    <string name="quality_setting_dialogtitle">画質を選んでください</string>
 
 </resources>

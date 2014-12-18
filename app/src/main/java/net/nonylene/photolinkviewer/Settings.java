@@ -2,7 +2,6 @@ package net.nonylene.photolinkviewer;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.preference.PreferenceFragment;
 
 public class Settings extends Activity {
 
@@ -12,7 +11,7 @@ public class Settings extends Activity {
         getFragmentManager().beginTransaction().replace(android.R.id.content, new SettingsFragment()).commit();
     }
 
-    public static class SettingsFragment extends PreferenceFragment {
+    public static class SettingsFragment extends PreferenceSummaryFragment {
 
         @Override
         public void onCreate(Bundle savedInstanceState) {

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="filename">
+        <item>\'sitename\'/\'id\'.png (make directory)</item>
+        <item>\'sitename\'-\'id\'.png (not make directory)</item>
+    </array>
+    <array name="quality">
+        <item>original</item>
+        <item>large</item>
+        <item>medium</item>
+    </array>
+    <array name="quality_value">
+        <item>original</item>
+        <item>large</item>
+        <item>medium</item>
+    </array>
+    <array name="filename_value">
+        <item>mkdir</item>
+        <item>nodir</item>
+    </array>
+    <array name="flickr_quality">
+        <item>original</item>
+        <item>large</item>
+        <item>medium</item>
+    </array>
+    <array name="twitter_quality">
+        <item>original</item>
+        <item>large</item>
+        <item>medium</item>
+        <item>small</item>
+    </array>
+    <array name="twipple_quality">
+        <item>original</item>
+        <item>large</item>
+        <item>thumb</item>
+    </array>
+    <array name="imgly_quality">
+        <item>full</item>
+        <item>large</item>
+        <item>medium</item>
+    </array>
+    <array name="instagram_quality">
+        <item>large</item>
+        <item>medium</item>
+    </array>
+
+    <array name="flickr_quality_value">
+        <item>original</item>
+        <item>large</item>
+        <item>medium</item>
+    </array>
+    <array name="twitter_quality_value">
+        <item>original</item>
+        <item>large</item>
+        <item>medium</item>
+        <item>small</item>
+    </array>
+    <array name="twipple_quality_value">
+        <item>original</item>
+        <item>large</item>
+        <item>thumb</item>
+    </array>
+    <array name="imgly_quality_value">
+        <item>full</item>
+        <item>large</item>
+        <item>medium</item>
+    </array>
+    <array name="instagram_quality_value">
+        <item>large</item>
+        <item>medium</item>
+    </array>
+</resources>

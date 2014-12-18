@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.preference.PreferenceFragment;
 
 
 public class ChangeQualityActivity extends Activity {
@@ -51,16 +50,16 @@ public class ChangeQualityActivity extends Activity {
         }
     }
 
-    public static class LTEFragment extends PreferenceFragment {
+    public static class LTEFragment extends PreferenceSummaryFragment {
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.settings);
+            addPreferencesFromResource(R.xml.quality_setting_3g);
         }
     }
 
-    public static class WifiFragment extends PreferenceFragment {
+    public static class WifiFragment extends PreferenceSummaryFragment {
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
