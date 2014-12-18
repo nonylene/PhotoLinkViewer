@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <Preference
+        android:summary="@string/pref_twitter_summary"
+        android:title="@string/pref_twitter_title"
+        android:key="quality_3g_batch"/>
+
     <ListPreference
         android:dialogTitle="@string/quality_setting_dialogtitle"
         android:entries="@array/flickr_quality"
