@@ -4,13 +4,14 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.view.View;
 import android.widget.Checkable;
 
-public class PreferenceSummaryFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener{
+public class PreferenceSummaryFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
 
     @Override
@@ -24,32 +25,53 @@ public class PreferenceSummaryFragment extends PreferenceFragment implements Sha
         summaryView();
     }
 
-    public void summaryView(){
+    private void summaryView() {
         PreferenceScreen screen = getPreferenceScreen();
-        for (int i = 0;i < screen.getPreferenceCount() ; i++){
+        for (int i = 0; i < screen.getPreferenceCount(); i++) {
             Preference preference = screen.getPreference(i);
-            if (preference.hasKey() && preference.getSummary() == null) {
-                if (preference instanceof ListPreference) {
-                    ListPreference listPreference = (ListPreference) preference;
-                    listPreference.setSummary(listPreference.getEntry());
-                } else if (!(preference instanceof Checkable)) {
-                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                    preference.setSummary(preferences.getString(preference.getKey(), null));
+            if (preference instanceof PreferenceCategory) {
+                // if category in preference, check recursive
+                PreferenceCategory childCategory = (PreferenceCategory) preference;
+                loopOnCategory(childCategory);
+            } else {
+                if (preference.getSummary() == null) {
+                    setSummary(preference);
                 }
             }
         }
+    }
 
+    private void loopOnCategory(PreferenceCategory category) {
+        // if category in preference, check recursive
+        for (int i = 0; i < category.getPreferenceCount(); i++) {
+            Preference preference = category.getPreference(i);
+            if (preference instanceof PreferenceCategory) {
+                PreferenceCategory childCategory = (PreferenceCategory) preference;
+                loopOnCategory(childCategory);
+            } else {
+                if (preference.getSummary() == null) {
+                    setSummary(preference);
+                }
+            }
+        }
+    }
+
+    private void setSummary(Preference preference) {
+        if (preference.hasKey()) {
+            if (preference instanceof ListPreference) {
+                ListPreference listPreference = (ListPreference) preference;
+                listPreference.setSummary(listPreference.getEntry());
+            } else if (!(preference instanceof Checkable)) {
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                preference.setSummary(preferences.getString(preference.getKey(), null));
+            }
+        }
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Preference preference = findPreference(key);
-        if (preference instanceof ListPreference){
-            ListPreference listPreference = (ListPreference) preference;
-            listPreference.setSummary(listPreference.getEntry());
-        }else if(!(preference instanceof Checkable)){
-            preference.setSummary(sharedPreferences.getString(key,null));
-        }
+        setSummary(preference);
     }
 
     @Override
