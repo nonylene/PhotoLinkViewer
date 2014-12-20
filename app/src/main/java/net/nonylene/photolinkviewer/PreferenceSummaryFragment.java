@@ -2,14 +2,15 @@ package net.nonylene.photolinkviewer;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
+import android.preference.SwitchPreference;
 import android.view.View;
-import android.widget.Checkable;
 
 public class PreferenceSummaryFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -61,7 +62,7 @@ public class PreferenceSummaryFragment extends PreferenceFragment implements Sha
             if (preference instanceof ListPreference) {
                 ListPreference listPreference = (ListPreference) preference;
                 listPreference.setSummary(listPreference.getEntry());
-            } else if (!(preference instanceof Checkable)) {
+            } else if (!(preference instanceof CheckBoxPreference) && !(preference instanceof SwitchPreference)) {
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 preference.setSummary(preferences.getString(preference.getKey(), null));
             }
