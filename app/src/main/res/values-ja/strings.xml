@@ -70,7 +70,7 @@
     <string name="quality_sites_categoryname">サイト別設定</string>
     <string name="quality_batch_ng">キャンセル</string>
     <string name="quality_batch_summary">画質を一括で設定します</string>
-    <string name="quality_switch_summary">Wifiが有効の時の画質を変更できます</string>
-    <string name="quality_switch_title">Wifi接続中の設定を有効にする</string>
+    <string name="quality_switch_summary">Wifi接続時に画質を変更できます</string>
+    <string name="quality_switch_title">Wifi設定の有効化</string>
 
 </resources>

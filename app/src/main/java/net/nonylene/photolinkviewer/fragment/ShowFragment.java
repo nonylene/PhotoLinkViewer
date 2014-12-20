@@ -42,6 +42,7 @@ import net.nonylene.photolinkviewer.async.AsyncHttp;
 import net.nonylene.photolinkviewer.async.AsyncHttpResult;
 import net.nonylene.photolinkviewer.async.AsyncJSON;
 import net.nonylene.photolinkviewer.dialog.SaveDialogFragment;
+import net.nonylene.photolinkviewer.tool.Initialize;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -81,10 +82,14 @@ public class ShowFragment extends Fragment {
                 return true;
             }
         });
+        if (!preferences.getBoolean("initialized19", false)) {
+            Initialize.initialize19(getActivity());
+        }
         String url = getArguments().getString("url");
         URLPurser(url);
         return view;
     }
+
 
     class simpleOnGestureListener extends GestureDetector.SimpleOnGestureListener {
 
@@ -332,7 +337,15 @@ public class ShowFragment extends Fragment {
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 String file_url = null;
                 String secret = photo.getString("secret");
-                switch (sharedPreferences.getString("quality", "large")) {
+
+                // wifi check
+                String quality;
+                if (wifiChecker(sharedPreferences)) {
+                    quality = sharedPreferences.getString("flickr_quality_wifi", "large");
+                } else {
+                    quality = sharedPreferences.getString("flickr_quality_3g", "large");
+                }
+                switch (quality) {
                     case "original":
                         String original_secret = photo.getString("originalsecret");
                         String original_format = photo.getString("originalformat");
@@ -392,15 +405,6 @@ public class ShowFragment extends Fragment {
 
         try {
             String id = null;
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-            String quality = sharedPreferences.getString("quality", "large");
-
-            // get wifi status
-            ConnectivityManager manager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo info = manager.getActiveNetworkInfo();
-            if (info.getType() == ConnectivityManager.TYPE_WIFI) {
-                quality = "original";
-            }
 
             if (url.contains("flickr.com") || url.contains("flic.kr")) {
                 Log.v("flickr", url);
@@ -426,6 +430,13 @@ public class ShowFragment extends Fragment {
                 AsyncJSONExecute hoge = new AsyncJSONExecute();
                 hoge.Start(request);
             } else {
+
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                String quality;
+
+                // wifi check
+                boolean wifi = wifiChecker(sharedPreferences);
+
                 if (url.contains("twimg.com/media/")) {
                     Log.v("twimg", url);
                     Pattern pattern = Pattern.compile("^https?://pbs\\.twimg\\.com/media/([^\\.]+)\\.");
@@ -436,6 +447,11 @@ public class ShowFragment extends Fragment {
                     id = matcher.group(1);
                     sitename = "twitter";
                     filename = id;
+                    if (wifi) {
+                        quality = sharedPreferences.getString("twitter_quality_wifi", "large");
+                    } else {
+                        quality = sharedPreferences.getString("twitter_quality_3g", "large");
+                    }
                     switch (quality) {
                         case "original":
                             file_url = url + ":orig";
@@ -445,6 +461,9 @@ public class ShowFragment extends Fragment {
                             break;
                         case "medium":
                             file_url = url;
+                            break;
+                        case "small":
+                            file_url = url + ":small";
                             break;
                     }
                 } else if (url.contains("twipple.jp")) {
@@ -457,6 +476,11 @@ public class ShowFragment extends Fragment {
                     id = matcher.group(1);
                     sitename = "twipple";
                     filename = id;
+                    if (wifi) {
+                        quality = sharedPreferences.getString("twipple_quality_wifi", "large");
+                    } else {
+                        quality = sharedPreferences.getString("twipple_quality_3g", "large");
+                    }
                     switch (quality) {
                         case "original":
                             file_url = "http://p.twipple.jp/show/orig/" + id;
@@ -464,7 +488,7 @@ public class ShowFragment extends Fragment {
                         case "large":
                             file_url = "http://p.twipple.jp/show/large/" + id;
                             break;
-                        case "medium":
+                        case "thumb":
                             file_url = "http://p.twipple.jp/show/thumb/" + id;
                             break;
                     }
@@ -478,8 +502,13 @@ public class ShowFragment extends Fragment {
                     id = matcher.group(1);
                     sitename = "img.ly";
                     filename = id;
+                    if (wifi) {
+                        quality = sharedPreferences.getString("imgly_quality_wifi", "large");
+                    } else {
+                        quality = sharedPreferences.getString("imgly_quality_3g", "large");
+                    }
                     switch (quality) {
-                        case "original":
+                        case "full":
                             file_url = "http://img.ly/show/full/" + id;
                             break;
                         case "large":
@@ -499,10 +528,12 @@ public class ShowFragment extends Fragment {
                     id = matcher.group(1);
                     sitename = "instagram";
                     filename = id;
+                    if (wifi) {
+                        quality = sharedPreferences.getString("instagram_quality_wifi", "large");
+                    } else {
+                        quality = sharedPreferences.getString("instagram_quality_3g", "large");
+                    }
                     switch (quality) {
-                        case "original":
-                            file_url = "http://instagram.com/p/" + id + "/media/?size=l";
-                            break;
                         case "large":
                             file_url = "http://instagram.com/p/" + id + "/media/?size=l";
                             break;
@@ -555,9 +586,7 @@ public class ShowFragment extends Fragment {
                 bundle.putString("filename", filename);
                 // dl button visibility and click
                 ImageButton dlButton = (ImageButton) getActivity().findViewById(R.id.dlbutton);
-                if (dlButton != null) {
-                    dlButton.setVisibility(View.VISIBLE);
-                }
+                dlButton.setVisibility(View.VISIBLE);
                 dlButton.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         // open dialog
@@ -576,6 +605,22 @@ public class ShowFragment extends Fragment {
             ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.showprogress);
             frameLayout.removeView(progressBar);
         }
+    }
+
+    public boolean wifiChecker(SharedPreferences sharedPreferences) {
+        //check wifi connecting and setting or not
+        boolean wifi = false;
+        if (sharedPreferences.getBoolean("wifi_switch", false)) {
+            // get wifi status
+            ConnectivityManager manager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo info = manager.getActiveNetworkInfo();
+            if (info.getType() == ConnectivityManager.TYPE_WIFI) {
+                wifi = true;
+            }
+        }
+        Log.d("wifi", String.valueOf(wifi));
+        return wifi;
+
     }
 
     @Override
