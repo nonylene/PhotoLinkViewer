@@ -75,5 +75,7 @@
     <string name="quality_batch_summary">Set quality in a lump</string>
     <string name="quality_sites_categoryname">Setting by sitename</string>
     <string name="quality_batch_ng">Cancel</string>
+    <string name="quality_switch_title">Enable Wifi setting</string>
+    <string name="quality_switch_summary">Change quality when wifi is on</string>
 
 </resources>

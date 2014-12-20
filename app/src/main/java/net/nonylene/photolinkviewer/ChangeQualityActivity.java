@@ -2,36 +2,50 @@ package net.nonylene.photolinkviewer;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.content.DialogInterface;
-import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.ListPreference;
-import android.preference.Preference;
+import android.preference.PreferenceManager;
 
-public class ChangeQualityActivity extends Activity {
+public class ChangeQualityActivity extends Activity implements LTEFragment.OnWifiSwitchListener {
+    private ActionBar.Tab lteTab;
+    private ActionBar.Tab wifiTab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_quality);
+        // set tabs
         ActionBar actionBar = getActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        actionBar.addTab(actionBar.newTab()
-                        .setText("LTE")
-                        .setTabListener(new MyTabListener(new LTEFragment()))
-        );
-        actionBar.addTab(actionBar.newTab()
-                        .setText("Wifi")
-                        .setTabListener(new MyTabListener(new WifiFragment()))
-        );
-
+        lteTab = actionBar.newTab();
+        lteTab.setTabListener(new MyTabListener(new LTEFragment()));
+        wifiTab = actionBar.newTab();
+        wifiTab.setText("Wifi")
+                .setTabListener(new MyTabListener(new WifiFragment()));
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if (preferences.getBoolean("wifi_switch", false)) {
+            lteTab.setText("LTE");
+            actionBar.addTab(lteTab);
+            actionBar.addTab(wifiTab);
+        } else {
+            lteTab.setText("Wifi/LTE");
+            actionBar.addTab(lteTab);
+        }
     }
 
+    @Override
+    public void onChanged(boolean checked) {
+        // lte fragment listener when switch changed
+        if (checked) {
+            lteTab.setText("LTE");
+            getActionBar().addTab(wifiTab);
+        } else {
+            lteTab.setText("Wifi/LTE");
+            getActionBar().removeTab(wifiTab);
+        }
+    }
 
     class MyTabListener implements ActionBar.TabListener {
         private Fragment fragment;
@@ -56,94 +70,4 @@ public class ChangeQualityActivity extends Activity {
         }
     }
 
-    public static class LTEFragment extends PreferenceSummaryFragment {
-
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.quality_setting_3g);
-            Preference preference = findPreference("quality_3g_batch");
-            preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-                    BatchDialogFragment batchDialogFragment = new BatchDialogFragment();
-                    batchDialogFragment.setTargetFragment(LTEFragment.this, 1);
-                    batchDialogFragment.show(getFragmentManager(), "batch");
-                    return false;
-                }
-            });
-        }
-
-        public static class BatchDialogFragment extends DialogFragment {
-            @Override
-            public Dialog onCreateDialog(Bundle savedInstanceState) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                String[] items = getResources().getStringArray(R.array.quality);
-                builder.setTitle(getString(R.string.quality_setting_dialogtitle))
-                        .setNegativeButton(getString(R.string.quality_batch_ng), null)
-                        .setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                getTargetFragment().onActivityResult(getTargetRequestCode(), which, null);
-                                dialog.dismiss();
-                            }
-                        });
-                return builder.create();
-            }
-
-        }
-
-        @Override
-        public void onActivityResult(int requestCode, int resultCode, Intent data) {
-            super.onActivityResult(requestCode, resultCode, data);
-            switch (requestCode) {
-                case 1:
-                    batchSelected(resultCode);
-                    break;
-            }
-        }
-
-        private void batchSelected(int resultCode) {
-            ListPreference flickrPreference = (ListPreference) findPreference("flickr_quality_3g");
-            ListPreference twitterPreference = (ListPreference) findPreference("twitter_quality_3g");
-            ListPreference twipplePreference = (ListPreference) findPreference("twipple_quality_3g");
-            ListPreference imglyPreference = (ListPreference) findPreference("imgly_quality_3g");
-            ListPreference instagramPreference = (ListPreference) findPreference("instagram_quality_3g");
-            switch (resultCode) {
-                case 0:
-                    flickrPreference.setValue("original");
-                    twitterPreference.setValue("original");
-                    twipplePreference.setValue("original");
-                    imglyPreference.setValue("full");
-                    instagramPreference.setValue("large");
-                    break;
-                case 1:
-                    flickrPreference.setValue("large");
-                    twitterPreference.setValue("large");
-                    twipplePreference.setValue("large");
-                    imglyPreference.setValue("large");
-                    instagramPreference.setValue("large");
-                    break;
-                case 2:
-                    flickrPreference.setValue("medium");
-                    twitterPreference.setValue("medium");
-                    twipplePreference.setValue("thumb");
-                    imglyPreference.setValue("medium");
-                    instagramPreference.setValue("medium");
-                    break;
-            }
-
-
-        }
-    }
-
-
-    public static class WifiFragment extends PreferenceSummaryFragment {
-
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.settings);
-        }
-    }
 }

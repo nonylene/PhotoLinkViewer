@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <SwitchPreference
-        android:key="wifi_switch"
-        android:summary="@string/quality_switch_summary"
-        android:title="@string/quality_switch_title"/>
-
     <Preference
-        android:key="quality_3g_batch"
+        android:key="quality_wifi_batch"
         android:summary="@string/quality_batch_summary"
         android:title="@string/quality_batch_title"/>
 
@@ -17,35 +12,35 @@
             android:dialogTitle="@string/quality_setting_dialogtitle"
             android:entries="@array/flickr_quality"
             android:entryValues="@array/flickr_quality_value"
-            android:key="flickr_quality_3g"
+            android:key="flickr_quality_wifi"
             android:title="@string/flickr_quality_title"/>
 
         <ListPreference
             android:dialogTitle="@string/quality_setting_dialogtitle"
             android:entries="@array/twitter_quality"
             android:entryValues="@array/twitter_quality_value"
-            android:key="twitter_quality_3g"
+            android:key="twitter_quality_wifi"
             android:title="@string/twitter_quality_title"/>
 
         <ListPreference
             android:dialogTitle="@string/quality_setting_dialogtitle"
             android:entries="@array/twipple_quality"
             android:entryValues="@array/twipple_quality_value"
-            android:key="twipple_quality_3g"
+            android:key="twipple_quality_wifi"
             android:title="@string/twipple_quality_title"/>
 
         <ListPreference
             android:dialogTitle="@string/quality_setting_dialogtitle"
             android:entries="@array/imgly_quality"
             android:entryValues="@array/imgly_quality_value"
-            android:key="imgly_quality_3g"
+            android:key="imgly_quality_wifi"
             android:title="@string/imgly_quality_title"/>
 
         <ListPreference
             android:dialogTitle="@string/quality_setting_dialogtitle"
             android:entries="@array/instagram_quality"
             android:entryValues="@array/instagram_quality_value"
-            android:key="instagram_quality_3g"
+            android:key="instagram_quality_wifi"
             android:title="@string/instagram_quality_title"/>
 
     </PreferenceCategory>
