@@ -1,4 +1,4 @@
-package net.nonylene.photolinkviewer;
+package net.nonylene.photolinkviewer.tool;
 
 import java.math.BigInteger;
 

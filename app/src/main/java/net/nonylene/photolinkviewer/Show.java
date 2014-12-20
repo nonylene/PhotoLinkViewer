@@ -7,6 +7,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import net.nonylene.photolinkviewer.fragment.OptionFragment;
+import net.nonylene.photolinkviewer.fragment.ShowFragment;
+import net.nonylene.photolinkviewer.fragment.VideoShowFragment;
+
 public class Show extends Activity {
 
     @Override

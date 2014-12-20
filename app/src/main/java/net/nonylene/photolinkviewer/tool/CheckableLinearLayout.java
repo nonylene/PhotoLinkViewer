@@ -1,4 +1,4 @@
-package net.nonylene.photolinkviewer;
+package net.nonylene.photolinkviewer.tool;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -35,20 +35,20 @@ public class CheckableLinearLayout extends LinearLayout implements Checkable {
     }
 
     @Override
-    public boolean isChecked(){
+    public boolean isChecked() {
         return checkedTextView != null && checkedTextView.isChecked();
     }
 
     @Override
-    public  void setChecked(boolean check){
-        if (checkedTextView != null){
+    public void setChecked(boolean check) {
+        if (checkedTextView != null) {
             checkedTextView.setChecked(check);
         }
     }
 
     @Override
-    public void toggle(){
-        if (checkedTextView != null){
+    public void toggle() {
+        if (checkedTextView != null) {
             checkedTextView.toggle();
         }
     }

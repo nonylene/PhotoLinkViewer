@@ -1,4 +1,4 @@
-package net.nonylene.photolinkviewer;
+package net.nonylene.photolinkviewer.fragment;
 
 import android.app.DialogFragment;
 import android.app.LoaderManager;
@@ -34,6 +34,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import net.nonylene.photolinkviewer.tool.Base58;
+import net.nonylene.photolinkviewer.tool.GIFException;
+import net.nonylene.photolinkviewer.R;
+import net.nonylene.photolinkviewer.async.AsyncHttp;
+import net.nonylene.photolinkviewer.async.AsyncHttpResult;
+import net.nonylene.photolinkviewer.async.AsyncJSON;
+import net.nonylene.photolinkviewer.dialog.SaveDialogFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -260,12 +268,12 @@ public class ShowFragment extends Fragment {
                     FrameLayout.LayoutParams layoutParams;
                     int videoWidth = result.getWidth();
                     int videoHeight = result.getHeight();
-                    if ((videoHeight > dispHeight * 0.9 && videoWidth  * dispHeight / dispHeight < dispWidth) || dispWidth * videoHeight / videoWidth > dispHeight ){
+                    if ((videoHeight > dispHeight * 0.9 && videoWidth * dispHeight / dispHeight < dispWidth) || dispWidth * videoHeight / videoWidth > dispHeight) {
                         // if height of video > disp_height * 0.9, check whether calculated width > disp_width . if this is true,
                         // give priority to width. and, if check whether calculated height > disp_height, give priority to height.
                         int height = (int) (dispHeight * 0.9);
                         layoutParams = new FrameLayout.LayoutParams(height * videoWidth / videoHeight, height);
-                    }else{
+                    } else {
                         int width = (int) (dispWidth * 0.9);
                         layoutParams = new FrameLayout.LayoutParams(width, width * videoHeight / videoWidth);
                     }
@@ -390,7 +398,7 @@ public class ShowFragment extends Fragment {
             // get wifi status
             ConnectivityManager manager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo info = manager.getActiveNetworkInfo();
-            if (info.getType() == ConnectivityManager.TYPE_WIFI){
+            if (info.getType() == ConnectivityManager.TYPE_WIFI) {
                 quality = "original";
             }
 

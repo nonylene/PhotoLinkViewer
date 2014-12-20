@@ -1,28 +1,56 @@
-package net.nonylene.photolinkviewer;
+package net.nonylene.photolinkviewer.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.preference.SwitchPreference;
 
-public class WifiFragment extends PreferenceSummaryFragment {
+import net.nonylene.photolinkviewer.R;
+import net.nonylene.photolinkviewer.dialog.BatchDialogFragment;
+
+public class LTEFragment extends PreferenceSummaryFragment {
+    OnWifiSwitchListener listener;
+
+    // lister when switch changed
+    public interface OnWifiSwitchListener {
+        public void onChanged(boolean checked);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.xml.quality_setting_wifi);
+        addPreferencesFromResource(R.xml.quality_setting_3g);
         // on click batch
-        Preference preference = findPreference("quality_wifi_batch");
+        Preference preference = findPreference("quality_3g_batch");
         preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 // batch dialog
                 BatchDialogFragment batchDialogFragment = new BatchDialogFragment();
-                batchDialogFragment.setTargetFragment(WifiFragment.this, 1);
+                batchDialogFragment.setTargetFragment(LTEFragment.this, 1);
                 batchDialogFragment.show(getFragmentManager(), "batch");
                 return false;
             }
         });
+        // on switch changed
+        SwitchPreference switchPreference = (SwitchPreference) findPreference("wifi_switch");
+        switchPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                boolean value = Boolean.parseBoolean(newValue.toString());
+                // go listener
+                listener.onChanged(value);
+                return true;
+            }
+        });
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        listener = (OnWifiSwitchListener) activity;
     }
 
     @Override
@@ -38,11 +66,11 @@ public class WifiFragment extends PreferenceSummaryFragment {
 
     private void batchSelected(int resultCode) {
         // change preferences in a lump
-        ListPreference flickrPreference = (ListPreference) findPreference("flickr_quality_wifi");
-        ListPreference twitterPreference = (ListPreference) findPreference("twitter_quality_wifi");
-        ListPreference twipplePreference = (ListPreference) findPreference("twipple_quality_wifi");
-        ListPreference imglyPreference = (ListPreference) findPreference("imgly_quality_wifi");
-        ListPreference instagramPreference = (ListPreference) findPreference("instagram_quality_wifi");
+        ListPreference flickrPreference = (ListPreference) findPreference("flickr_quality_3g");
+        ListPreference twitterPreference = (ListPreference) findPreference("twitter_quality_3g");
+        ListPreference twipplePreference = (ListPreference) findPreference("twipple_quality_3g");
+        ListPreference imglyPreference = (ListPreference) findPreference("imgly_quality_3g");
+        ListPreference instagramPreference = (ListPreference) findPreference("instagram_quality_3g");
         switch (resultCode) {
             case 0:
                 flickrPreference.setValue("original");

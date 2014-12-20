@@ -1,4 +1,4 @@
-package net.nonylene.photolinkviewer;
+package net.nonylene.photolinkviewer.fragment;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -16,6 +16,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.Toast;
+
+import net.nonylene.photolinkviewer.tool.MyAsyncTwitter;
+import net.nonylene.photolinkviewer.R;
 
 import twitter4j.AsyncTwitter;
 import twitter4j.Status;

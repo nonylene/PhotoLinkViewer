@@ -1,4 +1,4 @@
-package net.nonylene.photolinkviewer;
+package net.nonylene.photolinkviewer.tool;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -7,6 +7,8 @@ import android.database.CursorIndexOutOfBoundsException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.util.Base64;
+
+import net.nonylene.photolinkviewer.R;
 
 import javax.crypto.spec.SecretKeySpec;
 

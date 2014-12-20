@@ -32,7 +32,7 @@
                 android:layout_margin="2dp"
                 android:orientation="horizontal">
 
-                <net.nonylene.photolinkviewer.PLVImageView
+                <net.nonylene.photolinkviewer.tool.PLVImageView
                     android:id="@+id/twImageView"
                     android:layout_width="56dp"
                     android:layout_height="56dp"

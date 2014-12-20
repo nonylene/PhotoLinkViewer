@@ -1,4 +1,4 @@
-package net.nonylene.photolinkviewer;
+package net.nonylene.photolinkviewer.fragment;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;

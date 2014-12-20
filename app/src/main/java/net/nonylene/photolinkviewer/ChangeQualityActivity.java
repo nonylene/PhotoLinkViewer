@@ -8,6 +8,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 
+import net.nonylene.photolinkviewer.fragment.LTEFragment;
+import net.nonylene.photolinkviewer.fragment.WifiFragment;
+
 public class ChangeQualityActivity extends Activity implements LTEFragment.OnWifiSwitchListener {
     private ActionBar.Tab lteTab;
     private ActionBar.Tab wifiTab;

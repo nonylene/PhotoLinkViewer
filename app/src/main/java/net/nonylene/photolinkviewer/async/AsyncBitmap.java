@@ -1,9 +1,11 @@
-package net.nonylene.photolinkviewer;
+package net.nonylene.photolinkviewer.async;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.AsyncTask;
+
+import net.nonylene.photolinkviewer.tool.PLVImageView;
 
 import java.io.IOException;
 import java.io.InputStream;

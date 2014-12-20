@@ -1,4 +1,4 @@
-package net.nonylene.photolinkviewer;
+package net.nonylene.photolinkviewer.async;
 
 import android.content.AsyncTaskLoader;
 import android.content.Context;

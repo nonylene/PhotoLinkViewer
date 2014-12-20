@@ -1,4 +1,4 @@
-package net.nonylene.photolinkviewer;
+package net.nonylene.photolinkviewer.async;
 
 import android.content.AsyncTaskLoader;
 import android.content.Context;
@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
+
+import net.nonylene.photolinkviewer.tool.GIFException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,7 +24,7 @@ public class AsyncHttp extends AsyncTaskLoader<AsyncHttpResult<Bitmap>> {
     private AsyncHttpResult<Bitmap> result;
     private int max_size;
 
-    public AsyncHttp(Context context, URL url ,int max_size) {
+    public AsyncHttp(Context context, URL url, int max_size) {
         super(context);
         this.url = url;
         this.max_size = max_size;
@@ -51,8 +53,8 @@ public class AsyncHttp extends AsyncTaskLoader<AsyncHttpResult<Bitmap>> {
                 Log.d("redirect", redirect);
                 httpResult.setException(new GIFException("gif file"));
                 httpResult.setUrl(redirect);
-                httpResult.setSize(origwidth,origheight);
-            }else {
+                httpResult.setSize(origwidth, origheight);
+            } else {
                 inputStream = url.openStream();
                 // if bitmap size is bigger than limit, load small photo
                 if (max_size < Math.max(origheight, origwidth)) {

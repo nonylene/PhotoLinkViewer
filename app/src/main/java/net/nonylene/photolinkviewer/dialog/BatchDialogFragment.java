@@ -1,10 +1,12 @@
-package net.nonylene.photolinkviewer;
+package net.nonylene.photolinkviewer.dialog;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+
+import net.nonylene.photolinkviewer.R;
 
 public class BatchDialogFragment extends DialogFragment {
     @Override

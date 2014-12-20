@@ -1,8 +1,10 @@
-package net.nonylene.photolinkviewer;
+package net.nonylene.photolinkviewer.tool;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ImageView;
+
+import net.nonylene.photolinkviewer.async.AsyncBitmap;
 
 import java.net.URL;
 

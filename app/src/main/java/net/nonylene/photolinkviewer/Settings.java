@@ -3,6 +3,8 @@ package net.nonylene.photolinkviewer;
 import android.app.Activity;
 import android.os.Bundle;
 
+import net.nonylene.photolinkviewer.fragment.PreferenceSummaryFragment;
+
 public class Settings extends Activity {
 
     @Override

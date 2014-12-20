@@ -1,4 +1,4 @@
-package net.nonylene.photolinkviewer;
+package net.nonylene.photolinkviewer.fragment;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -27,6 +27,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
+
+import net.nonylene.photolinkviewer.tool.Base49;
+import net.nonylene.photolinkviewer.R;
+import net.nonylene.photolinkviewer.Settings;
+import net.nonylene.photolinkviewer.async.AsyncJSON;
 
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -1,4 +1,4 @@
-package net.nonylene.photolinkviewer;
+package net.nonylene.photolinkviewer.async;
 
 public class AsyncHttpResult<Bitmap> {
     private Exception exception;
@@ -39,7 +39,7 @@ public class AsyncHttpResult<Bitmap> {
         return width;
     }
 
-    public void setSize(int width,int height) {
+    public void setSize(int width, int height) {
         this.height = height;
         this.width = width;
     }
