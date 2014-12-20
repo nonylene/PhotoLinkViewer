@@ -12,6 +12,7 @@ import net.nonylene.photolinkviewer.fragment.LTEFragment;
 import net.nonylene.photolinkviewer.fragment.WifiFragment;
 
 public class ChangeQualityActivity extends Activity implements LTEFragment.OnWifiSwitchListener {
+    private ActionBar actionBar;
     private ActionBar.Tab lteTab;
     private ActionBar.Tab wifiTab;
 
@@ -20,7 +21,7 @@ public class ChangeQualityActivity extends Activity implements LTEFragment.OnWif
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_quality);
         // set tabs
-        ActionBar actionBar = getActionBar();
+        actionBar = getActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         lteTab = actionBar.newTab();
         lteTab.setTabListener(new MyTabListener(new LTEFragment()));
@@ -33,7 +34,7 @@ public class ChangeQualityActivity extends Activity implements LTEFragment.OnWif
             actionBar.addTab(lteTab);
             actionBar.addTab(wifiTab);
         } else {
-            lteTab.setText("Wifi/LTE");
+            lteTab.setText("LTE/Wifi");
             actionBar.addTab(lteTab);
         }
     }
@@ -42,11 +43,15 @@ public class ChangeQualityActivity extends Activity implements LTEFragment.OnWif
     public void onChanged(boolean checked) {
         // lte fragment listener when switch changed
         if (checked) {
-            lteTab.setText("LTE");
-            getActionBar().addTab(wifiTab);
+            if (actionBar.getTabCount() == 1) {
+                lteTab.setText("LTE");
+                actionBar.addTab(wifiTab);
+            }
         } else {
-            lteTab.setText("Wifi/LTE");
-            getActionBar().removeTab(wifiTab);
+            if (actionBar.getTabCount() == 2) {
+                lteTab.setText("LTE/Wifi");
+                actionBar.removeTab(wifiTab);
+            }
         }
     }
 
