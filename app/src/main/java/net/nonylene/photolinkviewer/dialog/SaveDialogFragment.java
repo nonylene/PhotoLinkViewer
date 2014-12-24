@@ -26,10 +26,11 @@ public class SaveDialogFragment extends DialogFragment {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         final String filename;
         final File dir;
-        // get site and url from bundle
+        // get site, url and type from bundle
         final Bundle bundle = getArguments();
         final String sitename = bundle.getString("sitename");
         final String url = bundle.getString("file_url");
+        final String type = bundle.getString("type");
         // set download directory
         final String directory = preferences.getString("download_dir", "PLViewer");
         final File root = Environment.getExternalStorageDirectory();
@@ -51,7 +52,7 @@ public class SaveDialogFragment extends DialogFragment {
         textView.setText(dir.toString());
         // set pre_name to edit_text
         EditText editText = (EditText) view.findViewById(R.id.path_EditText);
-        editText.setText(filename + ".png");
+        editText.setText(filename + "." + type);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(view)
                 .setTitle(getString(R.string.save_dialog_title))

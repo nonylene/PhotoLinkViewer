@@ -4,6 +4,7 @@ public class AsyncHttpResult<Bitmap> {
     private Exception exception;
     private Bitmap bitmap;
     private String url;
+    private String type;
     private int height;
     private int width;
 
@@ -42,5 +43,13 @@ public class AsyncHttpResult<Bitmap> {
     public void setSize(int width, int height) {
         this.height = height;
         this.width = width;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getType() {
+        return type;
     }
 }

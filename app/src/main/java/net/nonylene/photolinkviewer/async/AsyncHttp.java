@@ -13,8 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Arrays;
 
 public class AsyncHttp extends AsyncTaskLoader<AsyncHttpResult<Bitmap>> {
     //get bitmap from url
@@ -33,29 +32,37 @@ public class AsyncHttp extends AsyncTaskLoader<AsyncHttpResult<Bitmap>> {
     @Override
     public AsyncHttpResult<Bitmap> loadInBackground() {
         AsyncHttpResult<Bitmap> httpResult = new AsyncHttpResult<>();
+        Bitmap bitmap;
+        byte[] yaBinary = new byte[4];
+
         try {
-            Bitmap bitmap;
+            // get redirect url
+            String redirect = getRedirectURL(url);
+            URL redirectUrl = new URL(redirect);
+            InputStream inputStream = redirectUrl.openStream();
             // get bitmap size
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            InputStream inputStream = connection.getInputStream();
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
             BitmapFactory.decodeStream(inputStream, null, options);
-            inputStream.close();
-            // get redirected url
-            String redirect = connection.getURL().toString();
-            connection.disconnect();
             int origheight = options.outHeight;
             int origwidth = options.outWidth;
-            Pattern pattern = Pattern.compile("^https?://.*\\.gif$");
-            Matcher matcher = pattern.matcher(redirect);
-            if (matcher.find()) {
-                Log.d("redirect", redirect);
-                httpResult.setException(new GIFException("gif file"));
+            inputStream.close();
+
+            // read binary and get type
+            inputStream = redirectUrl.openStream();
+            inputStream.read(yaBinary, 0, 4);
+            inputStream.close();
+
+            String type = getFileType(yaBinary);
+            httpResult.setType(type);
+            Log.v("type", type);
+
+            if (type.equals("gif")) {
+                httpResult.setException(new GIFException("GIF file"));
                 httpResult.setUrl(redirect);
                 httpResult.setSize(origwidth, origheight);
             } else {
-                inputStream = url.openStream();
+                inputStream = redirectUrl.openStream();
                 // if bitmap size is bigger than limit, load small photo
                 if (max_size < Math.max(origheight, origwidth)) {
                     int size = Math.max(origwidth, origheight) / max_size + 1;
@@ -108,5 +115,29 @@ public class AsyncHttp extends AsyncTaskLoader<AsyncHttpResult<Bitmap>> {
     public void onReset() {
         super.onReset();
         onStopLoading();
+    }
+
+    private String getRedirectURL(URL url) throws IOException {
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        InputStream inputStream = connection.getInputStream();
+        inputStream.close();
+        // get redirected url
+        String redirect = connection.getURL().toString();
+        connection.disconnect();
+        return redirect;
+    }
+
+    private String getFileType(byte[] head) {
+        // get file type from binary
+        byte[] png = {(byte) 0x89, (byte) 0x50, (byte) 0x4E, (byte) 0x47};
+        byte[] gif = {(byte) 0x47, (byte) 0x49, (byte) 0x46, (byte) 0x38};
+        byte[] jpg = {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF};
+        byte[] bmp = {(byte) 0x42, (byte) 0x4D};
+
+        if (Arrays.equals(Arrays.copyOfRange(head, 0, 4), png)) return "png";
+        else if (Arrays.equals(Arrays.copyOfRange(head, 0, 4), gif)) return "gif";
+        else if (Arrays.equals(Arrays.copyOfRange(head, 0, 3), jpg)) return "jpg";
+        else if (Arrays.equals(Arrays.copyOfRange(head, 0, 2), bmp)) return "bmp";
+        else return "unknown";
     }
 }

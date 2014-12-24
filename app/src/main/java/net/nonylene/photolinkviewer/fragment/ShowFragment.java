@@ -159,7 +159,6 @@ public class ShowFragment extends Fragment {
             if (basezoom == 0) {
                 basezoom = Math.abs(values[Matrix.MSKEW_X]);
             }
-            Log.v("firstzoom", String.valueOf(firstzoom));
             old_zoom = 1;
             return super.onScaleBegin(detector);
         }
@@ -190,10 +189,12 @@ public class ShowFragment extends Fragment {
     }
 
     public class AsyncExecute implements LoaderManager.LoaderCallbacks<AsyncHttpResult<Bitmap>> {
+        private Bundle argument;
 
-        public void Start(String url) {
+        public void Start(Bundle argument) {
+            this.argument = argument;
             Bundle bundle = new Bundle();
-            bundle.putString("url", url);
+            bundle.putString("url", argument.getString("file_url"));
             //there are some loaders, so restart(all has finished)
             getLoaderManager().restartLoader(0, bundle, this);
         }
@@ -217,6 +218,9 @@ public class ShowFragment extends Fragment {
             FrameLayout frameLayout = (FrameLayout) view.findViewById(R.id.showframe);
             ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.showprogress);
             frameLayout.removeView(progressBar);
+
+            // add DL button
+            addDLButton(result.getType());
 
             Bitmap bitmap = result.getBitmap();
 
@@ -299,6 +303,22 @@ public class ShowFragment extends Fragment {
         public void onLoaderReset(Loader<AsyncHttpResult<Bitmap>> loader) {
 
         }
+
+        private void addDLButton(String type) {
+            // dl button visibility and click
+            argument.putString("type", type);
+            ImageButton dlButton = (ImageButton) getActivity().findViewById(R.id.dlbutton);
+            dlButton.setVisibility(View.VISIBLE);
+            dlButton.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    // open dialog
+                    DialogFragment dialogFragment = new SaveDialogFragment();
+                    dialogFragment.setArguments(argument);
+                    dialogFragment.show(getFragmentManager(), "Save");
+                }
+            });
+
+        }
     }
 
     public class AsyncJSONExecute implements LoaderManager.LoaderCallbacks<JSONObject> {
@@ -359,7 +379,6 @@ public class ShowFragment extends Fragment {
                         file_url = "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + secret + "_z.jpg";
                         break;
                 }
-                Log.v("URL", url);
                 final Bundle bundle = new Bundle();
                 bundle.putString("url", url);
                 if (originalChecker(sharedPreferences, wifi)) {
@@ -373,19 +392,7 @@ public class ShowFragment extends Fragment {
                 bundle.putString("sitename", "flickr");
                 bundle.putString("filename", id);
                 AsyncExecute hoge = new AsyncExecute();
-                hoge.Start(file_url);
-                ImageButton dlButton = (ImageButton) getActivity().findViewById(R.id.dlbutton);
-                if (dlButton != null) {
-                    dlButton.setVisibility(View.VISIBLE);
-                }
-                dlButton.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        // open dialog
-                        DialogFragment dialogFragment = new SaveDialogFragment();
-                        dialogFragment.setArguments(bundle);
-                        dialogFragment.show(getFragmentManager(), "Save");
-                    }
-                });
+                hoge.Start(bundle);
             } catch (JSONException e) {
                 Log.e("JSONParseError", e.toString());
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
@@ -589,9 +596,6 @@ public class ShowFragment extends Fragment {
                     filename = id;
                     original_url = file_url = url;
                 }
-                Log.d("fileurl", file_url);
-                AsyncExecute asyncExecute = new AsyncExecute();
-                asyncExecute.Start(file_url);
                 final Bundle bundle = new Bundle();
                 bundle.putString("url", url);
                 // get original photo
@@ -601,17 +605,9 @@ public class ShowFragment extends Fragment {
                 bundle.putString("file_url", file_url);
                 bundle.putString("sitename", sitename);
                 bundle.putString("filename", filename);
-                // dl button visibility and click
-                ImageButton dlButton = (ImageButton) getActivity().findViewById(R.id.dlbutton);
-                dlButton.setVisibility(View.VISIBLE);
-                dlButton.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        // open dialog
-                        DialogFragment dialogFragment = new SaveDialogFragment();
-                        dialogFragment.setArguments(bundle);
-                        dialogFragment.show(getFragmentManager(), "Save");
-                    }
-                });
+
+                AsyncExecute asyncExecute = new AsyncExecute();
+                asyncExecute.Start(bundle);
             }
         } catch (IllegalStateException e) {
             // regex error
