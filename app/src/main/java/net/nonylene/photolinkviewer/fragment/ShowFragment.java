@@ -340,7 +340,8 @@ public class ShowFragment extends Fragment {
 
                 // wifi check
                 String quality;
-                if (wifiChecker(sharedPreferences)) {
+                boolean wifi = wifiChecker(sharedPreferences);
+                if (wifi) {
                     quality = sharedPreferences.getString("flickr_quality_wifi", "large");
                 } else {
                     quality = sharedPreferences.getString("flickr_quality_3g", "large");
@@ -361,7 +362,14 @@ public class ShowFragment extends Fragment {
                 Log.v("URL", url);
                 final Bundle bundle = new Bundle();
                 bundle.putString("url", url);
-                bundle.putString("file_url", file_url);
+                if (originalChecker(sharedPreferences, wifi)) {
+                    String original_secrets = photo.getString("originalsecret");
+                    String original_formats = photo.getString("originalformat");
+                    file_url = "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + original_secrets + "_o." + original_formats;
+                    bundle.putString("file_url", file_url);
+                } else {
+                    bundle.putString("file_url", file_url);
+                }
                 bundle.putString("sitename", "flickr");
                 bundle.putString("filename", id);
                 AsyncExecute hoge = new AsyncExecute();
@@ -402,6 +410,7 @@ public class ShowFragment extends Fragment {
         String sitename;
         String filename;
         String file_url = null;
+        String original_url = null;
 
         try {
             String id = null;
@@ -466,6 +475,7 @@ public class ShowFragment extends Fragment {
                             file_url = url + ":small";
                             break;
                     }
+                    original_url = url + ":orig";
                 } else if (url.contains("twipple.jp")) {
                     Log.v("twipple", url);
                     Pattern pattern = Pattern.compile("^https?://p\\.twipple\\.jp/(\\w+)");
@@ -492,6 +502,7 @@ public class ShowFragment extends Fragment {
                             file_url = "http://p.twipple.jp/show/thumb/" + id;
                             break;
                     }
+                    original_url = "http://p.twipple.jp/show/orig/" + id;
                 } else if (url.contains("img.ly")) {
                     Log.v("img.ly", url);
                     Pattern pattern = Pattern.compile("^https?://img\\.ly/(\\w+)");
@@ -518,6 +529,7 @@ public class ShowFragment extends Fragment {
                             file_url = "http://img.ly/show/medium/" + id;
                             break;
                     }
+                    original_url = "http://img.ly/show/full/" + id;
                 } else if (url.contains("instagram.com") || url.contains("instagr.am")) {
                     Log.v("instagram", url);
                     Pattern pattern = Pattern.compile("^https?://instagr\\.?am[\\.com]*/p/([^/]+)");
@@ -541,6 +553,7 @@ public class ShowFragment extends Fragment {
                             file_url = "http://instagram.com/p/" + id + "/media/?size=m";
                             break;
                     }
+                    original_url = "http://instagram.com/p/" + id + "/media/?size=l";
                 } else if (url.contains("gyazo.com")) {
                     Log.v("gyazo", url);
                     Pattern pattern = Pattern.compile("^https?://.*gyazo\\.com/(\\w+)");
@@ -552,7 +565,7 @@ public class ShowFragment extends Fragment {
                     sitename = "gyazo";
                     filename = id;
                     //redirect followed if new protocol is the same as old one.
-                    file_url = "https://gyazo.com/" + id + "/raw";
+                    original_url = file_url = "https://gyazo.com/" + id + "/raw";
                 } else if (url.contains("imgur.com")) {
                     Log.v("gyazo", url);
                     Pattern pattern = Pattern.compile("^https?://.*imgur\\.com/([\\w^\\.]+)");
@@ -563,7 +576,7 @@ public class ShowFragment extends Fragment {
                     id = matcher.group(1);
                     sitename = "imgur";
                     filename = id;
-                    file_url = "http://i.imgur.com/" + id + ".jpg";
+                    original_url = file_url = "http://i.imgur.com/" + id + ".jpg";
                 } else {
                     Log.v("other", url);
                     Pattern pattern = Pattern.compile("/([^\\.]+)\\.\\w*$");
@@ -574,13 +587,17 @@ public class ShowFragment extends Fragment {
                     id = matcher.group(1);
                     sitename = "other";
                     filename = id;
-                    file_url = url;
+                    original_url = file_url = url;
                 }
                 Log.d("fileurl", file_url);
                 AsyncExecute asyncExecute = new AsyncExecute();
                 asyncExecute.Start(file_url);
                 final Bundle bundle = new Bundle();
                 bundle.putString("url", url);
+                // get original photo
+                if (originalChecker(sharedPreferences, wifi)) {
+                    file_url = original_url;
+                }
                 bundle.putString("file_url", file_url);
                 bundle.putString("sitename", sitename);
                 bundle.putString("filename", filename);
@@ -620,6 +637,18 @@ public class ShowFragment extends Fragment {
         }
         Log.d("wifi", String.valueOf(wifi));
         return wifi;
+
+    }
+
+    public boolean originalChecker(SharedPreferences sharedPreferences, boolean wifi) {
+        //check download original or not
+        boolean orig;
+        if (wifi) {
+            orig = sharedPreferences.getBoolean("original_switch_wifi", false);
+        } else {
+            orig = sharedPreferences.getBoolean("original_switch_3g", false);
+        }
+        return orig;
 
     }
 

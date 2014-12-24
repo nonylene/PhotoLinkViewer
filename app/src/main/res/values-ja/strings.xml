@@ -72,5 +72,7 @@
     <string name="quality_batch_summary">画質を一括で設定します</string>
     <string name="quality_switch_summary">Wifi接続時に画質を変更できます</string>
     <string name="quality_switch_title">Wifi設定の有効化</string>
+    <string name="original_switch_summary">保存時は常に最大画質になります</string>
+    <string name="original_switch_title">最大画質でDL</string>
 
 </resources>

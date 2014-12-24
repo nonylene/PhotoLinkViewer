@@ -77,5 +77,7 @@
     <string name="quality_batch_ng">Cancel</string>
     <string name="quality_switch_title">Enable wifi setting</string>
     <string name="quality_switch_summary">Change quality when wifi connected</string>
+    <string name="original_switch_summary">Always download biggest size</string>
+    <string name="original_switch_title">Save high quality</string>
 
 </resources>

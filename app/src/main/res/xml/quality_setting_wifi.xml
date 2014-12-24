@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="original_switch_wifi"
+        android:summary="@string/original_switch_summary"
+        android:title="@string/original_switch_title"/>
+
     <Preference
         android:key="quality_wifi_batch"
         android:summary="@string/quality_batch_summary"
