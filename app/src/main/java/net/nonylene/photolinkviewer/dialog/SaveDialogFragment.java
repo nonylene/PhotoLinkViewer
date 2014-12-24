@@ -70,7 +70,10 @@ public class SaveDialogFragment extends DialogFragment {
                         DownloadManager.Request request = new DownloadManager.Request(uri);
                         request.setDestinationUri(Uri.fromFile(path));
                         request.setTitle("PhotoLinkViewer");
+                        request.setDescription(filename);
                         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
+                        // notify
+                        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
                         downloadManager.enqueue(request);
                         Toast.makeText(getActivity(), getString(R.string.download_photo_title) + path.toString(), Toast.LENGTH_LONG).show();
                     }
