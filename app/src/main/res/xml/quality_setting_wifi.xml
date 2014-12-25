@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <SwitchPreference
+    <CheckBoxPreference
         android:defaultValue="false"
         android:key="original_switch_wifi"
         android:summary="@string/original_switch_summary"

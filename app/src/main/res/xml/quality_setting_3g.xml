@@ -5,7 +5,7 @@
         android:summary="@string/quality_switch_summary"
         android:title="@string/quality_switch_title"/>
 
-    <SwitchPreference
+    <CheckBoxPreference
         android:defaultValue="false"
         android:key="original_switch_3g"
         android:summary="@string/original_switch_summary"
