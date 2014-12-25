@@ -275,20 +275,25 @@ public class ShowFragment extends Fragment {
                     webView.getSettings().setUseWideViewPort(true);
                     webView.getSettings().setLoadWithOverviewMode(true);
                     FrameLayout.LayoutParams layoutParams;
+                    String html;
                     int videoWidth = result.getWidth();
                     int videoHeight = result.getHeight();
                     if ((videoHeight > dispHeight * 0.9 && videoWidth * dispHeight / dispHeight < dispWidth) || dispWidth * videoHeight / videoWidth > dispHeight) {
                         // if height of video > disp_height * 0.9, check whether calculated width > disp_width . if this is true,
                         // give priority to width. and, if check whether calculated height > disp_height, give priority to height.
+                        int width = (int) (dispWidth * 0.9);
                         int height = (int) (dispHeight * 0.9);
-                        layoutParams = new FrameLayout.LayoutParams(height * videoWidth / videoHeight, height);
+                        layoutParams = new FrameLayout.LayoutParams(width, height);
+                        html = "<html><body><img style='display: block; margin: 0 auto' height='100%'src='" + result.getUrl() + "'></body></html>";
                     } else {
                         int width = (int) (dispWidth * 0.9);
                         layoutParams = new FrameLayout.LayoutParams(width, width * videoHeight / videoWidth);
+                        html = "<html><body><img style='display: block; margin: 0 auto' width='100%'src='" + result.getUrl() + "'></body></html>";
                     }
                     layoutParams.gravity = Gravity.CENTER;
                     webView.setLayoutParams(layoutParams);
-                    webView.loadUrl(result.getUrl());
+                    // html to centering
+                    webView.loadData(html, "text/html", "utf-8");
                     webView.setBackgroundColor(0x00000000);
                     WebSettings settings = webView.getSettings();
                     settings.setBuiltInZoomControls(true);
