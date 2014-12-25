@@ -386,13 +386,14 @@ public class ShowFragment extends Fragment {
                 }
                 final Bundle bundle = new Bundle();
                 bundle.putString("url", url);
+                bundle.putString("file_url", file_url);
                 if (originalChecker(sharedPreferences, wifi)) {
                     String original_secrets = photo.getString("originalsecret");
                     String original_formats = photo.getString("originalformat");
                     file_url = "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + original_secrets + "_o." + original_formats;
-                    bundle.putString("file_url", file_url);
+                    bundle.putString("original_url", file_url);
                 } else {
-                    bundle.putString("file_url", file_url);
+                    bundle.putString("original_url", file_url);
                 }
                 bundle.putString("sitename", "flickr");
                 bundle.putString("filename", id);
@@ -604,10 +605,11 @@ public class ShowFragment extends Fragment {
                 final Bundle bundle = new Bundle();
                 bundle.putString("url", url);
                 // get original photo
-                if (originalChecker(sharedPreferences, wifi)) {
-                    file_url = original_url;
+                if (!originalChecker(sharedPreferences, wifi)) {
+                    original_url = file_url;
                 }
                 bundle.putString("file_url", file_url);
+                bundle.putString("original_url", original_url);
                 bundle.putString("sitename", sitename);
                 bundle.putString("filename", filename);
 

@@ -29,7 +29,7 @@ public class SaveDialogFragment extends DialogFragment {
         // get site, url and type from bundle
         final Bundle bundle = getArguments();
         final String sitename = bundle.getString("sitename");
-        final String url = bundle.getString("file_url");
+        final String url = bundle.getString("original_url");
         final String type = bundle.getString("type");
         // set download directory
         final String directory = preferences.getString("download_dir", "PLViewer");

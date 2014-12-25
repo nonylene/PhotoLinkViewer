@@ -49,7 +49,7 @@ public class ChangeQualityActivity extends Activity implements LTEFragment.OnWif
             }
         } else {
             if (actionBar.getTabCount() == 2) {
-                lteTab.setText("LTE/Wifi");
+                lteTab.setText("LTE / Wifi");
                 actionBar.removeTab(wifiTab);
             }
         }
