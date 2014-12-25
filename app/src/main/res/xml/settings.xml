@@ -42,4 +42,9 @@
         android:key="download_file"
         android:title="@string/setting_mkdir_title" />
 
+    <Preference
+        android:key="about_app_preference"
+        android:title="@string/about_app_pretitle">
+    </Preference>
+
 </PreferenceScreen>

@@ -79,5 +79,13 @@
     <string name="quality_switch_summary">Change quality when wifi connected</string>
     <string name="original_switch_summary">Always download biggest size</string>
     <string name="original_switch_title">Save high quality</string>
+    <string name="about_app_twitter4j" translatable="false">Copyright Yusuke Yamamoto \n\n Licensed under the Apache License, Version 2.0 (the \"License\");\n you may not use this file except in compliance with the License. You may obtain a copy of the License at\n\n http://www.apache.org/licenses/LICENSE-2.0\n\n Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n See the License for the specific language governing permissions and limitations under the License.</string>
+    <string name="about_app_name" translatable="false">PhotoLinkViewer - ver.</string>
+    <string name="about_app_creator" translatable="false">Creator: nonylene</string>
+    <string name="about_app_software">USING LIBRARY</string>
+    <string name="about_app_4j" translatable="false">* twitter4j - http://twitter4j.org</string>
+    <string name="about_app_pretitle">About this app</string>
+    <string name="about_app_dialogtitle">About this app</string>
+    <string name="about_app_dialogok" translatable="false">OK</string>
 
 </resources>
