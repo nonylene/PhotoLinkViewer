@@ -291,7 +291,7 @@ public class TwitterDisplay extends Activity {
                                 fragmentTransaction.commit();
                             }
                         });
-                        imageView.setUrl(new URL(url), size, size);
+                        imageView.setUrl(new URL(url + ":small"), size, size);
                         currentLayout.addView(imageView);
                     } catch (MalformedURLException e) {
                         Log.e("URLError", e.toString());
