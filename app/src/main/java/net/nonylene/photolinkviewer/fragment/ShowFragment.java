@@ -10,6 +10,7 @@ import android.graphics.Matrix;
 import android.graphics.Point;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.os.Handler;
@@ -71,6 +72,9 @@ public class ShowFragment extends Fragment {
         preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         imageView = (ImageView) view.findViewById(R.id.imgview);
         final ScaleGestureDetector scaleGestureDetector = new ScaleGestureDetector(getActivity(), new simpleOnScaleGestureListener());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            scaleGestureDetector.setQuickScaleEnabled(false);
+        }
         final GestureDetector gestureDetector = new GestureDetector(getActivity(), new simpleOnGestureListener());
         imageView.setOnTouchListener(new View.OnTouchListener() {
             @Override
