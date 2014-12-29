@@ -71,13 +71,13 @@ public class ShowFragment extends Fragment {
         preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         imageView = (ImageView) view.findViewById(R.id.imgview);
         final ScaleGestureDetector scaleGestureDetector = new ScaleGestureDetector(getActivity(), new simpleOnScaleGestureListener());
-        final GestureDetector GestureDetector = new GestureDetector(getActivity(), new simpleOnGestureListener());
+        final GestureDetector gestureDetector = new GestureDetector(getActivity(), new simpleOnGestureListener());
         imageView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 scaleGestureDetector.onTouchEvent(event);
                 if (!scaleGestureDetector.isInProgress()) {
-                    GestureDetector.onTouchEvent(event);
+                    gestureDetector.onTouchEvent(event);
                 }
                 return true;
             }
