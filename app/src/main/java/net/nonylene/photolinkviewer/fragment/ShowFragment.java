@@ -92,7 +92,6 @@ public class ShowFragment extends Fragment {
 
 
     class simpleOnGestureListener extends GestureDetector.SimpleOnGestureListener {
-        boolean moved = false;
 
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
@@ -110,42 +109,33 @@ public class ShowFragment extends Fragment {
         }
 
         @Override
-        public boolean onDoubleTapEvent(MotionEvent e) {
-            if (e.getAction() == MotionEvent.ACTION_UP ){
-                if (moved){
-                    moved = false;
-                }else {
-                    final float touchX = e.getX();
-                    final float touchY = e.getY();
-                    ScaleAnimation scaleAnimation = new ScaleAnimation(1, 2, 1, 2, touchX, touchY);
-                    scaleAnimation.setDuration(200);
-                    scaleAnimation.setFillEnabled(true);
-                    scaleAnimation.setAnimationListener(new Animation.AnimationListener() {
-                        @Override
-                        public void onAnimationStart(Animation animation) {
-                        }
-
-                        @Override
-                        public void onAnimationEnd(Animation animation) {
-                            final Matrix matrix = new Matrix();
-                            matrix.set(imageView.getImageMatrix());
-                            matrix.postScale(2, 2, touchX, touchY);
-                            imageView.setImageMatrix(matrix);
-                        }
-
-                        @Override
-                        public void onAnimationRepeat(Animation animation) {
-                        }
-                    });
-                    imageView.startAnimation(scaleAnimation);
-                    // drag photo
+        public boolean onDoubleTap(MotionEvent e) {
+            final float touchX = e.getX();
+            final float touchY = e.getY();
+            ScaleAnimation scaleAnimation = new ScaleAnimation(1, 2, 1, 2, touchX, touchY);
+            scaleAnimation.setDuration(200);
+            scaleAnimation.setFillEnabled(true);
+            scaleAnimation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
                 }
-            }else if (e.getAction() == MotionEvent.ACTION_MOVE){
-                moved = true;
-            }
-            return super.onDoubleTapEvent(e);
-        }
 
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    final Matrix matrix = new Matrix();
+                    matrix.set(imageView.getImageMatrix());
+                    matrix.postScale(2, 2, touchX, touchY);
+                    imageView.setImageMatrix(matrix);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+                }
+            });
+            imageView.startAnimation(scaleAnimation);
+            // drag photo
+            return super.onDoubleTap(e);
+        }
     }
 
     class simpleOnScaleGestureListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
