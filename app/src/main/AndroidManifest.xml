@@ -65,6 +65,22 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
+                    android:host="seiga.nicovideo.jp"
+                    android:pathPattern="/seiga/im.*"
+                    android:scheme="http" />
+                <data
+                    android:host="seiga.nicovideo.jp"
+                    android:pathPattern="/seiga/im.*"
+                    android:scheme="https" />
+                <data
+                    android:host="nico.ms"
+                    android:pathPattern="/im.*"
+                    android:scheme="http" />
+                <data
+                    android:host="nico.ms"
+                    android:pathPattern="/im.*"
+                    android:scheme="https" />
+                <data
                     android:host="www.flickr.com"
                     android:pathPattern="/photos/.*/..*"
                     android:scheme="http" />

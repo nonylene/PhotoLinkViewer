@@ -39,6 +39,11 @@
         <item>large</item>
         <item>medium</item>
     </array>
+    <array name="nicoseiga_quality">
+        <item>original</item>
+        <item>large</item>
+        <item>medium</item>
+    </array>
 
     <array name="flickr_quality_value">
         <item>original</item>
@@ -62,6 +67,11 @@
         <item>medium</item>
     </array>
     <array name="instagram_quality_value">
+        <item>large</item>
+        <item>medium</item>
+    </array>
+    <array name="nicoseiga_quality_value">
+        <item>original</item>
         <item>large</item>
         <item>medium</item>
     </array>

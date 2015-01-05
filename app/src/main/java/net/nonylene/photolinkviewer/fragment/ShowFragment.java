@@ -36,6 +36,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import net.nonylene.photolinkviewer.async.AsyncGetURL;
 import net.nonylene.photolinkviewer.tool.Base58;
 import net.nonylene.photolinkviewer.tool.GIFException;
 import net.nonylene.photolinkviewer.R;
@@ -389,7 +390,6 @@ public class ShowFragment extends Fragment {
                         break;
                 }
                 final Bundle bundle = new Bundle();
-                bundle.putString("url", url);
                 bundle.putString("file_url", file_url);
                 if (originalChecker(sharedPreferences, wifi)) {
                     String original_secrets = photo.getString("originalsecret");
@@ -416,6 +416,86 @@ public class ShowFragment extends Fragment {
 
         @Override
         public void onLoaderReset(Loader<JSONObject> loader) {
+
+        }
+    }
+
+    public class AsyncNICOExecute implements LoaderManager.LoaderCallbacks<String> {
+        private String id;
+        //get json from url
+
+        public void Start(String id) {
+            this.id =id;
+            Bundle bundle = new Bundle();
+            String url = "http://seiga.nicovideo.jp/image/source/" + id;
+            bundle.putString("url", url);
+            getLoaderManager().restartLoader(0, bundle, this);
+        }
+
+        @Override
+        public Loader<String> onCreateLoader(int id, Bundle bundle) {
+            try {
+                String c = bundle.getString("url");
+                URL url = new URL(c);
+                return new AsyncGetURL(getActivity().getApplicationContext(), url);
+            } catch (IOException e) {
+                Log.e("AsyncNICOLoaderError", e.toString());
+                return null;
+            }
+        }
+
+        @Override
+        public void onLoadFinished(Loader<String> loader, String redirect) {
+            //for nico
+            Log.v("url", redirect);
+            String original_url = redirect.replace("/o/", "/priv/");
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String file_url = null;
+
+            // wifi check
+            String quality;
+            boolean wifi = wifiChecker(sharedPreferences);
+            if (wifi) {
+                quality = sharedPreferences.getString("nicoseiga_quality_wifi", "large");
+            } else {
+                quality = sharedPreferences.getString("nicoseiga_quality_3g", "large");
+            }
+            if (redirect.contains("account.nicovideo.jp")) {
+                // cannot preview original photo
+                original_url = "http://lohas.nicoseiga.jp/img/" + id + "l";
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(view.getContext(), getString(R.string.nico_original_toast), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+            switch (quality) {
+                case "original":
+                    file_url = original_url;
+                    break;
+                case "large":
+                    file_url = "http://lohas.nicoseiga.jp/img/" + id + "l";
+                    break;
+                case "medium":
+                    file_url = "http://lohas.nicoseiga.jp/img/" + id + "m";
+                    break;
+            }
+            Bundle bundle = new Bundle();
+            bundle.putString("file_url", file_url);
+            if (originalChecker(sharedPreferences, wifi)) {
+                bundle.putString("original_url", original_url);
+            } else {
+                bundle.putString("original_url", file_url);
+            }
+            bundle.putString("sitename", "nicoseiga");
+            bundle.putString("filename", id);
+            AsyncExecute hoge = new AsyncExecute();
+            hoge.Start(bundle);
+        }
+
+        @Override
+        public void onLoaderReset(Loader<String> loader) {
 
         }
     }
@@ -455,6 +535,25 @@ public class ShowFragment extends Fragment {
                 Log.v("flickrAPI", request);
                 AsyncJSONExecute hoge = new AsyncJSONExecute();
                 hoge.Start(request);
+            } else if (url.contains("nico.ms") || url.contains("seiga.nicovideo.jp")) {
+                Log.v("nico", url);
+                if (url.contains("nico.ms")) {
+                    Pattern pattern = Pattern.compile("^https?://nico\\.ms/im(\\d+)");
+                    Matcher matcher = pattern.matcher(url);
+                    if (matcher.find()) {
+                        Log.v("match", "success");
+                    }
+                    id = matcher.group(1);
+                } else if (url.contains("seiga.nicovideo.jp")) {
+                    Pattern pattern = Pattern.compile("^https?://seiga.nicovideo.jp/seiga/im(\\d+)");
+                    Matcher matcher = pattern.matcher(url);
+                    if (matcher.find()) {
+                        Log.v("match", "success");
+                    }
+                    id = Base58.decode(matcher.group(1));
+                }
+                AsyncNICOExecute nicoExecute = new AsyncNICOExecute();
+                nicoExecute.Start(id);
             } else {
 
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());

@@ -49,5 +49,11 @@
             android:key="instagram_quality_wifi"
             android:title="@string/instagram_quality_title"/>
 
+        <ListPreference
+            android:dialogTitle="@string/quality_setting_dialogtitle"
+            android:entries="@array/nicoseiga_quality"
+            android:entryValues="@array/nicoseiga_quality_value"
+            android:key="nicoseiga_quality_wifi"
+            android:title="@string/nicoseiga_quality_title"/>
     </PreferenceCategory>
 </PreferenceScreen>
