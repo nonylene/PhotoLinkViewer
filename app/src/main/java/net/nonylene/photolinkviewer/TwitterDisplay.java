@@ -110,10 +110,21 @@ public class TwitterDisplay extends Activity {
         @Override
         public void onException(TwitterException e, TwitterMethod twitterMethod) {
             Log.e("twitterException", e.toString());
+            final String message;
+            switch (e.getErrorCode()) {
+                case 34:
+                    message = "404 not found";
+                    break;
+                case 130:
+                    message = "Over capacity";
+                    break;
+                default:
+                    message = getString(R.string.twitter_error_toast);
+            }
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(getApplicationContext(), getString(R.string.twitter_error_toast), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
                 }
             });
         }
