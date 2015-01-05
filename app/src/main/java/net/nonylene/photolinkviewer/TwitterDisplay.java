@@ -53,58 +53,55 @@ public class TwitterDisplay extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_twitter_display);
         // get intent and purse url
-
-        if (Intent.ACTION_VIEW.equals(getIntent().getAction())) {
-            url = getIntent().getDataString();
-        } else if ("jp.r246.twicca.ACTION_SHOW_TWEET".equals(getIntent().getAction())) {
-            url = "https://twitter.com/" + getIntent().getStringExtra("user_screen_name") + "/status/" + getIntent().getStringExtra("id") + "/photo/1";
-        } else {
-            Toast.makeText(this, "Intent Error!", Toast.LENGTH_LONG).show();
-            finish();
-        }
-
         SharedPreferences sharedPreferences = getSharedPreferences("preference", Context.MODE_PRIVATE);
-
-        Bundle bundle = new Bundle();
-        bundle.putString("url", url);
-        // option fragment
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        OptionFragment optionFragment = new OptionFragment();
-        optionFragment.setArguments(bundle);
-        fragmentTransaction.add(R.id.root_layout, optionFragment).commit();
-        Log.v("twitter", url);
-        Pattern pattern = Pattern.compile("^https?://twitter\\.com/\\w+/status[es]*/(\\d+)");
-        Matcher matcher = pattern.matcher(url);
-        if (matcher.find()) {
-            Log.v("match", "success");
-        }
-        String id = matcher.group(1);
-        Long id_long = Long.parseLong(id);
-        if (sharedPreferences.getBoolean("authorized", false)) {
-            // oAuthed
-            try {
-                // get twitter async
-                twitter = MyAsyncTwitter.getAsyncTwitter(getApplicationContext());
-                twitter.addListener(twitterListener);
-                twitter.showStatus(id_long);
-                bundle.putLong("id_long", id_long);
-                TwitterOptionFragment twitterOptionFragment = new TwitterOptionFragment();
-                twitterOptionFragment.setArguments(bundle);
-                getFragmentManager().beginTransaction().add(R.id.buttons, twitterOptionFragment).commit();
-            } catch (SQLiteException e) {
-                Log.e("SQL", e.toString());
-            } catch (IndexOutOfBoundsException e) {
-                Log.e("twitter", e.toString());
-                Toast.makeText(getApplicationContext(), getString(R.string.twitter_async_select), Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(this, TOAuth.class);
-                startActivity(intent);
-                finish();
+        if (Intent.ACTION_VIEW.equals(getIntent().getAction())) {
+            Bundle bundle = new Bundle();
+            Uri uri = getIntent().getData();
+            url = uri.toString();
+            bundle.putString("url", url);
+            // option fragment
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            OptionFragment optionFragment = new OptionFragment();
+            optionFragment.setArguments(bundle);
+            fragmentTransaction.add(R.id.root_layout, optionFragment).commit();
+            if (url.contains("twitter.com")) {
+                Log.v("twitter", url);
+                Pattern pattern = Pattern.compile("^https?://twitter\\.com/\\w+/status[es]*/(\\d+)");
+                Matcher matcher = pattern.matcher(url);
+                if (matcher.find()) {
+                    Log.v("match", "success");
+                }
+                String id = matcher.group(1);
+                Long id_long = Long.parseLong(id);
+                if (sharedPreferences.getBoolean("authorized", false)) {
+                    // oAuthed
+                    try {
+                        // get twitter async
+                        twitter = MyAsyncTwitter.getAsyncTwitter(getApplicationContext());
+                        twitter.addListener(twitterListener);
+                        twitter.showStatus(id_long);
+                        bundle.putLong("id_long", id_long);
+                        TwitterOptionFragment twitterOptionFragment = new TwitterOptionFragment();
+                        twitterOptionFragment.setArguments(bundle);
+                        getFragmentManager().beginTransaction().add(R.id.buttons, twitterOptionFragment).commit();
+                    } catch (SQLiteException e) {
+                        Log.e("SQL", e.toString());
+                    } catch (IndexOutOfBoundsException e) {
+                        Log.e("twitter", e.toString());
+                        Toast.makeText(getApplicationContext(), getString(R.string.twitter_async_select), Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(this, TOAuth.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(), getString(R.string.twitter_display_oauth), Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(this, TOAuth.class);
+                    startActivity(intent);
+                    finish();
+                }
             }
         } else {
-            Toast.makeText(getApplicationContext(), getString(R.string.twitter_display_oauth), Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(this, TOAuth.class);
-            startActivity(intent);
-            finish();
+            Toast.makeText(this, "Intent Error!", Toast.LENGTH_LONG).show();
         }
     }
 
