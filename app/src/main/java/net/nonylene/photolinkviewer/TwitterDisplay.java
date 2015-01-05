@@ -1,11 +1,18 @@
 package net.nonylene.photolinkviewer;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -27,6 +34,7 @@ import net.nonylene.photolinkviewer.fragment.OptionFragment;
 import net.nonylene.photolinkviewer.fragment.ShowFragment;
 import net.nonylene.photolinkviewer.fragment.TwitterOptionFragment;
 import net.nonylene.photolinkviewer.tool.MyAsyncTwitter;
+import net.nonylene.photolinkviewer.tool.MySQLiteOpenHelper;
 import net.nonylene.photolinkviewer.tool.PLVImageView;
 
 import java.io.File;
@@ -34,6 +42,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -118,6 +127,50 @@ public class TwitterDisplay extends Activity {
         }
     }
 
+    public static class ChangeAccountDialog extends DialogFragment {
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // get account info from database
+            SQLiteOpenHelper helper = new MySQLiteOpenHelper(getActivity());
+            SQLiteDatabase database = helper.getReadableDatabase();
+            Cursor cursor = database.rawQuery("select rowid, userName from accounts", null);
+            // lists
+            final ArrayList<String> screen_list = new ArrayList<>();
+            final ArrayList<Integer> row_id_list = new ArrayList<>();
+            cursor.moveToFirst();
+            screen_list.add(cursor.getString(cursor.getColumnIndex("userName")));
+            row_id_list.add(cursor.getInt(cursor.getColumnIndex("rowid")));
+            while (cursor.moveToNext()) {
+                screen_list.add(cursor.getString(cursor.getColumnIndex("userName")));
+                row_id_list.add(cursor.getInt(cursor.getColumnIndex("rowid")));
+            }
+            database.close();
+            // get array for easy
+            String[] screen_array = screen_list.toArray(new String[screen_list.size()]);
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle(getString(R.string.account_dialog_title))
+                    .setNegativeButton(getString(R.string.account_dialog_ng), null)
+                    .setSingleChoiceItems(screen_array, -1, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int position) {
+                            int row_id = row_id_list.get(position);
+                            String screen_name = screen_list.get(position);
+                            // save rowid and screen name to preference
+                            SharedPreferences sharedPreferences = getActivity().getSharedPreferences("preference", MODE_PRIVATE);
+                            sharedPreferences.edit().putInt("account", row_id).apply();
+                            sharedPreferences.edit().putString("screen_name", screen_name).apply();
+                            //reload activity
+                            startActivity(getActivity().getIntent());
+                            dialog.dismiss();
+                            getActivity().finish();
+                        }
+                    });
+            return builder.create();
+        }
+
+    }
+
     private TwitterListener twitterListener = new TwitterAdapter() {
 
         @Override
@@ -131,6 +184,14 @@ public class TwitterDisplay extends Activity {
                 case 130:
                     message = "Over capacity";
                     break;
+                case 179:
+                    message = getString(R.string.twitter_error_authorize);
+                    createDialog();
+                    break;
+                case 88:
+                    message = "Rate limit exceeded";
+                    createDialog();
+                    break;
                 default:
                     message = getString(R.string.twitter_error_toast);
             }
@@ -140,6 +201,11 @@ public class TwitterDisplay extends Activity {
                     Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
                 }
             });
+        }
+
+        public void createDialog() {
+            ChangeAccountDialog accountDialog = new ChangeAccountDialog();
+            accountDialog.show(getFragmentManager(), "account");
         }
 
         @Override

@@ -89,5 +89,8 @@
     <string name="about_app_dialogtitle">About this app</string>
     <string name="about_app_dialogok" translatable="false">OK</string>
     <string name="nico_original_toast">Cannot view original photo for this id. Even if you choose original, this is compressed photo</string>
+    <string name="account_dialog_ng">Cancel</string>
+    <string name="account_dialog_title">Change account ?</string>
+    <string name="twitter_error_authorize">Not authorized</string>
 
 </resources>
