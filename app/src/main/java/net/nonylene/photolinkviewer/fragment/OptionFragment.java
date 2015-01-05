@@ -105,7 +105,7 @@ public class OptionFragment extends Fragment {
             final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             List<ResolveInfo> resolveInfoList = getActivity().getPackageManager().queryIntentActivities(intent, 0);
             // organize data and save to app class
-            final List<Apps> appsList = new ArrayList<Apps>();
+            final List<Apps> appsList = new ArrayList<>();
             for (ResolveInfo resolveInfo : resolveInfoList) {
                 appsList.add(new Apps(resolveInfo));
             }
