@@ -71,6 +71,7 @@ public class LTEFragment extends PreferenceSummaryFragment {
         ListPreference twipplePreference = (ListPreference) findPreference("twipple_quality_3g");
         ListPreference imglyPreference = (ListPreference) findPreference("imgly_quality_3g");
         ListPreference instagramPreference = (ListPreference) findPreference("instagram_quality_3g");
+        ListPreference nicoPreference = (ListPreference) findPreference("nicoseiga_quality_3g");
         switch (resultCode) {
             case 0:
                 flickrPreference.setValue("original");
@@ -78,6 +79,7 @@ public class LTEFragment extends PreferenceSummaryFragment {
                 twipplePreference.setValue("original");
                 imglyPreference.setValue("full");
                 instagramPreference.setValue("large");
+                nicoPreference.setValue("original");
                 break;
             case 1:
                 flickrPreference.setValue("large");
@@ -85,6 +87,7 @@ public class LTEFragment extends PreferenceSummaryFragment {
                 twipplePreference.setValue("large");
                 imglyPreference.setValue("large");
                 instagramPreference.setValue("large");
+                nicoPreference.setValue("large");
                 break;
             case 2:
                 flickrPreference.setValue("medium");
@@ -92,6 +95,7 @@ public class LTEFragment extends PreferenceSummaryFragment {
                 twipplePreference.setValue("thumb");
                 imglyPreference.setValue("medium");
                 instagramPreference.setValue("medium");
+                nicoPreference.setValue("medium");
                 break;
         }
 

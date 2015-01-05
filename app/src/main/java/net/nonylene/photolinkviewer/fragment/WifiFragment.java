@@ -46,6 +46,7 @@ public class WifiFragment extends PreferenceSummaryFragment {
         ListPreference twipplePreference = (ListPreference) findPreference("twipple_quality_wifi");
         ListPreference imglyPreference = (ListPreference) findPreference("imgly_quality_wifi");
         ListPreference instagramPreference = (ListPreference) findPreference("instagram_quality_wifi");
+        ListPreference nicoPreference = (ListPreference) findPreference("nicoseiga_quality_wifi");
         switch (resultCode) {
             case 0:
                 flickrPreference.setValue("original");
@@ -53,6 +54,7 @@ public class WifiFragment extends PreferenceSummaryFragment {
                 twipplePreference.setValue("original");
                 imglyPreference.setValue("full");
                 instagramPreference.setValue("large");
+                nicoPreference.setValue("original");
                 break;
             case 1:
                 flickrPreference.setValue("large");
@@ -60,6 +62,7 @@ public class WifiFragment extends PreferenceSummaryFragment {
                 twipplePreference.setValue("large");
                 imglyPreference.setValue("large");
                 instagramPreference.setValue("large");
+                nicoPreference.setValue("large");
                 break;
             case 2:
                 flickrPreference.setValue("medium");
@@ -67,6 +70,7 @@ public class WifiFragment extends PreferenceSummaryFragment {
                 twipplePreference.setValue("thumb");
                 imglyPreference.setValue("medium");
                 instagramPreference.setValue("medium");
+                nicoPreference.setValue("medium");
                 break;
         }
 

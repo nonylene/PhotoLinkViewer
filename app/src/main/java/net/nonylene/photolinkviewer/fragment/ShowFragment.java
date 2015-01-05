@@ -455,12 +455,13 @@ public class ShowFragment extends Fragment {
             // wifi check
             String quality;
             boolean wifi = wifiChecker(sharedPreferences);
+            boolean original = originalChecker(sharedPreferences,wifi);
             if (wifi) {
                 quality = sharedPreferences.getString("nicoseiga_quality_wifi", "large");
             } else {
                 quality = sharedPreferences.getString("nicoseiga_quality_3g", "large");
             }
-            if (redirect.contains("account.nicovideo.jp")) {
+            if (redirect.contains("account.nicovideo.jp") && (original || quality.equals("original"))) {
                 // cannot preview original photo
                 original_url = "http://lohas.nicoseiga.jp/img/" + id + "l";
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
@@ -483,7 +484,7 @@ public class ShowFragment extends Fragment {
             }
             Bundle bundle = new Bundle();
             bundle.putString("file_url", file_url);
-            if (originalChecker(sharedPreferences, wifi)) {
+            if (original) {
                 bundle.putString("original_url", original_url);
             } else {
                 bundle.putString("original_url", file_url);
