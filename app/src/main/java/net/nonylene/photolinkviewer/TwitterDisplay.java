@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteException;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.net.http.HttpResponseCache;
 import android.os.Bundle;
 import android.text.TextPaint;
 import android.util.Log;
@@ -28,6 +29,8 @@ import net.nonylene.photolinkviewer.fragment.TwitterOptionFragment;
 import net.nonylene.photolinkviewer.tool.MyAsyncTwitter;
 import net.nonylene.photolinkviewer.tool.PLVImageView;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -52,6 +55,16 @@ public class TwitterDisplay extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_twitter_display);
+
+        //enable cache
+        try {
+            File httpCacheDir = new File(getApplicationContext().getCacheDir(), "http");
+            long httpCacheSize = 10 * 1024 * 1024; // 15 MB
+            HttpResponseCache.install(httpCacheDir, httpCacheSize);
+        } catch (IOException e) {
+            Log.d("cache", "HTTP response cache installation failed");
+        }
+
         // get intent and purse url
         SharedPreferences sharedPreferences = getSharedPreferences("preference", Context.MODE_PRIVATE);
         if (Intent.ACTION_VIEW.equals(getIntent().getAction())) {
@@ -313,4 +326,14 @@ public class TwitterDisplay extends Activity {
 
     };
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        // flash cache
+        HttpResponseCache cache = HttpResponseCache.getInstalled();
+        if (cache != null) {
+            cache.flush();
+        }
+    }
 }
