@@ -172,6 +172,11 @@
             android:name=".TwitterDisplay"
             android:theme="@style/Theme.Transparent" >
             <intent-filter>
+                <action android:name="jp.r246.twicca.ACTION_SHOW_TWEET"/>
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
