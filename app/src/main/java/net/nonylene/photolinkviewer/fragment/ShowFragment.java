@@ -649,7 +649,7 @@ public class ShowFragment extends Fragment {
                     original_url = "http://img.ly/show/full/" + id;
                 } else if (url.contains("instagram.com") || url.contains("instagr.am")) {
                     Log.v("instagram", url);
-                    Pattern pattern = Pattern.compile("^https?://instagr\\.?am[\\.com]*/p/([^/]+)");
+                    Pattern pattern = Pattern.compile("^https?://instagr\\.?am[\\.com]*/p/([^/\\?=]+)");
                     Matcher matcher = pattern.matcher(url);
                     if (matcher.find()) {
                         Log.v("match", "success");
@@ -696,7 +696,7 @@ public class ShowFragment extends Fragment {
                     original_url = file_url = "http://i.imgur.com/" + id + ".jpg";
                 } else {
                     Log.v("other", url);
-                    Pattern pattern = Pattern.compile("/([^\\./]+).\\w*$");
+                    Pattern pattern = Pattern.compile("/([^\\./]+).[\\w\\?=]*$");
                     Matcher matcher = pattern.matcher(url);
                     if (matcher.find()) {
                         Log.v("match", "success");
