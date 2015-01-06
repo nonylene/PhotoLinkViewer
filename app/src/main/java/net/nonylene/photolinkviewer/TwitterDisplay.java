@@ -148,16 +148,19 @@ public class TwitterDisplay extends Activity {
             database.close();
             // get array for easy
             String[] screen_array = screen_list.toArray(new String[screen_list.size()]);
+            // get current screen_name
+            final SharedPreferences sharedPreferences = getActivity().getSharedPreferences("preference", MODE_PRIVATE);
+            String current_name = sharedPreferences.getString("screen_name",null);
+            int position = screen_list.indexOf(current_name);
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle(getString(R.string.account_dialog_title))
                     .setNegativeButton(getString(R.string.account_dialog_ng), null)
-                    .setSingleChoiceItems(screen_array, -1, new DialogInterface.OnClickListener() {
+                    .setSingleChoiceItems(screen_array, position, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int position) {
                             int row_id = row_id_list.get(position);
                             String screen_name = screen_list.get(position);
                             // save rowid and screen name to preference
-                            SharedPreferences sharedPreferences = getActivity().getSharedPreferences("preference", MODE_PRIVATE);
                             sharedPreferences.edit().putInt("account", row_id).apply();
                             sharedPreferences.edit().putString("screen_name", screen_name).apply();
                             //reload activity
