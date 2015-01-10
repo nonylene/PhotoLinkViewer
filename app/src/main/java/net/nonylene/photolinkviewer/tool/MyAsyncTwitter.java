@@ -6,9 +6,12 @@ import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Base64;
 
 import net.nonylene.photolinkviewer.R;
+
+import java.util.ArrayList;
 
 import javax.crypto.spec.SecretKeySpec;
 
@@ -40,5 +43,27 @@ public class MyAsyncTwitter {
         twitter.setOAuthAccessToken(accessToken);
         database.close();
         return twitter;
+    }
+
+    public static AccountsList getAccountsList (Context context) {
+        // get account info from database
+        SQLiteOpenHelper helper = new MySQLiteOpenHelper(context);
+        SQLiteDatabase database = helper.getReadableDatabase();
+        Cursor cursor = database.rawQuery("select rowid, userName from accounts", null);
+        // lists
+        ArrayList<String> screen_list = new ArrayList<>();
+        ArrayList<Integer> row_id_list = new ArrayList<>();
+        cursor.moveToFirst();
+        screen_list.add(cursor.getString(cursor.getColumnIndex("userName")));
+        row_id_list.add(cursor.getInt(cursor.getColumnIndex("rowid")));
+        while (cursor.moveToNext()) {
+            screen_list.add(cursor.getString(cursor.getColumnIndex("userName")));
+            row_id_list.add(cursor.getInt(cursor.getColumnIndex("rowid")));
+        }
+        database.close();
+        AccountsList list = new AccountsList();
+        list.setRowIdList(row_id_list);
+        list.setScreenList(screen_list);
+        return list;
     }
 }

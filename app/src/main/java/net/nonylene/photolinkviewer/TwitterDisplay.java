@@ -9,10 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -33,8 +30,8 @@ import android.widget.Toast;
 import net.nonylene.photolinkviewer.fragment.OptionFragment;
 import net.nonylene.photolinkviewer.fragment.ShowFragment;
 import net.nonylene.photolinkviewer.fragment.TwitterOptionFragment;
+import net.nonylene.photolinkviewer.tool.AccountsList;
 import net.nonylene.photolinkviewer.tool.MyAsyncTwitter;
-import net.nonylene.photolinkviewer.tool.MySQLiteOpenHelper;
 import net.nonylene.photolinkviewer.tool.PLVImageView;
 
 import java.io.File;
@@ -131,21 +128,9 @@ public class TwitterDisplay extends Activity {
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // get account info from database
-            SQLiteOpenHelper helper = new MySQLiteOpenHelper(getActivity());
-            SQLiteDatabase database = helper.getReadableDatabase();
-            Cursor cursor = database.rawQuery("select rowid, userName from accounts", null);
-            // lists
-            final ArrayList<String> screen_list = new ArrayList<>();
-            final ArrayList<Integer> row_id_list = new ArrayList<>();
-            cursor.moveToFirst();
-            screen_list.add(cursor.getString(cursor.getColumnIndex("userName")));
-            row_id_list.add(cursor.getInt(cursor.getColumnIndex("rowid")));
-            while (cursor.moveToNext()) {
-                screen_list.add(cursor.getString(cursor.getColumnIndex("userName")));
-                row_id_list.add(cursor.getInt(cursor.getColumnIndex("rowid")));
-            }
-            database.close();
+            AccountsList accountsList = MyAsyncTwitter.getAccountsList(getActivity());
+            final ArrayList<String> screen_list = accountsList.getScreenList();
+            final ArrayList<Integer> row_id_list = accountsList.getRowIdList();
             // get array for easy
             String[] screen_array = screen_list.toArray(new String[screen_list.size()]);
             // get current screen_name
