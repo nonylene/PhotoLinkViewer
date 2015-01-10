@@ -38,12 +38,8 @@
     <string name="toast_favorite">favorited!</string>
     <string name="favorite_dialog_title">Favorite</string>
     <string name="favorite_dialog_message">Add favorite this tweet?</string>
-    <string name="favorite_dialog_ok">OK</string>
-    <string name="favorite_dialog_ng">Cancel</string>
     <string name="retweet_dialog_title">Retweet</string>
     <string name="retweet_dialog_message">Retweet this tweet?</string>
-    <string name="retweet_dialog_ok">OK</string>
-    <string name="retweet_dialog_ng">Cancel</string>
     <string name="toauth_failed_twitter4j">twitter error!</string>
     <string name="toauth_button">Add account</string>
     <string name="toauth_update_button">Update account database</string>

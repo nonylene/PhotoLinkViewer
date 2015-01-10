@@ -37,12 +37,8 @@
     <string name="toast_favorite">お気に入りに登録しました</string>
     <string name="toast_retweet">リツイートしました</string>
     <string name="favorite_dialog_message">このツイートをお気に入り登録しますか？</string>
-    <string name="favorite_dialog_ng">キャンセル</string>
-    <string name="favorite_dialog_ok">OK</string>
     <string name="favorite_dialog_title">お気に入り登録</string>
     <string name="retweet_dialog_message">このツイートをRTしますか？</string>
-    <string name="retweet_dialog_ng">キャンセル</string>
-    <string name="retweet_dialog_ok">OK</string>
     <string name="retweet_dialog_title">リツイート</string>
     <string name="toauth_failed_twitter4j">twitterエラー</string>
     <string name="toauth_button">アカウント追加</string>
