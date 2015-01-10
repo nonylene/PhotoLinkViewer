@@ -20,16 +20,26 @@ import twitter4j.AsyncTwitterFactory;
 import twitter4j.auth.AccessToken;
 
 public class MyAsyncTwitter {
+
     public static AsyncTwitter getAsyncTwitter(Context context) throws SQLiteException, CursorIndexOutOfBoundsException {
         // oAuthed
         SharedPreferences sharedPreferences = context.getSharedPreferences("preference", Context.MODE_PRIVATE);
+        int account = sharedPreferences.getInt("account", 1);
+        return getTwitterFromId(account,context);
+    }
+
+    public static AsyncTwitter getAsyncTwitter(Context context, int row_id) throws SQLiteException, CursorIndexOutOfBoundsException {
+        return getTwitterFromId(row_id,context);
+    }
+
+    private static AsyncTwitter getTwitterFromId(int row_id ,Context context){
+        // oAuthed
         String apikey = (String) context.getText(R.string.twitter_key);
         String apisecret = (String) context.getText(R.string.twitter_secret);
-        int account = sharedPreferences.getInt("account", 1);
         // sql
         MySQLiteOpenHelper sqLiteOpenHelper = new MySQLiteOpenHelper(context);
         SQLiteDatabase database = sqLiteOpenHelper.getReadableDatabase();
-        Cursor cursor = database.rawQuery("select token, token_secret, key from accounts where rowid = ?", new String[]{String.valueOf(account)});
+        Cursor cursor = database.rawQuery("select token, token_secret, key from accounts where rowid = ?", new String[]{String.valueOf(row_id)});
         // rowid only one row
         cursor.moveToFirst();
         String tokenkey = cursor.getString(2);
@@ -44,6 +54,7 @@ public class MyAsyncTwitter {
         database.close();
         return twitter;
     }
+
 
     public static AccountsList getAccountsList (Context context) {
         // get account info from database
