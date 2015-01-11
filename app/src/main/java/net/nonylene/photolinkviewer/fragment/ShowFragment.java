@@ -538,21 +538,17 @@ public class ShowFragment extends Fragment {
                 hoge.Start(request);
             } else if (url.contains("nico.ms") || url.contains("seiga.nicovideo.jp")) {
                 Log.v("nico", url);
+                Pattern pattern;
                 if (url.contains("nico.ms")) {
-                    Pattern pattern = Pattern.compile("^https?://nico\\.ms/im(\\d+)");
-                    Matcher matcher = pattern.matcher(url);
-                    if (matcher.find()) {
-                        Log.v("match", "success");
-                    }
-                    id = matcher.group(1);
-                } else if (url.contains("seiga.nicovideo.jp")) {
-                    Pattern pattern = Pattern.compile("^https?://seiga.nicovideo.jp/seiga/im(\\d+)");
-                    Matcher matcher = pattern.matcher(url);
-                    if (matcher.find()) {
-                        Log.v("match", "success");
-                    }
-                    id = Base58.decode(matcher.group(1));
+                    pattern = Pattern.compile("^https?://nico\\.ms/im(\\d+)");
+                } else {
+                    pattern = Pattern.compile("^https?://seiga.nicovideo.jp/seiga/im(\\d+)");
                 }
+                Matcher matcher = pattern.matcher(url);
+                if (matcher.find()) {
+                    Log.v("match", "success");
+                }
+                id = matcher.group(1);
                 AsyncNICOExecute nicoExecute = new AsyncNICOExecute();
                 nicoExecute.Start(id);
             } else {
