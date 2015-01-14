@@ -61,6 +61,7 @@ public class ShowFragment extends Fragment {
     private ImageView imageView;
     private SharedPreferences preferences;
     private float firstzoom = 1;
+    private MyQuickScale quickScale;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -83,6 +84,10 @@ public class ShowFragment extends Fragment {
                 scaleGestureDetector.onTouchEvent(event);
                 if (!scaleGestureDetector.isInProgress()) {
                     gestureDetector.onTouchEvent(event);
+                }
+                if (quickScale != null && event.getAction() == MotionEvent.ACTION_MOVE) {
+                    // image_view double_tap quick scale
+                    quickScale.onMove(event);
                 }
                 return true;
             }
@@ -115,6 +120,7 @@ public class ShowFragment extends Fragment {
 
         @Override
         public boolean onDoubleTap(MotionEvent e) {
+            quickScale = new MyQuickScale(e);
             final float touchX = e.getX();
             final float touchY = e.getY();
             ScaleAnimation scaleAnimation = new ScaleAnimation(1, 2, 1, 2, touchX, touchY);
@@ -140,6 +146,57 @@ public class ShowFragment extends Fragment {
             imageView.startAnimation(scaleAnimation);
             // drag photo
             return super.onDoubleTap(e);
+        }
+
+        @Override
+        public boolean onDoubleTapEvent(MotionEvent e) {
+            if (e.getAction() == MotionEvent.ACTION_UP) {
+                quickScale = null;
+            }
+            return false;
+        }
+    }
+
+    private class MyQuickScale {
+        // quick scale zoom
+        private float initialY;
+        private float initialX;
+        private float basezoom;
+        private float old_zoom;
+
+        public MyQuickScale(MotionEvent e) {
+            initialY = e.getY();
+            initialX = e.getX();
+            //get current status
+            float[] values = new float[9];
+            Matrix matrix = new Matrix();
+            matrix.set(imageView.getImageMatrix());
+            matrix.getValues(values);
+            //set base zoom param
+            basezoom = values[Matrix.MSCALE_X];
+            if (basezoom == 0) {
+                basezoom = Math.abs(values[Matrix.MSKEW_X]);
+            }
+            // double tap
+            basezoom = basezoom * 2;
+            old_zoom = 1;
+        }
+
+        public void onMove(MotionEvent e) {
+            float touchY = e.getY();
+            Matrix matrix = new Matrix();
+            matrix.set(imageView.getImageMatrix());
+            // adjust zoom speed
+            // If using preference_fragment, value is saved to DefaultSharedPref.
+            float zoomspeed = Float.parseFloat(preferences.getString("zoom_speed", "1.4"));
+            float new_zoom = (float) Math.pow(touchY / initialY, zoomspeed);
+            // photo's zoom scale (is relative to old zoom value.)
+            float scale = new_zoom / old_zoom;
+            if (new_zoom > firstzoom / basezoom * 0.8) {
+                old_zoom = new_zoom;
+                matrix.postScale(scale, scale, initialX, initialY);
+                imageView.setImageMatrix(matrix);
+            }
         }
     }
 
@@ -179,8 +236,8 @@ public class ShowFragment extends Fragment {
             float new_zoom = (float) Math.pow(detector.getScaleFactor(), zoomspeed);
             // photo's zoom scale (is relative to old zoom value.)
             float scale = new_zoom / old_zoom;
-            old_zoom = new_zoom;
             if (new_zoom > firstzoom / basezoom * 0.8) {
+                old_zoom = new_zoom;
                 matrix.postScale(scale, scale, touchX, touchY);
                 imageView.setImageMatrix(matrix);
             }
@@ -425,7 +482,7 @@ public class ShowFragment extends Fragment {
         //get json from url
 
         public void Start(String id) {
-            this.id =id;
+            this.id = id;
             Bundle bundle = new Bundle();
             String url = "http://seiga.nicovideo.jp/image/source/" + id;
             bundle.putString("url", url);
@@ -455,7 +512,7 @@ public class ShowFragment extends Fragment {
             // wifi check
             String quality;
             boolean wifi = wifiChecker(sharedPreferences);
-            boolean original = originalChecker(sharedPreferences,wifi);
+            boolean original = originalChecker(sharedPreferences, wifi);
             if (wifi) {
                 quality = sharedPreferences.getString("nicoseiga_quality_wifi", "large");
             } else {
