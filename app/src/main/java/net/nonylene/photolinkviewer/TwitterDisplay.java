@@ -241,6 +241,17 @@ public class TwitterDisplay extends Activity {
                             textView.setText(finStatus.getText());
                             final String screen = finStatus.getUser().getScreenName();
                             snView.setText(finStatus.getUser().getName() + " @" + screen);
+                            if (finStatus.getUser().isProtected()){
+                                // add key icon
+                                float dp = getResources().getDisplayMetrics().density;
+                                // set size
+                                int iconSize = (int) (17 * dp);
+                                // resize app icon (bitmap_factory makes low-quality images)
+                                Drawable protect = getResources().getDrawable(R.drawable.lock);
+                                protect.setBounds(0, 0, iconSize, iconSize);
+                                // set app-icon and bounds
+                                snView.setCompoundDrawables(protect, null, null, null);
+                            }
                             String statusDate = dateFormat.format(finStatus.getCreatedAt());
                             dayView.setText(statusDate);
                             iconUrl = new URL(finStatus.getUser().getBiggerProfileImageURL());
