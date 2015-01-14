@@ -56,8 +56,18 @@ public class OptionFragment extends Fragment {
         baseButton.setOnClickListener(new BaseButtonClickListener());
         setButton.setOnClickListener(new SetButtonClickListener());
         webButton.setOnClickListener(new WebButtonClickListener());
-        rotateRButton.setOnClickListener(new RotateRButtonClickListener());
-        rotateLButton.setOnClickListener(new RotateLButtonClickListener());
+        rotateRButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rotateImg(true);
+            }
+        });
+        rotateLButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rotateImg(false);
+            }
+        });
         return view;
     }
 
@@ -171,38 +181,22 @@ public class OptionFragment extends Fragment {
         }
     }
 
-    class RotateRButtonClickListener implements View.OnClickListener {
-        public void onClick(View v) {
-            //get display size
-            Display display = getActivity().getWindowManager().getDefaultDisplay();
-            Point size = new Point();
-            display.getSize(size);
-            int dispwidth = size.x;
-            int dispheight = size.y;
-            ImageView imageView = (ImageView) getActivity().findViewById(R.id.imgview);
-            Matrix matrix = new Matrix();
-            matrix.set(imageView.getImageMatrix());
+    private void rotateImg(boolean right){
+        //get display size
+        Display display = getActivity().getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int dispwidth = size.x;
+        int dispheight = size.y;
+        ImageView imageView = (ImageView) getActivity().findViewById(R.id.imgview);
+        Matrix matrix = new Matrix();
+        matrix.set(imageView.getImageMatrix());
+        if (right){
             matrix.postRotate(90, dispwidth / 2, dispheight / 2);
-            imageView.setImageMatrix(matrix);
-        }
-
-    }
-
-    class RotateLButtonClickListener implements View.OnClickListener {
-        public void onClick(View v) {
-            //get display size
-            Display display = getActivity().getWindowManager().getDefaultDisplay();
-            Point size = new Point();
-            display.getSize(size);
-            int dispwidth = size.x;
-            int dispheight = size.y;
-            ImageView imageView = (ImageView) getActivity().findViewById(R.id.imgview);
-            Matrix matrix = new Matrix();
-            matrix.set(imageView.getImageMatrix());
+        }else{
             matrix.postRotate(-90, dispwidth / 2, dispheight / 2);
-            imageView.setImageMatrix(matrix);
         }
-
+        imageView.setImageMatrix(matrix);
     }
 
     @Override
