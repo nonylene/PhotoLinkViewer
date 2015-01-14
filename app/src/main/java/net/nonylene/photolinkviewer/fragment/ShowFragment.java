@@ -189,7 +189,7 @@ public class ShowFragment extends Fragment {
             // adjust zoom speed
             // If using preference_fragment, value is saved to DefaultSharedPref.
             float zoomspeed = Float.parseFloat(preferences.getString("zoom_speed", "1.4"));
-            float new_zoom = (float) Math.pow(touchY / initialY, zoomspeed);
+            float new_zoom = (float) Math.pow(touchY / initialY, zoomspeed * 2);
             // photo's zoom scale (is relative to old zoom value.)
             float scale = new_zoom / old_zoom;
             if (new_zoom > firstzoom / basezoom * 0.8) {
