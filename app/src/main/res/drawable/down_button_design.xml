@@ -2,9 +2,32 @@
 <selector
   xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_pressed="false">
-        <bitmap android:src="@drawable/down_button"/>
+        <layer-list>
+            <item>
+                <shape android:shape="oval">
+                    <solid android:color="#46d249"/>
+                </shape>
+            </item>
+            <item>
+                <bitmap android:src="@drawable/ic_expand_more_white_48dp" android:gravity="center"/>
+            </item>
+        </layer-list>
     </item>
     <item android:state_pressed="true">
-        <bitmap android:src="@drawable/down_button_tap"/>
+        <layer-list>
+            <item>
+                <shape android:shape="oval">
+                    <solid android:color="#46d249"/>
+                </shape>
+            </item>
+            <item>
+                <bitmap android:src="@drawable/ic_expand_more_white_48dp" android:gravity="center"/>
+            </item>
+            <item>
+                <shape android:shape="oval">
+                    <solid android:color="#64000000"/>
+                </shape>
+            </item>
+        </layer-list>
     </item>
 </selector>

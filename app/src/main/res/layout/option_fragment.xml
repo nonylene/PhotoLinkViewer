@@ -22,54 +22,94 @@
             android:orientation="vertical"
             android:visibility="gone">
 
+            <FrameLayout
+                android:layout_margin="@dimen/button_frame_margin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="@dimen/shadow_size"
+                    android:layout_height="@dimen/shadow_size"
+                    android:src="@drawable/shadow"/>
+
+                <ImageButton
+                    android:id="@+id/webbutton"
+                    android:layout_width="@dimen/layer_button_size"
+                    android:layout_height="@dimen/layer_button_size"
+                    android:layout_gravity="center"
+                    android:background="@null"
+                    android:contentDescription="@string/option_fragment_open"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/browser_button_design"/>
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_margin="@dimen/button_frame_margin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="@dimen/shadow_size"
+                    android:layout_height="@dimen/shadow_size"
+                    android:src="@drawable/shadow"/>
+
+                <ImageButton
+                    android:id="@+id/setbutton"
+                    android:layout_width="@dimen/layer_button_size"
+                    android:layout_height="@dimen/layer_button_size"
+                    android:layout_gravity="center"
+                    android:background="@null"
+                    android:contentDescription="@string/option_fragment_settings"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/setting_button_design"/>
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_margin="@dimen/button_frame_margin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="@dimen/shadow_size"
+                    android:layout_height="@dimen/shadow_size"
+                    android:src="@drawable/shadow"/>
+
+                <ImageButton
+                    android:id="@+id/dlbutton"
+                    android:layout_width="@dimen/layer_button_size"
+                    android:layout_height="@dimen/layer_button_size"
+                    android:layout_gravity="center"
+                    android:background="@null"
+                    android:contentDescription="@string/option_fragment_download"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/download_button_design"/>
+
+            </FrameLayout>
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_margin="@dimen/button_frame_margin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="@dimen/shadow_size"
+                android:layout_height="@dimen/shadow_size"
+                android:src="@drawable/shadow"/>
+
             <ImageButton
-                android:id="@+id/webbutton"
-                android:layout_width="@dimen/image_button_size"
-                android:layout_height="@dimen/image_button_size"
-                android:layout_gravity="end|bottom"
-                android:layout_margin="4dp"
+                android:id="@+id/basebutton"
+                android:layout_width="@dimen/layer_button_size"
+                android:layout_height="@dimen/layer_button_size"
+                android:layout_gravity="center"
                 android:background="@null"
                 android:contentDescription="@string/option_fragment_open"
                 android:scaleType="fitXY"
-                android:src="@drawable/browser_button_design"/>
+                android:src="@drawable/up_button_design"/>
 
-            <ImageButton
-                android:id="@+id/setbutton"
-                android:layout_width="@dimen/image_button_size"
-                android:layout_height="@dimen/image_button_size"
-                android:layout_gravity="end|bottom"
-                android:layout_margin="4dp"
-                android:background="@null"
-                android:contentDescription="@string/option_fragment_settings"
-                android:scaleType="fitXY"
-                android:src="@drawable/setting_button_design"/>
-
-            <ImageButton
-                android:id="@+id/dlbutton"
-                android:layout_width="@dimen/image_button_size"
-                android:layout_height="@dimen/image_button_size"
-                android:layout_gravity="end|bottom"
-                android:layout_margin="4dp"
-                android:background="@null"
-                android:contentDescription="@string/option_fragment_download"
-                android:scaleType="fitXY"
-                android:src="@drawable/download_button_design"
-                android:visibility="gone"/>
-        </LinearLayout>
-
-        <ImageButton
-            android:id="@+id/basebutton"
-            android:layout_width="@dimen/image_button_size"
-            android:layout_height="@dimen/image_button_size"
-            android:layout_gravity="end|bottom"
-            android:layout_marginBottom="4dp"
-            android:layout_marginRight="4dp"
-            android:layout_marginLeft="4dp"
-            android:layout_marginTop="15dp"
-            android:background="@null"
-            android:contentDescription="@string/option_fragment_openclose"
-            android:scaleType="fitXY"
-            android:src="@drawable/up_button_design"/>
+        </FrameLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -86,8 +126,8 @@
             android:layout_height="@dimen/image_button_size"
             android:layout_gravity="end|bottom"
             android:layout_marginBottom="4dp"
-            android:layout_marginRight="4dp"
             android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
             android:layout_marginTop="8dp"
             android:background="@null"
             android:contentDescription="@string/rotate_left"
