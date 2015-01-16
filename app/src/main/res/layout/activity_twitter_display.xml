@@ -14,8 +14,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginBottom="50dp"
-        android:layout_marginEnd="30dp"
-        android:layout_marginStart="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginLeft="30dp"
         android:layout_marginTop="50dp"
         android:background="#00000000">
 
@@ -76,14 +76,14 @@
                             android:id="@+id/rtCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
+                            android:layout_marginLeft="8dp"
                             android:textSize="10sp"/>
 
                         <TextView
                             android:id="@+id/favCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="5dp"
+                            android:layout_marginLeft="5dp"
                             android:textSize="10sp"/>
 
                     </LinearLayout>
@@ -107,8 +107,8 @@
                     android:id="@+id/photo_icon"
                     android:layout_width="20dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="4dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="4dp"
                     android:scaleType="fitStart"/>
 
                 <LinearLayout
