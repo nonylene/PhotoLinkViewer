@@ -375,7 +375,6 @@ public class ShowFragment extends Fragment {
             // dl button visibility and click
             argument.putString("type", type);
             ImageButton dlButton = (ImageButton) getActivity().findViewById(R.id.dlbutton);
-            dlButton.setVisibility(View.VISIBLE);
             dlButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     // open dialog
@@ -384,6 +383,8 @@ public class ShowFragment extends Fragment {
                     dialogFragment.show(getFragmentManager(), "Save");
                 }
             });
+            FrameLayout dlLayout = (FrameLayout) getActivity().findViewById(R.id.dlbutton_frame);
+            dlLayout.setVisibility(View.VISIBLE);
 
         }
     }
@@ -418,9 +419,6 @@ public class ShowFragment extends Fragment {
                 String farm = photo.getString("farm");
                 String server = photo.getString("server");
                 String id = photo.getString("id");
-                JSONObject urls = new JSONObject(photo.getString("urls"));
-                JSONArray urlArray = new JSONArray(urls.getString("url"));
-                String url = urlArray.getJSONObject(0).getString("_content");
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 String file_url = null;
                 String secret = photo.getString("secret");
@@ -817,9 +815,10 @@ public class ShowFragment extends Fragment {
         super.onDetach();
         imageView.setImageBitmap(null);
         ImageButton dlButton = (ImageButton) getActivity().findViewById(R.id.dlbutton);
+        FrameLayout dlLayout = (FrameLayout) getActivity().findViewById(R.id.dlbutton_frame);
         LinearLayout linearLayout = (LinearLayout) getActivity().findViewById(R.id.rotate_root);
         if (dlButton != null) {
-            dlButton.setVisibility(View.GONE);
+            dlLayout.setVisibility(View.GONE);
         }
         if (linearLayout != null) {
             linearLayout.setVisibility(View.GONE);

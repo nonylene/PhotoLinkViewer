@@ -68,6 +68,8 @@
 
             <FrameLayout
                 android:layout_margin="@dimen/button_frame_margin"
+                android:id="@+id/dlbutton_frame"
+                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
