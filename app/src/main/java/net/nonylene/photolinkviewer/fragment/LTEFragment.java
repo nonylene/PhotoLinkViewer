@@ -92,7 +92,7 @@ public class LTEFragment extends PreferenceSummaryFragment {
             case 2:
                 flickrPreference.setValue("medium");
                 twitterPreference.setValue("medium");
-                twipplePreference.setValue("thumb");
+                twipplePreference.setValue("large");
                 imglyPreference.setValue("medium");
                 instagramPreference.setValue("medium");
                 nicoPreference.setValue("medium");
