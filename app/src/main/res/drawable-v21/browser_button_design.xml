@@ -3,6 +3,15 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:color="#64000000">
     <item>
-        <bitmap android:src="@drawable/browser"/>
+        <layer-list>
+            <item>
+                <shape android:shape="oval">
+                    <solid android:color="#24a8ed"/>
+                </shape>
+            </item>
+            <item>
+                <bitmap android:src="@drawable/ic_open_in_browser_white_48dp" android:gravity="center"/>
+            </item>
+        </layer-list>
     </item>
 </ripple>
