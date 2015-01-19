@@ -54,7 +54,6 @@ import twitter4j.URLEntity;
 
 
 public class TwitterDisplay extends Activity {
-    private AsyncTwitter twitter;
     private String url;
 
     @Override
@@ -96,7 +95,7 @@ public class TwitterDisplay extends Activity {
                     // oAuthed
                     try {
                         // get twitter async
-                        twitter = MyAsyncTwitter.getAsyncTwitter(getApplicationContext());
+                        AsyncTwitter twitter = MyAsyncTwitter.getAsyncTwitter(getApplicationContext());
                         twitter.addListener(twitterListener);
                         twitter.showStatus(id_long);
                         bundle.putLong("id_long", id_long);

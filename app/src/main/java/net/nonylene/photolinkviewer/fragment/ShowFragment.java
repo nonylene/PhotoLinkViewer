@@ -46,7 +46,6 @@ import net.nonylene.photolinkviewer.async.AsyncJSON;
 import net.nonylene.photolinkviewer.dialog.SaveDialogFragment;
 import net.nonylene.photolinkviewer.tool.Initialize;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -793,7 +792,6 @@ public class ShowFragment extends Fragment {
                 wifi = true;
             }
         }
-        Log.d("wifi", String.valueOf(wifi));
         return wifi;
 
     }
