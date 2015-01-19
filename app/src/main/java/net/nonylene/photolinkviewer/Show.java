@@ -39,14 +39,14 @@ public class Show extends Activity {
             String url = uri.toString();
             bundle.putString("url", url);
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            OptionFragment optionFragment = new OptionFragment();
+            optionFragment.setArguments(bundle);
+            fragmentTransaction.add(R.id.root_layout, optionFragment);
             if (url.contains("vine.co")) {
                 VideoShowFragment videoShowFragment = new VideoShowFragment();
                 videoShowFragment.setArguments(bundle);
-                fragmentTransaction.replace(android.R.id.content, videoShowFragment);
+                fragmentTransaction.replace(R.id.show_frag_replace, videoShowFragment);
             } else {
-                OptionFragment optionFragment = new OptionFragment();
-                optionFragment.setArguments(bundle);
-                fragmentTransaction.add(R.id.root_layout, optionFragment);
                 ShowFragment showFragment = new ShowFragment();
                 showFragment.setArguments(bundle);
                 fragmentTransaction.replace(R.id.show_frag_replace, showFragment);

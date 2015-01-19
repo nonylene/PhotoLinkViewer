@@ -1,15 +1,8 @@
 package net.nonylene.photolinkviewer.fragment;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.LoaderManager;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.Loader;
-import android.content.pm.ResolveInfo;
-import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,19 +11,13 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
-import android.widget.ListAdapter;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
 import net.nonylene.photolinkviewer.tool.Base49;
 import net.nonylene.photolinkviewer.R;
-import net.nonylene.photolinkviewer.Settings;
 import net.nonylene.photolinkviewer.async.AsyncJSON;
 
 import org.json.JSONException;
@@ -38,17 +25,11 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class VideoShowFragment extends Fragment {
     private View view;
-    private ImageButton baseButton;
-    private ImageButton setButton;
-    private ImageButton webButton;
-    private Boolean open = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,125 +39,9 @@ public class VideoShowFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.videoshow_fragment, container, false);
-        baseButton = (ImageButton) view.findViewById(R.id.basebutton);
-        setButton = (ImageButton) view.findViewById(R.id.setbutton);
-        webButton = (ImageButton) view.findViewById(R.id.webbutton);
-        baseButton.setOnClickListener(new BaseButtonClickListener());
-        setButton.setOnClickListener(new SetButtonClickListener());
-        webButton.setOnClickListener(new WebButtonClickListener());
         String url = getArguments().getString("url");
         URLPurser(url);
         return view;
-    }
-
-    class BaseButtonClickListener implements View.OnClickListener {
-
-        public void onClick(View v) {
-            if (open) {
-                baseButton.setImageResource(R.drawable.up_button_design);
-                setButton.setVisibility(View.GONE);
-                webButton.setVisibility(View.GONE);
-                open = false;
-            } else {
-                baseButton.setImageResource(R.drawable.down_button_design);
-                setButton.setVisibility(View.VISIBLE);
-                webButton.setVisibility(View.VISIBLE);
-                open = true;
-            }
-        }
-    }
-
-    class SetButtonClickListener implements View.OnClickListener {
-        public void onClick(View v) {
-            //settings
-            Intent intent = new Intent(getActivity(), Settings.class);
-            startActivity(intent);
-        }
-    }
-
-    class WebButtonClickListener implements View.OnClickListener {
-        public void onClick(View v) {
-            // show share dialog
-            DialogFragment dialogFragment = new IntentDialogFragment();
-            dialogFragment.setArguments(getArguments());
-            dialogFragment.show(getFragmentManager(), "Intent");
-        }
-
-    }
-
-    public static class IntentDialogFragment extends DialogFragment {
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // get uri from bundle
-            Uri uri = Uri.parse(getArguments().getString("url"));
-            // receive intent list
-            final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-            List<ResolveInfo> resolveInfoList = getActivity().getPackageManager().queryIntentActivities(intent, 0);
-            // organize data and save to app class
-            final List<Apps> appsList = new ArrayList<>();
-            for (ResolveInfo resolveInfo : resolveInfoList) {
-                appsList.add(new Apps(resolveInfo));
-            }
-            // create list to adapter
-            ListAdapter listAdapter = new ArrayAdapter<Apps>(getActivity(), android.R.layout.select_dialog_item, android.R.id.text1, appsList) {
-                public View getView(int position, View convertView, ViewGroup parent) {
-                    // get dp
-                    float dp = getResources().getDisplayMetrics().density;
-                    View view = super.getView(position, convertView, parent);
-                    TextView textView = (TextView) view.findViewById(android.R.id.text1);
-                    // set size
-                    int iconSize = (int) (40 * dp);
-                    int viewSize = (int) (50 * dp);
-                    int paddingSize = (int) (15 * dp);
-                    // resize app icon (bitmap_factory makes low-quality images)
-                    Drawable appIcon = appsList.get(position).icon;
-                    appIcon.setBounds(0, 0, iconSize, iconSize);
-                    // resize text size
-                    textView.setTextSize(20);
-                    // set app-icon and bounds
-                    textView.setCompoundDrawables(appIcon, null, null, null);
-                    textView.setCompoundDrawablePadding(paddingSize);
-                    // set textView-height
-                    textView.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, viewSize));
-                    return view;
-                }
-            };
-
-            // make alert from list-adapter
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setTitle(getString(R.string.intent_title))
-                    .setAdapter(listAdapter, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialogInterface, int item) {
-                            // start activity
-                            Apps apps = appsList.get(item);
-                            intent.setClassName(apps.packageName, apps.className);
-                            startActivity(intent);
-                        }
-                    });
-
-            return builder.create();
-        }
-
-        class Apps {
-            // class to list-adapter
-            public final Drawable icon;
-            public final String name;
-            public final String packageName;
-            public final String className;
-
-            public Apps(ResolveInfo resolveInfo) {
-                this.name = resolveInfo.loadLabel(getActivity().getPackageManager()).toString();
-                this.icon = resolveInfo.loadIcon(getActivity().getPackageManager());
-                this.packageName = resolveInfo.activityInfo.packageName;
-                this.className = resolveInfo.activityInfo.name;
-            }
-
-            @Override
-            public String toString() {
-                // return name to list-adapter text
-                return name;
-            }
-        }
     }
 
     public class AsyncJSONExecute implements LoaderManager.LoaderCallbacks<JSONObject> {
@@ -251,7 +116,6 @@ public class VideoShowFragment extends Fragment {
         }
     }
 
-
     class VideoOnTouchListener implements View.OnTouchListener {
         int position = 0;
 
@@ -271,7 +135,6 @@ public class VideoShowFragment extends Fragment {
             return true;
         }
     }
-
 
     public void URLPurser(String url) {
         try {
