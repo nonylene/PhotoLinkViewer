@@ -86,11 +86,11 @@ public class TwitterOptionFragment extends Fragment {
             ArrayList<String> screen_list = accountsList.getScreenList();
             final ArrayList<Integer> row_id_list = accountsList.getRowIdList();
             // array_list to adapter
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),android.R.layout.simple_spinner_item,screen_list);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, screen_list);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
             // get view
-            View view = View.inflate(getActivity(),R.layout.spinner_dialog,null);
+            View view = View.inflate(getActivity(), R.layout.spinner_dialog, null);
             TextView textView = (TextView) view.findViewById(R.id.spinner_text);
             final Spinner spinner = (Spinner) view.findViewById(R.id.accounts_spinner);
             spinner.setAdapter(adapter);
@@ -98,7 +98,7 @@ public class TwitterOptionFragment extends Fragment {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             // change behave for request code
-            switch (requestCode){
+            switch (requestCode) {
                 case FAVORITE_CODE:
                     textView.setText(getString(R.string.favorite_dialog_message));
                     builder.setTitle(getString(R.string.favorite_dialog_title));
@@ -115,7 +115,7 @@ public class TwitterOptionFragment extends Fragment {
                             int row_id = row_id_list.get(position);
                             Intent intent = new Intent();
                             intent.putExtra("id_long", id_long);
-                            getTargetFragment().onActivityResult(requestCode,row_id,intent);
+                            getTargetFragment().onActivityResult(requestCode, row_id, intent);
                         }
                     })
                     .setNegativeButton(getString(android.R.string.cancel), null);
@@ -132,13 +132,31 @@ public class TwitterOptionFragment extends Fragment {
         // intent > id_long
         AsyncTwitter twitter = MyAsyncTwitter.getAsyncTwitter(getActivity(), resultCode);
         twitter.addListener(new TwitterAdapter() {
+
             @Override
             public void onException(TwitterException e, TwitterMethod twitterMethod) {
                 Log.e("twitterException", e.toString());
+                final String message;
+                switch (e.getErrorCode()) {
+                    case 34:
+                        message = "404 not found";
+                        break;
+                    case 130:
+                        message = "Over capacity";
+                        break;
+                    case 179:
+                        message = getString(R.string.twitter_error_authorize);
+                        break;
+                    case 88:
+                        message = "Rate limit exceeded";
+                        break;
+                    default:
+                        message = getString(R.string.twitter_error_toast);
+                }
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(getActivity(), getString(R.string.twitter_error_toast), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                     }
                 });
             }
@@ -164,7 +182,7 @@ public class TwitterOptionFragment extends Fragment {
             }
         });
 
-        switch (requestCode){
+        switch (requestCode) {
             case FAVORITE_CODE:
                 twitter.createFavorite(id_long);
                 break;
