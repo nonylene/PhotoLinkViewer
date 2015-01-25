@@ -10,10 +10,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class AsyncGetURL extends AsyncTaskLoader<String> {
-    //get json from url, asynctaskloader
 
     private URL url;
-    private Context context = null;
     private String result;
 
     public AsyncGetURL(Context context, URL url) {
