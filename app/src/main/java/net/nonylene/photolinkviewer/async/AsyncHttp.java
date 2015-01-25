@@ -11,7 +11,6 @@ import net.nonylene.photolinkviewer.tool.GIFException;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Arrays;
 
@@ -19,7 +18,6 @@ public class AsyncHttp extends AsyncTaskLoader<AsyncHttpResult<Bitmap>> {
     //get bitmap from url
 
     private URL url;
-    private Context context = null;
     private AsyncHttpResult<Bitmap> result;
     private int max_size;
 
@@ -37,9 +35,7 @@ public class AsyncHttp extends AsyncTaskLoader<AsyncHttpResult<Bitmap>> {
 
         try {
             // get redirect url
-            String redirect = getRedirectURL(url);
-            URL redirectUrl = new URL(redirect);
-            InputStream inputStream = redirectUrl.openStream();
+            InputStream inputStream = url.openStream();
             // get bitmap size
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
@@ -49,7 +45,7 @@ public class AsyncHttp extends AsyncTaskLoader<AsyncHttpResult<Bitmap>> {
             inputStream.close();
 
             // read binary and get type
-            inputStream = redirectUrl.openStream();
+            inputStream = url.openStream();
             inputStream.read(yaBinary, 0, 4);
             inputStream.close();
 
@@ -59,10 +55,10 @@ public class AsyncHttp extends AsyncTaskLoader<AsyncHttpResult<Bitmap>> {
 
             if (type.equals("gif")) {
                 httpResult.setException(new GIFException("GIF file"));
-                httpResult.setUrl(redirect);
+                httpResult.setUrl(url.toString());
                 httpResult.setSize(origwidth, origheight);
             } else {
-                inputStream = redirectUrl.openStream();
+                inputStream = url.openStream();
                 // if bitmap size is bigger than limit, load small photo
                 if (max_size < Math.max(origheight, origwidth)) {
                     int size = Math.max(origwidth, origheight) / max_size + 1;
@@ -115,16 +111,6 @@ public class AsyncHttp extends AsyncTaskLoader<AsyncHttpResult<Bitmap>> {
     public void onReset() {
         super.onReset();
         onStopLoading();
-    }
-
-    private String getRedirectURL(URL url) throws IOException {
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        InputStream inputStream = connection.getInputStream();
-        inputStream.close();
-        // get redirected url
-        String redirect = connection.getURL().toString();
-        connection.disconnect();
-        return redirect;
     }
 
     private String getFileType(byte[] head) {
