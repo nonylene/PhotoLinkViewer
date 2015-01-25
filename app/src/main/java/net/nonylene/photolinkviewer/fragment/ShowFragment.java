@@ -36,10 +36,8 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 
 import net.nonylene.photolinkviewer.async.AsyncGetURL;
@@ -509,21 +507,14 @@ public class ShowFragment extends Fragment {
                         "&photo_id=" + id;
                 // volley
                 RequestQueue queue = Volley.newRequestQueue(getActivity());
-                queue.add(new MyJsonObjectRequest(Request.Method.GET, request, null,
+                queue.add(new MyJsonObjectRequest(getActivity(), request,
                         new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {
                                 parseFlickr(response);
                             }
                         }
-                        ,
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.e("error", error.toString());
-                                Toast.makeText(getActivity(), getString(R.string.volley_error), Toast.LENGTH_LONG).show();
-                            }
-                        }));
+                ));
             } else if (url.contains("nico.ms") || url.contains("seiga.nicovideo.jp")) {
                 Log.v("nico", url);
                 Pattern pattern;
@@ -742,7 +733,7 @@ public class ShowFragment extends Fragment {
 
     }
 
-    private void parseFlickr(JSONObject json){
+    private void parseFlickr(JSONObject json) {
         try {
             //for flickr
             JSONObject photo = new JSONObject(json.getString("photo"));
