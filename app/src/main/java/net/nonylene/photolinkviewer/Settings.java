@@ -62,7 +62,7 @@ public class Settings extends Activity {
                     textView.append(version);
                     builder.setView(view)
                             .setTitle(getString(R.string.about_app_dialogtitle))
-                            .setPositiveButton(getString(R.string.about_app_dialogok), null);
+                            .setPositiveButton(getString(android.R.string.ok), null);
                 } catch (PackageManager.NameNotFoundException e) {
                     Log.e("error", e.toString());
                     Toast.makeText(getActivity(), "Error occured", Toast.LENGTH_LONG).show();

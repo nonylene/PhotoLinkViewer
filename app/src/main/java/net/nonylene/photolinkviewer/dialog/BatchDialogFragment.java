@@ -14,7 +14,7 @@ public class BatchDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         String[] items = getResources().getStringArray(R.array.quality);
         builder.setTitle(getString(R.string.quality_setting_dialogtitle))
-                .setNegativeButton(getString(R.string.quality_batch_ng), null)
+                .setNegativeButton(getString(android.R.string.cancel), null)
                 .setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

@@ -138,7 +138,7 @@ public class TwitterDisplay extends Activity {
             int position = screen_list.indexOf(current_name);
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle(getString(R.string.account_dialog_title))
-                    .setNegativeButton(getString(R.string.account_dialog_ng), null)
+                    .setNegativeButton(getString(android.R.string.cancel), null)
                     .setSingleChoiceItems(screen_array, position, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int position) {

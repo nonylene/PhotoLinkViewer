@@ -19,7 +19,6 @@
     <string name="rotate_left" translatable="false">rotate_left</string>
     <string name="save_dialog_positive">Save</string>
     <string name="save_dialog_title">Save photo to…</string>
-    <string name="save_dialog_negative">Cancel</string>
     <string name="download_photo_title">"file saved to "</string>
     <string name="setting_dir_dialogtitle">Default value is PLViewer/</string>
     <string name="setting_dir_summary">Tap to set</string>
@@ -53,8 +52,6 @@
     <string name="delete_dialog_title">Delete account</string>
     <string name="delete_dialog_message_account">account: \@</string>
     <string name="delete_dialog_message">Delete this account?</string>
-    <string name="delete_dialog_ok">OK</string>
-    <string name="delete_dialog_ng">Cancel</string>
     <string name="delete_account_toast">Deleted successfully</string>
     <string name="delete_failed_toast">Delete failed!</string>
     <string name="twitter_async_select">Please set account correctly!</string>
@@ -71,7 +68,6 @@
     <string name="quality_batch_title">Batch quality setting</string>
     <string name="quality_batch_summary">Set quality in a lump</string>
     <string name="quality_sites_categoryname">Setting by sitename</string>
-    <string name="quality_batch_ng">Cancel</string>
     <string name="quality_switch_title">Enable wifi setting</string>
     <string name="quality_switch_summary">Change quality when wifi connected</string>
     <string name="original_switch_summary">Always download biggest size</string>
@@ -83,9 +79,7 @@
     <string name="about_app_4j" translatable="false">* twitter4j - http://twitter4j.org</string>
     <string name="about_app_pretitle">About this app</string>
     <string name="about_app_dialogtitle">About this app</string>
-    <string name="about_app_dialogok" translatable="false">OK</string>
     <string name="nico_original_toast">Cannot view original photo for this id. Even if you choose original, this is compressed photo</string>
-    <string name="account_dialog_ng">Cancel</string>
     <string name="account_dialog_title">Change account ?</string>
     <string name="twitter_error_authorize">Not authorized</string>
 

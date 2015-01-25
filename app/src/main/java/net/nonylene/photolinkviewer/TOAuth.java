@@ -256,7 +256,7 @@ public class TOAuth extends Activity {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle(getString(R.string.delete_dialog_title))
                     .setMessage(getString(R.string.delete_dialog_message_account) + screenName + "\n" + getString(R.string.delete_dialog_message))
-                    .setPositiveButton(getString(R.string.delete_dialog_ok), new DialogInterface.OnClickListener() {
+                    .setPositiveButton(getString(android.R.string.ok), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
@@ -285,7 +285,7 @@ public class TOAuth extends Activity {
                             }
                         }
                     })
-                    .setNegativeButton(getString(R.string.delete_dialog_ng), null);
+                    .setNegativeButton(getString(android.R.string.cancel), null);
             return builder.create();
         }
 

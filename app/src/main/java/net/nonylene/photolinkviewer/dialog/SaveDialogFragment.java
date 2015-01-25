@@ -79,7 +79,7 @@ public class SaveDialogFragment extends DialogFragment {
                         Toast.makeText(getActivity(), getString(R.string.download_photo_title) + path.toString(), Toast.LENGTH_LONG).show();
                     }
                 })
-                .setNegativeButton(getString(R.string.save_dialog_negative), null);
+                .setNegativeButton(getString(android.R.string.cancel), null);
         return builder.create();
     }
 }

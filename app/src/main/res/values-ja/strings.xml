@@ -9,7 +9,6 @@
     <string name="settings_zoom_dtitle">デフォルト: 1.4</string>
     <string name="settings_zoom_title">指の距離に対する拡大率</string>
     <string name="intent_title">アプリを選択</string>
-    <string name="save_dialog_negative">キャンセル</string>
     <string name="save_dialog_positive">保存</string>
     <string name="save_dialog_title">写真の保存先</string>
     <string name="download_photo_title">"画像を保存しました: "</string>
@@ -52,8 +51,6 @@
     <string name="setting_quality_title">写真の画質の選択</string>
     <string name="delete_dialog_message_account">アカウント: \@</string>
     <string name="delete_dialog_message">このアカウントを削除しますか？</string>
-    <string name="delete_dialog_ng">キャンセル</string>
-    <string name="delete_dialog_ok">OK</string>
     <string name="delete_dialog_title">アカウント削除</string>
     <string name="delete_account_toast">アカウントの削除に成功しました</string>
     <string name="delete_failed_toast">アカウント削除に失敗しました</string>
@@ -64,7 +61,6 @@
     <string name="batch_dialog_title">選んでください</string>
     <string name="quality_batch_title">一括設定</string>
     <string name="quality_sites_categoryname">サイト別設定</string>
-    <string name="quality_batch_ng">キャンセル</string>
     <string name="quality_batch_summary">画質を一括で設定します</string>
     <string name="quality_switch_summary">Wifi接続時に画質を変更できます</string>
     <string name="quality_switch_title">Wifi設定の有効化</string>
@@ -75,7 +71,6 @@
     <string name="about_app_pretitle">このアプリについて</string>
     <string name="nicoseiga_quality_title">ニコニコ静画</string>
     <string name="nico_original_toast">この画像はオリジナルサイズが見れません。オリジナルを選択しても、大サイズの画像になります。</string>
-    <string name="account_dialog_ng">キャンセル</string>
     <string name="account_dialog_title">アカウントを変更しますか？</string>
     <string name="twitter_error_authorize">このツイートの閲覧は許可されていません</string>
 
