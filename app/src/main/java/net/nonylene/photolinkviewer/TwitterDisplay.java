@@ -208,11 +208,15 @@ public class TwitterDisplay extends Activity {
                     if (url.contains("/photo") && mediaEntities.length == 1) {
                         Bundle bundle = new Bundle();
                         bundle.putString("url", mediaEntities[0].getMediaURL());
-                        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                        ShowFragment showFragment = new ShowFragment();
-                        showFragment.setArguments(bundle);
-                        fragmentTransaction.replace(R.id.show_frag_replace, showFragment);
-                        fragmentTransaction.commit();
+                        try {
+                            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                            ShowFragment showFragment = new ShowFragment();
+                            showFragment.setArguments(bundle);
+                            fragmentTransaction.replace(R.id.show_frag_replace, showFragment);
+                            fragmentTransaction.commit();
+                        }catch (IllegalStateException e){
+                            Log.e("error", e.toString());
+                        }
                     } else {
                         // change background color
                         FrameLayout frameLayout = (FrameLayout) findViewById(R.id.root_layout);
