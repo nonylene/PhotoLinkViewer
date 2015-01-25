@@ -82,5 +82,6 @@
     <string name="nico_original_toast">Cannot view original photo for this id. Even if you choose original, this is compressed photo</string>
     <string name="account_dialog_title">Change account ?</string>
     <string name="twitter_error_authorize">Not authorized</string>
+    <string name="volley_error">Error!</string>
 
 </resources>

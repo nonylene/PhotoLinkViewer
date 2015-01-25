@@ -73,5 +73,6 @@
     <string name="nico_original_toast">この画像はオリジナルサイズが見れません。オリジナルを選択しても、大サイズの画像になります。</string>
     <string name="account_dialog_title">アカウントを変更しますか？</string>
     <string name="twitter_error_authorize">このツイートの閲覧は許可されていません</string>
+    <string name="volley_error">エラー</string>
 
 </resources>

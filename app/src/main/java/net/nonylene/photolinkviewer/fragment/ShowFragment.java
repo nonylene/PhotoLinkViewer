@@ -36,15 +36,21 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
+
 import net.nonylene.photolinkviewer.async.AsyncGetURL;
 import net.nonylene.photolinkviewer.tool.Base58;
 import net.nonylene.photolinkviewer.tool.GIFException;
 import net.nonylene.photolinkviewer.R;
 import net.nonylene.photolinkviewer.async.AsyncHttp;
 import net.nonylene.photolinkviewer.async.AsyncHttpResult;
-import net.nonylene.photolinkviewer.async.AsyncJSON;
 import net.nonylene.photolinkviewer.dialog.SaveDialogFragment;
 import net.nonylene.photolinkviewer.tool.Initialize;
+import net.nonylene.photolinkviewer.tool.MyJsonObjectRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -388,92 +394,6 @@ public class ShowFragment extends Fragment {
         }
     }
 
-    public class AsyncJSONExecute implements LoaderManager.LoaderCallbacks<JSONObject> {
-        //get json from url
-
-        public void Start(String url) {
-            Bundle bundle = new Bundle();
-            bundle.putString("url", url);
-            getLoaderManager().restartLoader(0, bundle, this);
-        }
-
-        @Override
-        public Loader<JSONObject> onCreateLoader(int id, Bundle bundle) {
-            try {
-                String c = bundle.getString("url");
-                URL url = new URL(c);
-                return new AsyncJSON(getActivity().getApplicationContext(), url);
-            } catch (IOException e) {
-                Log.e("AsyncJSONLoaderError", e.toString());
-                return null;
-            }
-        }
-
-        @Override
-        public void onLoadFinished(Loader<JSONObject> loader, JSONObject json) {
-            try {
-                //for flickr
-                Log.v("json", json.toString(2));
-                JSONObject photo = new JSONObject(json.getString("photo"));
-                String farm = photo.getString("farm");
-                String server = photo.getString("server");
-                String id = photo.getString("id");
-                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                String file_url = null;
-                String secret = photo.getString("secret");
-
-                // wifi check
-                String quality;
-                boolean wifi = wifiChecker(sharedPreferences);
-                if (wifi) {
-                    quality = sharedPreferences.getString("flickr_quality_wifi", "large");
-                } else {
-                    quality = sharedPreferences.getString("flickr_quality_3g", "large");
-                }
-                switch (quality) {
-                    case "original":
-                        String original_secret = photo.getString("originalsecret");
-                        String original_format = photo.getString("originalformat");
-                        file_url = "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + original_secret + "_o." + original_format;
-                        break;
-                    case "large":
-                        file_url = "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + secret + "_b.jpg";
-                        break;
-                    case "medium":
-                        file_url = "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + secret + "_z.jpg";
-                        break;
-                }
-                final Bundle bundle = new Bundle();
-                bundle.putString("file_url", file_url);
-                if (originalChecker(sharedPreferences, wifi)) {
-                    String original_secrets = photo.getString("originalsecret");
-                    String original_formats = photo.getString("originalformat");
-                    file_url = "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + original_secrets + "_o." + original_formats;
-                    bundle.putString("original_url", file_url);
-                } else {
-                    bundle.putString("original_url", file_url);
-                }
-                bundle.putString("sitename", "flickr");
-                bundle.putString("filename", id);
-                AsyncExecute hoge = new AsyncExecute();
-                hoge.Start(bundle);
-            } catch (JSONException e) {
-                Log.e("JSONParseError", e.toString());
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(view.getContext(), getString(R.string.show_flickrjson_toast), Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-        }
-
-        @Override
-        public void onLoaderReset(Loader<JSONObject> loader) {
-
-        }
-    }
-
     public class AsyncNICOExecute implements LoaderManager.LoaderCallbacks<String> {
         private String id;
         //get json from url
@@ -555,14 +475,14 @@ public class ShowFragment extends Fragment {
         }
     }
 
-    public void URLPurser(String url) {
+    private void URLPurser(String url) {
         //purse url
 
         //directory,filename to save
         String sitename;
         String filename;
         String file_url = null;
-        String original_url = null;
+        String original_url;
 
         try {
             String id = null;
@@ -587,9 +507,23 @@ public class ShowFragment extends Fragment {
                 String api_key = (String) getText(R.string.flickr_key);
                 String request = "https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&format=json&api_key=" + api_key +
                         "&photo_id=" + id;
-                Log.v("flickrAPI", request);
-                AsyncJSONExecute hoge = new AsyncJSONExecute();
-                hoge.Start(request);
+                // volley
+                RequestQueue queue = Volley.newRequestQueue(getActivity());
+                queue.add(new MyJsonObjectRequest(Request.Method.GET, request, null,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                parseFlickr(response);
+                            }
+                        }
+                        ,
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.e("error", error.toString());
+                                Toast.makeText(getActivity(), getString(R.string.volley_error), Toast.LENGTH_LONG).show();
+                            }
+                        }));
             } else if (url.contains("nico.ms") || url.contains("seiga.nicovideo.jp")) {
                 Log.v("nico", url);
                 Pattern pattern;
@@ -781,7 +715,7 @@ public class ShowFragment extends Fragment {
         }
     }
 
-    public boolean wifiChecker(SharedPreferences sharedPreferences) {
+    private boolean wifiChecker(SharedPreferences sharedPreferences) {
         //check wifi connecting and setting or not
         boolean wifi = false;
         if (sharedPreferences.getBoolean("wifi_switch", false)) {
@@ -796,7 +730,7 @@ public class ShowFragment extends Fragment {
 
     }
 
-    public boolean originalChecker(SharedPreferences sharedPreferences, boolean wifi) {
+    private boolean originalChecker(SharedPreferences sharedPreferences, boolean wifi) {
         //check download original or not
         boolean orig;
         if (wifi) {
@@ -806,6 +740,58 @@ public class ShowFragment extends Fragment {
         }
         return orig;
 
+    }
+
+    private void parseFlickr(JSONObject json){
+        try {
+            //for flickr
+            JSONObject photo = new JSONObject(json.getString("photo"));
+            String farm = photo.getString("farm");
+            String server = photo.getString("server");
+            String id = photo.getString("id");
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String file_url = null;
+            String secret = photo.getString("secret");
+
+            // wifi check
+            String quality;
+            boolean wifi = wifiChecker(sharedPreferences);
+            if (wifi) {
+                quality = sharedPreferences.getString("flickr_quality_wifi", "large");
+            } else {
+                quality = sharedPreferences.getString("flickr_quality_3g", "large");
+            }
+            switch (quality) {
+                case "original":
+                    String original_secret = photo.getString("originalsecret");
+                    String original_format = photo.getString("originalformat");
+                    file_url = "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + original_secret + "_o." + original_format;
+                    break;
+                case "large":
+                    file_url = "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + secret + "_b.jpg";
+                    break;
+                case "medium":
+                    file_url = "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + secret + "_z.jpg";
+                    break;
+            }
+            final Bundle bundle = new Bundle();
+            bundle.putString("file_url", file_url);
+            if (originalChecker(sharedPreferences, wifi)) {
+                String original_secrets = photo.getString("originalsecret");
+                String original_formats = photo.getString("originalformat");
+                file_url = "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + original_secrets + "_o." + original_formats;
+                bundle.putString("original_url", file_url);
+            } else {
+                bundle.putString("original_url", file_url);
+            }
+            bundle.putString("sitename", "flickr");
+            bundle.putString("filename", id);
+            AsyncExecute hoge = new AsyncExecute();
+            hoge.Start(bundle);
+        } catch (JSONException e) {
+            Log.e("JSONParseError", e.toString());
+            Toast.makeText(view.getContext(), getString(R.string.show_flickrjson_toast), Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
