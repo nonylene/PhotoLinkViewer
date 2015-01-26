@@ -48,6 +48,7 @@ import net.nonylene.photolinkviewer.async.AsyncHttpResult;
 import net.nonylene.photolinkviewer.dialog.SaveDialogFragment;
 import net.nonylene.photolinkviewer.tool.Initialize;
 import net.nonylene.photolinkviewer.tool.MyJsonObjectRequest;
+import net.nonylene.photolinkviewer.tool.PXVStringRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -472,7 +473,7 @@ public class ShowFragment extends Fragment {
         }
     }
 
-    private void URLPurser(String url) {
+    private void URLPurser(final String url) {
         //purse url
 
         //directory,filename to save
@@ -529,6 +530,33 @@ public class ShowFragment extends Fragment {
                 id = matcher.group(1);
                 AsyncNICOExecute nicoExecute = new AsyncNICOExecute();
                 nicoExecute.Start(id);
+            } else if (url.contains("pixiv.net")){
+                Log.v("pixiv", url);
+                Pattern pattern = Pattern.compile("^https?://.*pixiv\\.net/member_illust.php?.*illust_id=(\\d+)");
+                Matcher matcher = pattern.matcher(url);
+                if (matcher.find()) {
+                    Log.v("match", "success");
+                }
+                final String pid = matcher.group(1);
+                RequestQueue queue = Volley.newRequestQueue(getActivity());
+                queue.add(new PXVStringRequest(getActivity(),pid,
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                Log.v("pixiv", response);
+                                final String[] list = response.split(",",-1);
+                                final Bundle bundle = new Bundle();
+                                bundle.putString("url", url);
+                                // get original photo
+                                String file_url = list[9].replaceAll("\"","");
+                                bundle.putString("file_url", file_url);
+                                bundle.putString("original_url", file_url);
+                                bundle.putString("sitename", "pixiv");
+                                bundle.putString("filename", pid);
+                                AsyncExecute asyncExecute = new AsyncExecute();
+                                asyncExecute.Start(bundle);
+                            }
+                        }));
             } else {
 
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());

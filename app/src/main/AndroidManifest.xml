@@ -147,6 +147,31 @@
             </intent-filter>
 
             <intent-filter
+                android:label="PhotoLinkViewer - pixiv">
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+
+                <data
+                    android:host="www.pixiv.net"
+                    android:pathPattern="/member_illust\\.php.*"
+                    android:scheme="http"/>
+                <data
+                    android:host="www.pixiv.net"
+                    android:pathPattern="/member_illust\\.php.*"
+                    android:scheme="https"/>
+                <data
+                    android:host="touch.pixiv.net"
+                    android:pathPattern="/member_illust\\.php.*"
+                    android:scheme="http"/>
+                <data
+                    android:host="touch.pixiv.net"
+                    android:pathPattern="/member_illust\\.php.*"
+                    android:scheme="https"/>
+            </intent-filter>
+
+            <intent-filter
                 android:label="PhotoLinkViewer - nicoseiga">
                 <action android:name="android.intent.action.VIEW"/>
 
