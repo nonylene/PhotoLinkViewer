@@ -1,20 +1,11 @@
 package net.nonylene.photolinkviewer.async;
 
 public class AsyncHttpResult<Bitmap> {
-    private Exception exception;
     private Bitmap bitmap;
     private String url;
     private String type;
     private int height;
     private int width;
-
-    public void setException(Exception exception) {
-        this.exception = exception;
-    }
-
-    public Exception getException() {
-        return exception;
-    }
 
     public void setBitmap(Bitmap bitmap) {
         this.bitmap = bitmap;

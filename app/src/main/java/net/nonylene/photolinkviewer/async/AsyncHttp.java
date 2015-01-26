@@ -7,8 +7,6 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 
 
-import net.nonylene.photolinkviewer.tool.GIFException;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -54,7 +52,6 @@ public class AsyncHttp extends AsyncTaskLoader<AsyncHttpResult<Bitmap>> {
             Log.v("type", type);
 
             if (type.equals("gif")) {
-                httpResult.setException(new GIFException("GIF file"));
                 httpResult.setUrl(url.toString());
                 httpResult.setSize(origwidth, origheight);
             } else {
@@ -72,7 +69,7 @@ public class AsyncHttp extends AsyncTaskLoader<AsyncHttpResult<Bitmap>> {
                 httpResult.setBitmap(bitmap);
             }
         } catch (IOException e) {
-            httpResult.setException(e);
+            Log.e("IOE", e.toString());
         }
         return httpResult;
     }

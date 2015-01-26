@@ -73,9 +73,7 @@ public class VideoShowFragment extends Fragment {
                 Log.v("match", "success");
             }
             String id = Base49.decode(matcher.group(1));
-            Log.v("Vine", id);
             String request = "https://api.vineapp.com/timelines/posts/" + id;
-            Log.v("vineAPI", request);
             // volley
             RequestQueue queue = Volley.newRequestQueue(getActivity());
             queue.add(new MyJsonObjectRequest(getActivity(), request,
@@ -97,9 +95,7 @@ public class VideoShowFragment extends Fragment {
         final FrameLayout frameLayout = (FrameLayout) view.findViewById(R.id.videoshowframe);
         final ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.videoshowprogress);
         if (json != null) {
-
             try {
-                Log.v("json", json.toString(2));
                 JSONObject data = json.getJSONObject("data");
                 JSONObject records = data.getJSONArray("records").getJSONObject(0);
                 String file = records.getString("videoUrl");

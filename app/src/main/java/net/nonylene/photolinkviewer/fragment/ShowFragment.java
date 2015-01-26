@@ -42,7 +42,6 @@ import com.android.volley.toolbox.Volley;
 
 import net.nonylene.photolinkviewer.async.AsyncGetURL;
 import net.nonylene.photolinkviewer.tool.Base58;
-import net.nonylene.photolinkviewer.tool.GIFException;
 import net.nonylene.photolinkviewer.R;
 import net.nonylene.photolinkviewer.async.AsyncHttp;
 import net.nonylene.photolinkviewer.async.AsyncHttpResult;
@@ -334,7 +333,7 @@ public class ShowFragment extends Fragment {
                 LinearLayout linearLayout = (LinearLayout) getActivity().findViewById(R.id.rotate_root);
                 linearLayout.setVisibility(View.VISIBLE);
             } else {
-                if (result.getException() instanceof GIFException) {
+                if (result.getType().equals("gif")) {
                     // gif view by web view
                     WebView webView = new WebView(getActivity());
                     webView.getSettings().setUseWideViewPort(true);
