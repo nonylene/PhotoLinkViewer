@@ -1,9 +1,11 @@
 package net.nonylene.photolinkviewer.fragment;
 
 import android.app.Fragment;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -109,7 +111,12 @@ public class VideoShowFragment extends Fragment {
                     public void onPrepared(MediaPlayer mp) {
                         //remove progressbar
                         frameLayout.removeView(progressBar);
-                        videoView.start();
+                        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                        if (preferences.getBoolean("video_play",true)){
+                            videoView.start();
+                        }else {
+                            videoView.seekTo(1);
+                        }
                     }
                 });
                 // loop

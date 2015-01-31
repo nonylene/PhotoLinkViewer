@@ -87,5 +87,7 @@
     <string name="notes_dialog_title">notes about quality</string>
     <string name="notes_pref_summary">About quality</string>
     <string name="notes_pref_title">notes</string>
+    <string name="setting_video_title">Auto play video</string>
+    <string name="setting_video_summary">Play video before you tap</string>
 
 </resources>

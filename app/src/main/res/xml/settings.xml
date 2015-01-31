@@ -3,8 +3,8 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <Preference
-        android:title="@string/setting_quality_title"
         android:summary="@string/setting_quality_summary"
+        android:title="@string/setting_quality_title"
         >
         <intent
             android:action="android.intent.action.view"
@@ -35,12 +35,18 @@
         android:title="@string/setting_dir_title"/>
 
     <ListPreference
+        android:defaultValue="mkdir"
         android:dialogTitle="@string/setting_mkdir_dialogtitle"
         android:entries="@array/filename"
         android:entryValues="@array/filename_value"
-        android:defaultValue="mkdir"
         android:key="download_file"
-        android:title="@string/setting_mkdir_title" />
+        android:title="@string/setting_mkdir_title"/>
+
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="video_play"
+        android:summary="@string/setting_video_summary"
+        android:title="@string/setting_video_title"/>
 
     <Preference
         android:key="about_app_preference"
