@@ -1,6 +1,9 @@
 package net.nonylene.photolinkviewer.fragment;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.ListPreference;
@@ -31,6 +34,17 @@ public class LTEFragment extends PreferenceSummaryFragment {
                 BatchDialogFragment batchDialogFragment = new BatchDialogFragment();
                 batchDialogFragment.setTargetFragment(LTEFragment.this, 1);
                 batchDialogFragment.show(getFragmentManager(), "batch");
+                return false;
+            }
+        });
+        // on notes
+        Preference note = findPreference("quality_note");
+        note.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                // batch dialog
+                NoteDialogFragment noteDialogFragment = new NoteDialogFragment();
+                noteDialogFragment.show(getFragmentManager(), "batch");
                 return false;
             }
         });
@@ -98,7 +112,17 @@ public class LTEFragment extends PreferenceSummaryFragment {
                 nicoPreference.setValue("medium");
                 break;
         }
+    }
 
+    public static class NoteDialogFragment extends DialogFragment {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle(getString(R.string.notes_dialog_title))
+                    .setMessage(getString(R.string.notes_about_quality))
+                    .setPositiveButton(getString(android.R.string.ok), null);
+            return builder.create();
+        }
 
     }
 }

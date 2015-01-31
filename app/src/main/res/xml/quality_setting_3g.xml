@@ -5,6 +5,11 @@
         android:summary="@string/quality_switch_summary"
         android:title="@string/quality_switch_title"/>
 
+    <Preference
+        android:key="quality_note"
+        android:summary="@string/notes_pref_summary"
+        android:title="@string/notes_pref_title"/>
+
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="original_switch_3g"
