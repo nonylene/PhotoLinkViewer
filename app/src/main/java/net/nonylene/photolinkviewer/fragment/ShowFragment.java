@@ -530,7 +530,7 @@ public class ShowFragment extends Fragment {
                 id = matcher.group(1);
                 AsyncNICOExecute nicoExecute = new AsyncNICOExecute();
                 nicoExecute.Start(id);
-            } else if (url.contains("pixiv.net")){
+            } else if (url.contains("pixiv.net")) {
                 Log.v("pixiv", url);
                 Pattern pattern = Pattern.compile("^https?://.*pixiv\\.net/member_illust.php?.*illust_id=(\\d+)");
                 Matcher matcher = pattern.matcher(url);
@@ -539,22 +539,26 @@ public class ShowFragment extends Fragment {
                 }
                 final String pid = matcher.group(1);
                 RequestQueue queue = Volley.newRequestQueue(getActivity());
-                queue.add(new PXVStringRequest(getActivity(),pid,
+                queue.add(new PXVStringRequest(getActivity(), pid,
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
                                 Log.v("pixiv", response);
-                                final String[] list = response.split(",",-1);
+                                final String[] list = response.split(",", -1);
                                 final Bundle bundle = new Bundle();
                                 bundle.putString("url", url);
                                 // get original photo
-                                String file_url = list[9].replaceAll("\"","");
-                                bundle.putString("file_url", file_url);
-                                bundle.putString("original_url", file_url);
-                                bundle.putString("sitename", "pixiv");
-                                bundle.putString("filename", pid);
-                                AsyncExecute asyncExecute = new AsyncExecute();
-                                asyncExecute.Start(bundle);
+                                try {
+                                    String file_url = list[9].replaceAll("\"", "");
+                                    bundle.putString("file_url", file_url);
+                                    bundle.putString("original_url", file_url);
+                                    bundle.putString("sitename", "pixiv");
+                                    bundle.putString("filename", pid);
+                                    AsyncExecute asyncExecute = new AsyncExecute();
+                                    asyncExecute.Start(bundle);
+                                } catch (ArrayIndexOutOfBoundsException e) {
+                                    Toast.makeText(getActivity(), "Cannot open. R-18?", Toast.LENGTH_LONG).show();
+                                }
                             }
                         }));
             } else {
@@ -757,7 +761,6 @@ public class ShowFragment extends Fragment {
             orig = sharedPreferences.getBoolean("original_switch_3g", false);
         }
         return orig;
-
     }
 
     private void parseFlickr(JSONObject json) {
