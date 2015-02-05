@@ -78,7 +78,7 @@
     <string name="notes_dialog_title">取得画質について</string>
     <string name="notes_pref_summary">お読みください</string>
     <string name="notes_pref_title">取得画質について</string>
-    <string name="setting_video_summary">vine等の動画を自動で再生開始します</string>
+    <string name="setting_video_summary">タップする前に自動再生します</string>
     <string name="setting_video_title">動画を自動再生する</string>
 
 </resources>
