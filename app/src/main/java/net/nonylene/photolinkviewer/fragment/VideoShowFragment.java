@@ -2,6 +2,7 @@ package net.nonylene.photolinkviewer.fragment;
 
 import android.app.Fragment;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -32,6 +34,7 @@ import java.util.regex.Pattern;
 
 public class VideoShowFragment extends Fragment {
     private View view;
+    private ImageView imageView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -41,28 +44,37 @@ public class VideoShowFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.videoshow_fragment, container, false);
+        imageView = (ImageView) view.findViewById(R.id.video_image);
         String url = getArguments().getString("url");
         URLPurser(url);
         return view;
     }
 
     class VideoOnTouchListener implements View.OnTouchListener {
-        int position = 0;
 
         @Override
         public boolean onTouch(View v, MotionEvent e) {
             if (e.getAction() == MotionEvent.ACTION_UP) {
-                // resume() doesn't work
-                VideoView videoView = (VideoView) view.findViewById(R.id.videoview);
-                if (videoView.isPlaying()) {
-                    position = videoView.getCurrentPosition();
-                    videoView.pause();
-                } else {
-                    videoView.seekTo(position);
-                    videoView.start();
-                }
+                pauseStop();
+                Drawable drawable = getResources().getDrawable(R.drawable.ic_play_arrow_white_48dp);
+                imageView.setImageDrawable(drawable);
+            } else if (e.getAction() == MotionEvent.ACTION_DOWN) {
+                Drawable drawable = getResources().getDrawable(R.drawable.ic_play_arrow_grey_48dp);
+                imageView.setImageDrawable(drawable);
             }
             return true;
+        }
+    }
+
+    private void pauseStop() {
+        // resume() doesn't work
+        VideoView videoView = (VideoView) view.findViewById(R.id.videoview);
+        if (videoView.isPlaying()) {
+            imageView.setVisibility(View.VISIBLE);
+            videoView.pause();
+        } else {
+            imageView.setVisibility(View.GONE);
+            videoView.start();
         }
     }
 
@@ -93,7 +105,7 @@ public class VideoShowFragment extends Fragment {
         }
     }
 
-    private void parseVine(JSONObject json){
+    private void parseVine(JSONObject json) {
         final FrameLayout frameLayout = (FrameLayout) view.findViewById(R.id.videoshowframe);
         final ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.videoshowprogress);
         if (json != null) {
@@ -112,9 +124,10 @@ public class VideoShowFragment extends Fragment {
                         //remove progressbar
                         frameLayout.removeView(progressBar);
                         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                        if (preferences.getBoolean("video_play",true)){
+                        if (preferences.getBoolean("video_play", true)) {
                             videoView.start();
-                        }else {
+                        } else {
+                            imageView.setVisibility(View.VISIBLE);
                             videoView.seekTo(1);
                         }
                     }
