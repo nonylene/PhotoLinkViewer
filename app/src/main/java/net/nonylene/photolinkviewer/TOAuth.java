@@ -16,7 +16,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -51,6 +50,7 @@ public class TOAuth extends Activity {
     private RequestToken requestToken;
     private MyCursorAdapter myCursorAdapter;
     private MySQLiteOpenHelper sqLiteOpenHelper;
+    private SQLiteDatabase database;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,9 +64,11 @@ public class TOAuth extends Activity {
         update.setOnClickListener(new UpdateButtonClickListener());
         sqLiteOpenHelper = new MySQLiteOpenHelper(getApplicationContext());
         // create table accounts
-        SQLiteDatabase database = sqLiteOpenHelper.getWritableDatabase();
+        database = sqLiteOpenHelper.getWritableDatabase();
+        database.beginTransaction();
         database.execSQL("create table if not exists accounts (userName unique, userId integer unique, token, token_secret, key, icon)");
-        database.close();
+        database.setTransactionSuccessful();
+        database.endTransaction();
         setListView();
     }
 
@@ -97,27 +99,20 @@ public class TOAuth extends Activity {
 
         });
         // not to lock
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    SQLiteDatabase database = sqLiteOpenHelper.getReadableDatabase();
-                    Cursor cursor = database.rawQuery("select rowid _id, * from accounts", null);
-                    myCursorAdapter = new MyCursorAdapter(getApplicationContext(), cursor, true);
-                    listView.setAdapter(myCursorAdapter);
-                    // check current radio button
-                    for (int i = 0; i < listView.getCount(); i++) {
-                        Cursor c = (Cursor) listView.getItemAtPosition(i);
-                        if (c.getInt(c.getColumnIndex("_id")) == sharedPreferences.getInt("account", 0)) {
-                            listView.setItemChecked(i, true);
-                        }
-                    }
-                    database.close();
-                } catch (SQLiteException e) {
-                    Log.e("SQLite", e.toString());
+        try {
+            Cursor cursor = database.rawQuery("select rowid _id, * from accounts", null);
+            myCursorAdapter = new MyCursorAdapter(getApplicationContext(), cursor, true);
+            listView.setAdapter(myCursorAdapter);
+            // check current radio button
+            for (int i = 0; i < listView.getCount(); i++) {
+                Cursor c = (Cursor) listView.getItemAtPosition(i);
+                if (c.getInt(c.getColumnIndex("_id")) == sharedPreferences.getInt("account", 0)) {
+                    listView.setItemChecked(i, true);
                 }
             }
-        });
+        } catch (SQLiteException e) {
+            Log.e("SQLite", e.toString());
+        }
     }
 
 
@@ -178,7 +173,6 @@ public class TOAuth extends Activity {
                 values.put("key", keys);
                 values.put("icon", icon);
                 // open database
-                final SQLiteDatabase database = sqLiteOpenHelper.getWritableDatabase();
                 database.beginTransaction();
                 // if exists...
                 database.delete("accounts", "userId = " + String.valueOf(myId), null);
@@ -186,25 +180,21 @@ public class TOAuth extends Activity {
                 database.insert("accounts", null, values);
                 // commit
                 database.setTransactionSuccessful();
-                final Cursor cursor = database.rawQuery("select rowid _id, * from accounts", null);
                 database.endTransaction();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        // renew listView
-                        // i want to use content provider and cursor loader in future.
-                        myCursorAdapter.swapCursor(cursor);
-                    }
-                });
+                Cursor cursorNew = database.rawQuery("select rowid _id, userId from accounts where userId = ?", new String[]{String.valueOf(myId)});
+                cursorNew.moveToFirst();
+                int account = cursorNew.getInt(cursorNew.getColumnIndex("_id"));
                 // set oauth_completed frag
                 SharedPreferences preferences = getSharedPreferences("preference", MODE_PRIVATE);
                 preferences.edit().putBoolean("authorized", true).apply();
                 preferences.edit().putString("screen_name", screenName).apply();
+                preferences.edit().putInt("account", account).apply();
                 //putting cue to UI Thread
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         Toast.makeText(TOAuth.this, getString(R.string.toauth_succeeded_token) + " " + screenName, Toast.LENGTH_LONG).show();
+                        setListView();
                     }
                 });
             } catch (UnsupportedEncodingException e) {
@@ -262,7 +252,6 @@ public class TOAuth extends Activity {
 
                             try {
                                 final Toast toast = Toast.makeText(getActivity(), getString(R.string.delete_account_toast), Toast.LENGTH_LONG);
-                                SQLiteDatabase database = sqLiteOpenHelper.getWritableDatabase();
                                 database.beginTransaction();
                                 // quotation is required.
                                 database.delete("accounts", "userName = '" + screenName + "'", null);
@@ -296,8 +285,7 @@ public class TOAuth extends Activity {
             SharedPreferences sharedPreferences = getSharedPreferences("preference", MODE_PRIVATE);
             if (sharedPreferences.getBoolean("authorized", false)) {
                 try {
-                    AsyncTwitter twitter = MyAsyncTwitter.getAsyncTwitter(getApplicationContext());
-                    final SQLiteDatabase database = sqLiteOpenHelper.getWritableDatabase();
+                    AsyncTwitter twitter = MyAsyncTwitter.getAsyncTwitterFromDB(database, getApplicationContext());
                     Cursor cursor = database.rawQuery("select rowid _id, userId from accounts", null);
                     twitter.addListener(new TwitterAdapter() {
                         @Override
@@ -342,11 +330,15 @@ public class TOAuth extends Activity {
         // save rowid and screen name to preference
         SharedPreferences sharedPreferences = getSharedPreferences("preference", MODE_PRIVATE);
         sharedPreferences.edit().putInt("account", rowid).apply();
-        SQLiteDatabase database = sqLiteOpenHelper.getReadableDatabase();
         Cursor cursor = database.rawQuery("select userName from accounts where rowid = ?", new String[]{String.valueOf(rowid)});
         cursor.moveToFirst();
         String screen_name = cursor.getString(cursor.getColumnIndex("userName"));
         sharedPreferences.edit().putString("screen_name", screen_name).apply();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        database.close();
+    }
 }
