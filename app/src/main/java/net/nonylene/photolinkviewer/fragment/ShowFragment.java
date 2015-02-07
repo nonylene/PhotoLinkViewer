@@ -334,7 +334,7 @@ public class ShowFragment extends Fragment {
                 LinearLayout linearLayout = (LinearLayout) getActivity().findViewById(R.id.rotate_root);
                 linearLayout.setVisibility(View.VISIBLE);
             } else {
-                if (result.getType().equals("gif")) {
+                if ("gif".equals(result.getType())) {
                     // gif view by web view
                     WebView webView = new WebView(getActivity());
                     webView.getSettings().setUseWideViewPort(true);
