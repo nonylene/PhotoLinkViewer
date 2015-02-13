@@ -295,6 +295,11 @@
             android:name=".ChangeQualityActivity"
             android:theme="@android:style/Theme.DeviceDefault.Light">
         </activity>
+
+        <activity
+            android:name=".AESettings"
+            android:theme="@android:style/Theme.DeviceDefault.Light">
+        </activity>
     </application>
 
 </manifest>

@@ -80,5 +80,10 @@
     <string name="notes_pref_title">取得画質について</string>
     <string name="setting_video_summary">タップする前に自動再生します</string>
     <string name="setting_video_title">動画を自動再生する</string>
+    <string name="disp_tweet_summary">ツイート写真へのリンクを受け取った際、投稿された写真が複数でないときもツイート詳細を表示します</string>
+    <string name="disp_tweet_title">常にツイートを表示</string>
+    <string name="double_zoom_summary">ダブルタップからドラッグがなされた時にダブルタップによるズームを抑制します。\n\n注: 一部の端末(Xperiaなど)はドラッグしていないときもダブルタップが無効になります</string>
+    <string name="double_zoom_title">QuickScaleZoom時にダブルタップのズームをしない</string>
+    <string name="long_reload_title">ロングタップでアプリを再読み込みする</string>
 
 </resources>
