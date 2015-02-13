@@ -49,7 +49,6 @@ public class TOAuth extends Activity {
     private AsyncTwitter twitter;
     private RequestToken requestToken;
     private MyCursorAdapter myCursorAdapter;
-    private MySQLiteOpenHelper sqLiteOpenHelper;
     private SQLiteDatabase database;
 
     @Override
@@ -62,7 +61,7 @@ public class TOAuth extends Activity {
         // update button
         Button update = (Button) findViewById(R.id.update_button);
         update.setOnClickListener(new UpdateButtonClickListener());
-        sqLiteOpenHelper = new MySQLiteOpenHelper(getApplicationContext());
+        MySQLiteOpenHelper sqLiteOpenHelper = new MySQLiteOpenHelper(getApplicationContext());
         // create table accounts
         database = sqLiteOpenHelper.getWritableDatabase();
         database.beginTransaction();
