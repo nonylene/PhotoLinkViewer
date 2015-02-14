@@ -8,11 +8,6 @@
 
     <SwitchPreference
         android:defaultValue="false"
-        android:key="long_reload"
-        android:title="@string/long_reload_title"/>
-
-    <SwitchPreference
-        android:defaultValue="false"
         android:key="double_zoom"
         android:summary="@string/double_zoom_summary"
         android:title="@string/double_zoom_title"/>
