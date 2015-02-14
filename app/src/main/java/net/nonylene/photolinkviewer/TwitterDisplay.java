@@ -15,6 +15,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.net.http.HttpResponseCache;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextPaint;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -134,7 +135,7 @@ public class TwitterDisplay extends Activity {
             String[] screen_array = screen_list.toArray(new String[screen_list.size()]);
             // get current screen_name
             final SharedPreferences sharedPreferences = getActivity().getSharedPreferences("preference", MODE_PRIVATE);
-            String current_name = sharedPreferences.getString("screen_name",null);
+            String current_name = sharedPreferences.getString("screen_name", null);
             int position = screen_list.indexOf(current_name);
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle(getString(R.string.account_dialog_title))
@@ -204,8 +205,10 @@ public class TwitterDisplay extends Activity {
                     MediaEntity[] mediaEntities = status.getExtendedMediaEntities();
                     URLEntity[] urlEntities = status.getURLEntities();
 
+                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    boolean show = sharedPreferences.getBoolean("disp_tweet", false);
                     // if number of media entity is one, show fragment directly
-                    if (url.contains("/photo") && mediaEntities.length == 1) {
+                    if (!show && url.contains("/photo") && mediaEntities.length == 1) {
                         Bundle bundle = new Bundle();
                         bundle.putString("url", mediaEntities[0].getMediaURL());
                         try {
@@ -214,7 +217,7 @@ public class TwitterDisplay extends Activity {
                             showFragment.setArguments(bundle);
                             fragmentTransaction.replace(R.id.show_frag_replace, showFragment);
                             fragmentTransaction.commit();
-                        }catch (IllegalStateException e){
+                        } catch (IllegalStateException e) {
                             Log.e("error", e.toString());
                         }
                     } else {
@@ -244,7 +247,7 @@ public class TwitterDisplay extends Activity {
                             textView.setText(finStatus.getText());
                             final String screen = finStatus.getUser().getScreenName();
                             snView.setText(finStatus.getUser().getName() + " @" + screen);
-                            if (finStatus.getUser().isProtected()){
+                            if (finStatus.getUser().isProtected()) {
                                 // add key icon
                                 float dp = getResources().getDisplayMetrics().density;
                                 // set size
