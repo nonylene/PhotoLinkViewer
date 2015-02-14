@@ -105,6 +105,7 @@ public class ShowFragment extends Fragment {
 
 
     class simpleOnGestureListener extends GestureDetector.SimpleOnGestureListener {
+        boolean double_zoom;
 
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
@@ -124,6 +125,25 @@ public class ShowFragment extends Fragment {
         @Override
         public boolean onDoubleTap(MotionEvent e) {
             quickScale = new MyQuickScale(e);
+            double_zoom = preferences.getBoolean("double_zoom", false);
+            if (!double_zoom) {
+                doubleZoom(e);
+            }
+            return super.onDoubleTap(e);
+        }
+
+        @Override
+        public boolean onDoubleTapEvent(MotionEvent e) {
+            if (e.getAction() == MotionEvent.ACTION_UP) {
+                if (double_zoom && !quickScale.moved()) {
+                    doubleZoom(e);
+                }
+                quickScale = null;
+            }
+            return false;
+        }
+
+        private void doubleZoom(MotionEvent e) {
             final float touchX = e.getX();
             final float touchY = e.getY();
             ScaleAnimation scaleAnimation = new ScaleAnimation(1, 2, 1, 2, touchX, touchY);
@@ -147,16 +167,6 @@ public class ShowFragment extends Fragment {
                 }
             });
             imageView.startAnimation(scaleAnimation);
-            // drag photo
-            return super.onDoubleTap(e);
-        }
-
-        @Override
-        public boolean onDoubleTapEvent(MotionEvent e) {
-            if (e.getAction() == MotionEvent.ACTION_UP) {
-                quickScale = null;
-            }
-            return false;
         }
     }
 
@@ -166,6 +176,7 @@ public class ShowFragment extends Fragment {
         private float initialX;
         private float basezoom;
         private float old_zoom;
+        private boolean moved = false;
 
         public MyQuickScale(MotionEvent e) {
             initialY = e.getY();
@@ -186,6 +197,7 @@ public class ShowFragment extends Fragment {
         }
 
         public void onMove(MotionEvent e) {
+            moved = true;
             float touchY = e.getY();
             Matrix matrix = new Matrix();
             matrix.set(imageView.getImageMatrix());
@@ -200,6 +212,10 @@ public class ShowFragment extends Fragment {
                 matrix.postScale(scale, scale, initialX, initialY);
                 imageView.setImageMatrix(matrix);
             }
+        }
+
+        public boolean moved(){
+            return moved;
         }
     }
 
