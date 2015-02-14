@@ -85,5 +85,7 @@
     <string name="double_zoom_summary">ダブルタップからドラッグがなされた時にダブルタップによるズームを抑制します。\n\n注: 一部の端末(Xperiaなど)はドラッグしていないときもダブルタップが無効になります</string>
     <string name="double_zoom_title">QuickScaleZoom時にダブルタップのズームをしない</string>
     <string name="long_reload_title">ロングタップでアプリを再読み込みする</string>
+    <string name="apref_title">詳細/実験的オプション</string>
+    <string name="apref_summary">タップして開く</string>
 
 </resources>

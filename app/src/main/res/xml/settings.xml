@@ -49,8 +49,8 @@
         android:title="@string/setting_video_title"/>
 
     <Preference
-        android:summary="Tap to open"
-        android:title="Advanced / experimental options">
+        android:summary="@string/apref_summary"
+        android:title="@string/apref_title">
         <intent
             android:action="android.intent.action.view"
             android:targetClass="net.nonylene.photolinkviewer.AESettings"
