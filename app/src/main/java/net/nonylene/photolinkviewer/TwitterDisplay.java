@@ -31,6 +31,7 @@ import android.widget.Toast;
 import net.nonylene.photolinkviewer.fragment.OptionFragment;
 import net.nonylene.photolinkviewer.fragment.ShowFragment;
 import net.nonylene.photolinkviewer.fragment.TwitterOptionFragment;
+import net.nonylene.photolinkviewer.fragment.VideoShowFragment;
 import net.nonylene.photolinkviewer.tool.AccountsList;
 import net.nonylene.photolinkviewer.tool.MyAsyncTwitter;
 import net.nonylene.photolinkviewer.tool.PLVImageView;
@@ -295,14 +296,13 @@ public class TwitterDisplay extends Activity {
                             addPhotoIcon();
 
                             for (MediaEntity mediaEntity : mediaEntities) {
-                                String url = mediaEntity.getMediaURL();
-                                addView(url);
+                                addView(mediaEntity);
                             }
                         }
                     }
                 }
 
-                public void addUrl(final String url) {
+                private void addUrl(final String url) {
                     LinearLayout urlLayout = (LinearLayout) findViewById(R.id.url_linear);
                     // prev is last linear_layout
                     TextView textView = (TextView) LayoutInflater.from(getApplicationContext()).inflate(R.layout.twitter_url, null);
@@ -329,14 +329,34 @@ public class TwitterDisplay extends Activity {
                     urlLayout.addView(textView);
                 }
 
-                public void addPhotoIcon() {
+                private String getBiggestMp4Url(MediaEntity.Variant[] variants) {
+                    int bitrate = 0;
+                    String url = null;
+                    for (MediaEntity.Variant variant : variants) {
+                        if (("video/mp4").equals(variant.getContentType()) && bitrate <= variant.getBitrate()) {
+                            url = variant.getUrl();
+                            bitrate = variant.getBitrate();
+                        }
+                    }
+                    return url;
+                }
+
+                private void addPhotoIcon() {
                     ImageView imageView = (ImageView) findViewById(R.id.photo_icon);
                     Drawable photoIcon = getResources().getDrawable(R.drawable.photo_icon);
                     imageView.setImageDrawable(photoIcon);
                 }
 
-                public void addView(final String url) {
+                private void addView(MediaEntity mediaEntity) {
                     try {
+                        final String url = mediaEntity.getMediaURL();
+                        final String type = mediaEntity.getType();
+                        final String file_url;
+                        if (("animated_gif").equals(type) || ("video").equals(type)) {
+                            file_url = getBiggestMp4Url(mediaEntity.getVideoVariants());
+                        } else {
+                            file_url = url;
+                        }
                         LinearLayout baseLayout = (LinearLayout) findViewById(R.id.photos);
                         // prev is last linear_layout
                         LinearLayout prevLayout = (LinearLayout) baseLayout.getChildAt(baseLayout.getChildCount() - 1);
@@ -376,11 +396,17 @@ public class TwitterDisplay extends Activity {
                             public void onClick(View v) {
                                 // go to show fragment
                                 Bundle bundle = new Bundle();
-                                bundle.putString("url", url);
+                                bundle.putString("url", file_url);
                                 FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                                ShowFragment showFragment = new ShowFragment();
-                                showFragment.setArguments(bundle);
-                                fragmentTransaction.replace(R.id.show_frag_replace, showFragment);
+                                if (("animated_gif").equals(type) || ("video").equals(type)) {
+                                    VideoShowFragment showFragment = new VideoShowFragment();
+                                    showFragment.setArguments(bundle);
+                                    fragmentTransaction.replace(R.id.show_frag_replace, showFragment);
+                                } else {
+                                    ShowFragment showFragment = new ShowFragment();
+                                    showFragment.setArguments(bundle);
+                                    fragmentTransaction.replace(R.id.show_frag_replace, showFragment);
+                                }
                                 // back to this screen when back pressed
                                 fragmentTransaction.addToBackStack(null);
                                 fragmentTransaction.commit();
