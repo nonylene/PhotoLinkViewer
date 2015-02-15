@@ -23,5 +23,4 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':modules:volley')
-    compile 'org.twitter4j:twitter4j-async:4.0.+'
 }
