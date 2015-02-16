@@ -352,11 +352,6 @@ public class TwitterDisplay extends Activity {
                         final String url = mediaEntity.getMediaURL();
                         final String type = mediaEntity.getType();
                         final String file_url;
-                        if (("animated_gif").equals(type) || ("video").equals(type)) {
-                            file_url = getBiggestMp4Url(mediaEntity.getVideoVariants());
-                        } else {
-                            file_url = url;
-                        }
                         LinearLayout baseLayout = (LinearLayout) findViewById(R.id.photos);
                         // prev is last linear_layout
                         LinearLayout prevLayout = (LinearLayout) baseLayout.getChildAt(baseLayout.getChildCount() - 1);
@@ -372,7 +367,6 @@ public class TwitterDisplay extends Activity {
                             currentLayout = prevLayout;
                         }
                         int width = baseLayout.getWidth();
-                        Log.d("hoge", String.valueOf(width));
                         // get dp
                         float dp = getResources().getDisplayMetrics().density;
                         // set padding and margin
@@ -383,14 +377,20 @@ public class TwitterDisplay extends Activity {
                         // imgview size
                         int layoutsize = width / 2 - margin * 2;
                         // new imgview
-                        PLVImageView imageView = new PLVImageView(TwitterDisplay.this);
-                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(layoutsize, layoutsize);
-                        layoutParams.setMargins(margin, margin, margin, margin);
-                        imageView.setLayoutParams(layoutParams);
-                        imageView.setPadding(padding, padding, padding, padding);
-                        imageView.setScaleType(ImageView.ScaleType.MATRIX);
-                        // background (tap to gray)
-                        imageView.setBackgroundResource(R.drawable.twitter_image_design);
+                        FrameLayout frameLayout = (FrameLayout) getLayoutInflater().inflate(R.layout.twitter_frame, null);
+                        PLVImageView imageView = (PLVImageView) frameLayout.getChildAt(0);
+                        // set width and height
+                        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) imageView.getLayoutParams();
+                        layoutParams.height = layoutParams.width = layoutsize;
+
+                        if (("animated_gif").equals(type) || ("video").equals(type)) {
+                            file_url = getBiggestMp4Url(mediaEntity.getVideoVariants());
+                            ImageView video_icon = (ImageView) frameLayout.getChildAt(1);
+                            video_icon.setVisibility(View.VISIBLE);
+                        } else {
+                            file_url = url;
+                        }
+
                         imageView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -413,7 +413,7 @@ public class TwitterDisplay extends Activity {
                             }
                         });
                         imageView.setUrl(new URL(url + ":small"), size, size);
-                        currentLayout.addView(imageView);
+                        currentLayout.addView(frameLayout);
                     } catch (MalformedURLException e) {
                         Log.e("URLError", e.toString());
                     }

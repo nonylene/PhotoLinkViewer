@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -36,6 +37,7 @@ import java.util.regex.Pattern;
 public class VideoShowFragment extends Fragment {
     private View view;
     private ImageView imageView;
+    private boolean vine_frag = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -65,23 +67,25 @@ public class VideoShowFragment extends Fragment {
             }
             return true;
         }
-    }
 
-    private void pauseStop() {
-        // resume() doesn't work
-        VideoView videoView = (VideoView) view.findViewById(R.id.videoview);
-        if (videoView.isPlaying()) {
-            imageView.setVisibility(View.VISIBLE);
-            videoView.pause();
-        } else {
-            imageView.setVisibility(View.GONE);
-            videoView.start();
+        private void pauseStop() {
+            // resume() doesn't work
+            VideoView videoView = (VideoView) view.findViewById(R.id.videoview);
+            if (videoView.isPlaying()) {
+                imageView.setVisibility(View.VISIBLE);
+                videoView.pause();
+            } else {
+                imageView.setVisibility(View.GONE);
+                videoView.start();
+            }
         }
+
     }
 
     private void URLPurser(String url) {
         if (url.contains("vine.co")) {
             Log.v("vine", url);
+            vine_frag = true;
             Pattern pattern = Pattern.compile("^https?://vine\\.co/v/(\\w+)");
             Matcher matcher = pattern.matcher(url);
             if (matcher.find()) {
@@ -101,6 +105,7 @@ public class VideoShowFragment extends Fragment {
             ));
         } else {
             Log.v("others", url);
+            vine_frag = false;
             playVideo(url);
         }
     }
@@ -128,31 +133,68 @@ public class VideoShowFragment extends Fragment {
         // view video
         final VideoView videoView = (VideoView) view.findViewById(R.id.videoview);
         videoView.setVideoURI(Uri.parse(url));
-        // touch to stop
-        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-                //remove progressbar
-                frameLayout.removeView(progressBar);
-                frameLayout.setBackgroundColor(getResources().getColor(R.color.background));
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                videoView.setBackgroundColor(Color.TRANSPARENT);
-                if (preferences.getBoolean("video_play", true)) {
-                    videoView.start();
-                } else {
-                    imageView.setVisibility(View.VISIBLE);
-                    videoView.seekTo(1);
+        if (vine_frag) {
+            // touch to stop
+            videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    //remove progressbar
+                    frameLayout.removeView(progressBar);
+                    frameLayout.setBackgroundColor(getResources().getColor(R.color.background));
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                    videoView.setBackgroundColor(Color.TRANSPARENT);
+                    if (preferences.getBoolean("video_play", true)) {
+                        videoView.start();
+                    } else {
+                        imageView.setVisibility(View.VISIBLE);
+                        videoView.seekTo(1);
+                    }
                 }
-            }
-        });
-        // loop
-        videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                videoView.start();
-            }
-        });
-        VideoOnTouchListener videoOnTouchListener = new VideoOnTouchListener();
-        videoView.setOnTouchListener(videoOnTouchListener);
+            });
+            // loop
+            videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    videoView.start();
+                }
+            });
+            VideoOnTouchListener videoOnTouchListener = new VideoOnTouchListener();
+            videoView.setOnTouchListener(videoOnTouchListener);
+
+        }else{
+            final MediaController mediaController = new MediaController(getActivity());
+            videoView.setMediaController(mediaController);
+            // touch to stop
+            videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    //remove progressbar
+                    frameLayout.removeView(progressBar);
+                    frameLayout.setBackgroundColor(getResources().getColor(R.color.background));
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                    videoView.setBackgroundColor(Color.TRANSPARENT);
+                    if (preferences.getBoolean("video_play", true)) {
+                        videoView.start();
+                    } else {
+                        mediaController.show();
+                        videoView.seekTo(1);
+                    }
+                }
+            });
+
+            videoView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        if (mediaController.isShowing()) {
+                            mediaController.hide();
+                        } else {
+                            mediaController.show();
+                        }
+                    }
+                    return true;
+                }
+            });
+        }
     }
 }
