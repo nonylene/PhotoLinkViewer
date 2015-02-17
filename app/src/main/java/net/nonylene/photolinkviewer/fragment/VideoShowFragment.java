@@ -49,6 +49,10 @@ public class VideoShowFragment extends Fragment {
         view = inflater.inflate(R.layout.videoshow_fragment, container, false);
         imageView = (ImageView) view.findViewById(R.id.video_image);
         String url = getArguments().getString("url");
+        if (getArguments().getBoolean("single_frag", false)){
+            FrameLayout frameLayout = (FrameLayout)view.findViewById(R.id.videoshowframe);
+            frameLayout.setBackgroundColor(getResources().getColor(R.color.background));
+        }
         URLPurser(url);
         return view;
     }
@@ -151,13 +155,6 @@ public class VideoShowFragment extends Fragment {
                     }
                 }
             });
-            // loop
-            videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mp) {
-                    videoView.start();
-                }
-            });
             VideoOnTouchListener videoOnTouchListener = new VideoOnTouchListener();
             videoView.setOnTouchListener(videoOnTouchListener);
 
@@ -196,5 +193,13 @@ public class VideoShowFragment extends Fragment {
                 }
             });
         }
+
+        // loop
+        videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                videoView.start();
+            }
+        });
     }
 }

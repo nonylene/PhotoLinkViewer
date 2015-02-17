@@ -210,14 +210,28 @@ public class TwitterDisplay extends Activity {
                     boolean show = sharedPreferences.getBoolean("disp_tweet", false);
                     // if number of media entity is one, show fragment directly
                     if (!show && url.contains("/photo") && mediaEntities.length == 1) {
+                        MediaEntity mediaEntity = mediaEntities[0];
                         Bundle bundle = new Bundle();
-                        bundle.putString("url", mediaEntities[0].getMediaURL());
+                        String type = mediaEntity.getType();
                         try {
                             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                            ShowFragment showFragment = new ShowFragment();
-                            showFragment.setArguments(bundle);
-                            fragmentTransaction.replace(R.id.show_frag_replace, showFragment);
+
+                            if (("animated_gif").equals(type) || ("video").equals(type)) {
+                                String file_url = getBiggestMp4Url(mediaEntity.getVideoVariants());
+                                bundle.putString("url", file_url);
+                                bundle.putBoolean("single_frag", true);
+                                VideoShowFragment showFragment = new VideoShowFragment();
+                                showFragment.setArguments(bundle);
+                                fragmentTransaction.replace(R.id.show_frag_replace, showFragment);
+                            } else {
+                                bundle.putString("url", mediaEntity.getMediaURL());
+                                ShowFragment showFragment = new ShowFragment();
+                                showFragment.setArguments(bundle);
+                                fragmentTransaction.replace(R.id.show_frag_replace, showFragment);
+                            }
+
                             fragmentTransaction.commit();
+
                         } catch (IllegalStateException e) {
                             Log.e("error", e.toString());
                         }
@@ -235,7 +249,6 @@ public class TwitterDisplay extends Activity {
                         TextView favView = (TextView) findViewById(R.id.favCount);
                         TextView rtView = (TextView) findViewById(R.id.rtCount);
                         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-                        URL iconUrl;
 
                         try {
                             //retweet check
@@ -261,7 +274,7 @@ public class TwitterDisplay extends Activity {
                             }
                             String statusDate = dateFormat.format(finStatus.getCreatedAt());
                             dayView.setText(statusDate);
-                            iconUrl = new URL(finStatus.getUser().getBiggerProfileImageURL());
+                            URL iconUrl = new URL(finStatus.getUser().getBiggerProfileImageURL());
                             // fav and rt
                             favView.setText("fav: " + String.valueOf(finStatus.getFavoriteCount()));
                             rtView.setText("RT: " + String.valueOf(finStatus.getRetweetCount()));
