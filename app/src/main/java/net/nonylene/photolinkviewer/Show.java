@@ -26,7 +26,7 @@ public class Show extends Activity {
         //enable cache
         try {
             File httpCacheDir = new File(getApplicationContext().getCacheDir(), "http");
-            long httpCacheSize = 10 * 1024 * 1024; // 15 MB
+            long httpCacheSize = 10 * 1024 * 1024; // 10 MB
             HttpResponseCache.install(httpCacheDir, httpCacheSize);
         } catch (IOException e) {
             Log.d("cache", "HTTP response cache installation failed");
@@ -43,6 +43,7 @@ public class Show extends Activity {
             optionFragment.setArguments(bundle);
             fragmentTransaction.add(R.id.root_layout, optionFragment);
             if (url.contains("vine.co")) {
+                bundle.putBoolean("single_frag", true);
                 VideoShowFragment videoShowFragment = new VideoShowFragment();
                 videoShowFragment.setArguments(bundle);
                 fragmentTransaction.replace(R.id.show_frag_replace, videoShowFragment);
