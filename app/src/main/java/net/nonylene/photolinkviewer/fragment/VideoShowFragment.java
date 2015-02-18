@@ -171,10 +171,10 @@ public class VideoShowFragment extends Fragment {
                     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
                     videoView.setBackgroundColor(Color.TRANSPARENT);
                     if (preferences.getBoolean("video_play", true)) {
-                        videoView.start();
+                        mp.start();
                     } else {
                         mediaController.show();
-                        videoView.seekTo(1);
+                        mp.seekTo(1);
                     }
                 }
             });
@@ -198,7 +198,7 @@ public class VideoShowFragment extends Fragment {
         videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
-                videoView.start();
+                mp.start();
             }
         });
     }
