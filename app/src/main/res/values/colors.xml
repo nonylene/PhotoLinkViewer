@@ -2,4 +2,5 @@
 <resources>
     <color name="background">#45000000</color>
     <color name="transparent">#00000000</color>
+    <color name="ripple">#64000000</color>
 </resources>
