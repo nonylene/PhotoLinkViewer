@@ -88,9 +88,17 @@ public class ShowFragment extends Fragment {
                 if (!scaleGestureDetector.isInProgress()) {
                     gestureDetector.onTouchEvent(event);
                 }
-                if (quickScale != null && event.getAction() == MotionEvent.ACTION_MOVE) {
-                    // image_view double_tap quick scale
-                    quickScale.onMove(event);
+                if (quickScale != null) {
+                    switch (event.getAction()) {
+                        case MotionEvent.ACTION_MOVE:
+                            // image_view double_tap quick scale
+                            quickScale.onMove(event);
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            quickScale = null;
+                            Log.d("hoge", "hoge");
+                            break;
+                    }
                 }
                 return true;
             }
@@ -124,8 +132,8 @@ public class ShowFragment extends Fragment {
 
         @Override
         public boolean onDoubleTap(MotionEvent e) {
-            quickScale = new MyQuickScale(e);
             double_zoom = preferences.getBoolean("double_zoom", false);
+            quickScale = new MyQuickScale(e, !double_zoom);
             if (!double_zoom) {
                 doubleZoom(e);
             }
@@ -134,7 +142,7 @@ public class ShowFragment extends Fragment {
 
         @Override
         public boolean onDoubleTapEvent(MotionEvent e) {
-            if (e.getAction() == MotionEvent.ACTION_UP) {
+            if (quickScale != null && e.getAction() == MotionEvent.ACTION_UP) {
                 if (double_zoom && !quickScale.moved()) {
                     doubleZoom(e);
                 }
@@ -178,7 +186,7 @@ public class ShowFragment extends Fragment {
         private float old_zoom;
         private boolean moved = false;
 
-        public MyQuickScale(MotionEvent e) {
+        public MyQuickScale(MotionEvent e, boolean double_frag) {
             initialY = e.getY();
             initialX = e.getX();
             //get current status
@@ -192,7 +200,9 @@ public class ShowFragment extends Fragment {
                 basezoom = Math.abs(values[Matrix.MSKEW_X]);
             }
             // double tap
-            basezoom = basezoom * 2;
+            if (double_frag) {
+                basezoom = basezoom * 2;
+            }
             old_zoom = 1;
         }
 
@@ -214,7 +224,7 @@ public class ShowFragment extends Fragment {
             }
         }
 
-        public boolean moved(){
+        public boolean moved() {
             return moved;
         }
     }
