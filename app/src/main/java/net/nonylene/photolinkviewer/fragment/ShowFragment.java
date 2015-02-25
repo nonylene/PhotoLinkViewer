@@ -96,7 +96,6 @@ public class ShowFragment extends Fragment {
                             break;
                         case MotionEvent.ACTION_UP:
                             quickScale = null;
-                            Log.d("hoge", "hoge");
                             break;
                     }
                 }

@@ -91,7 +91,7 @@
     <string name="setting_video_summary">Play video before you tap</string>
     <string name="disp_tweet_title">Always show tweet</string>
     <string name="disp_tweet_summary">Display tweet details even if number of attached photo is only one when receive link to tweet photo.</string>
-    <string name="double_zoom_summary">Double tap zoom will be disabled if dragged after double tap.\n\nWarning: Some devices (e.g. Xperia) cannot perform double tap zoom even if you don\'t drag.</string>
+    <string name="double_zoom_summary">Double tap zoom will be disabled if dragged after double tap.\n\nWarning: Some devices (e.g. Xperia, GALAXY) cannot perform double tap zoom even if you don\'t drag.</string>
     <string name="double_zoom_title">Disable zoom before quickscale zoom</string>
     <string name="apref_summary">Tap to open</string>
     <string name="apref_title">Advanced / experimental options</string>
