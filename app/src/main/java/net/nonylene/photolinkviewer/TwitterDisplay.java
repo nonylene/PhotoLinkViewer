@@ -10,7 +10,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteException;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.net.http.HttpResponseCache;
@@ -18,7 +17,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextPaint;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -241,7 +239,7 @@ public class TwitterDisplay extends Activity {
                         frameLayout.setBackgroundResource(R.color.background);
                         ScrollView scrollView = (ScrollView) findViewById(R.id.twitterScrollView);
                         // transparent to f5
-                        scrollView.setBackgroundColor(Color.parseColor("#F5F5F5"));
+                        scrollView.setBackgroundColor(getResources().getColor(R.color.twitter_back));
                         // put status on text
                         TextView textView = (TextView) findViewById(R.id.twTxt);
                         TextView snView = (TextView) findViewById(R.id.twSN);
@@ -318,7 +316,7 @@ public class TwitterDisplay extends Activity {
                 private void addUrl(final String url) {
                     LinearLayout urlLayout = (LinearLayout) findViewById(R.id.url_linear);
                     // prev is last linear_layout
-                    TextView textView = (TextView) LayoutInflater.from(getApplicationContext()).inflate(R.layout.twitter_url, null);
+                    TextView textView = (TextView) getLayoutInflater().inflate(R.layout.twitter_url, null);
                     textView.setText(url);
                     TextPaint textPaint = textView.getPaint();
                     textPaint.setUnderlineText(true);
