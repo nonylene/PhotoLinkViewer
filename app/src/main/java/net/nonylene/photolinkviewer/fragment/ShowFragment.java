@@ -335,9 +335,8 @@ public class ShowFragment extends Fragment {
                 float zoom = Math.min(wid, hei);
                 float initX;
                 float initY;
-                if (zoom < 1) {
+                if (preferences.getBoolean("adjust_zoom", false) || zoom < 1) {
                     //zoom
-                    firstzoom = zoom;
                     matrix.setScale(zoom, zoom);
                     if (wid < hei) {
                         //adjust width
@@ -347,6 +346,9 @@ public class ShowFragment extends Fragment {
                         //adjust height
                         initX = (dispWidth - origwidth * hei) / 2;
                         initY = 0;
+                    }
+                    if (zoom < 1){
+                        firstzoom = zoom;
                     }
                 } else {
                     //move
