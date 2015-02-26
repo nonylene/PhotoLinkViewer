@@ -3,16 +3,6 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <Preference
-        android:summary="@string/setting_quality_summary"
-        android:title="@string/setting_quality_title"
-        >
-        <intent
-            android:action="android.intent.action.view"
-            android:targetClass="net.nonylene.photolinkviewer.ChangeQualityActivity"
-            android:targetPackage="net.nonylene.photolinkviewer"/>
-    </Preference>
-
-    <Preference
         android:summary="@string/pref_twitter_summary"
         android:title="@string/pref_twitter_title">
         <intent
@@ -21,45 +11,83 @@
             android:targetPackage="net.nonylene.photolinkviewer"/>
     </Preference>
 
-    <EditTextPreference
-        android:defaultValue="1.4"
-        android:dialogTitle="@string/settings_zoom_dtitle"
-        android:inputType="numberDecimal"
-        android:key="zoom_speed"
-        android:title="@string/settings_zoom_title"/>
+    <PreferenceCategory
+        android:title="@string/display_title">
 
-    <EditTextPreference
-        android:defaultValue="PLViewer/"
-        android:dialogTitle="@string/setting_dir_dialogtitle"
-        android:key='download_dir'
-        android:title="@string/setting_dir_title"/>
+        <Preference
+            android:summary="@string/setting_quality_summary"
+            android:title="@string/setting_quality_title">
+            <intent
+                android:action="android.intent.action.view"
+                android:targetClass="net.nonylene.photolinkviewer.ChangeQualityActivity"
+                android:targetPackage="net.nonylene.photolinkviewer"/>
+        </Preference>
 
-    <ListPreference
-        android:defaultValue="mkdir"
-        android:dialogTitle="@string/setting_mkdir_dialogtitle"
-        android:entries="@array/filename"
-        android:entryValues="@array/filename_value"
-        android:key="download_file"
-        android:title="@string/setting_mkdir_title"/>
+        <EditTextPreference
+            android:defaultValue="1.4"
+            android:dialogTitle="@string/settings_zoom_dtitle"
+            android:inputType="numberDecimal"
+            android:key="zoom_speed"
+            android:title="@string/settings_zoom_title"/>
 
-    <CheckBoxPreference
-        android:defaultValue="true"
-        android:key="video_play"
-        android:summary="@string/setting_video_summary"
-        android:title="@string/setting_video_title"/>
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="video_play"
+            android:summary="@string/setting_video_summary"
+            android:title="@string/setting_video_title"/>
 
-    <Preference
-        android:summary="@string/apref_summary"
-        android:title="@string/apref_title">
-        <intent
-            android:action="android.intent.action.view"
-            android:targetClass="net.nonylene.photolinkviewer.AESettings"
-            android:targetPackage="net.nonylene.photolinkviewer"/>
-    </Preference>
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="adjust_zoom"
+            android:summary="@string/adjust_summary"
+            android:title="@string/adjust_title"/>
 
-    <Preference
-        android:key="about_app_preference"
-        android:title="@string/about_app_pretitle">
-    </Preference>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/save_title">
+
+        <EditTextPreference
+            android:defaultValue="PLViewer/"
+            android:dialogTitle="@string/setting_dir_dialogtitle"
+            android:key='download_dir'
+            android:title="@string/setting_dir_title"/>
+
+        <ListPreference
+            android:defaultValue="mkdir"
+            android:dialogTitle="@string/setting_mkdir_dialogtitle"
+            android:entries="@array/filename"
+            android:entryValues="@array/filename_value"
+            android:key="download_file"
+            android:title="@string/setting_mkdir_title"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/others_title">
+
+        <PreferenceScreen
+            android:summary="@string/apref_summary"
+            android:title="@string/apref_title">
+
+            <CheckBoxPreference
+                android:defaultValue="false"
+                android:key="disp_tweet"
+                android:summary="@string/disp_tweet_summary"
+                android:title="@string/disp_tweet_title"/>
+
+            <SwitchPreference
+                android:defaultValue="false"
+                android:key="double_zoom"
+                android:summary="@string/double_zoom_summary"
+                android:title="@string/double_zoom_title"/>
+        </PreferenceScreen>
+
+        <Preference
+            android:key="about_app_preference"
+            android:title="@string/about_app_pretitle">
+        </Preference>
+
+    </PreferenceCategory>
 
 </PreferenceScreen>

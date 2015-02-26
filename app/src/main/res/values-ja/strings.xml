@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="pref_twitter_title">twitterアカウント</string>
-    <string name="pref_twitter_summary">twitterアカウントの設定</string>
+    <string name="pref_twitter_title">twitterアカウント設定</string>
+    <string name="pref_twitter_summary">タップして開く</string>
     <string name="toauth_failed_encode">エンコードエラー</string>
     <string name="toauth_succeeded_token">tokenの取得に成功しました</string>
     <string name="settings_zoom_summary">タップして調整</string>
@@ -13,10 +13,8 @@
     <string name="save_dialog_title">写真の保存先</string>
     <string name="download_photo_title">"画像を保存しました: "</string>
     <string name="setting_dir_dialogtitle">デフォルト: PLViewer/</string>
-    <string name="setting_dir_summary">タップして設定</string>
     <string name="setting_dir_title">ダウンロード場所の変更</string>
     <string name="setting_mkdir_dialogtitle">選択してください</string>
-    <string name="setting_mkdir_summary">タップして設定</string>
     <string name="setting_mkdir_title">ファイル名の変更</string>
     <array name="filename">
         <item>\'sitename\'/\'id\'.png (ディレクトリ作成)</item>
@@ -47,8 +45,8 @@
     <string name="twitter_favorite_toast">お気に入りに登録しました</string>
     <string name="twitter_retweet_toast">リツイートしました</string>
     <string name="setting_quality_dialogtitle">一部のサイトでは適応されません</string>
-    <string name="setting_quality_summary">画質を下げるとデータ量を削減できます</string>
-    <string name="setting_quality_title">写真の画質の選択</string>
+    <string name="setting_quality_summary">タップして開く</string>
+    <string name="setting_quality_title">画質設定</string>
     <string name="delete_dialog_message_account">アカウント: \@</string>
     <string name="delete_dialog_message">このアカウントを削除しますか？</string>
     <string name="delete_dialog_title">アカウント削除</string>
@@ -86,5 +84,10 @@
     <string name="double_zoom_title">QuickScaleZoom前のズームを抑制</string>
     <string name="apref_title">詳細/実験的オプション</string>
     <string name="apref_summary">タップして開く</string>
+    <string name="adjust_title">常に大きさを画面に合わせる</string>
+    <string name="adjust_summary">写真が小さくても、表示する写真のサイズを画面にあわせます</string>
+    <string name="display_title">表示設定</string>
+    <string name="save_title">保存設定</string>
+    <string name="others_title">その他</string>
 
 </resources>

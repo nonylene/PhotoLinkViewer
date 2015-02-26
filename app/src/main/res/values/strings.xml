@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name" translatable="false">PhotoLinkViewer</string>
-    <string name="pref_twitter_title">twitter account</string>
+    <string name="pref_twitter_title">twitter account settings</string>
     <string name="toauth_failed_encode">Encode error</string>
     <string name="toauth_failed_token">failed to get token!</string>
     <string name="toauth_succeeded_token">succeeded to get token!</string>
@@ -10,7 +10,7 @@
     <string name="option_fragment_settings" translatable="false">Settings</string>
     <string name="option_fragment_download" translatable="false">Download</string>
     <string name="option_fragment_openclose" translatable="false">Open/Close</string>
-    <string name="pref_twitter_summary">Tap to choose</string>
+    <string name="pref_twitter_summary">Tap to open</string>
     <string name="settings_zoom_summary">Tap to set</string>
     <string name="settings_zoom_dtitle">Default value is 1.4</string>
     <string name="settings_zoom_title">Zoom scale for distance of fingers</string>
@@ -21,10 +21,8 @@
     <string name="save_dialog_title">Save photo to…</string>
     <string name="download_photo_title">"file saved to "</string>
     <string name="setting_dir_dialogtitle">Default value is PLViewer/</string>
-    <string name="setting_dir_summary">Tap to set</string>
     <string name="setting_dir_title">Change download directory</string>
     <string name="setting_mkdir_dialogtitle">Select filename</string>
-    <string name="setting_mkdir_summary">Tap to select</string>
     <string name="setting_mkdir_title">Change filename</string>
     <string name="twitter_display_oauth">please oAuth!</string>
     <string name="url_purse_toast">URL purse error</string>
@@ -46,8 +44,8 @@
     <string name="favorite_dialog_message_account">account: \@</string>
     <string name="twitter_favorite_toast">add favorite!</string>
     <string name="twitter_retweet_toast">retweeted!</string>
-    <string name="setting_quality_summary">Change quality of photo to reduce data usage.</string>
-    <string name="setting_quality_title">Change photo quality</string>
+    <string name="setting_quality_summary">Tap to open</string>
+    <string name="setting_quality_title">Quality settings</string>
     <string name="setting_quality_dialogtitle">Not applied on some sites</string>
     <string name="delete_dialog_title">Delete account</string>
     <string name="delete_dialog_message_account">account: \@</string>
@@ -95,5 +93,10 @@
     <string name="double_zoom_title">Disable zoom before quickscale zoom</string>
     <string name="apref_summary">Tap to open</string>
     <string name="apref_title">Advanced / experimental options</string>
+    <string name="adjust_title">Adjust photo size</string>
+    <string name="adjust_summary">Adjust zoom to screen size even if small photo.</string>
+    <string name="display_title">Display</string>
+    <string name="save_title">Save</string>
+    <string name="others_title">Others</string>
 
 </resources>
