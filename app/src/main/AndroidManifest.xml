@@ -152,6 +152,14 @@
                     android:host="instagr.am"
                     android:pathPattern="/p/..*"
                     android:scheme="http"/>
+                <data
+                    android:host="instagram.com"
+                    android:pathPattern="/p/..*"
+                    android:scheme="https"/>
+                <data
+                    android:host="instagr.am"
+                    android:pathPattern="/p/..*"
+                    android:scheme="https"/>
             </intent-filter>
 
             <intent-filter
