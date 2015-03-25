@@ -697,13 +697,13 @@ public class ShowFragment extends Fragment {
                     }
                     switch (quality) {
                         case "large":
-                            file_url = "http://instagram.com/p/" + id + "/media/?size=l";
+                            file_url = "https://instagram.com/p/" + id + "/media/?size=l";
                             break;
                         case "medium":
-                            file_url = "http://instagram.com/p/" + id + "/media/?size=m";
+                            file_url = "https://instagram.com/p/" + id + "/media/?size=m";
                             break;
                     }
-                    original_url = "http://instagram.com/p/" + id + "/media/?size=l";
+                    original_url = "https://instagram.com/p/" + id + "/media/?size=l";
                 } else if (url.contains("gyazo.com")) {
                     Log.v("gyazo", url);
                     Pattern pattern = Pattern.compile("^https?://.*gyazo\\.com/(\\w+)");
