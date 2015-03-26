@@ -98,5 +98,7 @@
     <string name="display_title">Display</string>
     <string name="save_title">Save</string>
     <string name="others_title">Others</string>
+    <string name="leave_notify_summary">Leave notification after download.</string>
+    <string name="leave_notify_title">Leave notification</string>
 
 </resources>

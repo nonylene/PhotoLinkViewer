@@ -89,5 +89,7 @@
     <string name="display_title">表示設定</string>
     <string name="save_title">保存設定</string>
     <string name="others_title">その他</string>
+    <string name="leave_notify_summary">ダウンロード後に通知を残します。</string>
+    <string name="leave_notify_title">通知を残す</string>
 
 </resources>

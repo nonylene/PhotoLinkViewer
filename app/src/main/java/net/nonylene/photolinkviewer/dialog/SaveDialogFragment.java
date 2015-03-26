@@ -23,7 +23,7 @@ import java.io.File;
 public class SaveDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         final String filename;
         final File dir;
         // get site, url and type from bundle
@@ -74,7 +74,9 @@ public class SaveDialogFragment extends DialogFragment {
                         request.setDescription(filename);
                         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
                         // notify
-                        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                        if (preferences.getBoolean("leave_notify", true)) {
+                            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                        }
                         downloadManager.enqueue(request);
                         Toast.makeText(getActivity(), getString(R.string.download_photo_title) + path.toString(), Toast.LENGTH_LONG).show();
                     }

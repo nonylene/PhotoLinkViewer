@@ -61,6 +61,12 @@
             android:key="download_file"
             android:title="@string/setting_mkdir_title"/>
 
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:summary="@string/leave_notify_summary"
+            android:key='leave_notify'
+            android:title="@string/leave_notify_title"/>
+
     </PreferenceCategory>
 
     <PreferenceCategory
