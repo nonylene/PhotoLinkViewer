@@ -100,5 +100,7 @@
     <string name="others_title">Others</string>
     <string name="leave_notify_summary">Leave notification after download.</string>
     <string name="leave_notify_title">Leave notification</string>
+    <string name="skip_summary">Download without dialog.</string>
+    <string name="skip_title">Skip dialog</string>
 
 </resources>

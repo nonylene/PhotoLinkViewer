@@ -62,6 +62,12 @@
             android:title="@string/setting_mkdir_title"/>
 
         <CheckBoxPreference
+            android:defaultValue="false"
+            android:summary="@string/skip_summary"
+            android:key='skip_dialog'
+            android:title="@string/skip_title"/>
+
+        <CheckBoxPreference
             android:defaultValue="true"
             android:summary="@string/leave_notify_summary"
             android:key='leave_notify'

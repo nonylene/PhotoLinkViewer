@@ -1,8 +1,10 @@
 package net.nonylene.photolinkviewer.fragment;
 
 import android.app.DialogFragment;
+import android.app.DownloadManager;
 import android.app.LoaderManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -10,9 +12,11 @@ import android.graphics.Matrix;
 import android.graphics.Point;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.preference.PreferenceManager;
@@ -53,6 +57,7 @@ import net.nonylene.photolinkviewer.tool.PXVStringRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.regex.Matcher;
@@ -405,14 +410,24 @@ public class ShowFragment extends Fragment {
             // dl button visibility and click
             argument.putString("type", type);
             ImageButton dlButton = (ImageButton) getActivity().findViewById(R.id.dlbutton);
-            dlButton.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    // open dialog
-                    DialogFragment dialogFragment = new SaveDialogFragment();
-                    dialogFragment.setArguments(argument);
-                    dialogFragment.show(getFragmentManager(), "Save");
-                }
-            });
+            if (preferences.getBoolean("skip_dialog", false)){
+                dlButton.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        // download direct
+                        save(getFileNames(argument));
+                    }
+                });
+            }else {
+                dlButton.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        // open dialog
+                        DialogFragment dialogFragment = new SaveDialogFragment();
+                        dialogFragment.setArguments(getFileNames(argument));
+                        dialogFragment.setTargetFragment(ShowFragment.this, 0);
+                        dialogFragment.show(getFragmentManager(), "Save");
+                    }
+                });
+            }
             FrameLayout dlLayout = (FrameLayout) getActivity().findViewById(R.id.dlbutton_frame);
             dlLayout.setVisibility(View.VISIBLE);
 
@@ -854,6 +869,64 @@ public class ShowFragment extends Fragment {
         }
         if (linearLayout != null) {
             linearLayout.setVisibility(View.GONE);
+        }
+    }
+
+    private Bundle getFileNames(Bundle bundle) {
+        File dir;
+        // get site, url and type from bundle
+        String sitename = bundle.getString("sitename");
+        // set download directory
+        String directory = preferences.getString("download_dir", "PLViewer");
+        File root = Environment.getExternalStorageDirectory();
+        // set filename (follow setting)
+        String filename;
+        if (preferences.getString("download_file", "mkdir").equals("mkdir")) {
+            // make directory
+            dir = new File(root, directory + "/" + sitename);
+            filename = bundle.getString("filename");
+        } else {
+            // not make directory
+            dir = new File(root, directory);
+            filename = sitename + "-" + bundle.getString("filename");
+        }
+        filename += "." + bundle.getString("type");
+        System.out.println(filename);
+        dir.mkdirs();
+        bundle.putString("filename", filename);
+        bundle.putString("dir", dir.toString());
+        return bundle;
+    }
+
+    private void save(Bundle bundle){
+        String url = bundle.getString("original_url");
+        String dir_string = bundle.getString("dir");
+        String filename = bundle.getString("filename");
+        File path = new File(dir_string, filename);
+        //save file
+        Uri uri = Uri.parse(url);
+        // use download manager
+        DownloadManager downloadManager = (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
+        DownloadManager.Request request = new DownloadManager.Request(uri);
+        request.setDestinationUri(Uri.fromFile(path));
+        request.setTitle("PhotoLinkViewer");
+        request.setDescription(filename);
+        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
+        // notify
+        if (preferences.getBoolean("leave_notify", true)) {
+            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+        }
+        downloadManager.enqueue(request);
+        Toast.makeText(getActivity(), getString(R.string.download_photo_title) + path.toString(), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            case 0:
+                save(data.getBundleExtra("bundle"));
+                break;
         }
     }
 }

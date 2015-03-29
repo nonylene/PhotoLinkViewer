@@ -91,5 +91,7 @@
     <string name="others_title">その他</string>
     <string name="leave_notify_summary">ダウンロード後に通知を残します。</string>
     <string name="leave_notify_title">通知を残す</string>
+    <string name="skip_summary">ダイアログを出さずに保存します</string>
+    <string name="skip_title">ダイアログをスキップ</string>
 
 </resources>
