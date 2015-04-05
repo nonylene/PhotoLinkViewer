@@ -20,6 +20,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Display;
 import android.view.GestureDetector;
@@ -352,7 +353,7 @@ public class ShowFragment extends Fragment {
                         initX = (dispWidth - origwidth * hei) / 2;
                         initY = 0;
                     }
-                    if (zoom < 1){
+                    if (zoom < 1) {
                         firstzoom = zoom;
                     }
                 } else {
@@ -375,17 +376,18 @@ public class ShowFragment extends Fragment {
                     String html;
                     int videoWidth = result.getWidth();
                     int videoHeight = result.getHeight();
+                    String escaped = TextUtils.htmlEncode(result.getUrl());
                     if ((videoHeight > dispHeight * 0.9 && videoWidth * dispHeight / dispHeight < dispWidth) || dispWidth * videoHeight / videoWidth > dispHeight) {
                         // if height of video > disp_height * 0.9, check whether calculated width > disp_width . if this is true,
                         // give priority to width. and, if check whether calculated height > disp_height, give priority to height.
                         int width = (int) (dispWidth * 0.9);
                         int height = (int) (dispHeight * 0.9);
                         layoutParams = new FrameLayout.LayoutParams(width, height);
-                        html = "<html><body><img style='display: block; margin: 0 auto' height='100%'src='" + result.getUrl() + "'></body></html>";
+                        html = "<html><body><img style='display: block; margin: 0 auto' height='100%'src='" + escaped + "'></body></html>";
                     } else {
                         int width = (int) (dispWidth * 0.9);
                         layoutParams = new FrameLayout.LayoutParams(width, width * videoHeight / videoWidth);
-                        html = "<html><body><img style='display: block; margin: 0 auto' width='100%'src='" + result.getUrl() + "'></body></html>";
+                        html = "<html><body><img style='display: block; margin: 0 auto' width='100%'src='" + escaped + "'></body></html>";
                     }
                     layoutParams.gravity = Gravity.CENTER;
                     webView.setLayoutParams(layoutParams);
@@ -410,24 +412,20 @@ public class ShowFragment extends Fragment {
             // dl button visibility and click
             argument.putString("type", type);
             ImageButton dlButton = (ImageButton) getActivity().findViewById(R.id.dlbutton);
-            if (preferences.getBoolean("skip_dialog", false)){
-                dlButton.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        // download direct
+            dlButton.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    // download direct
+                    if (preferences.getBoolean("skip_dialog", false)) {
                         save(getFileNames(argument));
-                    }
-                });
-            }else {
-                dlButton.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
+                    } else {
                         // open dialog
                         DialogFragment dialogFragment = new SaveDialogFragment();
                         dialogFragment.setArguments(getFileNames(argument));
                         dialogFragment.setTargetFragment(ShowFragment.this, 0);
                         dialogFragment.show(getFragmentManager(), "Save");
                     }
-                });
-            }
+                }
+            });
             FrameLayout dlLayout = (FrameLayout) getActivity().findViewById(R.id.dlbutton_frame);
             dlLayout.setVisibility(View.VISIBLE);
 
@@ -898,7 +896,7 @@ public class ShowFragment extends Fragment {
         return bundle;
     }
 
-    private void save(Bundle bundle){
+    private void save(Bundle bundle) {
         String url = bundle.getString("original_url");
         String dir_string = bundle.getString("dir");
         String filename = bundle.getString("filename");
@@ -923,7 +921,7 @@ public class ShowFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode){
+        switch (requestCode) {
             case 0:
                 save(data.getBundleExtra("bundle"));
                 break;
