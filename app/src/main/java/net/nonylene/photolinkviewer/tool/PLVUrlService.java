@@ -58,6 +58,9 @@ public class PLVUrlService {
             }
             return wifi;
         }
+
+        public void getPLVUrl() {
+        }
     }
 
     private class TwitterSite extends Site {
@@ -66,7 +69,10 @@ public class PLVUrlService {
             super(url, context);
         }
 
+        @Override
         public void getPLVUrl() {
+            super.getPLVUrl();
+
             PLVUrl plvUrl = new PLVUrl(url);
             Pattern pattern = Pattern.compile("^https?://pbs\\.twimg\\.com/media/([^\\.]+)\\.");
             Matcher matcher = pattern.matcher(url);
@@ -115,7 +121,10 @@ public class PLVUrlService {
             super(url, context);
         }
 
+        @Override
         public void getPLVUrl() {
+            super.getPLVUrl();
+
             PLVUrl plvUrl = new PLVUrl(url);
             Pattern pattern = Pattern.compile("^https?://p\\.twipple\\.jp/(\\w+)");
             Matcher matcher = pattern.matcher(url);
@@ -161,7 +170,10 @@ public class PLVUrlService {
             super(url, context);
         }
 
+        @Override
         public void getPLVUrl() {
+            super.getPLVUrl();
+
             PLVUrl plvUrl = new PLVUrl(url);
             Pattern pattern = Pattern.compile("^https?://img\\.ly/(\\w+)");
             Matcher matcher = pattern.matcher(url);
@@ -207,7 +219,10 @@ public class PLVUrlService {
             super(url, context);
         }
 
+        @Override
         public void getPLVUrl() {
+            super.getPLVUrl();
+
             PLVUrl plvUrl = new PLVUrl(url);
             Pattern pattern = Pattern.compile("^https?://instagr\\.?am[\\.com]*/p/([^/\\?=]+)");
             Matcher matcher = pattern.matcher(url);
@@ -250,7 +265,10 @@ public class PLVUrlService {
             super(url, context);
         }
 
+        @Override
         public void getPLVUrl() {
+            super.getPLVUrl();
+
             PLVUrl plvUrl = new PLVUrl(url);
             Pattern pattern = Pattern.compile("^https?://.*gyazo\\.com/(\\w+)");
             Matcher matcher = pattern.matcher(url);
@@ -275,7 +293,10 @@ public class PLVUrlService {
             super(url, context);
         }
 
+        @Override
         public void getPLVUrl() {
+            super.getPLVUrl();
+
             PLVUrl plvUrl = new PLVUrl(url);
             Pattern pattern = Pattern.compile("^https?://.*imgur\\.com/([\\w^\\.]+)");
             Matcher matcher = pattern.matcher(url);
@@ -300,7 +321,10 @@ public class PLVUrlService {
             super(url, context);
         }
 
+        @Override
         public void getPLVUrl() {
+            super.getPLVUrl();
+
             PLVUrl plvUrl = new PLVUrl(url);
             Pattern pattern = Pattern.compile("/([^\\./]+)\\.?[\\w\\?=]*$");
             Matcher matcher = pattern.matcher(url);
