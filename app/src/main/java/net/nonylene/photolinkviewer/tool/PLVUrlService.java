@@ -31,7 +31,7 @@ public class PLVUrlService {
     }
 
     public interface PLVUrlListener {
-        public void onGetPLVUrlFinished(PLVUrl plvUrl);
+        void onGetPLVUrlFinished(PLVUrl plvUrl);
     }
 
     public void setPLVUrlListener(PLVUrlListener urlListener) {
@@ -39,30 +39,30 @@ public class PLVUrlService {
     }
 
     public void requestGetPLVUrl(String url) {
-        Site site = new Site(url, context);
-        site.setPLVUrlListener(plvUrlListener);
-
+        Site site;
         if (url.contains("flickr.com") || url.contains("flic.kr")) {
-            ((FlickrSite) site).getPLVUrl();
+            site = new FlickrSite(url, context);
         } else if (url.contains("nico.ms") || url.contains("seiga.nicovideo.jp")) {
-            ((NicoSite) site).getPLVUrl();
+            site = new NicoSite(url, context);
         } else if (url.contains("pixiv.net")) {
-            ((PixivSite) site).getPLVUrl();
+            site = new PixivSite(url, context);
         } else if (url.contains("twimg.com/media/")) {
-            ((TwitterSite) site).getPLVUrl();
+            site = new TwitterSite(url, context);
         } else if (url.contains("twipple.jp")) {
-            ((TwippleSite) site).getPLVUrl();
+            site = new TwippleSite(url, context);
         } else if (url.contains("img.ly")) {
-            ((ImglySite) site).getPLVUrl();
+            site = new ImglySite(url, context);
         } else if (url.contains("instagram.com") || url.contains("instagr.am")) {
-            ((InstagramSite) site).getPLVUrl();
+            site = new InstagramSite(url, context);
         } else if (url.contains("gyazo.com")) {
-            ((GyazoSite) site).getPLVUrl();
+            site = new GyazoSite(url, context);
         } else if (url.contains("imgur.com")) {
-            ((ImgurSite) site).getPLVUrl();
+            site = new ImgurSite(url, context);
         } else {
-            ((OtherSite) site).getPLVUrl();
+            site = new OtherSite(url, context);
         }
+        site.setPLVUrlListener(plvUrlListener);
+        site.getPLVUrl();
     }
 
     private class Site {
