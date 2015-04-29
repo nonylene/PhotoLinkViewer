@@ -10,15 +10,11 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Point;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -41,28 +37,17 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.toolbox.Volley;
-
-import net.nonylene.photolinkviewer.async.AsyncGetURL;
-import net.nonylene.photolinkviewer.tool.Base58;
 import net.nonylene.photolinkviewer.R;
 import net.nonylene.photolinkviewer.async.AsyncHttp;
 import net.nonylene.photolinkviewer.async.AsyncHttpResult;
 import net.nonylene.photolinkviewer.dialog.SaveDialogFragment;
 import net.nonylene.photolinkviewer.tool.Initialize;
-import net.nonylene.photolinkviewer.tool.MyJsonObjectRequest;
-import net.nonylene.photolinkviewer.tool.PXVStringRequest;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import net.nonylene.photolinkviewer.tool.PLVUrl;
+import net.nonylene.photolinkviewer.tool.PLVUrlService;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class ShowFragment extends Fragment {
 
@@ -112,7 +97,18 @@ public class ShowFragment extends Fragment {
             Initialize.initialize19(getActivity());
         }
         String url = getArguments().getString("url");
-        URLPurser(url);
+        PLVUrlService service = new PLVUrlService(getActivity());
+        service.setPLVUrlListener(new PLVUrlService.PLVUrlListener() {
+            @Override
+            public void onGetPLVUrlFinished(PLVUrl plvUrl) {
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("plvurl", plvUrl);
+
+                AsyncExecute asyncExecute = new AsyncExecute();
+                asyncExecute.Start(bundle);
+            }
+        });
+        service.requestGetPLVUrl(url);
         return view;
     }
 
@@ -285,21 +281,18 @@ public class ShowFragment extends Fragment {
     }
 
     public class AsyncExecute implements LoaderManager.LoaderCallbacks<AsyncHttpResult<Bitmap>> {
-        private Bundle argument;
+        private PLVUrl plvurl;
 
         public void Start(Bundle argument) {
-            this.argument = argument;
-            Bundle bundle = new Bundle();
-            bundle.putString("url", argument.getString("file_url"));
             //there are some loaders, so restart(all has finished)
-            getLoaderManager().restartLoader(0, bundle, this);
+            getLoaderManager().restartLoader(0, argument, this);
         }
 
         @Override
         public Loader<AsyncHttpResult<Bitmap>> onCreateLoader(int id, Bundle bundle) {
             try {
-                String c = bundle.getString("url");
-                URL url = new URL(c);
+                plvurl = bundle.getParcelable("plvurl");
+                URL url = new URL(plvurl.getDisplayUrl());
                 int max_size = 2048;
                 return new AsyncHttp(getActivity().getApplicationContext(), url, max_size);
             } catch (IOException e) {
@@ -410,17 +403,17 @@ public class ShowFragment extends Fragment {
 
         private void addDLButton(String type) {
             // dl button visibility and click
-            argument.putString("type", type);
+            plvurl.setType(type);
             ImageButton dlButton = (ImageButton) getActivity().findViewById(R.id.dlbutton);
             dlButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     // download direct
                     if (preferences.getBoolean("skip_dialog", false)) {
-                        save(getFileNames(argument));
+                        save(getFileNames(plvurl));
                     } else {
                         // open dialog
                         DialogFragment dialogFragment = new SaveDialogFragment();
-                        dialogFragment.setArguments(getFileNames(argument));
+                        dialogFragment.setArguments(getFileNames(plvurl));
                         dialogFragment.setTargetFragment(ShowFragment.this, 0);
                         dialogFragment.show(getFragmentManager(), "Save");
                     }
@@ -429,429 +422,6 @@ public class ShowFragment extends Fragment {
             FrameLayout dlLayout = (FrameLayout) getActivity().findViewById(R.id.dlbutton_frame);
             dlLayout.setVisibility(View.VISIBLE);
 
-        }
-    }
-
-    public class AsyncNICOExecute implements LoaderManager.LoaderCallbacks<String> {
-        private String id;
-        //get json from url
-
-        public void Start(String id) {
-            this.id = id;
-            Bundle bundle = new Bundle();
-            String url = "http://seiga.nicovideo.jp/image/source/" + id;
-            bundle.putString("url", url);
-            getLoaderManager().restartLoader(0, bundle, this);
-        }
-
-        @Override
-        public Loader<String> onCreateLoader(int id, Bundle bundle) {
-            try {
-                String c = bundle.getString("url");
-                URL url = new URL(c);
-                return new AsyncGetURL(getActivity().getApplicationContext(), url);
-            } catch (IOException e) {
-                Log.e("AsyncNICOLoaderError", e.toString());
-                return null;
-            }
-        }
-
-        @Override
-        public void onLoadFinished(Loader<String> loader, String redirect) {
-            //for nico
-            Log.v("url", redirect);
-            String original_url = redirect.replace("/o/", "/priv/");
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-            String file_url = null;
-
-            // wifi check
-            String quality;
-            boolean wifi = wifiChecker(sharedPreferences);
-            boolean original = originalChecker(sharedPreferences, wifi);
-            if (wifi) {
-                quality = sharedPreferences.getString("nicoseiga_quality_wifi", "large");
-            } else {
-                quality = sharedPreferences.getString("nicoseiga_quality_3g", "large");
-            }
-            if (redirect.contains("account.nicovideo.jp") && (original || quality.equals("original"))) {
-                // cannot preview original photo
-                original_url = "http://lohas.nicoseiga.jp/img/" + id + "l";
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(view.getContext(), getString(R.string.nico_original_toast), Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-            switch (quality) {
-                case "original":
-                    file_url = original_url;
-                    break;
-                case "large":
-                    file_url = "http://lohas.nicoseiga.jp/img/" + id + "l";
-                    break;
-                case "medium":
-                    file_url = "http://lohas.nicoseiga.jp/img/" + id + "m";
-                    break;
-            }
-            Bundle bundle = new Bundle();
-            bundle.putString("file_url", file_url);
-            if (original) {
-                bundle.putString("original_url", original_url);
-            } else {
-                bundle.putString("original_url", file_url);
-            }
-            bundle.putString("sitename", "nicoseiga");
-            bundle.putString("filename", id);
-            AsyncExecute hoge = new AsyncExecute();
-            hoge.Start(bundle);
-        }
-
-        @Override
-        public void onLoaderReset(Loader<String> loader) {
-
-        }
-    }
-
-    private void URLPurser(final String url) {
-        //purse url
-
-        //directory,filename to save
-        String sitename;
-        String filename;
-        String file_url = null;
-        String original_url;
-
-        try {
-            String id = null;
-
-            if (url.contains("flickr.com") || url.contains("flic.kr")) {
-                Log.v("flickr", url);
-                if (url.contains("flickr")) {
-                    Pattern pattern = Pattern.compile("^https?://[wm]w*\\.flickr\\.com/?#?/photos/[\\w@]+/(\\d+)");
-                    Matcher matcher = pattern.matcher(url);
-                    if (matcher.find()) {
-                        Log.v("match", "success");
-                    }
-                    id = matcher.group(1);
-                } else if (url.contains("flic.kr")) {
-                    Pattern pattern = Pattern.compile("^https?://flic\\.kr/p/(\\w+)");
-                    Matcher matcher = pattern.matcher(url);
-                    if (matcher.find()) {
-                        Log.v("match", "success");
-                    }
-                    id = Base58.decode(matcher.group(1));
-                }
-                String api_key = (String) getText(R.string.flickr_key);
-                String request = "https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&format=json&api_key=" + api_key +
-                        "&photo_id=" + id;
-                // volley
-                RequestQueue queue = Volley.newRequestQueue(getActivity());
-                queue.add(new MyJsonObjectRequest(getActivity(), request,
-                        new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                parseFlickr(response);
-                            }
-                        }
-                ));
-            } else if (url.contains("nico.ms") || url.contains("seiga.nicovideo.jp")) {
-                Log.v("nico", url);
-                Pattern pattern;
-                if (url.contains("nico.ms")) {
-                    pattern = Pattern.compile("^https?://nico\\.ms/im(\\d+)");
-                } else {
-                    pattern = Pattern.compile("^https?://seiga.nicovideo.jp/seiga/im(\\d+)");
-                }
-                Matcher matcher = pattern.matcher(url);
-                if (matcher.find()) {
-                    Log.v("match", "success");
-                }
-                id = matcher.group(1);
-                AsyncNICOExecute nicoExecute = new AsyncNICOExecute();
-                nicoExecute.Start(id);
-            } else if (url.contains("pixiv.net")) {
-                Log.v("pixiv", url);
-                Pattern pattern = Pattern.compile("^https?://.*pixiv\\.net/member_illust.php?.*illust_id=(\\d+)");
-                Matcher matcher = pattern.matcher(url);
-                if (matcher.find()) {
-                    Log.v("match", "success");
-                }
-                final String pid = matcher.group(1);
-                RequestQueue queue = Volley.newRequestQueue(getActivity());
-                queue.add(new PXVStringRequest(getActivity(), pid,
-                        new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                Log.v("pixiv", response);
-                                final String[] list = response.split(",", -1);
-                                final Bundle bundle = new Bundle();
-                                bundle.putString("url", url);
-                                // get original photo
-                                try {
-                                    String file_url = list[9].replaceAll("\"", "");
-                                    bundle.putString("file_url", file_url);
-                                    bundle.putString("original_url", file_url);
-                                    bundle.putString("sitename", "pixiv");
-                                    bundle.putString("filename", pid);
-                                    AsyncExecute asyncExecute = new AsyncExecute();
-                                    asyncExecute.Start(bundle);
-                                } catch (ArrayIndexOutOfBoundsException e) {
-                                    Toast.makeText(getActivity(), "Cannot open. R-18?", Toast.LENGTH_LONG).show();
-                                }
-                            }
-                        }));
-            } else {
-
-                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                String quality;
-
-                // wifi check
-                boolean wifi = wifiChecker(sharedPreferences);
-
-                if (url.contains("twimg.com/media/")) {
-                    Log.v("twimg", url);
-                    Pattern pattern = Pattern.compile("^https?://pbs\\.twimg\\.com/media/([^\\.]+)\\.");
-                    Matcher matcher = pattern.matcher(url);
-                    if (matcher.find()) {
-                        Log.v("match", "success");
-                    }
-                    id = matcher.group(1);
-                    sitename = "twitter";
-                    filename = id;
-                    if (wifi) {
-                        quality = sharedPreferences.getString("twitter_quality_wifi", "large");
-                    } else {
-                        quality = sharedPreferences.getString("twitter_quality_3g", "large");
-                    }
-                    switch (quality) {
-                        case "original":
-                            file_url = url + ":orig";
-                            break;
-                        case "large":
-                            file_url = url + ":large";
-                            break;
-                        case "medium":
-                            file_url = url;
-                            break;
-                        case "small":
-                            file_url = url + ":small";
-                            break;
-                    }
-                    original_url = url + ":orig";
-                } else if (url.contains("twipple.jp")) {
-                    Log.v("twipple", url);
-                    Pattern pattern = Pattern.compile("^https?://p\\.twipple\\.jp/(\\w+)");
-                    Matcher matcher = pattern.matcher(url);
-                    if (matcher.find()) {
-                        Log.v("match", "success");
-                    }
-                    id = matcher.group(1);
-                    sitename = "twipple";
-                    filename = id;
-                    if (wifi) {
-                        quality = sharedPreferences.getString("twipple_quality_wifi", "large");
-                    } else {
-                        quality = sharedPreferences.getString("twipple_quality_3g", "large");
-                    }
-                    switch (quality) {
-                        case "original":
-                            file_url = "http://p.twipple.jp/show/orig/" + id;
-                            break;
-                        case "large":
-                            file_url = "http://p.twipple.jp/show/large/" + id;
-                            break;
-                        case "thumb":
-                            file_url = "http://p.twipple.jp/show/thumb/" + id;
-                            break;
-                    }
-                    original_url = "http://p.twipple.jp/show/orig/" + id;
-                } else if (url.contains("img.ly")) {
-                    Log.v("img.ly", url);
-                    Pattern pattern = Pattern.compile("^https?://img\\.ly/(\\w+)");
-                    Matcher matcher = pattern.matcher(url);
-                    if (matcher.find()) {
-                        Log.v("match", "success");
-                    }
-                    id = matcher.group(1);
-                    sitename = "img.ly";
-                    filename = id;
-                    if (wifi) {
-                        quality = sharedPreferences.getString("imgly_quality_wifi", "large");
-                    } else {
-                        quality = sharedPreferences.getString("imgly_quality_3g", "large");
-                    }
-                    switch (quality) {
-                        case "full":
-                            file_url = "http://img.ly/show/full/" + id;
-                            break;
-                        case "large":
-                            file_url = "http://img.ly/show/large/" + id;
-                            break;
-                        case "medium":
-                            file_url = "http://img.ly/show/medium/" + id;
-                            break;
-                    }
-                    original_url = "http://img.ly/show/full/" + id;
-                } else if (url.contains("instagram.com") || url.contains("instagr.am")) {
-                    Log.v("instagram", url);
-                    Pattern pattern = Pattern.compile("^https?://instagr\\.?am[\\.com]*/p/([^/\\?=]+)");
-                    Matcher matcher = pattern.matcher(url);
-                    if (matcher.find()) {
-                        Log.v("match", "success");
-                    }
-                    id = matcher.group(1);
-                    sitename = "instagram";
-                    filename = id;
-                    if (wifi) {
-                        quality = sharedPreferences.getString("instagram_quality_wifi", "large");
-                    } else {
-                        quality = sharedPreferences.getString("instagram_quality_3g", "large");
-                    }
-                    switch (quality) {
-                        case "large":
-                            file_url = "https://instagram.com/p/" + id + "/media/?size=l";
-                            break;
-                        case "medium":
-                            file_url = "https://instagram.com/p/" + id + "/media/?size=m";
-                            break;
-                    }
-                    original_url = "https://instagram.com/p/" + id + "/media/?size=l";
-                } else if (url.contains("gyazo.com")) {
-                    Log.v("gyazo", url);
-                    Pattern pattern = Pattern.compile("^https?://.*gyazo\\.com/(\\w+)");
-                    Matcher matcher = pattern.matcher(url);
-                    if (matcher.find()) {
-                        Log.v("match", "success");
-                    }
-                    id = matcher.group(1);
-                    sitename = "gyazo";
-                    filename = id;
-                    //redirect followed if new protocol is the same as old one.
-                    original_url = file_url = "https://gyazo.com/" + id + "/raw";
-                } else if (url.contains("imgur.com")) {
-                    Log.v("gyazo", url);
-                    Pattern pattern = Pattern.compile("^https?://.*imgur\\.com/([\\w^\\.]+)");
-                    Matcher matcher = pattern.matcher(url);
-                    if (matcher.find()) {
-                        Log.v("match", "success");
-                    }
-                    id = matcher.group(1);
-                    sitename = "imgur";
-                    filename = id;
-                    original_url = file_url = "http://i.imgur.com/" + id + ".jpg";
-                } else {
-                    Log.v("other", url);
-                    Pattern pattern = Pattern.compile("/([^\\./]+)\\.?[\\w\\?=]*$");
-                    Matcher matcher = pattern.matcher(url);
-                    if (matcher.find()) {
-                        Log.v("match", "success");
-                    }
-                    id = matcher.group(1);
-                    sitename = "other";
-                    filename = id;
-                    original_url = file_url = url;
-                }
-                final Bundle bundle = new Bundle();
-                bundle.putString("url", url);
-                // get original photo
-                if (!originalChecker(sharedPreferences, wifi)) {
-                    original_url = file_url;
-                }
-                bundle.putString("file_url", file_url);
-                bundle.putString("original_url", original_url);
-                bundle.putString("sitename", sitename);
-                bundle.putString("filename", filename);
-
-                AsyncExecute asyncExecute = new AsyncExecute();
-                asyncExecute.Start(bundle);
-            }
-        } catch (IllegalStateException e) {
-            // regex error
-            Toast.makeText(view.getContext(), getString(R.string.url_purse_toast), Toast.LENGTH_LONG).show();
-            Log.e("regex error", e.toString());
-            // remove progressbar
-            FrameLayout frameLayout = (FrameLayout) view.findViewById(R.id.showframe);
-            ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.showprogress);
-            frameLayout.removeView(progressBar);
-        }
-    }
-
-    private boolean wifiChecker(SharedPreferences sharedPreferences) {
-        //check wifi connecting and setting or not
-        boolean wifi = false;
-        if (sharedPreferences.getBoolean("wifi_switch", false)) {
-            // get wifi status
-            ConnectivityManager manager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo info = manager.getActiveNetworkInfo();
-            if (info.getType() == ConnectivityManager.TYPE_WIFI) {
-                wifi = true;
-            }
-        }
-        return wifi;
-
-    }
-
-    private boolean originalChecker(SharedPreferences sharedPreferences, boolean wifi) {
-        //check download original or not
-        boolean orig;
-        if (wifi) {
-            orig = sharedPreferences.getBoolean("original_switch_wifi", false);
-        } else {
-            orig = sharedPreferences.getBoolean("original_switch_3g", false);
-        }
-        return orig;
-    }
-
-    private void parseFlickr(JSONObject json) {
-        try {
-            //for flickr
-            JSONObject photo = new JSONObject(json.getString("photo"));
-            String farm = photo.getString("farm");
-            String server = photo.getString("server");
-            String id = photo.getString("id");
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-            String file_url = null;
-            String secret = photo.getString("secret");
-
-            // wifi check
-            String quality;
-            boolean wifi = wifiChecker(sharedPreferences);
-            if (wifi) {
-                quality = sharedPreferences.getString("flickr_quality_wifi", "large");
-            } else {
-                quality = sharedPreferences.getString("flickr_quality_3g", "large");
-            }
-            switch (quality) {
-                case "original":
-                    String original_secret = photo.getString("originalsecret");
-                    String original_format = photo.getString("originalformat");
-                    file_url = "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + original_secret + "_o." + original_format;
-                    break;
-                case "large":
-                    file_url = "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + secret + "_b.jpg";
-                    break;
-                case "medium":
-                    file_url = "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + secret + "_z.jpg";
-                    break;
-            }
-            final Bundle bundle = new Bundle();
-            bundle.putString("file_url", file_url);
-            if (originalChecker(sharedPreferences, wifi)) {
-                String original_secrets = photo.getString("originalsecret");
-                String original_formats = photo.getString("originalformat");
-                file_url = "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + original_secrets + "_o." + original_formats;
-                bundle.putString("original_url", file_url);
-            } else {
-                bundle.putString("original_url", file_url);
-            }
-            bundle.putString("sitename", "flickr");
-            bundle.putString("filename", id);
-            AsyncExecute hoge = new AsyncExecute();
-            hoge.Start(bundle);
-        } catch (JSONException e) {
-            Log.e("JSONParseError", e.toString());
-            Toast.makeText(view.getContext(), getString(R.string.show_flickrjson_toast), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -870,10 +440,10 @@ public class ShowFragment extends Fragment {
         }
     }
 
-    private Bundle getFileNames(Bundle bundle) {
+    private Bundle getFileNames(PLVUrl plvUrl) {
         File dir;
         // get site, url and type from bundle
-        String sitename = bundle.getString("sitename");
+        String sitename = plvUrl.getSiteName();
         // set download directory
         String directory = preferences.getString("download_dir", "PLViewer");
         File root = Environment.getExternalStorageDirectory();
@@ -882,17 +452,20 @@ public class ShowFragment extends Fragment {
         if (preferences.getString("download_file", "mkdir").equals("mkdir")) {
             // make directory
             dir = new File(root, directory + "/" + sitename);
-            filename = bundle.getString("filename");
+            filename = plvUrl.getFileName();
         } else {
             // not make directory
             dir = new File(root, directory);
-            filename = sitename + "-" + bundle.getString("filename");
+            filename = sitename + "-" + plvUrl.getFileName();
         }
-        filename += "." + bundle.getString("type");
+        filename += "." + plvUrl.getType();
         System.out.println(filename);
         dir.mkdirs();
+
+        Bundle bundle = new Bundle();
         bundle.putString("filename", filename);
         bundle.putString("dir", dir.toString());
+
         return bundle;
     }
 
