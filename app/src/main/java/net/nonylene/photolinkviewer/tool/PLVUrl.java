@@ -1,11 +1,15 @@
 package net.nonylene.photolinkviewer.tool;
 
-public class PLVUrl {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class PLVUrl implements Parcelable{
     private String url;
     private String displayUrl;
     private String biggestUrl;
     private String siteName;
     private String fileName;
+    private String type;
 
     public PLVUrl(String url) {
         this.url = url;
@@ -45,5 +49,49 @@ public class PLVUrl {
 
     public void setSiteName(String siteName) {
         this.siteName = siteName;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(url);
+        dest.writeString(displayUrl);
+        dest.writeString(biggestUrl);
+        dest.writeString(siteName);
+        dest.writeString(fileName);
+        dest.writeString(type);
+    }
+
+    public static final Parcelable.Creator<PLVUrl> CREATOR = new Parcelable.Creator<PLVUrl>(){
+        @Override
+        public PLVUrl createFromParcel(Parcel source) {
+            return new PLVUrl(source);
+        }
+
+        @Override
+        public PLVUrl[] newArray(int size) {
+            return new PLVUrl[size];
+        }
+    };
+
+    public PLVUrl(Parcel source){
+        this.url = source.readString();
+        this.displayUrl = source.readString();
+        this.biggestUrl = source.readString();
+        this.siteName = source.readString();
+        this.fileName = source.readString();
+        this.type = source.readString();
     }
 }
