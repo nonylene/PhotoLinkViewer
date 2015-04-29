@@ -41,7 +41,28 @@ public class PLVUrlService {
     public void requestGetPLVUrl(String url) {
         Site site = new Site(url, context);
         site.setPLVUrlListener(plvUrlListener);
-        // if~~~
+
+        if (url.contains("flickr.com") || url.contains("flic.kr")) {
+            ((FlickrSite) site).getPLVUrl();
+        } else if (url.contains("nico.ms") || url.contains("seiga.nicovideo.jp")) {
+            ((NicoSite) site).getPLVUrl();
+        } else if (url.contains("pixiv.net")) {
+            ((PixivSite) site).getPLVUrl();
+        } else if (url.contains("twimg.com/media/")) {
+            ((TwitterSite) site).getPLVUrl();
+        } else if (url.contains("twipple.jp")) {
+            ((TwippleSite) site).getPLVUrl();
+        } else if (url.contains("img.ly")) {
+            ((ImglySite) site).getPLVUrl();
+        } else if (url.contains("instagram.com") || url.contains("instagr.am")) {
+            ((InstagramSite) site).getPLVUrl();
+        } else if (url.contains("gyazo.com")) {
+            ((GyazoSite) site).getPLVUrl();
+        } else if (url.contains("imgur.com")) {
+            ((ImgurSite) site).getPLVUrl();
+        } else {
+            ((OtherSite) site).getPLVUrl();
+        }
     }
 
     private class Site {
@@ -453,7 +474,7 @@ public class PLVUrlService {
                 String id = photo.getString("id");
                 String secret = photo.getString("secret");
 
-                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
                 String quality;
                 if (super.wifiChecker(sharedPreferences)) {
@@ -537,7 +558,7 @@ public class PLVUrlService {
         private PLVUrl parseNico(String redirect, String id, PLVUrl plvUrl){
             String biggest_url = redirect.replace("/o/", "/priv/");
 
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
             String quality;
             boolean wifi = wifiChecker(sharedPreferences);
