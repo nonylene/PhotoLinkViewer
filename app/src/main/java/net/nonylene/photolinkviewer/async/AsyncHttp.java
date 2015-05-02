@@ -11,11 +11,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-public class AsyncHttp extends AsyncTaskLoader<AsyncHttpResult<Bitmap>> {
+public class AsyncHttp extends AsyncTaskLoader<AsyncHttp.Result> {
     //get bitmap from url
 
     private PLVUrl plvUrl;
-    private AsyncHttpResult<Bitmap> result;
+    private Result result;
     private int max_size;
 
     public AsyncHttp(Context context, PLVUrl plvUrl, int max_size) {
@@ -25,8 +25,8 @@ public class AsyncHttp extends AsyncTaskLoader<AsyncHttpResult<Bitmap>> {
     }
 
     @Override
-    public AsyncHttpResult<Bitmap> loadInBackground() {
-        AsyncHttpResult<Bitmap> httpResult = new AsyncHttpResult<>();
+    public Result loadInBackground() {
+        Result httpResult = new Result();
 
         try {
 
@@ -54,7 +54,7 @@ public class AsyncHttp extends AsyncTaskLoader<AsyncHttpResult<Bitmap>> {
     }
 
     @Override
-    public void deliverResult(AsyncHttpResult<Bitmap> httpResult) {
+    public void deliverResult(Result httpResult) {
         if (isReset()) {
             if (this.result != null) {
                 this.result = null;
@@ -89,4 +89,24 @@ public class AsyncHttp extends AsyncTaskLoader<AsyncHttpResult<Bitmap>> {
         onStopLoading();
     }
 
+    public class Result {
+        private Bitmap bitmap;
+        private String url;
+
+        public void setBitmap(Bitmap bitmap) {
+            this.bitmap = bitmap;
+        }
+
+        public Bitmap getBitmap() {
+            return bitmap;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+    }
 }
