@@ -401,8 +401,6 @@ public class PLVUrlService {
             String id = matcher.group(1);
             plvUrl.setFileName(id);
 
-            listener.onGetPLVUrlFinished(plvUrl);
-
             RequestQueue queue = Volley.newRequestQueue(context);
             queue.add(new PXVStringRequest(context, id,
                     new Response.Listener<String>() {
