@@ -17,7 +17,6 @@ import android.app.Fragment;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Display;
 import android.view.GestureDetector;
 import android.view.Gravity;
@@ -38,6 +37,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import net.nonylene.photolinkviewer.R;
+import net.nonylene.photolinkviewer.async.AsyncGetSizeType;
 import net.nonylene.photolinkviewer.async.AsyncHttp;
 import net.nonylene.photolinkviewer.async.AsyncHttpResult;
 import net.nonylene.photolinkviewer.dialog.SaveDialogFragment;
@@ -46,8 +46,6 @@ import net.nonylene.photolinkviewer.tool.PLVUrl;
 import net.nonylene.photolinkviewer.tool.PLVUrlService;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 
 public class ShowFragment extends Fragment {
 
@@ -93,27 +91,50 @@ public class ShowFragment extends Fragment {
                 return true;
             }
         });
+
         if (!preferences.getBoolean("initialized19", false)) {
             Initialize.initialize19(getActivity());
         }
+
         String url = getArguments().getString("url");
+
         PLVUrlService service = new PLVUrlService(getActivity());
         service.setPLVUrlListener(new PLVUrlService.PLVUrlListener() {
             @Override
-            public void onGetPLVUrlFinished(PLVUrl plvUrl) {
-                Bundle bundle = new Bundle();
-                bundle.putParcelable("plvurl", plvUrl);
+            public void onGetPLVUrlFinished(final PLVUrl plvUrl) {
 
-                AsyncExecute asyncExecute = new AsyncExecute();
-                asyncExecute.Start(bundle);
+                AsyncGetSizeType asyncGetSizeType = new AsyncGetSizeType() {
+                    @Override
+                    protected void onPostExecute(AsyncGetSizeType.Result result) {
+                        super.onPostExecute(result);
+
+                        if (result != null) {
+                            plvUrl.setType(result.getType());
+                            plvUrl.setHeight(result.getHeight());
+                            plvUrl.setWidth(result.getWidth());
+                            addDLButton(plvUrl);
+
+                            if ("gif".equals(result.getType())) {
+                                addWebView(plvUrl);
+                            } else {
+                                AsyncExecute asyncExecute = new AsyncExecute();
+                                asyncExecute.Start(plvUrl);
+                            }
+
+                        } else {
+                            Toast.makeText(getActivity(), getString(R.string.show_bitamap_error), Toast.LENGTH_LONG).show();
+                        }
+
+                    }
+                };
+
+                asyncGetSizeType.execute(plvUrl.getDisplayUrl());
             }
 
             @Override
             public void onGetPLVUrlFailed(String text) {
                 Toast.makeText(getActivity(), text, Toast.LENGTH_LONG).show();
-                FrameLayout frameLayout = (FrameLayout) view.findViewById(R.id.showframe);
-                ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.showprogress);
-                frameLayout.removeView(progressBar);
+                removeProgressBar();
             }
         });
         service.requestGetPLVUrl(url);
@@ -289,24 +310,21 @@ public class ShowFragment extends Fragment {
     }
 
     public class AsyncExecute implements LoaderManager.LoaderCallbacks<AsyncHttpResult<Bitmap>> {
-        private PLVUrl plvurl;
+        PLVUrl plvUrl;
 
-        public void Start(Bundle argument) {
+        public void Start(PLVUrl plvUrl) {
+            this.plvUrl = plvUrl;
             //there are some loaders, so restart(all has finished)
-            getLoaderManager().restartLoader(0, argument, this);
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("plvurl", plvUrl);
+            getLoaderManager().restartLoader(0, bundle, this);
         }
 
         @Override
         public Loader<AsyncHttpResult<Bitmap>> onCreateLoader(int id, Bundle bundle) {
-            try {
-                plvurl = bundle.getParcelable("plvurl");
-                URL url = new URL(plvurl.getDisplayUrl());
-                int max_size = 2048;
-                return new AsyncHttp(getActivity().getApplicationContext(), url, max_size);
-            } catch (IOException e) {
-                Log.e("DrawableLoaderError", e.toString());
-                return null;
-            }
+            PLVUrl plvUrl = bundle.getParcelable("plvurl");
+            int max_size = 2048;
+            return new AsyncHttp(getActivity().getApplicationContext(), plvUrl, max_size);
         }
 
         @Override
@@ -315,9 +333,6 @@ public class ShowFragment extends Fragment {
             FrameLayout frameLayout = (FrameLayout) view.findViewById(R.id.showframe);
             ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.showprogress);
             frameLayout.removeView(progressBar);
-
-            // add DL button
-            addDLButton(result.getType());
 
             Bitmap bitmap = result.getBitmap();
 
@@ -368,67 +383,12 @@ public class ShowFragment extends Fragment {
                 LinearLayout linearLayout = (LinearLayout) getActivity().findViewById(R.id.rotate_root);
                 linearLayout.setVisibility(View.VISIBLE);
             } else {
-                if ("gif".equals(result.getType())) {
-                    // gif view by web view
-                    WebView webView = new WebView(getActivity());
-                    webView.getSettings().setUseWideViewPort(true);
-                    webView.getSettings().setLoadWithOverviewMode(true);
-                    FrameLayout.LayoutParams layoutParams;
-                    String html;
-                    int videoWidth = result.getWidth();
-                    int videoHeight = result.getHeight();
-                    String escaped = TextUtils.htmlEncode(result.getUrl());
-                    if ((videoHeight > dispHeight * 0.9 && videoWidth * dispHeight / dispHeight < dispWidth) || dispWidth * videoHeight / videoWidth > dispHeight) {
-                        // if height of video > disp_height * 0.9, check whether calculated width > disp_width . if this is true,
-                        // give priority to width. and, if check whether calculated height > disp_height, give priority to height.
-                        int width = (int) (dispWidth * 0.9);
-                        int height = (int) (dispHeight * 0.9);
-                        layoutParams = new FrameLayout.LayoutParams(width, height);
-                        html = "<html><body><img style='display: block; margin: 0 auto' height='100%'src='" + escaped + "'></body></html>";
-                    } else {
-                        int width = (int) (dispWidth * 0.9);
-                        layoutParams = new FrameLayout.LayoutParams(width, width * videoHeight / videoWidth);
-                        html = "<html><body><img style='display: block; margin: 0 auto' width='100%'src='" + escaped + "'></body></html>";
-                    }
-                    layoutParams.gravity = Gravity.CENTER;
-                    webView.setLayoutParams(layoutParams);
-                    // html to centering
-                    webView.loadData(html, "text/html", "utf-8");
-                    webView.setBackgroundColor(0x00000000);
-                    WebSettings settings = webView.getSettings();
-                    settings.setBuiltInZoomControls(true);
-                    frameLayout.addView(webView);
-                } else {
-                    Toast.makeText(view.getContext(), getString(R.string.show_bitamap_error), Toast.LENGTH_LONG).show();
-                }
+                Toast.makeText(view.getContext(), getString(R.string.show_bitamap_error), Toast.LENGTH_LONG).show();
             }
         }
 
         @Override
         public void onLoaderReset(Loader<AsyncHttpResult<Bitmap>> loader) {
-
-        }
-
-        private void addDLButton(String type) {
-            // dl button visibility and click
-            plvurl.setType(type);
-            ImageButton dlButton = (ImageButton) getActivity().findViewById(R.id.dlbutton);
-            dlButton.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    // download direct
-                    if (preferences.getBoolean("skip_dialog", false)) {
-                        save(getFileNames(plvurl));
-                    } else {
-                        // open dialog
-                        DialogFragment dialogFragment = new SaveDialogFragment();
-                        dialogFragment.setArguments(getFileNames(plvurl));
-                        dialogFragment.setTargetFragment(ShowFragment.this, 0);
-                        dialogFragment.show(getFragmentManager(), "Save");
-                    }
-                }
-            });
-            FrameLayout dlLayout = (FrameLayout) getActivity().findViewById(R.id.dlbutton_frame);
-            dlLayout.setVisibility(View.VISIBLE);
 
         }
     }
@@ -473,6 +433,7 @@ public class ShowFragment extends Fragment {
         Bundle bundle = new Bundle();
         bundle.putString("filename", filename);
         bundle.putString("dir", dir.toString());
+        bundle.putString("original_url", plvUrl.getBiggestUrl());
 
         return bundle;
     }
@@ -507,5 +468,79 @@ public class ShowFragment extends Fragment {
                 save(data.getBundleExtra("bundle"));
                 break;
         }
+    }
+
+    private void removeProgressBar() {
+        FrameLayout frameLayout = (FrameLayout) view.findViewById(R.id.showframe);
+        ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.showprogress);
+        frameLayout.removeView(progressBar);
+    }
+
+    private void addDLButton(final PLVUrl plvUrl) {
+        // dl button visibility and click
+        ImageButton dlButton = (ImageButton) getActivity().findViewById(R.id.dlbutton);
+
+        dlButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // download direct
+                if (preferences.getBoolean("skip_dialog", false)) {
+                    save(getFileNames(plvUrl));
+                } else {
+                    // open dialog
+                    DialogFragment dialogFragment = new SaveDialogFragment();
+                    dialogFragment.setArguments(getFileNames(plvUrl));
+                    dialogFragment.setTargetFragment(ShowFragment.this, 0);
+                    dialogFragment.show(getFragmentManager(), "Save");
+                }
+            }
+        });
+
+        FrameLayout dlLayout = (FrameLayout) getActivity().findViewById(R.id.dlbutton_frame);
+        dlLayout.setVisibility(View.VISIBLE);
+    }
+
+    private void addWebView(PLVUrl plvUrl) {
+        int videoWidth = plvUrl.getWidth();
+        int videoHeight = plvUrl.getHeight();
+
+        Display display = getActivity().getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int dispWidth = size.x;
+        int dispHeight = size.y;
+
+        // gif view by web view
+        WebView webView = new WebView(getActivity());
+        webView.getSettings().setUseWideViewPort(true);
+        webView.getSettings().setLoadWithOverviewMode(true);
+
+        FrameLayout.LayoutParams layoutParams;
+        String escaped = TextUtils.htmlEncode(plvUrl.getDisplayUrl());
+        String html;
+        if ((videoHeight > dispHeight * 0.9 && videoWidth * dispHeight / dispHeight < dispWidth) || dispWidth * videoHeight / videoWidth > dispHeight) {
+            // if height of video > disp_height * 0.9, check whether calculated width > disp_width . if this is true,
+            // give priority to width. and, if check whether calculated height > disp_height, give priority to height.
+            int width = (int) (dispWidth * 0.9);
+            int height = (int) (dispHeight * 0.9);
+            layoutParams = new FrameLayout.LayoutParams(width, height);
+            html = "<html><body><img style='display: block; margin: 0 auto' height='100%'src='" + escaped + "'></body></html>";
+        } else {
+            int width = (int) (dispWidth * 0.9);
+            layoutParams = new FrameLayout.LayoutParams(width, width * videoHeight / videoWidth);
+            html = "<html><body><img style='display: block; margin: 0 auto' width='100%'src='" + escaped + "'></body></html>";
+        }
+        layoutParams.gravity = Gravity.CENTER;
+        webView.setLayoutParams(layoutParams);
+
+        // html to centering
+        webView.loadData(html, "text/html", "utf-8");
+        webView.setBackgroundColor(0x00000000);
+        WebSettings settings = webView.getSettings();
+        settings.setBuiltInZoomControls(true);
+
+        removeProgressBar();
+
+        FrameLayout frameLayout = (FrameLayout) view.findViewById(R.id.showframe);
+        frameLayout.addView(webView);
     }
 }

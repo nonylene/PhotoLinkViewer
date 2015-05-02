@@ -1,6 +1,5 @@
 package net.nonylene.photolinkviewer.async;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 

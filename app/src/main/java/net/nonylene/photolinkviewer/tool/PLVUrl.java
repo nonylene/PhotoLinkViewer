@@ -10,6 +10,8 @@ public class PLVUrl implements Parcelable{
     private String siteName;
     private String fileName;
     private String type;
+    private int height;
+    private int width;
 
     public PLVUrl(String url) {
         this.url = url;
@@ -57,6 +59,22 @@ public class PLVUrl implements Parcelable{
 
     public String getType() {
         return type;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public int getWidth() {
+        return width;
     }
 
     @Override
