@@ -107,6 +107,14 @@ public class ShowFragment extends Fragment {
                 AsyncExecute asyncExecute = new AsyncExecute();
                 asyncExecute.Start(bundle);
             }
+
+            @Override
+            public void onGetPLVUrlFailed(String text) {
+                Toast.makeText(getActivity(), text, Toast.LENGTH_LONG).show();
+                FrameLayout frameLayout = (FrameLayout) view.findViewById(R.id.showframe);
+                ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.showprogress);
+                frameLayout.removeView(progressBar);
+            }
         });
         service.requestGetPLVUrl(url);
         return view;

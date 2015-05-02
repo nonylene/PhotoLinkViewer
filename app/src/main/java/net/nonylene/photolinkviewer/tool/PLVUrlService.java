@@ -6,7 +6,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
@@ -32,6 +31,7 @@ public class PLVUrlService {
 
     public interface PLVUrlListener {
         void onGetPLVUrlFinished(PLVUrl plvUrl);
+        void onGetPLVUrlFailed(String text);
     }
 
     public void setPLVUrlListener(PLVUrlListener urlListener) {
@@ -67,8 +67,8 @@ public class PLVUrlService {
 
     private class Site {
         protected String url;
-        private Context context;
         protected PLVUrlListener listener;
+        protected Context context;
 
         public Site(String url, Context context) {
             this.url = url;
@@ -95,6 +95,23 @@ public class PLVUrlService {
 
         public void getPLVUrl() {
         }
+
+        protected String getQuality(String siteName) {
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+            String quality;
+            if (wifiChecker(sharedPreferences)) {
+                quality = sharedPreferences.getString(siteName + "_quality_wifi", "large");
+            } else {
+                quality = sharedPreferences.getString(siteName + "_quality_3g", "large");
+            }
+
+            return quality;
+        }
+
+        protected void onParseFailed() {
+            listener.onGetPLVUrlFailed(context.getString(R.string.url_purse_toast));
+        }
     }
 
     private class TwitterSite extends Site {
@@ -110,24 +127,18 @@ public class PLVUrlService {
             PLVUrl plvUrl = new PLVUrl(url);
             Pattern pattern = Pattern.compile("^https?://pbs\\.twimg\\.com/media/([^\\.]+)\\.");
             Matcher matcher = pattern.matcher(url);
-            if (!matcher.find()) return;
+            if (!matcher.find()) {
+                super.onParseFailed();
+                return;
+            }
 
             plvUrl.setSiteName("twitter");
 
             String id = matcher.group(1);
             plvUrl.setFileName(id);
 
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-
-            String quality;
-            if (super.wifiChecker(sharedPreferences)) {
-                quality = sharedPreferences.getString("twitter_quality_wifi", "large");
-            } else {
-                quality = sharedPreferences.getString("twitter_quality_3g", "large");
-            }
-
             String file_url = null;
-            switch (quality) {
+            switch (super.getQuality("twitter")) {
                 case "original":
                     file_url = url + ":orig";
                     break;
@@ -162,24 +173,18 @@ public class PLVUrlService {
             PLVUrl plvUrl = new PLVUrl(url);
             Pattern pattern = Pattern.compile("^https?://p\\.twipple\\.jp/(\\w+)");
             Matcher matcher = pattern.matcher(url);
-            if (!matcher.find()) return;
+            if (!matcher.find()) {
+                super.onParseFailed();
+                return;
+            }
 
             plvUrl.setSiteName("twipple");
 
             String id = matcher.group(1);
             plvUrl.setFileName(id);
 
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-
-            String quality;
-            if (super.wifiChecker(sharedPreferences)) {
-                quality = sharedPreferences.getString("twipple_quality_wifi", "large");
-            } else {
-                quality = sharedPreferences.getString("twipple_quality_3g", "large");
-            }
-
             String file_url = null;
-            switch (quality) {
+            switch (super.getQuality("twipple")) {
                 case "original":
                     file_url = "http://p.twipple.jp/show/orig/" + id;
                     break;
@@ -211,24 +216,18 @@ public class PLVUrlService {
             PLVUrl plvUrl = new PLVUrl(url);
             Pattern pattern = Pattern.compile("^https?://img\\.ly/(\\w+)");
             Matcher matcher = pattern.matcher(url);
-            if (!matcher.find()) return;
+            if (!matcher.find()) {
+                super.onParseFailed();
+                return;
+            }
 
             plvUrl.setSiteName("img.ly");
 
             String id = matcher.group(1);
             plvUrl.setFileName(id);
 
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-
-            String quality;
-            if (super.wifiChecker(sharedPreferences)) {
-                quality = sharedPreferences.getString("imgly_quality_wifi", "large");
-            } else {
-                quality = sharedPreferences.getString("imgly_quality_3g", "large");
-            }
-
             String file_url = null;
-            switch (quality) {
+            switch (super.getQuality("imgly")) {
                 case "full":
                     file_url = "http://img.ly/show/full/" + id;
                     break;
@@ -260,24 +259,18 @@ public class PLVUrlService {
             PLVUrl plvUrl = new PLVUrl(url);
             Pattern pattern = Pattern.compile("^https?://instagr\\.?am[\\.com]*/p/([^/\\?=]+)");
             Matcher matcher = pattern.matcher(url);
-            if (!matcher.find()) return;
+            if (!matcher.find()) {
+                super.onParseFailed();
+                return;
+            }
 
             plvUrl.setSiteName("instagram");
 
             String id = matcher.group(1);
             plvUrl.setFileName(id);
 
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-
-            String quality;
-            if (super.wifiChecker(sharedPreferences)) {
-                quality = sharedPreferences.getString("instagram_quality_wifi", "large");
-            } else {
-                quality = sharedPreferences.getString("instagram_quality_3g", "large");
-            }
-
             String file_url = null;
-            switch (quality) {
+            switch (super.getQuality("instagram")) {
                 case "large":
                     file_url = "https://instagram.com/p/" + id + "/media/?size=l";
                     break;
@@ -306,7 +299,10 @@ public class PLVUrlService {
             PLVUrl plvUrl = new PLVUrl(url);
             Pattern pattern = Pattern.compile("^https?://.*gyazo\\.com/(\\w+)");
             Matcher matcher = pattern.matcher(url);
-            if (!matcher.find()) return;
+            if (!matcher.find()) {
+                super.onParseFailed();
+                return;
+            }
 
             plvUrl.setSiteName("gyazo");
 
@@ -334,7 +330,10 @@ public class PLVUrlService {
             PLVUrl plvUrl = new PLVUrl(url);
             Pattern pattern = Pattern.compile("^https?://.*imgur\\.com/([\\w^\\.]+)");
             Matcher matcher = pattern.matcher(url);
-            if (!matcher.find()) return;
+            if (!matcher.find()) {
+                super.onParseFailed();
+                return;
+            }
 
             plvUrl.setSiteName("imgur");
 
@@ -362,7 +361,10 @@ public class PLVUrlService {
             PLVUrl plvUrl = new PLVUrl(url);
             Pattern pattern = Pattern.compile("/([^\\./]+)\\.?[\\w\\?=]*$");
             Matcher matcher = pattern.matcher(url);
-            if (!matcher.find()) return;
+            if (!matcher.find()) {
+                super.onParseFailed();
+                return;
+            }
 
             plvUrl.setSiteName("other");
 
@@ -389,7 +391,10 @@ public class PLVUrlService {
             final PLVUrl plvUrl = new PLVUrl(url);
             Pattern pattern = Pattern.compile("^https?://.*pixiv\\.net/member_illust.php?.*illust_id=(\\d+)");
             Matcher matcher = pattern.matcher(url);
-            if (!matcher.find()) return;
+            if (!matcher.find()) {
+                super.onParseFailed();
+                return;
+            }
 
             plvUrl.setSiteName("pixiv");
 
@@ -414,7 +419,7 @@ public class PLVUrlService {
                                 listener.onGetPLVUrlFinished(plvUrl);
 
                             } catch (ArrayIndexOutOfBoundsException e) {
-                                Toast.makeText(context, "Cannot open. R-18?", Toast.LENGTH_LONG).show();
+                                listener.onGetPLVUrlFailed("Cannot open. R-18?");
                             }
                         }
                     }));
@@ -437,12 +442,18 @@ public class PLVUrlService {
             if (url.contains("flickr")) {
                 Pattern pattern = Pattern.compile("^https?://[wm]w*\\.flickr\\.com/?#?/photos/[\\w@]+/(\\d+)");
                 Matcher matcher = pattern.matcher(url);
-                if (!matcher.find()) return;
+                if (!matcher.find()) {
+                    super.onParseFailed();
+                    return;
+                }
                 id = matcher.group(1);
             } else if (url.contains("flic.kr")) {
                 Pattern pattern = Pattern.compile("^https?://flic\\.kr/p/(\\w+)");
                 Matcher matcher = pattern.matcher(url);
-                if (!matcher.find()) return;
+                if (!matcher.find()) {
+                    super.onParseFailed();
+                    return;
+                }
                 id = Base58.decode(matcher.group(1));
             }
 
@@ -474,17 +485,8 @@ public class PLVUrlService {
                 String id = photo.getString("id");
                 String secret = photo.getString("secret");
 
-                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-
-                String quality;
-                if (super.wifiChecker(sharedPreferences)) {
-                    quality = sharedPreferences.getString("flickr_quality_wifi", "large");
-                } else {
-                    quality = sharedPreferences.getString("flickr_quality_3g", "large");
-                }
-
                 String file_url = null;
-                switch (quality) {
+                switch (super.getQuality("flickr")) {
                     case "original":
                         String original_secret = photo.getString("originalsecret");
                         String original_format = photo.getString("originalformat");
@@ -508,8 +510,7 @@ public class PLVUrlService {
                 plvUrl.setBiggestUrl(biggestUrl);
 
             } catch (JSONException e) {
-                Log.e("JSONParseError", e.toString());
-                Toast.makeText(context, context.getString(R.string.show_flickrjson_toast), Toast.LENGTH_LONG).show();
+                listener.onGetPLVUrlFailed(context.getString(R.string.show_flickrjson_toast));
             }
 
             return plvUrl;
@@ -535,7 +536,10 @@ public class PLVUrlService {
                 pattern = Pattern.compile("^https?://seiga.nicovideo.jp/seiga/im(\\d+)");
             }
             Matcher matcher = pattern.matcher(url);
-            if (!matcher.find()) return;
+            if (!matcher.find()) {
+                super.onParseFailed();
+                return;
+            }
 
             plvUrl.setSiteName("nico");
 
@@ -555,25 +559,19 @@ public class PLVUrlService {
             task.execute(oldUrl);
         }
 
-        private PLVUrl parseNico(String redirect, String id, PLVUrl plvUrl){
+        private PLVUrl parseNico(String redirect, String id, PLVUrl plvUrl) {
             String biggest_url = redirect.replace("/o/", "/priv/");
 
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
-            String quality;
-            boolean wifi = wifiChecker(sharedPreferences);
-            if (wifi) {
-                quality = sharedPreferences.getString("nicoseiga_quality_wifi", "large");
-            } else {
-                quality = sharedPreferences.getString("nicoseiga_quality_3g", "large");
-            }
-
             boolean original;
-            if (wifi) {
+            if (wifiChecker(sharedPreferences)) {
                 original = sharedPreferences.getBoolean("original_switch_wifi", false);
             } else {
                 original = sharedPreferences.getBoolean("original_switch_3g", false);
             }
+
+            String quality = super.getQuality("nicoseiga");
 
             String file_url = null;
             switch (quality) {
