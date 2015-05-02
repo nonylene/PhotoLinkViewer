@@ -31,6 +31,7 @@ public class PLVUrlService {
 
     public interface PLVUrlListener {
         void onGetPLVUrlFinished(PLVUrl plvUrl);
+
         void onGetPLVUrlFailed(String text);
     }
 
@@ -468,48 +469,48 @@ public class PLVUrlService {
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
-                            listener.onGetPLVUrlFinished(parseFlickr(response, plvUrl));
+                            try {
+                                listener.onGetPLVUrlFinished(parseFlickr(response, plvUrl));
+                            } catch (JSONException e) {
+                                listener.onGetPLVUrlFailed(context.getString(R.string.show_flickrjson_toast));
+                                e.printStackTrace();
+                            }
                         }
                     }
             ));
         }
 
-        private PLVUrl parseFlickr(JSONObject json, PLVUrl plvUrl) {
-            try {
-                //for flickr
-                JSONObject photo = new JSONObject(json.getString("photo"));
-                String farm = photo.getString("farm");
-                String server = photo.getString("server");
-                String id = photo.getString("id");
-                String secret = photo.getString("secret");
+        private PLVUrl parseFlickr(JSONObject json, PLVUrl plvUrl) throws JSONException {
+            //for flickr
+            JSONObject photo = new JSONObject(json.getString("photo"));
+            String farm = photo.getString("farm");
+            String server = photo.getString("server");
+            String id = photo.getString("id");
+            String secret = photo.getString("secret");
 
-                String file_url = null;
-                switch (super.getQuality("flickr")) {
-                    case "original":
-                        String original_secret = photo.getString("originalsecret");
-                        String original_format = photo.getString("originalformat");
-                        file_url = "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + original_secret + "_o." + original_format;
-                        break;
-                    case "large":
-                        file_url = "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + secret + "_b.jpg";
-                        break;
-                    case "medium":
-                        file_url = "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + secret + "_z.jpg";
-                        break;
-                }
-
-
-                String original_secrets = photo.getString("originalsecret");
-                String original_formats = photo.getString("originalformat");
-                String biggestUrl = "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + original_secrets + "_o." + original_formats;
-
-                plvUrl.setDisplayUrl(file_url);
-
-                plvUrl.setBiggestUrl(biggestUrl);
-
-            } catch (JSONException e) {
-                listener.onGetPLVUrlFailed(context.getString(R.string.show_flickrjson_toast));
+            String file_url = null;
+            switch (super.getQuality("flickr")) {
+                case "original":
+                    String original_secret = photo.getString("originalsecret");
+                    String original_format = photo.getString("originalformat");
+                    file_url = "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + original_secret + "_o." + original_format;
+                    break;
+                case "large":
+                    file_url = "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + secret + "_b.jpg";
+                    break;
+                case "medium":
+                    file_url = "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + secret + "_z.jpg";
+                    break;
             }
+
+
+            String original_secrets = photo.getString("originalsecret");
+            String original_formats = photo.getString("originalformat");
+            String biggestUrl = "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + original_secrets + "_o." + original_formats;
+
+            plvUrl.setDisplayUrl(file_url);
+
+            plvUrl.setBiggestUrl(biggestUrl);
 
             return plvUrl;
         }
