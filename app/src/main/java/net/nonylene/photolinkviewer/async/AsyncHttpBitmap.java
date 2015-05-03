@@ -11,14 +11,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-public class AsyncHttp extends AsyncTaskLoader<AsyncHttp.Result> {
+public class AsyncHttpBitmap extends AsyncTaskLoader<AsyncHttpBitmap.Result> {
     //get bitmap from url
 
     private PLVUrl plvUrl;
     private Result result;
     private int max_size;
 
-    public AsyncHttp(Context context, PLVUrl plvUrl, int max_size) {
+    public AsyncHttpBitmap(Context context, PLVUrl plvUrl, int max_size) {
         super(context);
         this.plvUrl = plvUrl;
         this.max_size = max_size;

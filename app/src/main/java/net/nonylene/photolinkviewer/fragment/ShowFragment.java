@@ -38,7 +38,7 @@ import android.widget.Toast;
 
 import net.nonylene.photolinkviewer.R;
 import net.nonylene.photolinkviewer.async.AsyncGetSizeType;
-import net.nonylene.photolinkviewer.async.AsyncHttp;
+import net.nonylene.photolinkviewer.async.AsyncHttpBitmap;
 import net.nonylene.photolinkviewer.dialog.SaveDialogFragment;
 import net.nonylene.photolinkviewer.tool.Initialize;
 import net.nonylene.photolinkviewer.tool.PLVUrl;
@@ -310,7 +310,7 @@ public class ShowFragment extends Fragment {
         }
     }
 
-    public class AsyncExecute implements LoaderManager.LoaderCallbacks<AsyncHttp.Result> {
+    public class AsyncExecute implements LoaderManager.LoaderCallbacks<AsyncHttpBitmap.Result> {
         PLVUrl plvUrl;
 
         public void Start(PLVUrl plvUrl) {
@@ -322,14 +322,14 @@ public class ShowFragment extends Fragment {
         }
 
         @Override
-        public Loader<AsyncHttp.Result> onCreateLoader(int id, Bundle bundle) {
+        public Loader<AsyncHttpBitmap.Result> onCreateLoader(int id, Bundle bundle) {
             PLVUrl plvUrl = bundle.getParcelable("plvurl");
             int max_size = 2048;
-            return new AsyncHttp(getActivity().getApplicationContext(), plvUrl, max_size);
+            return new AsyncHttpBitmap(getActivity().getApplicationContext(), plvUrl, max_size);
         }
 
         @Override
-        public void onLoadFinished(Loader<AsyncHttp.Result> loader, AsyncHttp.Result result) {
+        public void onLoadFinished(Loader<AsyncHttpBitmap.Result> loader, AsyncHttpBitmap.Result result) {
             //remove progressbar
             FrameLayout frameLayout = (FrameLayout) view.findViewById(R.id.showframe);
             ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.showprogress);
@@ -389,7 +389,7 @@ public class ShowFragment extends Fragment {
         }
 
         @Override
-        public void onLoaderReset(Loader<AsyncHttp.Result> loader) {
+        public void onLoaderReset(Loader<AsyncHttpBitmap.Result> loader) {
 
         }
     }
