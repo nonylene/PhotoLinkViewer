@@ -4,4 +4,5 @@
     <color name="transparent">#00000000</color>
     <color name="ripple">#64000000</color>
     <color name="twitter_back">#F5F5F5</color>
+    <color name="primary_color">#0096F5</color>
 </resources>
