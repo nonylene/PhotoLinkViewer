@@ -72,7 +72,7 @@ public class PreferenceSummaryFragment extends PreferenceFragment implements Sha
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Preference preference = findPreference(key);
-        setSummary(preference);
+        if (preference != null) setSummary(preference);
     }
 
     @Override
