@@ -8,7 +8,9 @@
     <style name="AppActionBar" parent="Widget.AppCompat.ActionBar.Solid">
         <item name="titleTextStyle">@style/TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse</item>
     </style>
-    <style name="Theme.Transparent" parent="android:Theme.DeviceDefault.Light.NoActionBar">
+    <style name="Theme.Transparent" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary_color</item>
+        <item name="colorPrimaryDark">@color/primary_color</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@color/transparent</item>
         <item name="android:windowAnimationStyle">@style/noActivityAnimation</item>
