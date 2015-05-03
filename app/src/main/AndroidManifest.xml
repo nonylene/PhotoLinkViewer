@@ -10,6 +10,7 @@
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
+        android:theme="@style/Theme.AppCompat.Light"
         android:label="@string/app_name">
         <activity
             android:name=".Show"
@@ -255,8 +256,7 @@
         </activity>
 
         <activity
-            android:name=".Settings"
-            android:theme="@android:style/Theme.DeviceDefault.Light">
+            android:name=".Settings">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -266,8 +266,7 @@
 
         <activity
             android:name=".TOAuth"
-            android:launchMode="singleTask"
-            android:theme="@android:style/Theme.DeviceDefault.Light">
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
 
@@ -300,8 +299,7 @@
         </activity>
 
         <activity
-            android:name=".ChangeQualityActivity"
-            android:theme="@android:style/Theme.DeviceDefault.Light">
+            android:name=".ChangeQualityActivity">
         </activity>
 
     </application>

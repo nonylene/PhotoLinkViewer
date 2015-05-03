@@ -88,6 +88,10 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="twitter4j-core-4.0.3-SNAPSHOT" level="project" />
     <orderEntry type="library" exported="" name="twitter4j-async-4.0.3-SNAPSHOT" level="project" />
+    <orderEntry type="library" exported="" name="support-annotations-22.1.1" level="project" />
+    <orderEntry type="library" exported="" name="support-v4-22.1.1" level="project" />
+    <orderEntry type="library" exported="" name="support-v13-22.1.1" level="project" />
+    <orderEntry type="library" exported="" name="appcompat-v7-22.1.1" level="project" />
     <orderEntry type="module" module-name="volley" exported="" />
   </component>
 </module>

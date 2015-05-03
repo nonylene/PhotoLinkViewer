@@ -1,6 +1,5 @@
 package net.nonylene.photolinkviewer;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -10,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -18,7 +18,7 @@ import android.widget.Toast;
 import net.nonylene.photolinkviewer.fragment.PreferenceSummaryFragment;
 import net.nonylene.photolinkviewer.tool.Initialize;
 
-public class Settings extends Activity {
+public class Settings extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
