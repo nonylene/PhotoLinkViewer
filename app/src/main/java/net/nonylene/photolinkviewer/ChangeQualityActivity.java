@@ -1,81 +1,76 @@
 package net.nonylene.photolinkviewer;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.app.Fragment;
-import android.app.FragmentTransaction;
+import android.app.FragmentManager;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v13.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 
 import net.nonylene.photolinkviewer.fragment.LTEFragment;
 import net.nonylene.photolinkviewer.fragment.WifiFragment;
 
-public class ChangeQualityActivity extends Activity implements LTEFragment.OnWifiSwitchListener {
-    private ActionBar actionBar;
-    private ActionBar.Tab lteTab;
-    private ActionBar.Tab wifiTab;
+public class ChangeQualityActivity extends AppCompatActivity implements LTEFragment.OnWifiSwitchListener {
+    private QualityFragmentStateAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_quality);
         // set tabs
-        actionBar = getActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        lteTab = actionBar.newTab();
-        lteTab.setTabListener(new MyTabListener(new LTEFragment()));
-        wifiTab = actionBar.newTab();
-        wifiTab.setText("Wifi")
-                .setTabListener(new MyTabListener(new WifiFragment()));
+        ViewPager pager = (ViewPager) findViewById(R.id.quality_pager);
+
+        adapter = new QualityFragmentStateAdapter(getFragmentManager());
+
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        if (preferences.getBoolean("wifi_switch", false)) {
-            lteTab.setText("LTE");
-            actionBar.addTab(lteTab);
-            actionBar.addTab(wifiTab);
-        } else {
-            lteTab.setText("LTE / Wifi");
-            actionBar.addTab(lteTab);
-        }
+        adapter.setWifiEnabled(preferences.getBoolean("wifi_switch", false));
+
+        pager.setAdapter(adapter);
     }
 
     @Override
     public void onChanged(boolean checked) {
         // lte fragment listener when switch changed
-        if (checked) {
-            if (actionBar.getTabCount() == 1) {
-                lteTab.setText("LTE");
-                actionBar.addTab(wifiTab);
-            }
-        } else {
-            if (actionBar.getTabCount() == 2) {
-                lteTab.setText("LTE / Wifi");
-                actionBar.removeTab(wifiTab);
-            }
-        }
+        adapter.setWifiEnabled(checked);
     }
 
-    class MyTabListener implements ActionBar.TabListener {
-        private Fragment fragment;
+    private class QualityFragmentStateAdapter extends FragmentPagerAdapter {
+        private String[] titles;
 
-        public MyTabListener(Fragment fragment) {
-            this.fragment = fragment;
+        public QualityFragmentStateAdapter(FragmentManager fm){
+            super(fm);
         }
 
         @Override
-        public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
-            ft.add(R.id.content, fragment);
+        public Fragment getItem(int i) {
+            switch (i){
+                case 0:
+                    return new LTEFragment();
+                case 1:
+                    return new WifiFragment();
+            }
+            return null;
         }
 
         @Override
-        public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
-            ft.remove(fragment);
+        public int getCount() {
+            return titles.length;
         }
 
         @Override
-        public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
+        public CharSequence getPageTitle(int position) {
+            return titles[position];
+        }
 
+        public void setWifiEnabled(boolean enabled){
+            if (enabled){
+                titles = new String[]{"LTE", "Wifi"};
+            }else{
+                titles = new String[]{"LTE / Wifi"};
+            }
+            notifyDataSetChanged();
         }
     }
-
 }

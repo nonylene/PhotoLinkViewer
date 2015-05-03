@@ -18,7 +18,7 @@ public class LTEFragment extends PreferenceSummaryFragment {
 
     // lister when switch changed
     public interface OnWifiSwitchListener {
-        public void onChanged(boolean checked);
+        void onChanged(boolean checked);
     }
 
     @Override
