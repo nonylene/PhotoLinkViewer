@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v13.app.FragmentPagerAdapter;
+import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
@@ -19,14 +20,17 @@ public class ChangeQualityActivity extends AppCompatActivity implements LTEFragm
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_quality);
-        // set tabs
-        ViewPager pager = (ViewPager) findViewById(R.id.quality_pager);
+
+        PagerTabStrip strip = (PagerTabStrip) findViewById(R.id.quality_tab_strip);
+        strip.setTabIndicatorColorResource(R.color.primary_color);
 
         adapter = new QualityFragmentStateAdapter(getFragmentManager());
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         adapter.setWifiEnabled(preferences.getBoolean("wifi_switch", false));
 
+        // set tabs
+        ViewPager pager = (ViewPager) findViewById(R.id.quality_pager);
         pager.setAdapter(adapter);
     }
 
@@ -71,9 +75,9 @@ public class ChangeQualityActivity extends AppCompatActivity implements LTEFragm
 
         public void setWifiEnabled(boolean enabled){
             if (enabled){
-                titles = new String[]{"LTE", "Wifi"};
+                titles = new String[]{"LTE", "WIFI"};
             }else{
-                titles = new String[]{"LTE / Wifi"};
+                titles = new String[]{"LTE / WIFI"};
             }
             notifyDataSetChanged();
         }
