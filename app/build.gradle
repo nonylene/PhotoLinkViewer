@@ -25,4 +25,6 @@ dependencies {
     compile project(':modules:volley')
     compile "com.android.support:appcompat-v7:22.1.1"
     compile 'com.android.support:support-v13:22.1.1'
+    compile 'org.twitter4j:twitter4j-core:4.0.3'
+    compile 'org.twitter4j:twitter4j-async:4.0.3'
 }

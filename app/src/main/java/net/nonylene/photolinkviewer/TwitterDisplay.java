@@ -44,7 +44,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import twitter4j.AsyncTwitter;
-import twitter4j.MediaEntity;
+import twitter4j.ExtendedMediaEntity;
 import twitter4j.Status;
 import twitter4j.TwitterAdapter;
 import twitter4j.TwitterException;
@@ -201,14 +201,14 @@ public class TwitterDisplay extends Activity {
                 @Override
                 public void run() {
                     // set media entity
-                    MediaEntity[] mediaEntities = status.getExtendedMediaEntities();
+                    ExtendedMediaEntity[] mediaEntities = status.getExtendedMediaEntities();
                     URLEntity[] urlEntities = status.getURLEntities();
 
                     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                     boolean show = sharedPreferences.getBoolean("disp_tweet", false);
                     // if number of media entity is one, show fragment directly
                     if (!show && url.contains("/photo") && mediaEntities.length == 1) {
-                        MediaEntity mediaEntity = mediaEntities[0];
+                        ExtendedMediaEntity mediaEntity = mediaEntities[0];
                         Bundle bundle = new Bundle();
                         String type = mediaEntity.getType();
                         try {
@@ -306,7 +306,7 @@ public class TwitterDisplay extends Activity {
 
                             addPhotoIcon();
 
-                            for (MediaEntity mediaEntity : mediaEntities) {
+                            for (ExtendedMediaEntity mediaEntity : mediaEntities) {
                                 addView(mediaEntity);
                             }
                         }
@@ -340,10 +340,10 @@ public class TwitterDisplay extends Activity {
                     urlLayout.addView(textView);
                 }
 
-                private String getBiggestMp4Url(MediaEntity.Variant[] variants) {
+                private String getBiggestMp4Url(ExtendedMediaEntity.Variant[] variants) {
                     int bitrate = 0;
                     String url = null;
-                    for (MediaEntity.Variant variant : variants) {
+                    for (ExtendedMediaEntity.Variant variant : variants) {
                         if (("video/mp4").equals(variant.getContentType()) && bitrate <= variant.getBitrate()) {
                             url = variant.getUrl();
                             bitrate = variant.getBitrate();
@@ -358,7 +358,7 @@ public class TwitterDisplay extends Activity {
                     imageView.setImageDrawable(photoIcon);
                 }
 
-                private void addView(MediaEntity mediaEntity) {
+                private void addView(ExtendedMediaEntity mediaEntity) {
                     try {
                         final String url = mediaEntity.getMediaURL();
                         final String type = mediaEntity.getType();
