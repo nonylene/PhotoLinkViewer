@@ -10,10 +10,12 @@ import android.view.ViewGroup;
 import android.widget.CheckedTextView;
 import android.widget.CursorAdapter;
 
-import net.nonylene.photolinkviewer.R;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
+import com.android.volley.toolbox.Volley;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import net.nonylene.photolinkviewer.R;
 
 public class MyCursorAdapter extends CursorAdapter {
 
@@ -33,12 +35,13 @@ public class MyCursorAdapter extends CursorAdapter {
             String screen_name = cursor.getString(cursor.getColumnIndex("userName"));
             CheckedTextView textView = (CheckedTextView) view.findViewById(R.id.screen);
             textView.setText(screen_name);
+
             String icon_url = cursor.getString(cursor.getColumnIndex("icon"));
-            PLVImageView plvImageView = (PLVImageView) view.findViewById(R.id.icon);
-            URL url = new URL(icon_url);
-            plvImageView.setUrl(url);
-        } catch (MalformedURLException e) {
-            Log.e("URL", e.toString());
+
+            NetworkImageView imageView = (NetworkImageView) view.findViewById(R.id.icon);
+            BitmapCache bitmapCache = new BitmapCache();
+            RequestQueue queue = Volley.newRequestQueue(context);
+            imageView.setImageUrl(icon_url, new ImageLoader(queue, bitmapCache));
         } catch (SQLiteException e) {
             Log.e("SQL", e.toString());
         }

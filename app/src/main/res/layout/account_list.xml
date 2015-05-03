@@ -5,10 +5,11 @@
               android:layout_height="50dp"
               android:orientation="horizontal">
 
-    <net.nonylene.photolinkviewer.tool.PLVImageView
+    <com.android.volley.toolbox.NetworkImageView
         android:id="@+id/icon"
         android:layout_width="50dp"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:scaleType="fitCenter"/>
 
     <CheckedTextView
         android:id="@+id/screen"
