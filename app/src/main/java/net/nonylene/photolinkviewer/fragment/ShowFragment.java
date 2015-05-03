@@ -106,6 +106,7 @@ public class ShowFragment extends Fragment {
                     @Override
                     protected void onPostExecute(AsyncGetSizeType.Result result) {
                         super.onPostExecute(result);
+                        if (!isAdded()) return;
 
                         if (result != null) {
                             plvUrl.setType(result.getType());
@@ -132,6 +133,7 @@ public class ShowFragment extends Fragment {
 
             @Override
             public void onGetPLVUrlFailed(String text) {
+                if (!isAdded()) return;
                 Toast.makeText(getActivity(), text, Toast.LENGTH_LONG).show();
                 removeProgressBar();
             }
