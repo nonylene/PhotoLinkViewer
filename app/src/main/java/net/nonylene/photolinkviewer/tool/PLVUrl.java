@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 public class PLVUrl implements Parcelable{
     private String url;
+    private String thumbUrl;
     private String displayUrl;
     private String biggestUrl;
     private String siteName;
@@ -26,6 +27,7 @@ public class PLVUrl implements Parcelable{
     }
 
     public String getBiggestUrl() {
+        if (biggestUrl == null) return displayUrl;
         return biggestUrl;
     }
 
@@ -77,6 +79,15 @@ public class PLVUrl implements Parcelable{
         return width;
     }
 
+    public void setThumbUrl(String thumbUrl) {
+        this.thumbUrl = thumbUrl;
+    }
+
+    public String getThumbUrl() {
+        if (thumbUrl == null) return displayUrl;
+        return thumbUrl;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -86,6 +97,7 @@ public class PLVUrl implements Parcelable{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(url);
         dest.writeString(displayUrl);
+        dest.writeString(thumbUrl);
         dest.writeString(biggestUrl);
         dest.writeString(siteName);
         dest.writeString(fileName);
@@ -107,6 +119,7 @@ public class PLVUrl implements Parcelable{
     public PLVUrl(Parcel source){
         this.url = source.readString();
         this.displayUrl = source.readString();
+        this.thumbUrl = source.readString();
         this.biggestUrl = source.readString();
         this.siteName = source.readString();
         this.fileName = source.readString();

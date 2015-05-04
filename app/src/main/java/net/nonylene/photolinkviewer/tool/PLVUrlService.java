@@ -31,8 +31,8 @@ public class PLVUrlService {
 
     public interface PLVUrlListener {
         void onGetPLVUrlFinished(PLVUrl plvUrl);
-
         void onGetPLVUrlFailed(String text);
+        void onURLAccepted();
     }
 
     public void setPLVUrlListener(PLVUrlListener urlListener) {
@@ -133,6 +133,8 @@ public class PLVUrlService {
                 return;
             }
 
+            listener.onURLAccepted();
+
             plvUrl.setSiteName("twitter");
 
             String id = matcher.group(1);
@@ -154,7 +156,7 @@ public class PLVUrlService {
                     break;
             }
             plvUrl.setDisplayUrl(file_url);
-
+            plvUrl.setThumbUrl(url + ":small");
             plvUrl.setBiggestUrl(url + ":orig");
 
             listener.onGetPLVUrlFinished(plvUrl);
@@ -179,6 +181,8 @@ public class PLVUrlService {
                 return;
             }
 
+            listener.onURLAccepted();
+
             plvUrl.setSiteName("twipple");
 
             String id = matcher.group(1);
@@ -197,7 +201,7 @@ public class PLVUrlService {
                     break;
             }
             plvUrl.setDisplayUrl(file_url);
-
+            plvUrl.setThumbUrl("http://p.twipple.jp/show/large/" + id);
             plvUrl.setBiggestUrl("http://p.twipple.jp/show/orig/" + id);
 
             listener.onGetPLVUrlFinished(plvUrl);
@@ -222,6 +226,8 @@ public class PLVUrlService {
                 return;
             }
 
+            listener.onURLAccepted();
+
             plvUrl.setSiteName("img.ly");
 
             String id = matcher.group(1);
@@ -240,7 +246,7 @@ public class PLVUrlService {
                     break;
             }
             plvUrl.setDisplayUrl(file_url);
-
+            plvUrl.setThumbUrl("http://img.ly/show/medium/" + id);
             plvUrl.setBiggestUrl("http://img.ly/show/full/" + id);
 
             listener.onGetPLVUrlFinished(plvUrl);
@@ -265,6 +271,8 @@ public class PLVUrlService {
                 return;
             }
 
+            listener.onURLAccepted();
+
             plvUrl.setSiteName("instagram");
 
             String id = matcher.group(1);
@@ -280,7 +288,7 @@ public class PLVUrlService {
                     break;
             }
             plvUrl.setDisplayUrl(file_url);
-
+            plvUrl.setThumbUrl("https://instagram.com/p/" + id + "/media/?size=m");
             plvUrl.setBiggestUrl("https://instagram.com/p/" + id + "/media/?size=l");
 
             listener.onGetPLVUrlFinished(plvUrl);
@@ -305,6 +313,8 @@ public class PLVUrlService {
                 return;
             }
 
+            listener.onURLAccepted();
+
             plvUrl.setSiteName("gyazo");
 
             String id = matcher.group(1);
@@ -312,7 +322,6 @@ public class PLVUrlService {
 
             String file_url = "https://gyazo.com/" + id + "/raw";
             plvUrl.setDisplayUrl(file_url);
-            plvUrl.setBiggestUrl(file_url);
 
             listener.onGetPLVUrlFinished(plvUrl);
         }
@@ -336,6 +345,8 @@ public class PLVUrlService {
                 return;
             }
 
+            listener.onURLAccepted();
+
             plvUrl.setSiteName("imgur");
 
             String id = matcher.group(1);
@@ -343,7 +354,6 @@ public class PLVUrlService {
 
             String file_url = "http://i.imgur.com/" + id + ".jpg";
             plvUrl.setDisplayUrl(file_url);
-            plvUrl.setBiggestUrl(file_url);
 
             listener.onGetPLVUrlFinished(plvUrl);
         }
@@ -367,13 +377,14 @@ public class PLVUrlService {
                 return;
             }
 
+            listener.onURLAccepted();
+
             plvUrl.setSiteName("other");
 
             String id = matcher.group(1);
             plvUrl.setFileName(id);
 
             plvUrl.setDisplayUrl(url);
-            plvUrl.setBiggestUrl(url);
 
             listener.onGetPLVUrlFinished(plvUrl);
         }
@@ -397,6 +408,8 @@ public class PLVUrlService {
                 return;
             }
 
+            listener.onURLAccepted();
+
             plvUrl.setSiteName("pixiv");
 
             String id = matcher.group(1);
@@ -413,7 +426,6 @@ public class PLVUrlService {
                                 String file_url = list[9].replaceAll("\"", "");
 
                                 plvUrl.setDisplayUrl(file_url);
-                                plvUrl.setBiggestUrl(file_url);
 
                                 listener.onGetPLVUrlFinished(plvUrl);
 
@@ -455,6 +467,8 @@ public class PLVUrlService {
                 }
                 id = Base58.decode(matcher.group(1));
             }
+
+            listener.onURLAccepted();
 
             plvUrl.setSiteName("flickr");
 
@@ -509,7 +523,7 @@ public class PLVUrlService {
             String biggestUrl = "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + original_secrets + "_o." + original_formats;
 
             plvUrl.setDisplayUrl(file_url);
-
+            plvUrl.setThumbUrl("https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + secret + "_z.jpg");
             plvUrl.setBiggestUrl(biggestUrl);
 
             return plvUrl;
@@ -539,6 +553,8 @@ public class PLVUrlService {
                 super.onParseFailed();
                 return;
             }
+
+            listener.onURLAccepted();
 
             plvUrl.setSiteName("nico");
 
@@ -592,7 +608,7 @@ public class PLVUrlService {
             }
 
             plvUrl.setDisplayUrl(file_url);
-
+            plvUrl.setThumbUrl("http://lohas.nicoseiga.jp/img/" + id + "m");
             plvUrl.setBiggestUrl(biggest_url);
 
             return plvUrl;
