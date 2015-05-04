@@ -60,7 +60,7 @@ import twitter4j.URLEntity;
 
 public class TwitterDisplay extends Activity {
     private String url;
-    private BitmapCache bitmapCache;
+    private ImageLoader imageLoader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +76,8 @@ public class TwitterDisplay extends Activity {
             Log.d("cache", "HTTP response cache installation failed");
         }
 
-        bitmapCache = new BitmapCache();
+        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+        imageLoader = new ImageLoader(queue, new BitmapCache());
 
         // get intent and purse url
         SharedPreferences sharedPreferences = getSharedPreferences("preference", Context.MODE_PRIVATE);
@@ -291,9 +292,8 @@ public class TwitterDisplay extends Activity {
                         rtView.setText("RT: " + String.valueOf(finStatus.getRetweetCount()));
 
                         // set icon
-                        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
                         NetworkImageView networkImageView = (NetworkImageView) findViewById(R.id.twImageView);
-                        networkImageView.setImageUrl(finStatus.getUser().getBiggerProfileImageURL(), new ImageLoader(requestQueue, bitmapCache));
+                        networkImageView.setImageUrl(finStatus.getUser().getBiggerProfileImageURL(), imageLoader);
 
                         // set background
                         networkImageView.setBackgroundResource(R.drawable.twitter_image_design);
@@ -472,8 +472,7 @@ public class TwitterDisplay extends Activity {
                 }
             });
 
-            RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-            imageView.setImageUrl(plvUrl.getThumbUrl(), new ImageLoader(queue, bitmapCache));
+            imageView.setImageUrl(plvUrl.getThumbUrl(), imageLoader);
         }
 
         public void setVideoUrl(int position, String thumbUrl, final String fileUrl){
@@ -497,8 +496,7 @@ public class TwitterDisplay extends Activity {
                 }
             });
 
-            RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-            imageView.setImageUrl(thumbUrl, new ImageLoader(queue, bitmapCache));
+            imageView.setImageUrl(thumbUrl, imageLoader);
         }
     }
 }
