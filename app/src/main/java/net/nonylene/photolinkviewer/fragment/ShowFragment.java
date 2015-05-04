@@ -10,6 +10,8 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Point;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -449,7 +451,30 @@ public class ShowFragment extends Fragment {
         Bundle bundle = new Bundle();
         bundle.putString("filename", filename);
         bundle.putString("dir", dir.toString());
-        bundle.putString("original_url", plvUrl.getBiggestUrl());
+
+        //check wifi connecting and setting or not
+        boolean wifi = false;
+        if (preferences.getBoolean("wifi_switch", false)) {
+            // get wifi status
+            ConnectivityManager manager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo info = manager.getActiveNetworkInfo();
+            if (info.getType() == ConnectivityManager.TYPE_WIFI) {
+                wifi = true;
+            }
+        }
+
+        boolean original;
+        if (wifi) {
+            original = preferences.getBoolean("original_switch_wifi", false);
+        } else {
+            original = preferences.getBoolean("original_switch_3g", false);
+        }
+
+        if (original) {
+            bundle.putString("original_url", plvUrl.getBiggestUrl());
+        } else {
+            bundle.putString("original_url", plvUrl.getDisplayUrl());
+        }
 
         return bundle;
     }
