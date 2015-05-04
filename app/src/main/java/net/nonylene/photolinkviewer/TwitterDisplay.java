@@ -10,7 +10,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteException;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.net.http.HttpResponseCache;
@@ -18,9 +17,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextPaint;
 import android.util.Log;
-import android.util.LruCache;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -40,11 +37,14 @@ import net.nonylene.photolinkviewer.fragment.VideoShowFragment;
 import net.nonylene.photolinkviewer.tool.AccountsList;
 import net.nonylene.photolinkviewer.tool.BitmapCache;
 import net.nonylene.photolinkviewer.tool.MyAsyncTwitter;
+import net.nonylene.photolinkviewer.tool.PLVUrl;
+import net.nonylene.photolinkviewer.tool.PLVUrlService;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -260,14 +260,18 @@ public class TwitterDisplay extends Activity {
 
                         //retweet check
                         final Status finStatus;
+
                         if (status.isRetweet()) {
                             finStatus = status.getRetweetedStatus();
                         } else {
                             finStatus = status;
                         }
+
                         textView.setText(finStatus.getText());
+
                         final String screen = finStatus.getUser().getScreenName();
                         snView.setText(finStatus.getUser().getName() + " @" + screen);
+
                         if (finStatus.getUser().isProtected()) {
                             // add key icon
                             float dp = getResources().getDisplayMetrics().density;
@@ -279,8 +283,10 @@ public class TwitterDisplay extends Activity {
                             // set app-icon and bounds
                             snView.setCompoundDrawables(protect, null, null, null);
                         }
+
                         String statusDate = dateFormat.format(finStatus.getCreatedAt());
                         dayView.setText(statusDate);
+
                         // fav and rt
                         favView.setText("fav: " + String.valueOf(finStatus.getFavoriteCount()));
                         rtView.setText("RT: " + String.valueOf(finStatus.getRetweetCount()));
@@ -289,6 +295,7 @@ public class TwitterDisplay extends Activity {
                         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
                         NetworkImageView networkImageView = (NetworkImageView) findViewById(R.id.twImageView);
                         networkImageView.setImageUrl(finStatus.getUser().getBiggerProfileImageURL(), new ImageLoader(requestQueue, bitmapCache));
+
                         // set background
                         networkImageView.setBackgroundResource(R.drawable.twitter_image_design);
 
@@ -301,21 +308,76 @@ public class TwitterDisplay extends Activity {
                             }
                         });
 
-                        for (URLEntity urlEntity : urlEntities) {
-                            Log.d("url", urlEntity.toString());
-                            String url = urlEntity.getExpandedURL();
-                            addUrl(url);
+                        if (urlEntities.length > 0) {
+
+                            LinearLayout urlLayout = (LinearLayout) findViewById(R.id.url_base);
+                            urlLayout.setVisibility(View.VISIBLE);
+
+                            final PhotoViewController controller = new PhotoViewController();
+                            LinearLayout baseLayout = (LinearLayout) findViewById(R.id.url_photos);
+                            controller.setBaseLayout(baseLayout);
+
+                            for (URLEntity urlEntity : urlEntities) {
+                                String url = urlEntity.getExpandedURL();
+                                addUrl(url);
+
+                                PLVUrlService service = new PLVUrlService(getApplicationContext());
+                                service.setPLVUrlListener(getPLVUrlListener(controller));
+
+                                service.requestGetPLVUrl(url);
+                            }
                         }
 
                         if (mediaEntities.length > 0) {
 
-                            addPhotoIcon();
+                            LinearLayout urlLayout = (LinearLayout) findViewById(R.id.photo_base);
+                            urlLayout.setVisibility(View.VISIBLE);
+
+                            final PhotoViewController controller = new PhotoViewController();
+                            LinearLayout baseLayout = (LinearLayout) findViewById(R.id.photos);
+                            controller.setBaseLayout(baseLayout);
 
                             for (ExtendedMediaEntity mediaEntity : mediaEntities) {
-                                addView(mediaEntity);
+
+                                String url = mediaEntity.getMediaURLHttps();
+
+                                if (("animated_gif").equals(mediaEntity.getType()) || ("video").equals(mediaEntity.getType())) {
+                                    String file_url = getBiggestMp4Url(mediaEntity.getVideoVariants());
+                                    ImageView video_icon = (ImageView) frameLayout.getChildAt(1);
+                                    video_icon.setVisibility(View.VISIBLE);
+                                    controller.setImageUrl(controller.addImageView(), mediaEntity.getMediaURLHttps(), file_url, true);
+                                } else {
+
+                                    PLVUrlService service = new PLVUrlService(getApplicationContext());
+                                    service.setPLVUrlListener(getPLVUrlListener(controller));
+
+                                    service.requestGetPLVUrl(url);
+                                }
                             }
                         }
+
                     }
+                }
+
+                private PLVUrlService.PLVUrlListener getPLVUrlListener(final PhotoViewController controller){
+                    return new PLVUrlService.PLVUrlListener() {
+                        int position;
+
+                        @Override
+                        public void onGetPLVUrlFinished(PLVUrl plvUrl) {
+                            controller.setImageUrl(position, plvUrl.getThumbUrl(), plvUrl.getDisplayUrl(), false);
+                        }
+
+                        @Override
+                        public void onGetPLVUrlFailed(String text) {
+
+                        }
+
+                        @Override
+                        public void onURLAccepted() {
+                            position = controller.addImageView();
+                        }
+                    };
                 }
 
                 private void addUrl(final String url) {
@@ -325,16 +387,6 @@ public class TwitterDisplay extends Activity {
                     textView.setText(url);
                     TextPaint textPaint = textView.getPaint();
                     textPaint.setUnderlineText(true);
-                    Drawable linkIcon = getResources().getDrawable(R.drawable.link_icon);
-                    // get dp
-                    float dp = getResources().getDisplayMetrics().density;
-                    // set size
-                    int iconSize = (int) (20 * dp);
-                    int paddingSize = (int) (5 * dp);
-                    linkIcon.setBounds(0, 0, iconSize, iconSize);
-                    // set app-icon and bounds
-                    textView.setCompoundDrawables(linkIcon, null, null, null);
-                    textView.setCompoundDrawablePadding(paddingSize);
                     textView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -356,80 +408,6 @@ public class TwitterDisplay extends Activity {
                     }
                     return url;
                 }
-
-                private void addPhotoIcon() {
-                    ImageView imageView = (ImageView) findViewById(R.id.photo_icon);
-                    Drawable photoIcon = getResources().getDrawable(R.drawable.photo_icon);
-                    imageView.setImageDrawable(photoIcon);
-                }
-
-                private void addView(ExtendedMediaEntity mediaEntity) {
-                    final String url = mediaEntity.getMediaURL();
-                    final String type = mediaEntity.getType();
-                    final String file_url;
-                    LinearLayout baseLayout = (LinearLayout) findViewById(R.id.photos);
-                    // prev is last linear_layout
-                    LinearLayout prevLayout = (LinearLayout) baseLayout.getChildAt(baseLayout.getChildCount() - 1);
-                    LinearLayout currentLayout;
-                    if (prevLayout == null || prevLayout.getChildCount() > 1) {
-                        // make new linear_layout and put below prev
-                        currentLayout = new LinearLayout(TwitterDisplay.this);
-                        currentLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                        currentLayout.setOrientation(LinearLayout.HORIZONTAL);
-                        baseLayout.addView(currentLayout);
-                    } else {
-                        // put new photo below prev photo (not new linear_layout)
-                        currentLayout = prevLayout;
-                    }
-                    int width = baseLayout.getWidth();
-                    // get dp
-                    float dp = getResources().getDisplayMetrics().density;
-                    // set padding and margin
-                    int margin = (int) (1 * dp);
-                    // imgview size
-                    int layoutsize = width / 2 - margin * 2;
-                    // new imgview
-                    FrameLayout frameLayout = (FrameLayout) getLayoutInflater().inflate(R.layout.twitter_frame, null);
-                    NetworkImageView imageView = (NetworkImageView) frameLayout.getChildAt(0);
-                    // set width and height
-                    FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) imageView.getLayoutParams();
-                    layoutParams.height = layoutParams.width = layoutsize;
-
-                    if (("animated_gif").equals(type) || ("video").equals(type)) {
-                        file_url = getBiggestMp4Url(mediaEntity.getVideoVariants());
-                        ImageView video_icon = (ImageView) frameLayout.getChildAt(1);
-                        video_icon.setVisibility(View.VISIBLE);
-                    } else {
-                        file_url = url;
-                    }
-
-                    imageView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            // go to show fragment
-                            Bundle bundle = new Bundle();
-                            bundle.putString("url", file_url);
-                            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                            if (("animated_gif").equals(type) || ("video").equals(type)) {
-                                VideoShowFragment showFragment = new VideoShowFragment();
-                                showFragment.setArguments(bundle);
-                                fragmentTransaction.replace(R.id.show_frag_replace, showFragment);
-                            } else {
-                                ShowFragment showFragment = new ShowFragment();
-                                showFragment.setArguments(bundle);
-                                fragmentTransaction.replace(R.id.show_frag_replace, showFragment);
-                            }
-                            // back to this screen when back pressed
-                            fragmentTransaction.addToBackStack(null);
-                            fragmentTransaction.commit();
-                        }
-                    });
-
-                    RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-                    imageView.setImageUrl(url + ":small", new ImageLoader(queue, bitmapCache));
-
-                    currentLayout.addView(frameLayout);
-                }
             });
         }
 
@@ -443,6 +421,66 @@ public class TwitterDisplay extends Activity {
         HttpResponseCache cache = HttpResponseCache.getInstalled();
         if (cache != null) {
             cache.flush();
+        }
+    }
+
+    private class PhotoViewController {
+        private List<NetworkImageView> imageViewList = new ArrayList<>();
+        private LinearLayout baseLayout;
+
+        public void setBaseLayout(LinearLayout baseLayout) {
+            this.baseLayout = baseLayout;
+        }
+
+        public int addImageView() {
+            // prev is last linear_layout
+            int size = imageViewList.size();
+
+            FrameLayout frameLayout;
+            if (size % 2 == 0) {
+                // make new linear_layout and put below prev
+                LinearLayout new_layout = (LinearLayout) getLayoutInflater().inflate(R.layout.twitter_photos, baseLayout, false);
+                baseLayout.addView(new_layout);
+                frameLayout = (FrameLayout) new_layout.getChildAt(0);
+            } else {
+                LinearLayout prevLayout = (LinearLayout) baseLayout.getChildAt(baseLayout.getChildCount() - 1);
+                // put new photo below prev photo (not new linear_layout)
+                frameLayout = (FrameLayout) prevLayout.getChildAt(1);
+            }
+            imageViewList.add((NetworkImageView) frameLayout.getChildAt(0));
+
+            return size;
+        }
+
+        public void setImageUrl(int position, String thumbUrl, final String fileUrl, final boolean isVideo){
+            NetworkImageView imageView = imageViewList.get(position);
+
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // go to show fragment
+                    Bundle bundle = new Bundle();
+                    bundle.putString("url", fileUrl);
+                    FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+
+                    if (isVideo) {
+                        VideoShowFragment showFragment = new VideoShowFragment();
+                        showFragment.setArguments(bundle);
+                        fragmentTransaction.replace(R.id.show_frag_replace, showFragment);
+                    } else {
+                        ShowFragment showFragment = new ShowFragment();
+                        showFragment.setArguments(bundle);
+                        fragmentTransaction.replace(R.id.show_frag_replace, showFragment);
+                    }
+
+                    // back to this screen when back pressed
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
+                }
+            });
+
+            RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+            imageView.setImageUrl(thumbUrl, new ImageLoader(queue, bitmapCache));
         }
     }
 }

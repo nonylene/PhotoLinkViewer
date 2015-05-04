@@ -97,36 +97,49 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/url_base"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:id="@+id/url_base"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/url_icon"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:maxHeight="20dp"
                     android:layout_marginLeft="5dp"
-                    android:src="@drawable/link_icon"
                     android:layout_marginRight="4dp"
-                    android:scaleType="fitStart"/>
+                    android:maxHeight="20dp"
+                    android:scaleType="fitStart"
+                    android:src="@drawable/link_icon"/>
 
                 <LinearLayout
-                    android:id="@+id/url_linear"
-                    android:layout_weight="1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"/>
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/url_linear"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"/>
+
+                    <LinearLayout
+                        android:id="@+id/url_photos"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"/>
+
+                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/photo_base"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:id="@+id/photo_base"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/photo_icon"
@@ -134,14 +147,14 @@
                     android:layout_height="20dp"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="4dp"
-                    android:src="@drawable/photo_icon"
-                    android:scaleType="fitStart"/>
+                    android:scaleType="fitStart"
+                    android:src="@drawable/photo_icon"/>
 
                 <LinearLayout
                     android:id="@+id/photos"
-                    android:layout_weight="1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:orientation="vertical"/>
             </LinearLayout>
 
