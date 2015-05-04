@@ -266,7 +266,11 @@
 
         <activity
             android:name=".TOAuth"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:parentActivityName=".Settings">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Settings"/>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
 
@@ -299,7 +303,11 @@
         </activity>
 
         <activity
-            android:name=".ChangeQualityActivity">
+            android:name=".ChangeQualityActivity"
+            android:parentActivityName=".Settings">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Settings"/>
         </activity>
 
     </application>

@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="AppTheme" parent="Theme.AppCompat.Light">
         <item name="colorPrimary">@color/primary_color</item>
         <item name="colorPrimaryDark">@color/primary_color</item>
-        <item name="actionBarStyle">@style/AppActionBar</item>
+        <item name="actionBarTheme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
     </style>
-    <style name="AppActionBar" parent="Widget.AppCompat.ActionBar.Solid">
-        <item name="titleTextStyle">@style/TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse</item>
-    </style>
+
     <style name="Theme.Transparent" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/primary_color</item>
         <item name="colorPrimaryDark">@color/primary_color</item>
@@ -15,12 +14,14 @@
         <item name="android:windowBackground">@color/transparent</item>
         <item name="android:windowAnimationStyle">@style/noActivityAnimation</item>
     </style>
+
     <style name="noActivityAnimation" parent="android:Animation.Activity">
         <item name="android:activityOpenEnterAnimation">@null</item>
         <item name="android:activityOpenExitAnimation">@null</item>
         <item name="android:activityCloseEnterAnimation">@null</item>
         <item name="android:activityCloseExitAnimation">@null</item>
     </style>
+
     <style name="PagerTabStripText">
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/primary_color</item>
