@@ -137,6 +137,11 @@ public class ShowFragment extends Fragment {
                 Toast.makeText(getActivity(), text, Toast.LENGTH_LONG).show();
                 removeProgressBar();
             }
+
+            @Override
+            public void onURLAccepted() {
+
+            }
         });
         service.requestGetPLVUrl(url);
         return view;
