@@ -8,8 +8,8 @@ android {
         applicationId "net.nonylene.photolinkviewer"
         minSdkVersion 14
         targetSdkVersion 22
-        versionCode 36
-        versionName "1.7.5"
+        versionCode 37
+        versionName "2.0.0"
     }
     packagingOptions {
         exclude 'META-INF/LICENSE.txt'
@@ -23,8 +23,8 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':modules:volley')
-    compile "com.android.support:appcompat-v7:22.1.1"
-    compile 'com.android.support:support-v13:22.1.1'
+    compile "com.android.support:appcompat-v7:22.+"
+    compile 'com.android.support:support-v13:22.+'
     compile 'org.twitter4j:twitter4j-core:4.0.3'
     compile 'org.twitter4j:twitter4j-async:4.0.3'
 }
