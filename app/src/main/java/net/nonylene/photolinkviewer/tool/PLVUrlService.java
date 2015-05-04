@@ -370,7 +370,7 @@ public class PLVUrlService {
             super.getPLVUrl();
 
             PLVUrl plvUrl = new PLVUrl(url);
-            Pattern pattern = Pattern.compile("/([^\\./]+)\\.?[\\w\\?=]*$");
+            Pattern pattern = Pattern.compile("/([^\\./]+)\\.(png|jpg|jpeg|gif)[\\w\\?=]*$");
             Matcher matcher = pattern.matcher(url);
             if (!matcher.find()) {
                 super.onParseFailed();
