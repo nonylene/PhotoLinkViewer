@@ -91,12 +91,11 @@ public class TwitterDisplay extends Activity {
             optionFragment.setArguments(bundle);
             fragmentTransaction.add(R.id.root_layout, optionFragment).commit();
             if (url.contains("twitter.com")) {
-                Log.v("twitter", url);
+
                 Pattern pattern = Pattern.compile("^https?://twitter\\.com/\\w+/status[es]*/(\\d+)");
                 Matcher matcher = pattern.matcher(url);
-                if (matcher.find()) {
-                    Log.v("match", "success");
-                }
+                if (!matcher.find()) return;
+
                 String id = matcher.group(1);
                 Long id_long = Long.parseLong(id);
                 if (sharedPreferences.getBoolean("authorized", false)) {
@@ -345,7 +344,7 @@ public class TwitterDisplay extends Activity {
                                     String file_url = getBiggestMp4Url(mediaEntity.getVideoVariants());
                                     ImageView video_icon = (ImageView) frameLayout.getChildAt(1);
                                     video_icon.setVisibility(View.VISIBLE);
-                                    controller.setImageUrl(controller.addImageView(), mediaEntity.getMediaURLHttps(), file_url, true);
+                                    controller.setVideoUrl(controller.addImageView(), mediaEntity.getMediaURLHttps(), file_url);
                                 } else {
 
                                     PLVUrlService service = new PLVUrlService(getApplicationContext());
@@ -365,7 +364,7 @@ public class TwitterDisplay extends Activity {
 
                         @Override
                         public void onGetPLVUrlFinished(PLVUrl plvUrl) {
-                            controller.setImageUrl(position, plvUrl.getThumbUrl(), plvUrl.getDisplayUrl(), false);
+                            controller.setImageUrl(position, plvUrl);
                         }
 
                         @Override
@@ -452,7 +451,32 @@ public class TwitterDisplay extends Activity {
             return size;
         }
 
-        public void setImageUrl(int position, String thumbUrl, final String fileUrl, final boolean isVideo){
+        public void setImageUrl(int position, final PLVUrl plvUrl){
+            NetworkImageView imageView = imageViewList.get(position);
+
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // go to show fragment
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable("plvurl", plvUrl);
+                    FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+
+                    ShowFragment showFragment = new ShowFragment();
+                    showFragment.setArguments(bundle);
+                    fragmentTransaction.replace(R.id.show_frag_replace, showFragment);
+
+                    // back to this screen when back pressed
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
+                }
+            });
+
+            RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+            imageView.setImageUrl(plvUrl.getThumbUrl(), new ImageLoader(queue, bitmapCache));
+        }
+
+        public void setVideoUrl(int position, String thumbUrl, final String fileUrl){
             NetworkImageView imageView = imageViewList.get(position);
 
             imageView.setOnClickListener(new View.OnClickListener() {
@@ -463,15 +487,9 @@ public class TwitterDisplay extends Activity {
                     bundle.putString("url", fileUrl);
                     FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
 
-                    if (isVideo) {
-                        VideoShowFragment showFragment = new VideoShowFragment();
-                        showFragment.setArguments(bundle);
-                        fragmentTransaction.replace(R.id.show_frag_replace, showFragment);
-                    } else {
-                        ShowFragment showFragment = new ShowFragment();
-                        showFragment.setArguments(bundle);
-                        fragmentTransaction.replace(R.id.show_frag_replace, showFragment);
-                    }
+                    VideoShowFragment showFragment = new VideoShowFragment();
+                    showFragment.setArguments(bundle);
+                    fragmentTransaction.replace(R.id.show_frag_replace, showFragment);
 
                     // back to this screen when back pressed
                     fragmentTransaction.addToBackStack(null);
