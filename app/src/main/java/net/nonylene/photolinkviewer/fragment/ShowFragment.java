@@ -95,56 +95,66 @@ public class ShowFragment extends Fragment {
             Initialize.initialize19(getActivity());
         }
 
-        String url = getArguments().getString("url");
+        if (getArguments().getParcelable("plvurl") == null) {
 
-        PLVUrlService service = new PLVUrlService(getActivity());
-        service.setPLVUrlListener(new PLVUrlService.PLVUrlListener() {
-            @Override
-            public void onGetPLVUrlFinished(final PLVUrl plvUrl) {
+            String url = getArguments().getString("url");
 
-                AsyncGetSizeType asyncGetSizeType = new AsyncGetSizeType() {
-                    @Override
-                    protected void onPostExecute(AsyncGetSizeType.Result result) {
-                        super.onPostExecute(result);
-                        if (!isAdded()) return;
+            PLVUrlService service = new PLVUrlService(getActivity());
+            service.setPLVUrlListener(new PLVUrlService.PLVUrlListener() {
+                @Override
+                public void onGetPLVUrlFinished(final PLVUrl plvUrl) {
+                    getAsyncGetSizeType(plvUrl).execute(plvUrl.getDisplayUrl());
+                }
 
-                        if (result != null) {
-                            plvUrl.setType(result.getType());
-                            plvUrl.setHeight(result.getHeight());
-                            plvUrl.setWidth(result.getWidth());
-                            addDLButton(plvUrl);
+                @Override
+                public void onGetPLVUrlFailed(String text) {
+                    if (!isAdded()) return;
+                    Toast.makeText(getActivity(), text, Toast.LENGTH_LONG).show();
+                    removeProgressBar();
+                }
 
-                            if ("gif".equals(result.getType())) {
-                                addWebView(plvUrl);
-                            } else {
-                                AsyncExecute asyncExecute = new AsyncExecute();
-                                asyncExecute.Start(plvUrl);
-                            }
+                @Override
+                public void onURLAccepted() {
 
-                        } else {
-                            Toast.makeText(getActivity(), getString(R.string.show_bitamap_error), Toast.LENGTH_LONG).show();
-                        }
+                }
+            });
+            service.requestGetPLVUrl(url);
 
-                    }
-                };
+        } else {
+            PLVUrl plvUrl = getArguments().getParcelable("plvurl");
+            getAsyncGetSizeType(plvUrl).execute(plvUrl.getDisplayUrl());
+        }
 
-                asyncGetSizeType.execute(plvUrl.getDisplayUrl());
-            }
-
-            @Override
-            public void onGetPLVUrlFailed(String text) {
-                if (!isAdded()) return;
-                Toast.makeText(getActivity(), text, Toast.LENGTH_LONG).show();
-                removeProgressBar();
-            }
-
-            @Override
-            public void onURLAccepted() {
-
-            }
-        });
-        service.requestGetPLVUrl(url);
         return view;
+    }
+
+    private AsyncGetSizeType getAsyncGetSizeType(final PLVUrl plvUrl) {
+
+        return new AsyncGetSizeType() {
+            @Override
+            protected void onPostExecute(AsyncGetSizeType.Result result) {
+                super.onPostExecute(result);
+                if (!isAdded()) return;
+
+                if (result != null) {
+                    plvUrl.setType(result.getType());
+                    plvUrl.setHeight(result.getHeight());
+                    plvUrl.setWidth(result.getWidth());
+                    addDLButton(plvUrl);
+
+                    if ("gif".equals(result.getType())) {
+                        addWebView(plvUrl);
+                    } else {
+                        AsyncExecute asyncExecute = new AsyncExecute();
+                        asyncExecute.Start(plvUrl);
+                    }
+
+                } else {
+                    Toast.makeText(getActivity(), getString(R.string.show_bitamap_error), Toast.LENGTH_LONG).show();
+                }
+
+            }
+        };
     }
 
 
