@@ -342,8 +342,6 @@ public class TwitterDisplay extends Activity {
 
                                 if (("animated_gif").equals(mediaEntity.getType()) || ("video").equals(mediaEntity.getType())) {
                                     String file_url = getBiggestMp4Url(mediaEntity.getVideoVariants());
-                                    ImageView video_icon = (ImageView) frameLayout.getChildAt(1);
-                                    video_icon.setVisibility(View.VISIBLE);
                                     controller.setVideoUrl(controller.addImageView(), mediaEntity.getMediaURLHttps(), file_url);
                                 } else {
 
@@ -477,6 +475,9 @@ public class TwitterDisplay extends Activity {
 
         public void setVideoUrl(int position, String thumbUrl, final String fileUrl){
             NetworkImageView imageView = imageViewList.get(position);
+            FrameLayout frameLayout = (FrameLayout) imageView.getParent();
+            ImageView video_icon = (ImageView) frameLayout.getChildAt(1);
+            video_icon.setVisibility(View.VISIBLE);
 
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
