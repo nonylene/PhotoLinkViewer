@@ -475,7 +475,7 @@ public class PLVUrlService {
             plvUrl.setFileName(id);
 
             String api_key = (String) context.getText(R.string.flickr_key);
-            String request = "https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&format=json&api_key=" + api_key +
+            String request = "https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&format=json&nojsoncallback=1&api_key=" + api_key +
                     "&photo_id=" + id;
 
             RequestQueue queue = Volley.newRequestQueue(context);
