@@ -174,7 +174,7 @@ public class TOAuth extends AppCompatActivity {
                 // open database
                 database.beginTransaction();
                 // if exists...
-                database.delete("accounts", "userId = " + String.valueOf(myId), null);
+                database.delete("accounts", "userId = ?", new String[]{myId.toString()});
                 // insert account information
                 database.insert("accounts", null, values);
                 // commit
@@ -253,7 +253,7 @@ public class TOAuth extends AppCompatActivity {
                                 final Toast toast = Toast.makeText(getActivity(), getString(R.string.delete_account_toast), Toast.LENGTH_LONG);
                                 database.beginTransaction();
                                 // quotation is required.
-                                database.delete("accounts", "userName = '" + screenName + "'", null);
+                                database.delete("accounts", "userName = ?", new String[]{screenName});
                                 // commit
                                 database.setTransactionSuccessful();
                                 final Cursor new_cursor = database.rawQuery("select rowid _id, * from accounts", null);
