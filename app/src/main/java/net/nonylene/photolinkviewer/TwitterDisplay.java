@@ -171,24 +171,12 @@ public class TwitterDisplay extends Activity {
         @Override
         public void onException(TwitterException e, TwitterMethod twitterMethod) {
             Log.e("twitterException", e.toString());
-            final String message;
+            final String message = getString(R.string.twitter_error_toast) + ": " + e.getStatusCode() + "\n(" + e.getErrorMessage() + ")";
             switch (e.getErrorCode()) {
-                case 34:
-                    message = "404 not found";
-                    break;
-                case 130:
-                    message = "Over capacity";
-                    break;
                 case 179:
-                    message = getString(R.string.twitter_error_authorize);
-                    createDialog();
-                    break;
                 case 88:
-                    message = "Rate limit exceeded";
                     createDialog();
                     break;
-                default:
-                    message = getString(R.string.twitter_error_toast);
             }
             runOnUiThread(new Runnable() {
                 @Override

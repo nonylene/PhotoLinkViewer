@@ -135,24 +135,7 @@ public class TwitterOptionFragment extends Fragment {
 
             @Override
             public void onException(TwitterException e, TwitterMethod twitterMethod) {
-                Log.e("twitterException", e.toString());
-                final String message;
-                switch (e.getErrorCode()) {
-                    case 34:
-                        message = "404 not found";
-                        break;
-                    case 130:
-                        message = "Over capacity";
-                        break;
-                    case 179:
-                        message = getString(R.string.twitter_error_authorize);
-                        break;
-                    case 88:
-                        message = "Rate limit exceeded";
-                        break;
-                    default:
-                        message = getString(R.string.twitter_error_toast);
-                }
+                final String message = getString(R.string.twitter_error_toast) + ": " + e.getStatusCode() + "\n(" + e.getErrorMessage() + ")";
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
                     public void run() {
