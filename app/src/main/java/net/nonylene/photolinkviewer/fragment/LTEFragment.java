@@ -1,7 +1,6 @@
 package net.nonylene.photolinkviewer.fragment;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Intent;
@@ -9,6 +8,7 @@ import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.SwitchPreference;
+import android.support.v7.app.AlertDialog;
 
 import net.nonylene.photolinkviewer.R;
 import net.nonylene.photolinkviewer.dialog.BatchDialogFragment;

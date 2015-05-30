@@ -1,11 +1,11 @@
 package net.nonylene.photolinkviewer;
 
-import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
 import android.net.http.HttpResponseCache;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -16,7 +16,7 @@ import net.nonylene.photolinkviewer.fragment.VideoShowFragment;
 import java.io.File;
 import java.io.IOException;
 
-public class Show extends Activity {
+public class Show extends AppCompatActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
