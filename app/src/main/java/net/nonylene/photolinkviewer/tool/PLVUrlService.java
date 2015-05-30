@@ -226,7 +226,7 @@ public class PLVUrlService {
 
             listener.onURLAccepted();
 
-            plvUrl.setSiteName("img.ly");
+            plvUrl.setSiteName("imgly");
 
             String id = matcher.group(1);
             plvUrl.setFileName(id);
