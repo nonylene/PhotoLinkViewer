@@ -45,8 +45,6 @@ public class PLVUrlService {
             site = new FlickrSite(url, context);
         } else if (url.contains("nico.ms") || url.contains("seiga.nicovideo.jp")) {
             site = new NicoSite(url, context);
-        } else if (url.contains("pixiv.net")) {
-            site = new PixivSite(url, context);
         } else if (url.contains("twimg.com/media/")) {
             site = new TwitterSite(url, context);
         } else if (url.contains("twipple.jp")) {
@@ -387,53 +385,6 @@ public class PLVUrlService {
             plvUrl.setDisplayUrl(url);
 
             listener.onGetPLVUrlFinished(plvUrl);
-        }
-    }
-
-    private class PixivSite extends Site {
-
-        public PixivSite(String url, Context context) {
-            super(url, context);
-        }
-
-        @Override
-        public void getPLVUrl() {
-            super.getPLVUrl();
-
-            final PLVUrl plvUrl = new PLVUrl(url);
-            Pattern pattern = Pattern.compile("^https?://.*pixiv\\.net/member_illust.php?.*illust_id=(\\d+)");
-            Matcher matcher = pattern.matcher(url);
-            if (!matcher.find()) {
-                super.onParseFailed();
-                return;
-            }
-
-            listener.onURLAccepted();
-
-            plvUrl.setSiteName("pixiv");
-
-            String id = matcher.group(1);
-            plvUrl.setFileName(id);
-
-            RequestQueue queue = Volley.newRequestQueue(context);
-            queue.add(new PXVStringRequest(context, id,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            final String[] list = response.split(",", -1);
-                            // get original photo
-                            try {
-                                String file_url = list[9].replaceAll("\"", "");
-
-                                plvUrl.setDisplayUrl(file_url);
-
-                                listener.onGetPLVUrlFinished(plvUrl);
-
-                            } catch (ArrayIndexOutOfBoundsException e) {
-                                listener.onGetPLVUrlFailed("Cannot open. R-18?");
-                            }
-                        }
-                    }));
         }
     }
 
