@@ -1,5 +1,6 @@
 package net.nonylene.photolinkviewer;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.FragmentTransaction;
@@ -14,7 +15,6 @@ import android.net.http.HttpResponseCache;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextPaint;
 import android.util.Log;
 import android.view.View;
@@ -58,7 +58,7 @@ import twitter4j.TwitterMethod;
 import twitter4j.URLEntity;
 
 
-public class TwitterDisplay extends AppCompatActivity {
+public class TwitterDisplay extends Activity {
     private String url;
     private ImageLoader imageLoader;
 

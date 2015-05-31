@@ -445,7 +445,6 @@ public class ShowFragment extends Fragment {
             filename = sitename + "-" + plvUrl.getFileName();
         }
         filename += "." + plvUrl.getType();
-        System.out.println(filename);
         dir.mkdirs();
 
         Bundle bundle = new Bundle();
