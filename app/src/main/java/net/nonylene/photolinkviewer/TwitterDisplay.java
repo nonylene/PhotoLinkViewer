@@ -39,6 +39,7 @@ import net.nonylene.photolinkviewer.tool.BitmapCache;
 import net.nonylene.photolinkviewer.tool.MyAsyncTwitter;
 import net.nonylene.photolinkviewer.tool.PLVUrl;
 import net.nonylene.photolinkviewer.tool.PLVUrlService;
+import net.nonylene.photolinkviewer.tool.TwitterStatusAdapter;
 
 import java.io.File;
 import java.io.IOException;
@@ -58,7 +59,7 @@ import twitter4j.TwitterMethod;
 import twitter4j.URLEntity;
 
 
-public class TwitterDisplay extends Activity {
+public class TwitterDisplay extends Activity implements TwitterStatusAdapter.TwitterAdapterListener{
     private String url;
     private ImageLoader imageLoader;
 
@@ -129,6 +130,38 @@ public class TwitterDisplay extends Activity {
         } else {
             Toast.makeText(this, "Intent Error!", Toast.LENGTH_LONG).show();
         }
+    }
+
+    @Override
+    public void onShowFragmentRequired(PLVUrl plvUrl) {
+        // go to show fragment
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("plvurl", plvUrl);
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+
+        ShowFragment showFragment = new ShowFragment();
+        showFragment.setArguments(bundle);
+        fragmentTransaction.replace(R.id.show_frag_replace, showFragment);
+
+        // back to this screen when back pressed
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
+
+    @Override
+    public void onVideoShowFragmentRequired(String fileUrl) {
+        // go to show fragment
+        Bundle bundle = new Bundle();
+        bundle.putString("url", fileUrl);
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+
+        VideoShowFragment showFragment = new VideoShowFragment();
+        showFragment.setArguments(bundle);
+        fragmentTransaction.replace(R.id.show_frag_replace, showFragment);
+
+        // back to this screen when back pressed
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 
     public static class ChangeAccountDialog extends DialogFragment {

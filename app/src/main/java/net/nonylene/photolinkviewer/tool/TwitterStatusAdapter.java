@@ -1,12 +1,10 @@
 package net.nonylene.photolinkviewer.tool;
 
-import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Bundle;
 import android.text.TextPaint;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -15,11 +13,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 
 import net.nonylene.photolinkviewer.R;
-import net.nonylene.photolinkviewer.fragment.ShowFragment;
-import net.nonylene.photolinkviewer.fragment.VideoShowFragment;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -32,6 +29,13 @@ import twitter4j.URLEntity;
 public class TwitterStatusAdapter extends BaseAdapter {
 
     private List<Status> statusList = new ArrayList<>();
+    private TwitterAdapterListener twitterAdapterListener;
+    private Context baseContext;
+    private ImageLoader imageLoader;
+
+    public TwitterStatusAdapter(Context context, ImageLoader imageLoader) {
+        baseContext = context;
+    }
 
     private class StatusViewHolder {
         TextView textView;
@@ -100,7 +104,7 @@ public class TwitterStatusAdapter extends BaseAdapter {
             } else {
                 viewHolder = (StatusViewHolder) convertView.getTag();
             }
-            setEntry(getItem(position), viewHolder);
+            setEntry(getItem(position), viewHolder, parent);
 
         } else if (getItemViewType(position) == ItemType.LOADING.getId()) {
             if (convertView == null) {
@@ -109,6 +113,10 @@ public class TwitterStatusAdapter extends BaseAdapter {
 
         }
         return convertView;
+    }
+
+    public void setTwitterAdapterListener(TwitterAdapterListener twitterAdapterListener) {
+        this.twitterAdapterListener = twitterAdapterListener;
     }
 
     public void addItem(Status status) {
@@ -140,7 +148,8 @@ public class TwitterStatusAdapter extends BaseAdapter {
         }
     }
 
-    private void setEntry(Status status, StatusViewHolder viewHolder) {
+    private void setEntry(Status status, StatusViewHolder viewHolder, ViewGroup viewGroup) {
+        final Context context = viewGroup.getContext();
         // set media entity
         ExtendedMediaEntity[] mediaEntities = status.getExtendedMediaEntities();
         URLEntity[] urlEntities = status.getURLEntities();
@@ -164,11 +173,11 @@ public class TwitterStatusAdapter extends BaseAdapter {
 
         if (finStatus.getUser().isProtected()) {
             // add key icon
-            float dp = getResources().getDisplayMetrics().density;
+            float dp = context.getResources().getDisplayMetrics().density;
             // set size
             int iconSize = (int) (17 * dp);
             // resize app icon (bitmap_factory makes low-quality images)
-            Drawable protect = getResources().getDrawable(R.drawable.lock);
+            Drawable protect = context.getResources().getDrawable(R.drawable.lock);
             protect.setBounds(0, 0, iconSize, iconSize);
             // set app-icon and bounds
             viewHolder.snView.setCompoundDrawables(protect, null, null, null);
@@ -193,7 +202,7 @@ public class TwitterStatusAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://twitter.com/" + screen));
-                startActivity(intent);
+                baseContext.startActivity(intent);
             }
         });
 
@@ -201,14 +210,13 @@ public class TwitterStatusAdapter extends BaseAdapter {
 
             viewHolder.urlBaseLayout.setVisibility(View.VISIBLE);
 
-            final PhotoViewController controller = new PhotoViewController();
-            controller.setBaseLayout(viewHolder.urlPhotoLayout);
+            final PhotoViewController controller = new PhotoViewController(viewHolder.urlPhotoLayout);
 
             for (URLEntity urlEntity : urlEntities) {
                 String url = urlEntity.getExpandedURL();
                 addUrl(url, viewHolder);
 
-                PLVUrlService service = new PLVUrlService(getApplicationContext());
+                PLVUrlService service = new PLVUrlService(baseContext);
                 service.setPLVUrlListener(getPLVUrlListener(controller));
 
                 service.requestGetPLVUrl(url);
@@ -219,8 +227,7 @@ public class TwitterStatusAdapter extends BaseAdapter {
 
             viewHolder.photoBaseLayout.setVisibility(View.VISIBLE);
 
-            final PhotoViewController controller = new PhotoViewController();
-            controller.setBaseLayout(viewHolder.photoLayout);
+            final PhotoViewController controller = new PhotoViewController(viewHolder.photoLayout);
 
             for (ExtendedMediaEntity mediaEntity : mediaEntities) {
 
@@ -231,7 +238,7 @@ public class TwitterStatusAdapter extends BaseAdapter {
                     controller.setVideoUrl(controller.addImageView(), mediaEntity.getMediaURLHttps(), file_url);
                 } else {
 
-                    PLVUrlService service = new PLVUrlService(getApplicationContext());
+                    PLVUrlService service = new PLVUrlService(baseContext);
                     service.setPLVUrlListener(getPLVUrlListener(controller));
 
                     service.requestGetPLVUrl(url);
@@ -264,7 +271,7 @@ public class TwitterStatusAdapter extends BaseAdapter {
 
     private void addUrl(final String url, StatusViewHolder viewHolder) {
         // prev is last linear_layout
-        TextView textView = (TextView) getLayoutInflater().inflate(R.layout.twitter_url, null);
+        TextView textView = (TextView) View.inflate(viewHolder.urlLayout.getContext(), R.layout.twitter_url, viewHolder.urlLayout);
         textView.setText(url);
         TextPaint textPaint = textView.getPaint();
         textPaint.setUnderlineText(true);
@@ -272,7 +279,7 @@ public class TwitterStatusAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                startActivity(intent);
+                baseContext.startActivity(intent);
             }
         });
         viewHolder.urlLayout.addView(textView);
@@ -294,7 +301,7 @@ public class TwitterStatusAdapter extends BaseAdapter {
         private List<NetworkImageView> imageViewList = new ArrayList<>();
         private LinearLayout baseLayout;
 
-        public void setBaseLayout(LinearLayout baseLayout) {
+        public PhotoViewController(LinearLayout baseLayout) {
             this.baseLayout = baseLayout;
         }
 
@@ -305,7 +312,7 @@ public class TwitterStatusAdapter extends BaseAdapter {
             FrameLayout frameLayout;
             if (size % 2 == 0) {
                 // make new linear_layout and put below prev
-                LinearLayout new_layout = (LinearLayout) getLayoutInflater().inflate(R.layout.twitter_photos, baseLayout, false);
+                LinearLayout new_layout = (LinearLayout) View.inflate(baseLayout.getContext(), R.layout.twitter_photos, baseLayout);
                 baseLayout.addView(new_layout);
                 frameLayout = (FrameLayout) new_layout.getChildAt(0);
             } else {
@@ -325,17 +332,8 @@ public class TwitterStatusAdapter extends BaseAdapter {
                 @Override
                 public void onClick(View v) {
                     // go to show fragment
-                    Bundle bundle = new Bundle();
-                    bundle.putParcelable("plvurl", plvUrl);
-                    FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-
-                    ShowFragment showFragment = new ShowFragment();
-                    showFragment.setArguments(bundle);
-                    fragmentTransaction.replace(R.id.show_frag_replace, showFragment);
-
-                    // back to this screen when back pressed
-                    fragmentTransaction.addToBackStack(null);
-                    fragmentTransaction.commit();
+                    if (twitterAdapterListener != null)
+                        twitterAdapterListener.onShowFragmentRequired(plvUrl);
                 }
             });
 
@@ -351,22 +349,18 @@ public class TwitterStatusAdapter extends BaseAdapter {
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // go to show fragment
-                    Bundle bundle = new Bundle();
-                    bundle.putString("url", fileUrl);
-                    FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-
-                    VideoShowFragment showFragment = new VideoShowFragment();
-                    showFragment.setArguments(bundle);
-                    fragmentTransaction.replace(R.id.show_frag_replace, showFragment);
-
-                    // back to this screen when back pressed
-                    fragmentTransaction.addToBackStack(null);
-                    fragmentTransaction.commit();
+                    // go to video show fragment
+                    if (twitterAdapterListener != null)
+                        twitterAdapterListener.onVideoShowFragmentRequired(fileUrl);
                 }
             });
 
             imageView.setImageUrl(thumbUrl, imageLoader);
         }
+    }
+
+    public interface TwitterAdapterListener {
+        void onShowFragmentRequired(PLVUrl plvUrl);
+        void onVideoShowFragmentRequired(String fileUrl);
     }
 }
