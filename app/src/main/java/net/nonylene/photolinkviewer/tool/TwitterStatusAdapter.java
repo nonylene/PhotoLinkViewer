@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.text.TextPaint;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -35,6 +36,7 @@ public class TwitterStatusAdapter extends BaseAdapter {
 
     public TwitterStatusAdapter(Context context, ImageLoader imageLoader) {
         baseContext = context;
+        this.imageLoader = imageLoader;
     }
 
     private class StatusViewHolder {
@@ -82,7 +84,7 @@ public class TwitterStatusAdapter extends BaseAdapter {
 
     @Override
     public int getItemViewType(int position) {
-        return getItem(position) == null ? ItemType.STATUS.getId() : ItemType.LOADING.getId();
+        return getItem(position) == null ? ItemType.LOADING.getId() : ItemType.STATUS.getId();
     }
 
     @Override
@@ -92,11 +94,12 @@ public class TwitterStatusAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-
         StatusViewHolder viewHolder;
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+
         if (getItemViewType(position) == ItemType.STATUS.getId()) {
             if (convertView == null) {
-                convertView = View.inflate(parent.getContext(), R.layout.twitter_status_list, parent);
+                convertView = inflater.inflate(R.layout.twitter_status_list, parent, false);
                 viewHolder = new StatusViewHolder();
                 viewHolder.setView(convertView);
                 convertView.setTag(viewHolder);
@@ -108,10 +111,10 @@ public class TwitterStatusAdapter extends BaseAdapter {
 
         } else if (getItemViewType(position) == ItemType.LOADING.getId()) {
             if (convertView == null) {
-
+                convertView = inflater.inflate(R.layout.loading_layout, parent, false);
             }
-
         }
+
         return convertView;
     }
 
@@ -181,6 +184,9 @@ public class TwitterStatusAdapter extends BaseAdapter {
             protect.setBounds(0, 0, iconSize, iconSize);
             // set app-icon and bounds
             viewHolder.snView.setCompoundDrawables(protect, null, null, null);
+        } else {
+            // initialize
+            viewHolder.snView.setCompoundDrawables(null, null, null, null);
         }
 
         String statusDate = dateFormat.format(finStatus.getCreatedAt());
@@ -210,6 +216,10 @@ public class TwitterStatusAdapter extends BaseAdapter {
 
             viewHolder.urlBaseLayout.setVisibility(View.VISIBLE);
 
+            // initialize
+            viewHolder.urlPhotoLayout.removeAllViews();
+            viewHolder.urlLayout.removeAllViews();
+
             final PhotoViewController controller = new PhotoViewController(viewHolder.urlPhotoLayout);
 
             for (URLEntity urlEntity : urlEntities) {
@@ -227,6 +237,8 @@ public class TwitterStatusAdapter extends BaseAdapter {
 
             viewHolder.photoBaseLayout.setVisibility(View.VISIBLE);
 
+            // initialize
+            viewHolder.photoLayout.removeAllViews();
             final PhotoViewController controller = new PhotoViewController(viewHolder.photoLayout);
 
             for (ExtendedMediaEntity mediaEntity : mediaEntities) {
@@ -271,7 +283,8 @@ public class TwitterStatusAdapter extends BaseAdapter {
 
     private void addUrl(final String url, StatusViewHolder viewHolder) {
         // prev is last linear_layout
-        TextView textView = (TextView) View.inflate(viewHolder.urlLayout.getContext(), R.layout.twitter_url, viewHolder.urlLayout);
+        LayoutInflater inflater = LayoutInflater.from(viewHolder.urlLayout.getContext());
+        TextView textView = (TextView) inflater.inflate(R.layout.twitter_url, viewHolder.urlLayout, false);
         textView.setText(url);
         TextPaint textPaint = textView.getPaint();
         textPaint.setUnderlineText(true);
@@ -300,9 +313,11 @@ public class TwitterStatusAdapter extends BaseAdapter {
     private class PhotoViewController {
         private List<NetworkImageView> imageViewList = new ArrayList<>();
         private LinearLayout baseLayout;
+        private LayoutInflater inflater;
 
         public PhotoViewController(LinearLayout baseLayout) {
             this.baseLayout = baseLayout;
+            inflater = LayoutInflater.from(baseLayout.getContext());
         }
 
         public int addImageView() {
@@ -310,9 +325,10 @@ public class TwitterStatusAdapter extends BaseAdapter {
             int size = imageViewList.size();
 
             FrameLayout frameLayout;
+
             if (size % 2 == 0) {
                 // make new linear_layout and put below prev
-                LinearLayout new_layout = (LinearLayout) View.inflate(baseLayout.getContext(), R.layout.twitter_photos, baseLayout);
+                LinearLayout new_layout = (LinearLayout) inflater.inflate(R.layout.twitter_photos, baseLayout, false);
                 baseLayout.addView(new_layout);
                 frameLayout = (FrameLayout) new_layout.getChildAt(0);
             } else {
