@@ -48,10 +48,11 @@ import twitter4j.TwitterListener;
 import twitter4j.TwitterMethod;
 
 
-public class TwitterDisplay extends Activity implements TwitterStatusAdapter.TwitterAdapterListener{
+public class TwitterDisplay extends Activity implements TwitterStatusAdapter.TwitterAdapterListener {
+
     private String url;
     private TwitterStatusAdapter statusAdapter;
-    private boolean isFirst = true;
+    private AsyncTwitter twitter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +100,7 @@ public class TwitterDisplay extends Activity implements TwitterStatusAdapter.Twi
                     // oAuthed
                     try {
                         // get twitter async
-                        AsyncTwitter twitter = MyAsyncTwitter.getAsyncTwitter(getApplicationContext());
+                        twitter = MyAsyncTwitter.getAsyncTwitter(getApplicationContext());
                         twitter.addListener(twitterListener);
                         twitter.showStatus(id_long);
 
@@ -162,6 +163,12 @@ public class TwitterDisplay extends Activity implements TwitterStatusAdapter.Twi
         // back to this screen when back pressed
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
+    }
+
+    @Override
+    public void onReadMoreClicked() {
+        long replyId = statusAdapter.getLastStatus().getInReplyToStatusId();
+        twitter.showStatus(replyId);
     }
 
     public static class ChangeAccountDialog extends DialogFragment {
@@ -229,8 +236,7 @@ public class TwitterDisplay extends Activity implements TwitterStatusAdapter.Twi
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (isFirst) {
-                        isFirst = false;
+                    if (statusAdapter.isEmpty()) {
 
                         // set media entity
                         ExtendedMediaEntity[] mediaEntities = status.getExtendedMediaEntities();
@@ -278,10 +284,16 @@ public class TwitterDisplay extends Activity implements TwitterStatusAdapter.Twi
 
                     if (status.getInReplyToScreenName() == null) {
                         statusAdapter.removeLoadingItem();
+                    } else {
+                        // auto pager
+                        if (statusAdapter.getCount() % 4 != 2) {
+                            onReadMoreClicked();
+                        } else {
+                            statusAdapter.setRequesting(false);
+                        }
                     }
 
                     statusAdapter.notifyDataSetChanged();
-
                 }
 
                 private String getBiggestMp4Url(ExtendedMediaEntity.Variant[] variants) {

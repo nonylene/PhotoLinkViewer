@@ -5,9 +5,12 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.text.TextPaint;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -33,10 +36,17 @@ public class TwitterStatusAdapter extends BaseAdapter {
     private TwitterAdapterListener twitterAdapterListener;
     private Context baseContext;
     private ImageLoader imageLoader;
+    private Animation rotateAnimation;
+    private boolean isRequesting;
+    private int selectableBackgroundId;
 
     public TwitterStatusAdapter(Context context, ImageLoader imageLoader) {
         baseContext = context;
+        rotateAnimation = AnimationUtils.loadAnimation(context, R.anim.rotate);
         this.imageLoader = imageLoader;
+        TypedValue outValue = new TypedValue();
+        context.getTheme().resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);
+        selectableBackgroundId = outValue.resourceId;
     }
 
     private class StatusViewHolder {
@@ -65,6 +75,17 @@ public class TwitterStatusAdapter extends BaseAdapter {
             photoBaseLayout = (LinearLayout) baseView.findViewById(R.id.photo_base);
             photoLayout = (LinearLayout) baseView.findViewById(R.id.photos);
         }
+    }
+
+    private class LoadingViewHolder {
+        LinearLayout baseView;
+        ImageView loadingView;
+
+        public void setView(View baseView) {
+            this.baseView = (LinearLayout) baseView;
+            loadingView = (ImageView) baseView.findViewById(R.id.loading_imageview);
+        }
+
     }
 
     @Override
@@ -102,16 +123,54 @@ public class TwitterStatusAdapter extends BaseAdapter {
                 convertView = inflater.inflate(R.layout.twitter_status_list, parent, false);
                 viewHolder = new StatusViewHolder();
                 viewHolder.setView(convertView);
-                convertView.setTag(viewHolder);
+                convertView.setTag(R.id.VIEW_HOLDER_TAG, viewHolder);
 
             } else {
-                viewHolder = (StatusViewHolder) convertView.getTag();
+                viewHolder = (StatusViewHolder) convertView.getTag(R.id.VIEW_HOLDER_TAG);
             }
-            setEntry(getItem(position), viewHolder, parent);
+
+            Status status = getItem(position);
+            // wrap_content -> called getView multiple -> check if status is the same
+            if (status != convertView.getTag(R.id.STATUS_TAG)) {
+                convertView.setTag(R.id.STATUS_TAG, status);
+                setEntry(getItem(position), viewHolder, parent);
+            }
 
         } else if (getItemViewType(position) == ItemType.LOADING.getId()) {
             if (convertView == null) {
                 convertView = inflater.inflate(R.layout.loading_layout, parent, false);
+                LoadingViewHolder loadingViewHolder = new LoadingViewHolder();
+                loadingViewHolder.setView(convertView);
+                convertView.setTag(loadingViewHolder);
+            }
+
+            final LoadingViewHolder loadingViewHolder = (LoadingViewHolder) convertView.getTag();
+
+            if (isRequesting) {
+                // loading now...
+                convertView.setBackgroundResource(android.R.color.transparent);
+                loadingViewHolder.loadingView.setAnimation(rotateAnimation);
+
+                convertView.setOnClickListener(null);
+
+            } else {
+                // not loading now...
+                convertView.setBackgroundResource(selectableBackgroundId);
+                loadingViewHolder.loadingView.setAnimation(null);
+
+                convertView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (!isRequesting) {
+                            isRequesting = true;
+                            // unset loading callback and background
+                            loadingViewHolder.baseView.setBackgroundResource(android.R.color.transparent);
+                            loadingViewHolder.loadingView.setAnimation(rotateAnimation);
+                            if (twitterAdapterListener != null)
+                                twitterAdapterListener.onReadMoreClicked();
+                        }
+                    }
+                });
             }
         }
 
@@ -129,6 +188,19 @@ public class TwitterStatusAdapter extends BaseAdapter {
             statusList.add(null);
         } else {
             statusList.add(statusList.size() - 1, status);
+        }
+    }
+
+    public void setRequesting(boolean isRequesting) {
+        this.isRequesting = isRequesting;
+    }
+
+    public Status getLastStatus() {
+        int size = statusList.size();
+        if (statusList.get(size - 1) != null) {
+            return statusList.get(size - 1);
+        } else {
+            return statusList.get(size - 2);
         }
     }
 
@@ -212,13 +284,13 @@ public class TwitterStatusAdapter extends BaseAdapter {
             }
         });
 
+        // initialize
+        viewHolder.urlPhotoLayout.removeAllViews();
+        viewHolder.urlLayout.removeAllViews();
+
         if (urlEntities.length > 0) {
 
             viewHolder.urlBaseLayout.setVisibility(View.VISIBLE);
-
-            // initialize
-            viewHolder.urlPhotoLayout.removeAllViews();
-            viewHolder.urlLayout.removeAllViews();
 
             final PhotoViewController controller = new PhotoViewController(viewHolder.urlPhotoLayout);
 
@@ -231,14 +303,16 @@ public class TwitterStatusAdapter extends BaseAdapter {
 
                 service.requestGetPLVUrl(url);
             }
+        } else {
+            viewHolder.urlBaseLayout.setVisibility(View.GONE);
         }
 
+        // initialize
+        viewHolder.photoLayout.removeAllViews();
         if (mediaEntities.length > 0) {
 
             viewHolder.photoBaseLayout.setVisibility(View.VISIBLE);
 
-            // initialize
-            viewHolder.photoLayout.removeAllViews();
             final PhotoViewController controller = new PhotoViewController(viewHolder.photoLayout);
 
             for (ExtendedMediaEntity mediaEntity : mediaEntities) {
@@ -256,6 +330,8 @@ public class TwitterStatusAdapter extends BaseAdapter {
                     service.requestGetPLVUrl(url);
                 }
             }
+        } else {
+            viewHolder.photoBaseLayout.setVisibility(View.GONE);
         }
 
     }
@@ -377,6 +453,9 @@ public class TwitterStatusAdapter extends BaseAdapter {
 
     public interface TwitterAdapterListener {
         void onShowFragmentRequired(PLVUrl plvUrl);
+
         void onVideoShowFragmentRequired(String fileUrl);
+
+        void onReadMoreClicked();
     }
 }
