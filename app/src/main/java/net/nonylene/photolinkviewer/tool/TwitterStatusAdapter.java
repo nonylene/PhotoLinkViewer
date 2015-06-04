@@ -113,6 +113,12 @@ public class TwitterStatusAdapter extends BaseAdapter {
         return ItemType.values().length;
     }
 
+    // not selectable base view
+    @Override
+    public boolean isEnabled(int position) {
+        return getItemViewType(position) != ItemType.STATUS.getId();
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         StatusViewHolder viewHolder;
