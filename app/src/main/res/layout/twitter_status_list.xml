@@ -31,7 +31,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/black"
-                android:textIsSelectable="true"
                 android:textSize="11sp"/>
 
             <TextView
@@ -41,7 +40,6 @@
                 android:layout_marginBottom="2dp"
                 android:layout_marginTop="2dp"
                 android:textColor="@android:color/black"
-                android:textIsSelectable="true"
                 android:textSize="13sp"/>
 
             <LinearLayout
@@ -53,7 +51,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@android:color/black"
-                    android:textIsSelectable="true"
                     android:textSize="10sp"/>
 
                 <TextView
