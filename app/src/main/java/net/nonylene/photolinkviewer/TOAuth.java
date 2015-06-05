@@ -24,6 +24,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import net.nonylene.photolinkviewer.dialog.DeleteDialogFragment;
 import net.nonylene.photolinkviewer.tool.Encryption;
 import net.nonylene.photolinkviewer.tool.MyAsyncTwitter;
 import net.nonylene.photolinkviewer.tool.MyCursorAdapter;
@@ -44,7 +45,7 @@ import twitter4j.User;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 
-public class TOAuth extends AppCompatActivity {
+public class TOAuth extends AppCompatActivity implements DeleteDialogFragment.DeleteDialogCallBack{
 
     private AsyncTwitter twitter;
     private RequestToken requestToken;
@@ -91,6 +92,7 @@ public class TOAuth extends AppCompatActivity {
                 Bundle bundle = new Bundle();
                 bundle.putString("screen_name", screen_name);
                 DeleteDialogFragment deleteDialogFragment = new DeleteDialogFragment();
+                deleteDialogFragment.setDeleteDialogCallBack(TOAuth.this);
                 deleteDialogFragment.setArguments(bundle);
                 deleteDialogFragment.show(getFragmentManager(), "delete");
                 return true;
@@ -114,6 +116,31 @@ public class TOAuth extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onDeleteConfirmed(String userName) {
+        String toastText = null;
+        try {
+            toastText = getString(R.string.delete_account_toast);
+            database.beginTransaction();
+            // quotation is required.
+            database.delete("accounts", "userName = ?", new String[]{userName});
+            // commit
+            database.setTransactionSuccessful();
+            final Cursor new_cursor = database.rawQuery("select rowid _id, * from accounts", null);
+            database.endTransaction();
+            // renew listView
+            // i want to use content provider and cursor loader in future.
+            myCursorAdapter.swapCursor(new_cursor);
+
+        } catch (SQLiteException e) {
+            toastText = getString(R.string.delete_failed_toast);
+            e.printStackTrace();
+
+        } finally {
+            Toast.makeText(this, toastText, Toast.LENGTH_LONG).show();
+        }
+    }
+
 
     class Button1ClickListener implements View.OnClickListener {
         public void onClick(View v) {
@@ -123,7 +150,7 @@ public class TOAuth extends AppCompatActivity {
                 String apisecret = (String) getText(R.string.twitter_secret);
                 twitter.setOAuthConsumer(apikey, apisecret);
                 twitter.addListener(twitterListener);
-                twitter.getOAuthRequestTokenAsync("plviewer://callback");
+                twitter.getOAuthRequestTokenAsync("plvtwitter://callback");
             } catch (Exception e) {
                 Log.e("twitter", e.toString());
             }
@@ -234,49 +261,6 @@ public class TOAuth extends AppCompatActivity {
                 Toast.makeText(TOAuth.this, getString(R.string.toauth_failed_token), Toast.LENGTH_LONG).show();
             }
         }
-    }
-
-    @SuppressLint("ValidFragment")
-    public class DeleteDialogFragment extends DialogFragment {
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            final String screenName = getArguments().getString("screen_name");
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setTitle(getString(R.string.delete_dialog_title))
-                    .setMessage(getString(R.string.delete_dialog_message_account) + screenName + "\n" + getString(R.string.delete_dialog_message))
-                    .setPositiveButton(getString(android.R.string.ok), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-                            try {
-                                final Toast toast = Toast.makeText(getActivity(), getString(R.string.delete_account_toast), Toast.LENGTH_LONG);
-                                database.beginTransaction();
-                                // quotation is required.
-                                database.delete("accounts", "userName = ?", new String[]{screenName});
-                                // commit
-                                database.setTransactionSuccessful();
-                                final Cursor new_cursor = database.rawQuery("select rowid _id, * from accounts", null);
-                                database.endTransaction();
-                                getActivity().runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        // renew listView
-                                        // i want to use content provider and cursor loader in future.
-                                        myCursorAdapter.swapCursor(new_cursor);
-                                        toast.show();
-                                    }
-                                });
-                            } catch (SQLiteException e) {
-                                Log.e("SQLite", e.toString());
-                                Toast.makeText(getActivity(), getString(R.string.delete_failed_toast), Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    })
-                    .setNegativeButton(getString(android.R.string.cancel), null);
-            return builder.create();
-        }
-
     }
 
     class UpdateButtonClickListener implements View.OnClickListener {
