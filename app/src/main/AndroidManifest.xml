@@ -252,7 +252,24 @@
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
 
-                <data android:scheme="plviewer"/>
+                <data android:scheme="plvtwitter"/>
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".IOAuthActivity"
+            android:launchMode="singleTask"
+            android:parentActivityName=".Settings">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Settings"/>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+
+                <data android:scheme="@string/instagram_callback_scheme"/>
             </intent-filter>
         </activity>
 

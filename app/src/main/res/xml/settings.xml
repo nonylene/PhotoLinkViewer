@@ -93,6 +93,15 @@
                 android:key="double_zoom"
                 android:summary="@string/double_zoom_summary"
                 android:title="@string/double_zoom_title"/>
+
+            <Preference
+                android:summary="get Instagram video and photos via API"
+                android:title="instagram settings">
+                <intent
+                    android:action="android.intent.action.view"
+                    android:targetClass="net.nonylene.photolinkviewer.IOAuthActivity"
+                    android:targetPackage="net.nonylene.photolinkviewer"/>
+            </Preference>
         </PreferenceScreen>
 
         <Preference
