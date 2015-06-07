@@ -6,6 +6,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import android.util.Base64;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
@@ -21,6 +22,8 @@ import org.json.JSONObject;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.crypto.spec.SecretKeySpec;
+
 public class PLVUrlService {
     private PLVUrlListener plvUrlListener;
     private Context context;
@@ -31,7 +34,9 @@ public class PLVUrlService {
 
     public interface PLVUrlListener {
         void onGetPLVUrlFinished(PLVUrl plvUrl);
+
         void onGetPLVUrlFailed(String text);
+
         void onURLAccepted();
     }
 
@@ -261,7 +266,7 @@ public class PLVUrlService {
         public void getPLVUrl() {
             super.getPLVUrl();
 
-            PLVUrl plvUrl = new PLVUrl(url);
+            final PLVUrl plvUrl = new PLVUrl(url);
             Pattern pattern = Pattern.compile("^https?://instagr\\.?am[\\.com]*/p/([^/\\?=]+)");
             Matcher matcher = pattern.matcher(url);
             if (!matcher.find()) {
@@ -276,20 +281,84 @@ public class PLVUrlService {
             String id = matcher.group(1);
             plvUrl.setFileName(id);
 
-            String file_url = null;
+            SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+            if (defaultPreferences.getBoolean("instagram_api", false)) {
+
+                SharedPreferences preferences = context.getSharedPreferences("preference", Context.MODE_PRIVATE);
+
+                if (!preferences.getBoolean("instagram_authorized", false)) {
+                    listener.onGetPLVUrlFailed("You have to authorize instagram account or change instagram api preference.");
+                    return;
+                }
+
+                byte[] keyByte = Base64.decode(preferences.getString("instagram_key", null), Base64.DEFAULT);
+                SecretKeySpec key = new SecretKeySpec(keyByte, 0, keyByte.length, "AES");
+                byte[] tokenByte = Base64.decode(preferences.getString("instagram_token", null), Base64.DEFAULT);
+                String token = Encryption.decrypt(tokenByte, key);
+                String apiUrl = "https://api.instagram.com/v1/media/shortcode/" + id + "?access_token=" + token;
+
+                RequestQueue queue = Volley.newRequestQueue(context);
+                queue.add(new MyJsonObjectRequest(context, apiUrl,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                try {
+                                    listener.onGetPLVUrlFinished(parseInstagram(response, plvUrl));
+                                } catch (JSONException e) {
+                                    listener.onGetPLVUrlFailed("instagram JSON Parse Error!");
+                                    e.printStackTrace();
+                                }
+                            }
+                        }));
+
+            } else {
+
+                String file_url = null;
+                switch (super.getQuality("instagram")) {
+                    case "large":
+                        file_url = "https://instagram.com/p/" + id + "/media/?size=l";
+                        break;
+                    case "medium":
+                        file_url = "https://instagram.com/p/" + id + "/media/?size=m";
+                        break;
+                }
+                plvUrl.setDisplayUrl(file_url);
+                plvUrl.setThumbUrl("https://instagram.com/p/" + id + "/media/?size=m");
+                plvUrl.setBiggestUrl("https://instagram.com/p/" + id + "/media/?size=l");
+
+                listener.onGetPLVUrlFinished(plvUrl);
+            }
+        }
+
+        private PLVUrl parseInstagram(JSONObject json, PLVUrl plvUrl) throws JSONException {
+            //for flickr
+            JSONObject data = new JSONObject(json.getString("data"));
+            JSONObject fileUrls;
+            if ("video".equals(data.getString("type"))){
+                plvUrl.setIsVideo(true);
+                fileUrls = data.getJSONObject("videos");
+
+            } else {
+                fileUrls = data.getJSONObject("images");
+            }
+
+            JSONObject resolution = null;
             switch (super.getQuality("instagram")) {
                 case "large":
-                    file_url = "https://instagram.com/p/" + id + "/media/?size=l";
+                    resolution = fileUrls.getJSONObject("standard_resolution");
                     break;
                 case "medium":
-                    file_url = "https://instagram.com/p/" + id + "/media/?size=m";
+                    resolution = fileUrls.getJSONObject("low_resolution");
                     break;
             }
-            plvUrl.setDisplayUrl(file_url);
-            plvUrl.setThumbUrl("https://instagram.com/p/" + id + "/media/?size=m");
-            plvUrl.setBiggestUrl("https://instagram.com/p/" + id + "/media/?size=l");
 
-            listener.onGetPLVUrlFinished(plvUrl);
+            plvUrl.setDisplayUrl(resolution.getString("url"));
+
+            JSONObject imageUrls = data.getJSONObject("images");
+            plvUrl.setThumbUrl(imageUrls.getJSONObject("low_resolution").getString("url"));
+            plvUrl.setBiggestUrl(imageUrls.getJSONObject("standard_resolution").getString("url"));
+
+            return plvUrl;
         }
     }
 
