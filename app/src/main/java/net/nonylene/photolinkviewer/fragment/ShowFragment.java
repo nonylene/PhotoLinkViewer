@@ -44,7 +44,6 @@ import net.nonylene.photolinkviewer.async.AsyncHttpBitmap;
 import net.nonylene.photolinkviewer.dialog.SaveDialogFragment;
 import net.nonylene.photolinkviewer.tool.Initialize;
 import net.nonylene.photolinkviewer.tool.PLVUrl;
-import net.nonylene.photolinkviewer.tool.PLVUrlService;
 
 import java.io.File;
 
@@ -97,35 +96,8 @@ public class ShowFragment extends Fragment {
             Initialize.initialize19(getActivity());
         }
 
-        if (getArguments().getParcelable("plvurl") == null) {
-
-            String url = getArguments().getString("url");
-
-            PLVUrlService service = new PLVUrlService(getActivity());
-            service.setPLVUrlListener(new PLVUrlService.PLVUrlListener() {
-                @Override
-                public void onGetPLVUrlFinished(final PLVUrl plvUrl) {
-                    getAsyncGetSizeType(plvUrl).execute(plvUrl.getDisplayUrl());
-                }
-
-                @Override
-                public void onGetPLVUrlFailed(String text) {
-                    if (!isAdded()) return;
-                    Toast.makeText(getActivity(), text, Toast.LENGTH_LONG).show();
-                    removeProgressBar();
-                }
-
-                @Override
-                public void onURLAccepted() {
-
-                }
-            });
-            service.requestGetPLVUrl(url);
-
-        } else {
-            PLVUrl plvUrl = getArguments().getParcelable("plvurl");
-            getAsyncGetSizeType(plvUrl).execute(plvUrl.getDisplayUrl());
-        }
+        PLVUrl plvUrl = getArguments().getParcelable("plvurl");
+        getAsyncGetSizeType(plvUrl).execute(plvUrl.getDisplayUrl());
 
         return view;
     }
