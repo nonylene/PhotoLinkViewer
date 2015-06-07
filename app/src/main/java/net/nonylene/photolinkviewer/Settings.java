@@ -2,16 +2,20 @@ package net.nonylene.photolinkviewer;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
+import android.preference.SwitchPreference;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,9 +36,10 @@ public class Settings extends AppCompatActivity {
 
     public static class SettingsFragment extends PreferenceSummaryFragment {
 
+        private SwitchPreference instagramSwitch;
+
         @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             addPreferencesFromResource(R.xml.settings);
             Preference preference = findPreference("about_app_preference");
             preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -45,6 +50,24 @@ public class Settings extends AppCompatActivity {
                     return false;
                 }
             });
+
+            Preference instagramPreference = findPreference("instagram_preference");
+            instagramPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    Intent intent = new Intent(getActivity(), IOAuthActivity.class);
+                    // get oauth result
+                    startActivityForResult(intent, 1);
+                    return false;
+                }
+            });
+
+            instagramSwitch = (SwitchPreference) findPreference("instagram_api");
+
+            SharedPreferences preferences = getActivity().getSharedPreferences("preference", MODE_PRIVATE);
+            instagramSwitch.setEnabled(preferences.getBoolean("instagram_authorized", false));
+
+            return super.onCreateView(inflater, container, savedInstanceState);
         }
 
         public static class AboutDialogFragment extends DialogFragment {
@@ -70,6 +93,22 @@ public class Settings extends AppCompatActivity {
                 return builder.create();
             }
 
+        }
+
+
+        @Override
+        public void onActivityResult(int requestCode, int resultCode, Intent data) {
+            super.onActivityResult(requestCode, resultCode, data);
+            if (requestCode == 1) {
+                // get instagram oauth result
+                if (resultCode == IOAuthActivity.OAUTHED) {
+                    instagramSwitch.setEnabled(true);
+                    instagramSwitch.setEnabled(true);
+                } else if (resultCode == IOAuthActivity.UNOAUTHED) {
+                    instagramSwitch.setEnabled(false);
+                    instagramSwitch.setChecked(false);
+                }
+            }
         }
     }
 }

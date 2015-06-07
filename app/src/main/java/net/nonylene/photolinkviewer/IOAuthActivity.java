@@ -36,6 +36,9 @@ import java.util.Map;
 
 public class IOAuthActivity extends AppCompatActivity implements DeleteDialogFragment.DeleteDialogCallBack {
 
+    public static int OAUTHED = 200;
+    public static int UNOAUTHED = 300;
+
     private SharedPreferences preferences;
     private NetworkImageView iconView;
     private TextView screenNameView;
@@ -121,7 +124,7 @@ public class IOAuthActivity extends AppCompatActivity implements DeleteDialogFra
                         Toast.makeText(IOAuthActivity.this, getString(R.string.volley_error), Toast.LENGTH_LONG).show();
                     }
                 }
-        ){
+        ) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
@@ -165,6 +168,8 @@ public class IOAuthActivity extends AppCompatActivity implements DeleteDialogFra
             iconView.setImageUrl(profile_picture, loader);
             unOAuthLayout.setVisibility(View.VISIBLE);
 
+            setResult(OAUTHED);
+
         } catch (JSONException | UnsupportedEncodingException e) {
             // toast
             Toast.makeText(this, getString(R.string.toauth_failed_token), Toast.LENGTH_LONG).show();
@@ -199,6 +204,9 @@ public class IOAuthActivity extends AppCompatActivity implements DeleteDialogFra
         screenNameView.setText(R.string.instagram_not_authorized);
         iconView.setImageResource(R.drawable.instagram_logo);
         unOAuthLayout.setVisibility(View.GONE);
+
+        setResult(UNOAUTHED);
+
         Toast.makeText(this, getString(R.string.delete_account_toast), Toast.LENGTH_LONG).show();
     }
 }
