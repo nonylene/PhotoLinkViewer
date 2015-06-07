@@ -62,6 +62,8 @@ public class PLVUrlService {
             site = new GyazoSite(url, context);
         } else if (url.contains("imgur.com")) {
             site = new ImgurSite(url, context);
+        } else if (url.contains("vine.co")) {
+            site = new VineSite(url, context);
         } else {
             site = new OtherSite(url, context);
         }
@@ -325,7 +327,7 @@ public class PLVUrlService {
             //for flickr
             JSONObject data = new JSONObject(json.getString("data"));
             JSONObject fileUrls;
-            if ("video".equals(data.getString("type"))){
+            if ("video".equals(data.getString("type"))) {
                 plvUrl.setIsVideo(true);
                 fileUrls = data.getJSONObject("videos");
 
@@ -612,6 +614,59 @@ public class PLVUrlService {
             plvUrl.setThumbUrl("http://lohas.nicoseiga.jp/img/" + id + "m");
             plvUrl.setBiggestUrl(biggest_url);
 
+            return plvUrl;
+        }
+    }
+
+    private class VineSite extends Site {
+
+        public VineSite(String url, Context context) {
+            super(url, context);
+        }
+
+        @Override
+        public void getPLVUrl() {
+            final PLVUrl plvUrl = new PLVUrl(url);
+            Pattern pattern = Pattern.compile("^https?://vine\\.co/v/(\\w+)");
+            Matcher matcher = pattern.matcher(url);
+            if (!matcher.find()) {
+                super.onParseFailed();
+                return;
+            }
+
+            listener.onURLAccepted();
+
+            plvUrl.setSiteName("vine");
+            plvUrl.setIsVideo(true);
+
+            String id = matcher.group(1);
+
+            plvUrl.setFileName(id);
+
+            String request = "https://api.vineapp.com/timelines/posts/s/" + id;
+
+            // volley
+            RequestQueue queue = Volley.newRequestQueue(context);
+            queue.add(new MyJsonObjectRequest(context, request,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            try {
+                                listener.onGetPLVUrlFinished(parseVine(response, plvUrl));
+                            } catch (JSONException e) {
+                                listener.onGetPLVUrlFailed(context.getString(R.string.show_flickrjson_toast));
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+            ));
+        }
+
+        private PLVUrl parseVine(JSONObject json, PLVUrl plvUrl) throws JSONException {
+            JSONObject data = json.getJSONObject("data");
+            JSONObject records = data.getJSONArray("records").getJSONObject(0);
+            plvUrl.setDisplayUrl(records.getString("videoUrl"));
+            plvUrl.setThumbUrl(records.getString("thumbnailUrl"));
             return plvUrl;
         }
     }
