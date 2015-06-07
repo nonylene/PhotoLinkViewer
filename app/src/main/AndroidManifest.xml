@@ -241,7 +241,7 @@
 
         <activity
             android:name=".TOAuth"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:parentActivityName=".Settings">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -258,7 +258,7 @@
 
         <activity
             android:name=".IOAuthActivity"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:parentActivityName=".Settings">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
