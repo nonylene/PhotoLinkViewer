@@ -327,7 +327,12 @@ public class TwitterStatusAdapter extends BaseAdapter {
 
                 if (("animated_gif").equals(mediaEntity.getType()) || ("video").equals(mediaEntity.getType())) {
                     String file_url = getBiggestMp4Url(mediaEntity.getVideoVariants());
-                    controller.setVideoUrl(controller.addImageView(), mediaEntity.getMediaURLHttps(), file_url);
+                    PLVUrl plvUrl = new PLVUrl(mediaEntity.getMediaURLHttps());
+                    plvUrl.setSiteName("twitter");
+                    plvUrl.setThumbUrl(mediaEntity.getMediaURLHttps());
+                    plvUrl.setDisplayUrl(file_url);
+                    plvUrl.setIsVideo(true);
+                    controller.setVideoUrl(controller.addImageView(), plvUrl);
                 } else {
 
                     PLVUrlService service = new PLVUrlService(baseContext);
@@ -349,7 +354,7 @@ public class TwitterStatusAdapter extends BaseAdapter {
             @Override
             public void onGetPLVUrlFinished(PLVUrl plvUrl) {
                 if (plvUrl.isVideo()){
-                    controller.setVideoUrl(position, plvUrl.getThumbUrl(), plvUrl.getDisplayUrl());
+                    controller.setVideoUrl(position, plvUrl);
                 }else {
                     controller.setImageUrl(position, plvUrl);
                 }
@@ -442,7 +447,7 @@ public class TwitterStatusAdapter extends BaseAdapter {
             imageView.setImageUrl(plvUrl.getThumbUrl(), imageLoader);
         }
 
-        public void setVideoUrl(int position, String thumbUrl, final String fileUrl) {
+        public void setVideoUrl(int position, final PLVUrl plvUrl) {
             NetworkImageView imageView = imageViewList.get(position);
             FrameLayout frameLayout = (FrameLayout) imageView.getParent();
             ImageView video_icon = (ImageView) frameLayout.getChildAt(1);
@@ -453,18 +458,18 @@ public class TwitterStatusAdapter extends BaseAdapter {
                 public void onClick(View v) {
                     // go to video show fragment
                     if (twitterAdapterListener != null)
-                        twitterAdapterListener.onVideoShowFragmentRequired(fileUrl);
+                        twitterAdapterListener.onVideoShowFragmentRequired(plvUrl);
                 }
             });
 
-            imageView.setImageUrl(thumbUrl, imageLoader);
+            imageView.setImageUrl(plvUrl.getThumbUrl(), imageLoader);
         }
     }
 
     public interface TwitterAdapterListener {
         void onShowFragmentRequired(PLVUrl plvUrl);
 
-        void onVideoShowFragmentRequired(String fileUrl);
+        void onVideoShowFragmentRequired(PLVUrl plvUrl);
 
         void onReadMoreClicked();
     }

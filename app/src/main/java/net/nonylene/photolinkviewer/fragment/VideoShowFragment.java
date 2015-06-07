@@ -8,7 +8,6 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,27 +16,14 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 import android.widget.VideoView;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.toolbox.Volley;
-
-import net.nonylene.photolinkviewer.tool.Base49;
 import net.nonylene.photolinkviewer.R;
-import net.nonylene.photolinkviewer.tool.MyJsonObjectRequest;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import net.nonylene.photolinkviewer.tool.PLVUrl;
 
 public class VideoShowFragment extends Fragment {
     private View view;
     private ImageView imageView;
-    private boolean vine_frag = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,12 +34,12 @@ public class VideoShowFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.videoshow_fragment, container, false);
         imageView = (ImageView) view.findViewById(R.id.video_image);
-        String url = getArguments().getString("url");
         if (getArguments().getBoolean("single_frag", false)){
             FrameLayout frameLayout = (FrameLayout)view.findViewById(R.id.videoshowframe);
             frameLayout.setBackgroundColor(getResources().getColor(R.color.background));
         }
-        URLPurser(url);
+        PLVUrl plvUrl = getArguments().getParcelable("plvurl");
+        playVideo(plvUrl);
         return view;
     }
 
@@ -86,58 +72,13 @@ public class VideoShowFragment extends Fragment {
 
     }
 
-    private void URLPurser(String url) {
-        if (url.contains("vine.co")) {
-            Log.v("vine", url);
-            vine_frag = true;
-            Pattern pattern = Pattern.compile("^https?://vine\\.co/v/(\\w+)");
-            Matcher matcher = pattern.matcher(url);
-            if (matcher.find()) {
-                Log.v("match", "success");
-            }
-            String id = Base49.decode(matcher.group(1));
-            String request = "https://api.vineapp.com/timelines/posts/" + id;
-            // volley
-            RequestQueue queue = Volley.newRequestQueue(getActivity());
-            queue.add(new MyJsonObjectRequest(getActivity(), request,
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            parseVine(response);
-                        }
-                    }
-            ));
-        } else {
-            Log.v("others", url);
-            vine_frag = false;
-            playVideo(url);
-        }
-    }
-
-    private void parseVine(JSONObject json) {
-        if (json != null) {
-            try {
-                JSONObject data = json.getJSONObject("data");
-                JSONObject records = data.getJSONArray("records").getJSONObject(0);
-                String file = records.getString("videoUrl");
-                Log.v("URL", file);
-                playVideo(file);
-            } catch (JSONException e) {
-                Log.e("JSONError", e.toString());
-                Toast.makeText(getActivity(), getString(R.string.vine_json_toast), Toast.LENGTH_LONG).show();
-            }
-        } else {
-            Toast.makeText(getActivity(), getString(R.string.vine_url_toast), Toast.LENGTH_LONG).show();
-        }
-    }
-
-    private void playVideo(String url) {
+    private void playVideo(PLVUrl plvUrl) {
         final FrameLayout frameLayout = (FrameLayout) view.findViewById(R.id.videoshowframe);
         final ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.videoshowprogress);
         // view video
         final VideoView videoView = (VideoView) view.findViewById(R.id.videoview);
-        videoView.setVideoURI(Uri.parse(url));
-        if (vine_frag) {
+        videoView.setVideoURI(Uri.parse(plvUrl.getDisplayUrl()));
+        if ("vine".equals(plvUrl.getSiteName())) {
             // touch to stop
             videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override

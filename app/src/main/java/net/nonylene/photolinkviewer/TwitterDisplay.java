@@ -150,10 +150,10 @@ public class TwitterDisplay extends Activity implements TwitterStatusAdapter.Twi
     }
 
     @Override
-    public void onVideoShowFragmentRequired(String fileUrl) {
+    public void onVideoShowFragmentRequired(PLVUrl plvUrl) {
         // go to show fragment
         Bundle bundle = new Bundle();
-        bundle.putString("url", fileUrl);
+        bundle.putParcelable("plvurl", plvUrl);
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
 
         VideoShowFragment showFragment = new VideoShowFragment();
