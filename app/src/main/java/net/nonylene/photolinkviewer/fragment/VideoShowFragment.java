@@ -49,11 +49,9 @@ public class VideoShowFragment extends Fragment {
         public boolean onTouch(View v, MotionEvent e) {
             if (e.getAction() == MotionEvent.ACTION_UP) {
                 pauseStop();
-                Drawable drawable = getResources().getDrawable(R.drawable.ic_play_arrow_white_48dp);
-                imageView.setImageDrawable(drawable);
+                imageView.setImageResource(R.drawable.ic_play_arrow_white_48dp);
             } else if (e.getAction() == MotionEvent.ACTION_DOWN) {
-                Drawable drawable = getResources().getDrawable(R.drawable.ic_play_arrow_grey_48dp);
-                imageView.setImageDrawable(drawable);
+                imageView.setImageResource(R.drawable.ic_play_arrow_grey_48dp);
             }
             return true;
         }
