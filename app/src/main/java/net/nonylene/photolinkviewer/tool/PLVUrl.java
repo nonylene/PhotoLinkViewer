@@ -13,6 +13,7 @@ public class PLVUrl implements Parcelable{
     private String type;
     private int height;
     private int width;
+    private boolean isVideo = false;
 
     public PLVUrl(String url) {
         this.url = url;
@@ -88,6 +89,14 @@ public class PLVUrl implements Parcelable{
         return thumbUrl;
     }
 
+    public void setIsVideo(boolean isVideo) {
+        this.isVideo = isVideo;
+    }
+
+    public boolean isVideo() {
+        return isVideo;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -102,6 +111,7 @@ public class PLVUrl implements Parcelable{
         dest.writeString(siteName);
         dest.writeString(fileName);
         dest.writeString(type);
+        dest.writeByte((byte) (isVideo ? 1 : 0));
     }
 
     public static final Parcelable.Creator<PLVUrl> CREATOR = new Parcelable.Creator<PLVUrl>(){
@@ -124,5 +134,6 @@ public class PLVUrl implements Parcelable{
         this.siteName = source.readString();
         this.fileName = source.readString();
         this.type = source.readString();
+        this.isVideo = source.readByte() != 0;
     }
 }
