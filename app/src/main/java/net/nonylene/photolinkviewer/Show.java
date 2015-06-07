@@ -12,11 +12,13 @@ import android.widget.Toast;
 import net.nonylene.photolinkviewer.fragment.OptionFragment;
 import net.nonylene.photolinkviewer.fragment.ShowFragment;
 import net.nonylene.photolinkviewer.fragment.VideoShowFragment;
+import net.nonylene.photolinkviewer.tool.PLVUrl;
+import net.nonylene.photolinkviewer.tool.PLVUrlService;
 
 import java.io.File;
 import java.io.IOException;
 
-public class Show extends Activity {
+public class Show extends Activity implements PLVUrlService.PLVUrlListener {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -33,29 +35,26 @@ public class Show extends Activity {
         }
 
         //receive intent
-        if (Intent.ACTION_VIEW.equals(getIntent().getAction())) {
-            Bundle bundle = new Bundle();
-            Uri uri = getIntent().getData();
-            String url = uri.toString();
-            bundle.putString("url", url);
-            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-            OptionFragment optionFragment = new OptionFragment();
-            optionFragment.setArguments(bundle);
-            fragmentTransaction.add(R.id.root_layout, optionFragment);
-            if (url.contains("vine.co")) {
-                bundle.putBoolean("single_frag", true);
-                VideoShowFragment videoShowFragment = new VideoShowFragment();
-                videoShowFragment.setArguments(bundle);
-                fragmentTransaction.replace(R.id.show_frag_replace, videoShowFragment);
-            } else {
-                ShowFragment showFragment = new ShowFragment();
-                showFragment.setArguments(bundle);
-                fragmentTransaction.replace(R.id.show_frag_replace, showFragment);
-            }
-            fragmentTransaction.commit();
-        } else {
+        if (!Intent.ACTION_VIEW.equals(getIntent().getAction())) {
             Toast.makeText(this, "Intent Error!", Toast.LENGTH_LONG).show();
+            return;
         }
+
+        Uri uri = getIntent().getData();
+        String url = uri.toString();
+
+        Bundle bundle = new Bundle();
+        bundle.putString("url", url);
+
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        OptionFragment optionFragment = new OptionFragment();
+        optionFragment.setArguments(bundle);
+        fragmentTransaction.add(R.id.root_layout, optionFragment);
+        fragmentTransaction.commit();
+
+        PLVUrlService service = new PLVUrlService(this);
+        service.setPLVUrlListener(this);
+        service.requestGetPLVUrl(url);
     }
 
     @Override
@@ -69,4 +68,37 @@ public class Show extends Activity {
         }
     }
 
+    @Override
+    public void onGetPLVUrlFinished(PLVUrl plvUrl) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("plvurl", plvUrl);
+        try {
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+
+            if (plvUrl.isVideo()) {
+                bundle.putBoolean("single_frag", true);
+                VideoShowFragment videoShowFragment = new VideoShowFragment();
+                videoShowFragment.setArguments(bundle);
+                fragmentTransaction.replace(R.id.show_frag_replace, videoShowFragment);
+            } else {
+                ShowFragment showFragment = new ShowFragment();
+                showFragment.setArguments(bundle);
+                fragmentTransaction.replace(R.id.show_frag_replace, showFragment);
+            }
+            fragmentTransaction.commit();
+
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onGetPLVUrlFailed(String text) {
+        Toast.makeText(Show.this, text, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onURLAccepted() {
+
+    }
 }
