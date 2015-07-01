@@ -64,10 +64,17 @@ public class Settings extends AppCompatActivity {
 
             instagramSwitch = (SwitchPreference) findPreference("instagram_api");
 
-            SharedPreferences preferences = getActivity().getSharedPreferences("preference", MODE_PRIVATE);
-            instagramSwitch.setEnabled(preferences.getBoolean("instagram_authorized", false));
-
             return super.onCreateView(inflater, container, savedInstanceState);
+        }
+
+        @Override
+        public void onResume() {
+            super.onResume();
+            // IOAuthActivity
+            instagramSwitch.setEnabled(getActivity().getSharedPreferences("preference", MODE_PRIVATE)
+                    .getBoolean("instagram_authorized", false));
+            instagramSwitch.setChecked(PreferenceManager.getDefaultSharedPreferences(getActivity())
+                    .getBoolean("instagram_api", false));
         }
 
         public static class AboutDialogFragment extends DialogFragment {
@@ -91,23 +98,6 @@ public class Settings extends AppCompatActivity {
                     Toast.makeText(getActivity(), "Error occured", Toast.LENGTH_LONG).show();
                 }
                 return builder.create();
-            }
-
-        }
-
-
-        @Override
-        public void onActivityResult(int requestCode, int resultCode, Intent data) {
-            super.onActivityResult(requestCode, resultCode, data);
-            if (requestCode == 1) {
-                // get instagram oauth result
-                if (resultCode == IOAuthActivity.OAUTHED) {
-                    instagramSwitch.setEnabled(true);
-                    instagramSwitch.setEnabled(true);
-                } else if (resultCode == IOAuthActivity.UNOAUTHED) {
-                    instagramSwitch.setEnabled(false);
-                    instagramSwitch.setChecked(false);
-                }
             }
         }
     }

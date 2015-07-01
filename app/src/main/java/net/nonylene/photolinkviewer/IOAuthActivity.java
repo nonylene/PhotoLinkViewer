@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.view.View;
@@ -35,9 +36,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class IOAuthActivity extends AppCompatActivity implements DeleteDialogFragment.DeleteDialogCallBack {
-
-    public static int OAUTHED = 200;
-    public static int UNOAUTHED = 300;
 
     private SharedPreferences preferences;
     private NetworkImageView iconView;
@@ -161,14 +159,15 @@ public class IOAuthActivity extends AppCompatActivity implements DeleteDialogFra
                     .putBoolean("instagram_authorized", true)
                     .apply();
 
+            PreferenceManager.getDefaultSharedPreferences(this).edit()
+                    .putBoolean("instagram_api", true).apply();
+
             screenNameView.setText(username);
 
             // if not null, icon would not updated
             iconView.setImageUrl(null, loader);
             iconView.setImageUrl(profile_picture, loader);
             unOAuthLayout.setVisibility(View.VISIBLE);
-
-            setResult(OAUTHED);
 
         } catch (JSONException | UnsupportedEncodingException e) {
             // toast
@@ -201,11 +200,12 @@ public class IOAuthActivity extends AppCompatActivity implements DeleteDialogFra
                 .remove("instagram_authorized")
                 .apply();
 
+        PreferenceManager.getDefaultSharedPreferences(this).edit()
+                .putBoolean("instagram_api", false).apply();
+
         screenNameView.setText(R.string.instagram_not_authorized);
         iconView.setImageResource(R.drawable.instagram_logo);
         unOAuthLayout.setVisibility(View.GONE);
-
-        setResult(UNOAUTHED);
 
         Toast.makeText(this, getString(R.string.delete_account_toast), Toast.LENGTH_LONG).show();
     }
