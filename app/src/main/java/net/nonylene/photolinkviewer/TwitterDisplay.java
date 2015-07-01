@@ -73,66 +73,71 @@ public class TwitterDisplay extends Activity implements TwitterStatusAdapter.Twi
 
         // get intent and purse url
         SharedPreferences sharedPreferences = getSharedPreferences("preference", Context.MODE_PRIVATE);
-        if (Intent.ACTION_VIEW.equals(getIntent().getAction())) {
-            Bundle bundle = new Bundle();
-            Uri uri = getIntent().getData();
-            url = uri.toString();
-            bundle.putString("url", url);
-            // option fragment
-            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-            OptionFragment optionFragment = new OptionFragment();
-            optionFragment.setArguments(bundle);
-            fragmentTransaction.add(R.id.root_layout, optionFragment).commit();
 
-            if (url.contains("twitter.com")) {
-                RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-                statusAdapter = new TwitterStatusAdapter(this, new ImageLoader(queue, new BitmapCache()));
-                statusAdapter.setTwitterAdapterListener(this);
-
-                ListView listView = (ListView) findViewById(R.id.twitter_list_view);
-                listView.setAdapter(statusAdapter);
-
-                Pattern pattern = Pattern.compile("^https?://twitter\\.com/\\w+/status[es]*/(\\d+)");
-                Matcher matcher = pattern.matcher(url);
-                if (!matcher.find()) return;
-
-                String id = matcher.group(1);
-                Long id_long = Long.parseLong(id);
-
-                if (sharedPreferences.getBoolean("authorized", false)) {
-                    // oAuthed
-                    try {
-                        // get twitter async
-                        twitter = MyAsyncTwitter.getAsyncTwitter(getApplicationContext());
-                        twitter.addListener(twitterListener);
-                        twitter.showStatus(id_long);
-
-                        bundle.putLong("id_long", id_long);
-                        TwitterOptionFragment twitterOptionFragment = new TwitterOptionFragment();
-                        twitterOptionFragment.setArguments(bundle);
-                        getFragmentManager().beginTransaction().add(R.id.buttons, twitterOptionFragment).commit();
-
-                    } catch (SQLiteException e) {
-                        e.printStackTrace();
-
-                    } catch (IndexOutOfBoundsException e) {
-                        e.printStackTrace();
-                        Toast.makeText(getApplicationContext(), getString(R.string.twitter_async_select), Toast.LENGTH_LONG).show();
-                        Intent intent = new Intent(this, TOAuth.class);
-                        startActivity(intent);
-                        finish();
-                    }
-
-                } else {
-                    Toast.makeText(getApplicationContext(), getString(R.string.twitter_display_oauth), Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(this, TOAuth.class);
-                    startActivity(intent);
-                    finish();
-                }
-            }
-
-        } else {
+        if (!Intent.ACTION_VIEW.equals(getIntent().getAction())) {
             Toast.makeText(this, "Intent Error!", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        Bundle bundle = new Bundle();
+        Uri uri = getIntent().getData();
+        url = uri.toString();
+        bundle.putString("url", url);
+
+        // option fragment
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        OptionFragment optionFragment = new OptionFragment();
+        optionFragment.setArguments(bundle);
+        fragmentTransaction.add(R.id.root_layout, optionFragment).commit();
+
+        if (!url.contains("twitter.com")) return;
+
+        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+        statusAdapter = new TwitterStatusAdapter(this, new ImageLoader(queue, new BitmapCache()));
+        statusAdapter.setTwitterAdapterListener(this);
+
+        ListView listView = (ListView) findViewById(R.id.twitter_list_view);
+        listView.setAdapter(statusAdapter);
+
+        progressBar = (ProgressBar) findViewById(R.id.show_progress);
+
+        Pattern pattern = Pattern.compile("^https?://twitter\\.com/\\w+/status[es]*/(\\d+)");
+        Matcher matcher = pattern.matcher(url);
+
+        if (!matcher.find()) return;
+
+        String id = matcher.group(1);
+        Long id_long = Long.parseLong(id);
+
+        if (!sharedPreferences.getBoolean("authorized", false)) {
+            Toast.makeText(getApplicationContext(), getString(R.string.twitter_display_oauth), Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(this, TOAuth.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
+
+        // oAuthed
+        try {
+            // get twitter async
+            twitter = MyAsyncTwitter.getAsyncTwitter(getApplicationContext());
+            twitter.addListener(twitterListener);
+            twitter.showStatus(id_long);
+
+            bundle.putLong("id_long", id_long);
+            TwitterOptionFragment twitterOptionFragment = new TwitterOptionFragment();
+            twitterOptionFragment.setArguments(bundle);
+            getFragmentManager().beginTransaction().add(R.id.buttons, twitterOptionFragment).commit();
+
+        } catch (SQLiteException e) {
+            e.printStackTrace();
+
+        } catch (IndexOutOfBoundsException e) {
+            e.printStackTrace();
+            Toast.makeText(getApplicationContext(), getString(R.string.twitter_async_select), Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(this, TOAuth.class);
+            startActivity(intent);
+            finish();
         }
     }
 
@@ -146,21 +151,25 @@ public class TwitterDisplay extends Activity implements TwitterStatusAdapter.Twi
         onFragmentRequired(new VideoShowFragment(), plvUrl);
     }
 
-    private void onFragmentRequired(Fragment fragment, PLVUrl plvUrl){
-        // go to show fragment
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("plvurl", plvUrl);
-        bundle.putBoolean("single_frag", isSingle);
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+    private void onFragmentRequired(Fragment fragment, PLVUrl plvUrl) {
+        try {
+            // go to show fragment
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("plvurl", plvUrl);
+            bundle.putBoolean("single_frag", isSingle);
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
 
-        fragment.setArguments(bundle);
-        fragmentTransaction.replace(R.id.show_frag_replace, fragment);
+            fragment.setArguments(bundle);
+            fragmentTransaction.replace(R.id.show_frag_replace, fragment);
 
-        if (!isSingle) {
-            // back to this screen when back pressed
-            fragmentTransaction.addToBackStack(null);
+            if (!isSingle) {
+                // back to this screen when back pressed
+                fragmentTransaction.addToBackStack(null);
+            }
+            fragmentTransaction.commit();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
         }
-        fragmentTransaction.commit();
     }
 
     @Override
@@ -252,7 +261,7 @@ public class TwitterDisplay extends Activity implements TwitterStatusAdapter.Twi
                             plvUrlService.setPLVUrlListener(new PLVUrlService.PLVUrlListener() {
                                 @Override
                                 public void onGetPLVUrlFinished(PLVUrl plvUrl) {
-                                    if (plvUrl.isVideo()){
+                                    if (plvUrl.isVideo()) {
                                         onVideoShowFragmentRequired(plvUrl);
                                     } else {
                                         onShowFragmentRequired(plvUrl);
