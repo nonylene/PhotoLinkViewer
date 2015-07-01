@@ -16,8 +16,10 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
@@ -33,6 +35,7 @@ import net.nonylene.photolinkviewer.tool.BitmapCache;
 import net.nonylene.photolinkviewer.tool.MyAsyncTwitter;
 import net.nonylene.photolinkviewer.tool.PLVUrl;
 import net.nonylene.photolinkviewer.tool.PLVUrlService;
+import net.nonylene.photolinkviewer.tool.ProgressBarListener;
 import net.nonylene.photolinkviewer.tool.TwitterStatusAdapter;
 
 import java.io.File;
@@ -50,9 +53,11 @@ import twitter4j.TwitterListener;
 import twitter4j.TwitterMethod;
 
 
-public class TwitterDisplay extends Activity implements TwitterStatusAdapter.TwitterAdapterListener {
+public class TwitterDisplay extends Activity implements TwitterStatusAdapter.TwitterAdapterListener, ProgressBarListener {
 
     private String url;
+    private ProgressBar progressBar;
+    private FrameLayout rootLayout;
     private TwitterStatusAdapter statusAdapter;
     private AsyncTwitter twitter;
     private boolean isSingle;
@@ -178,6 +183,11 @@ public class TwitterDisplay extends Activity implements TwitterStatusAdapter.Twi
         twitter.showStatus(replyId);
     }
 
+    @Override
+    public void hideProgressBar() {
+        progressBar.setVisibility(View.GONE);
+    }
+
     public static class ChangeAccountDialog extends DialogFragment {
 
         @Override
@@ -244,6 +254,7 @@ public class TwitterDisplay extends Activity implements TwitterStatusAdapter.Twi
                 @Override
                 public void run() {
                     if (statusAdapter.isEmpty()) {
+                        hideProgressBar();
 
                         // set media entity
                         ExtendedMediaEntity[] mediaEntities = status.getExtendedMediaEntities();
@@ -292,8 +303,8 @@ public class TwitterDisplay extends Activity implements TwitterStatusAdapter.Twi
                         } else {
                             isSingle = false;
                             // change background color
-                            FrameLayout frameLayout = (FrameLayout) findViewById(R.id.root_layout);
-                            frameLayout.setBackgroundResource(R.color.background);
+                            rootLayout = (FrameLayout) findViewById(R.id.root_layout);
+                            rootLayout.setBackgroundResource(R.color.background);
                         }
                     }
 
