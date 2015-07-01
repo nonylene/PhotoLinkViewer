@@ -3,6 +3,7 @@ package net.nonylene.photolinkviewer;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -31,6 +32,7 @@ import net.nonylene.photolinkviewer.tool.AccountsList;
 import net.nonylene.photolinkviewer.tool.BitmapCache;
 import net.nonylene.photolinkviewer.tool.MyAsyncTwitter;
 import net.nonylene.photolinkviewer.tool.PLVUrl;
+import net.nonylene.photolinkviewer.tool.PLVUrlService;
 import net.nonylene.photolinkviewer.tool.TwitterStatusAdapter;
 
 import java.io.File;
@@ -53,6 +55,7 @@ public class TwitterDisplay extends Activity implements TwitterStatusAdapter.Twi
     private String url;
     private TwitterStatusAdapter statusAdapter;
     private AsyncTwitter twitter;
+    private boolean isSingle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,33 +138,28 @@ public class TwitterDisplay extends Activity implements TwitterStatusAdapter.Twi
 
     @Override
     public void onShowFragmentRequired(PLVUrl plvUrl) {
-        // go to show fragment
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("plvurl", plvUrl);
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-
-        ShowFragment showFragment = new ShowFragment();
-        showFragment.setArguments(bundle);
-        fragmentTransaction.replace(R.id.show_frag_replace, showFragment);
-
-        // back to this screen when back pressed
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
+        onFragmentRequired(new ShowFragment(), plvUrl);
     }
 
     @Override
     public void onVideoShowFragmentRequired(PLVUrl plvUrl) {
+        onFragmentRequired(new VideoShowFragment(), plvUrl);
+    }
+
+    private void onFragmentRequired(Fragment fragment, PLVUrl plvUrl){
         // go to show fragment
         Bundle bundle = new Bundle();
         bundle.putParcelable("plvurl", plvUrl);
+        bundle.putBoolean("single_frag", isSingle);
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
 
-        VideoShowFragment showFragment = new VideoShowFragment();
-        showFragment.setArguments(bundle);
-        fragmentTransaction.replace(R.id.show_frag_replace, showFragment);
+        fragment.setArguments(bundle);
+        fragmentTransaction.replace(R.id.show_frag_replace, fragment);
 
-        // back to this screen when back pressed
-        fragmentTransaction.addToBackStack(null);
+        if (!isSingle) {
+            // back to this screen when back pressed
+            fragmentTransaction.addToBackStack(null);
+        }
         fragmentTransaction.commit();
     }
 
@@ -244,36 +242,46 @@ public class TwitterDisplay extends Activity implements TwitterStatusAdapter.Twi
                         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                         boolean show = sharedPreferences.getBoolean("disp_tweet", false);
                         // if number of media entity is one, show fragment directly
-                        if (!show && url.contains("/photo") && mediaEntities.length == 1) {
+                        if (!show && (url.contains("/photo") || url.contains("/video")) && mediaEntities.length == 1) {
+                            isSingle = true;
+
                             ExtendedMediaEntity mediaEntity = mediaEntities[0];
-                            Bundle bundle = new Bundle();
                             String type = mediaEntity.getType();
 
-                            try {
-                                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-
-                                if (("animated_gif").equals(type) || ("video").equals(type)) {
-                                    String file_url = getBiggestMp4Url(mediaEntity.getVideoVariants());
-                                    bundle.putString("url", file_url);
-                                    bundle.putBoolean("single_frag", true);
-                                    VideoShowFragment showFragment = new VideoShowFragment();
-                                    showFragment.setArguments(bundle);
-                                    fragmentTransaction.replace(R.id.show_frag_replace, showFragment);
-                                } else {
-                                    bundle.putString("url", mediaEntity.getMediaURL());
-                                    ShowFragment showFragment = new ShowFragment();
-                                    showFragment.setArguments(bundle);
-                                    fragmentTransaction.replace(R.id.show_frag_replace, showFragment);
+                            PLVUrlService plvUrlService = new PLVUrlService(TwitterDisplay.this);
+                            plvUrlService.setPLVUrlListener(new PLVUrlService.PLVUrlListener() {
+                                @Override
+                                public void onGetPLVUrlFinished(PLVUrl plvUrl) {
+                                    if (plvUrl.isVideo()){
+                                        onVideoShowFragmentRequired(plvUrl);
+                                    } else {
+                                        onShowFragmentRequired(plvUrl);
+                                    }
                                 }
 
-                                fragmentTransaction.commit();
+                                @Override
+                                public void onGetPLVUrlFailed(String text) {
 
-                            } catch (IllegalStateException e) {
-                                e.printStackTrace();
+                                }
+
+                                @Override
+                                public void onURLAccepted() {
+
+                                }
+                            });
+
+                            if (("animated_gif").equals(type) || ("video").equals(type)) {
+                                String file_url = getBiggestMp4Url(mediaEntity.getVideoVariants());
+                                PLVUrl plvUrl = new PLVUrl(url);
+                                plvUrl.setDisplayUrl(file_url);
+                                onVideoShowFragmentRequired(plvUrl);
+                            } else {
+                                plvUrlService.requestGetPLVUrl(mediaEntity.getMediaURLHttps());
                             }
                             return;
 
                         } else {
+                            isSingle = false;
                             // change background color
                             FrameLayout frameLayout = (FrameLayout) findViewById(R.id.root_layout);
                             frameLayout.setBackgroundResource(R.color.background);
