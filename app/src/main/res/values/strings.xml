@@ -105,5 +105,10 @@
     <string name="instagram_not_authorized">Not authorized</string>
     <string name="instagram_oauth_text">Auth</string>
     <string name="instagram_unoauth_text">UnAuth</string>
+    <string name="instagram_category_title" translatable="false">Instagram</string>
+    <string name="instagram_preference_summary">Tap to open</string>
+    <string name="instagram_pregerence_title">Instagram account settings</string>
+    <string name="instagram_api_title">Use instagram API</string>
+    <string name="instagram_api_summary">get Instagram video and photos via API.\nYou need to authorize your instagram account.</string>
 
 </resources>

@@ -93,5 +93,12 @@
     <string name="leave_notify_title">通知を残す</string>
     <string name="skip_summary">ダイアログを出さずに保存します</string>
     <string name="skip_title">ダイアログをスキップ</string>
+    <string name="instagram_api_summary">Instagramの動画と写真をAPI経由で取得します。oAuth認証が必要です。</string>
+    <string name="instagram_api_title">Instagram APIを使用</string>
+    <string name="instagram_not_authorized">認証されていません</string>
+    <string name="instagram_oauth_text">認証</string>
+    <string name="instagram_preference_summary">タップして開く</string>
+    <string name="instagram_pregerence_title">Instagramアカウント設定</string>
+    <string name="instagram_unoauth_text">認証解除</string>
 
 </resources>

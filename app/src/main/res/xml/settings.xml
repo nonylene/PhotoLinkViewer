@@ -63,14 +63,14 @@
 
         <CheckBoxPreference
             android:defaultValue="false"
-            android:summary="@string/skip_summary"
             android:key='skip_dialog'
+            android:summary="@string/skip_summary"
             android:title="@string/skip_title"/>
 
         <CheckBoxPreference
             android:defaultValue="true"
-            android:summary="@string/leave_notify_summary"
             android:key='leave_notify'
+            android:summary="@string/leave_notify_summary"
             android:title="@string/leave_notify_title"/>
 
     </PreferenceCategory>
@@ -95,17 +95,17 @@
                 android:title="@string/double_zoom_title"/>
 
             <PreferenceCategory
-                android:title="instagram">
+                android:title="@string/instagram_category_title">
 
                 <Preference
                     android:key="instagram_preference"
-                    android:summary="Tap to open"
-                    android:title="instagram account settings"/>
+                    android:summary="@string/instagram_preference_summary"
+                    android:title="@string/instagram_pregerence_title"/>
 
                 <SwitchPreference
                     android:key="instagram_api"
-                    android:title="Use instagram API"
-                    android:summary="get Instagram video and photos via API.\nYou need to authorize your instagram account."/>
+                    android:summary="@string/instagram_api_summary"
+                    android:title="@string/instagram_api_title"/>
 
             </PreferenceCategory>
 
