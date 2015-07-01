@@ -254,8 +254,6 @@ public class TwitterDisplay extends Activity implements TwitterStatusAdapter.Twi
                 @Override
                 public void run() {
                     if (statusAdapter.isEmpty()) {
-                        hideProgressBar();
-
                         // set media entity
                         ExtendedMediaEntity[] mediaEntities = status.getExtendedMediaEntities();
 
@@ -301,6 +299,8 @@ public class TwitterDisplay extends Activity implements TwitterStatusAdapter.Twi
                             return;
 
                         } else {
+                            hideProgressBar();
+
                             isSingle = false;
                             // change background color
                             rootLayout = (FrameLayout) findViewById(R.id.root_layout);
