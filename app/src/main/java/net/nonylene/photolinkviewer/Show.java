@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.net.http.HttpResponseCache;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import net.nonylene.photolinkviewer.fragment.OptionFragment;
@@ -14,11 +15,12 @@ import net.nonylene.photolinkviewer.fragment.ShowFragment;
 import net.nonylene.photolinkviewer.fragment.VideoShowFragment;
 import net.nonylene.photolinkviewer.tool.PLVUrl;
 import net.nonylene.photolinkviewer.tool.PLVUrlService;
+import net.nonylene.photolinkviewer.tool.ProgressBarListener;
 
 import java.io.File;
 import java.io.IOException;
 
-public class Show extends Activity implements PLVUrlService.PLVUrlListener {
+public class Show extends Activity implements PLVUrlService.PLVUrlListener, ProgressBarListener {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -71,12 +73,12 @@ public class Show extends Activity implements PLVUrlService.PLVUrlListener {
     @Override
     public void onGetPLVUrlFinished(PLVUrl plvUrl) {
         Bundle bundle = new Bundle();
+        bundle.putBoolean("single_frag", true);
         bundle.putParcelable("plvurl", plvUrl);
         try {
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
 
             if (plvUrl.isVideo()) {
-                bundle.putBoolean("single_frag", true);
                 VideoShowFragment videoShowFragment = new VideoShowFragment();
                 videoShowFragment.setArguments(bundle);
                 fragmentTransaction.replace(R.id.show_frag_replace, videoShowFragment);
@@ -100,5 +102,10 @@ public class Show extends Activity implements PLVUrlService.PLVUrlListener {
     @Override
     public void onURLAccepted() {
 
+    }
+
+    @Override
+    public void hideProgressBar() {
+        findViewById(R.id.show_progress).setVisibility(View.GONE);
     }
 }

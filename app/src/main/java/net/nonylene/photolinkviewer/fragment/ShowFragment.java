@@ -44,6 +44,7 @@ import net.nonylene.photolinkviewer.async.AsyncHttpBitmap;
 import net.nonylene.photolinkviewer.dialog.SaveDialogFragment;
 import net.nonylene.photolinkviewer.tool.Initialize;
 import net.nonylene.photolinkviewer.tool.PLVUrl;
+import net.nonylene.photolinkviewer.tool.ProgressBarListener;
 
 import java.io.File;
 
@@ -51,6 +52,9 @@ public class ShowFragment extends Fragment {
 
     private View view;
     private ImageView imageView;
+    private FrameLayout showFrameLayout;
+    private ProgressBar progressBar;
+
     private SharedPreferences preferences;
     private float firstzoom = 1;
     private MyQuickScale quickScale;
@@ -62,13 +66,19 @@ public class ShowFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.show_fragment, container, false);
         preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+        view = inflater.inflate(R.layout.show_fragment, container, false);
+
         imageView = (ImageView) view.findViewById(R.id.imgview);
+        showFrameLayout = (FrameLayout) view.findViewById(R.id.showframe);
+        progressBar = (ProgressBar) view.findViewById(R.id.showprogress);
+
         final ScaleGestureDetector scaleGestureDetector = new ScaleGestureDetector(getActivity(), new simpleOnScaleGestureListener());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             scaleGestureDetector.setQuickScaleEnabled(false);
         }
+
         final GestureDetector gestureDetector = new GestureDetector(getActivity(), new simpleOnGestureListener());
         imageView.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -94,6 +104,11 @@ public class ShowFragment extends Fragment {
 
         if (!preferences.getBoolean("initialized19", false)) {
             Initialize.initialize19(getActivity());
+        }
+
+        if (getArguments().getBoolean("single_frag", false)) {
+            showFrameLayout.setBackgroundResource(R.color.transparent);
+            progressBar.setVisibility(View.GONE);
         }
 
         PLVUrl plvUrl = getArguments().getParcelable("plvurl");
@@ -277,7 +292,6 @@ public class ShowFragment extends Fragment {
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
             Matrix matrix = new Matrix();
-            imageView = (ImageView) view.findViewById(R.id.imgview);
             matrix.set(imageView.getImageMatrix());
             // adjust zoom speed
             // If using preference_fragment, value is saved to DefaultSharedPref.
@@ -320,9 +334,7 @@ public class ShowFragment extends Fragment {
         @Override
         public void onLoadFinished(Loader<AsyncHttpBitmap.Result> loader, AsyncHttpBitmap.Result result) {
             //remove progressbar
-            FrameLayout frameLayout = (FrameLayout) view.findViewById(R.id.showframe);
-            ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.showprogress);
-            frameLayout.removeView(progressBar);
+            removeProgressBar();
 
             Bitmap bitmap = result.getBitmap();
 
@@ -482,12 +494,6 @@ public class ShowFragment extends Fragment {
         }
     }
 
-    private void removeProgressBar() {
-        FrameLayout frameLayout = (FrameLayout) view.findViewById(R.id.showframe);
-        ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.showprogress);
-        frameLayout.removeView(progressBar);
-    }
-
     private void addDLButton(final PLVUrl plvUrl) {
         // dl button visibility and click
         ImageButton dlButton = (ImageButton) getActivity().findViewById(R.id.dlbutton);
@@ -551,8 +557,12 @@ public class ShowFragment extends Fragment {
         settings.setBuiltInZoomControls(true);
 
         removeProgressBar();
+        showFrameLayout.addView(webView);
+    }
 
-        FrameLayout frameLayout = (FrameLayout) view.findViewById(R.id.showframe);
-        frameLayout.addView(webView);
+    private void removeProgressBar() {
+        showFrameLayout.removeView(progressBar);
+        if (getActivity() instanceof ProgressBarListener)
+            ((ProgressBarListener) getActivity()).hideProgressBar();
     }
 }
