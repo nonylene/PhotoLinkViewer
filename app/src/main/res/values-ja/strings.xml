@@ -100,5 +100,7 @@
     <string name="instagram_preference_summary">タップして開く</string>
     <string name="instagram_pregerence_title">Instagramアカウント設定</string>
     <string name="instagram_unoauth_text">認証解除</string>
+    <string name="twitter_tweet_toast">ツイートしました</string>
+    <string name="tweet">ツイート</string>
 
 </resources>

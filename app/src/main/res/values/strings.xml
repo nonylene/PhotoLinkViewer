@@ -110,5 +110,7 @@
     <string name="instagram_pregerence_title">Instagram account settings</string>
     <string name="instagram_api_title">Use instagram API</string>
     <string name="instagram_api_summary">get Instagram video and photos via API.\nYou need to authorize your instagram account.</string>
+    <string name="twitter_tweet_toast">tweeted!</string>
+    <string name="tweet">tweet!</string>
 
 </resources>
