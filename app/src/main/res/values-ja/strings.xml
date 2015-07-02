@@ -72,7 +72,7 @@
     <string name="account_dialog_title">アカウントを変更しますか？</string>
     <string name="twitter_error_authorize">このツイートの閲覧は許可されていません</string>
     <string name="volley_error">エラー</string>
-    <string name="notes_about_quality">instagram, pixiv, 一部のニコニコ静画は原サイズで取得できません。\n\nまた、pixivのR-18画像は取得できません。</string>
+    <string name="notes_about_quality">instagram, 一部のニコニコ静画は原サイズで取得できません。</string>
     <string name="notes_dialog_title">取得画質について</string>
     <string name="notes_pref_summary">お読みください</string>
     <string name="notes_pref_title">取得画質について</string>

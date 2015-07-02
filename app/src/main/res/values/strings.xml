@@ -81,7 +81,7 @@
     <string name="account_dialog_title">Change account ?</string>
     <string name="twitter_error_authorize">Not authorized</string>
     <string name="volley_error">Error!</string>
-    <string name="notes_about_quality">cannot open full-size these sites:\n\ninstagram, pixiv and some nicoseiga.\n\nand cannot open pixiv R-18 pictures.</string>
+    <string name="notes_about_quality">cannot open full-size these sites:\n\ninstagram, some nicoseiga.</string>
     <string name="notes_dialog_title">notes about quality</string>
     <string name="notes_pref_summary">About quality</string>
     <string name="notes_pref_title">notes</string>
