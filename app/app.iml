@@ -14,6 +14,10 @@
         <option name="COMPILE_JAVA_TASK_NAME" value="compileDebugSources" />
         <option name="ASSEMBLE_TEST_TASK_NAME" value="assembleDebugTest" />
         <option name="COMPILE_JAVA_TEST_TASK_NAME" value="compileDebugTestSources" />
+        <afterSyncTasks>
+          <task>generateDebugSources</task>
+          <task>generateDebugTestSources</task>
+        </afterSyncTasks>
         <option name="ALLOW_USER_CONFIGURATION" value="false" />
         <option name="MANIFEST_FILE_RELATIVE_PATH" value="/src/main/AndroidManifest.xml" />
         <option name="RES_FOLDER_RELATIVE_PATH" value="/src/main/res" />
@@ -22,7 +26,7 @@
       </configuration>
     </facet>
   </component>
-  <component name="NewModuleRootManager" inherit-compiler-output="false">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_7" inherit-compiler-output="false">
     <output url="file://$MODULE_DIR$/build/intermediates/classes/debug" />
     <output-test url="file://$MODULE_DIR$/build/intermediates/classes/test/debug" />
     <exclude-output />
@@ -84,12 +88,12 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 22 Platform (1)" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="support-annotations-22.2.0" level="project" />
-    <orderEntry type="library" exported="" name="support-v4-22.2.0" level="project" />
-    <orderEntry type="library" exported="" name="support-v13-22.2.0" level="project" />
+    <orderEntry type="library" exported="" name="support-v4-22.2.1" level="project" />
+    <orderEntry type="library" exported="" name="support-annotations-22.2.1" level="project" />
+    <orderEntry type="library" exported="" name="support-v13-22.2.1" level="project" />
     <orderEntry type="library" exported="" name="twitter4j-async-4.0.3" level="project" />
-    <orderEntry type="library" exported="" name="appcompat-v7-22.2.0" level="project" />
     <orderEntry type="library" exported="" name="twitter4j-core-4.0.3" level="project" />
+    <orderEntry type="library" exported="" name="appcompat-v7-22.2.1" level="project" />
     <orderEntry type="module" module-name="volley" exported="" />
   </component>
 </module>
