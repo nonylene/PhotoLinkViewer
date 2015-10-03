@@ -71,11 +71,7 @@ class OptionFragment : Fragment() {
         val imageView = activity.findViewById(R.id.imgview) as ImageView
         val matrix = Matrix()
         matrix.set(imageView.imageMatrix)
-        if (right) {
-            matrix.postRotate(90f, (size.x / 2).toFloat(), (size.y / 2).toFloat())
-        } else {
-            matrix.postRotate(-90f, (size.x / 2).toFloat(), (size.y / 2).toFloat())
-        }
+        matrix.postRotate(if (right) 90f else -90f, (size.x / 2).toFloat(), (size.y / 2).toFloat())
         imageView.imageMatrix = matrix
     }
 }
