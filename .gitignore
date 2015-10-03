@@ -1,7 +1,5 @@
 .gradle
 /local.properties
-/.idea/workspace.xml
-/.idea/libraries
 .DS_Store
 /build
 *.class
@@ -21,4 +19,4 @@ hs_err_pid*
 Base49.java
 PXVStringRequest.java
 
-.idea/
+/.idea/
