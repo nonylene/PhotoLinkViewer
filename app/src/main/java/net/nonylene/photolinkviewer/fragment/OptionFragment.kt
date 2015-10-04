@@ -11,7 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
-import android.widget.LinearLayout
 
 import net.nonylene.photolinkviewer.R
 import net.nonylene.photolinkviewer.Settings
@@ -59,7 +58,7 @@ class OptionFragment : Fragment() {
             rotateImg(false)
         }
 
-        otherButtons = view.findViewById(R.id.buttons) as LinearLayout
+        otherButtons = view.findViewById(R.id.buttons)
 
         return view
     }
