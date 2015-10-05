@@ -38,6 +38,8 @@ import net.nonylene.photolinkviewer.tool.PLVUrlService;
 import net.nonylene.photolinkviewer.tool.ProgressBarListener;
 import net.nonylene.photolinkviewer.tool.TwitterStatusAdapter;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -266,10 +268,9 @@ public class TwitterDisplay extends Activity implements TwitterStatusAdapter.Twi
                             ExtendedMediaEntity mediaEntity = mediaEntities[0];
                             String type = mediaEntity.getType();
 
-                            PLVUrlService plvUrlService = new PLVUrlService(TwitterDisplay.this);
-                            plvUrlService.setPLVUrlListener(new PLVUrlService.PLVUrlListener() {
+                            PLVUrlService plvUrlService = new PLVUrlService(TwitterDisplay.this, new PLVUrlService.PLVUrlListener() {
                                 @Override
-                                public void onGetPLVUrlFinished(PLVUrl plvUrl) {
+                                public void onGetPLVUrlFinished(@NotNull PLVUrl plvUrl) {
                                     if (plvUrl.isVideo()) {
                                         onVideoShowFragmentRequired(plvUrl);
                                     } else {
@@ -278,7 +279,7 @@ public class TwitterDisplay extends Activity implements TwitterStatusAdapter.Twi
                                 }
 
                                 @Override
-                                public void onGetPLVUrlFailed(String text) {
+                                public void onGetPLVUrlFailed(@NotNull String text) {
 
                                 }
 

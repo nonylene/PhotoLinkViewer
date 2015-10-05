@@ -54,8 +54,7 @@ public class Show extends Activity implements PLVUrlService.PLVUrlListener, Prog
         fragmentTransaction.add(R.id.root_layout, optionFragment);
         fragmentTransaction.commit();
 
-        PLVUrlService service = new PLVUrlService(this);
-        service.setPLVUrlListener(this);
+        PLVUrlService service = new PLVUrlService(this, this);
         service.requestGetPLVUrl(url);
     }
 

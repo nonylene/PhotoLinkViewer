@@ -304,9 +304,7 @@ public class TwitterStatusAdapter extends BaseAdapter {
                 String url = urlEntity.getExpandedURL();
                 addUrl(url, viewHolder);
 
-                PLVUrlService service = new PLVUrlService(baseContext);
-                service.setPLVUrlListener(getPLVUrlListener(controller));
-
+                PLVUrlService service = new PLVUrlService(baseContext, getPLVUrlListener(controller));
                 service.requestGetPLVUrl(url);
             }
         } else {
@@ -334,10 +332,7 @@ public class TwitterStatusAdapter extends BaseAdapter {
                     plvUrl.setIsVideo(true);
                     controller.setVideoUrl(controller.addImageView(), plvUrl);
                 } else {
-
-                    PLVUrlService service = new PLVUrlService(baseContext);
-                    service.setPLVUrlListener(getPLVUrlListener(controller));
-
+                    PLVUrlService service = new PLVUrlService(baseContext, getPLVUrlListener(controller));
                     service.requestGetPLVUrl(url);
                 }
             }
