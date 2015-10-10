@@ -3,6 +3,7 @@ package net.nonylene.photolinkviewer.tool
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
+import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.Base64
 import android.widget.Toast
@@ -42,6 +43,8 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
             url.contains("gyazo.com")        -> GyazoSite(url, context, plvUrlListener)
             url.contains("imgur.com")        -> ImgurSite(url, context, plvUrlListener)
             url.contains("vine.co")          -> VineSite(url, context, plvUrlListener)
+            url.contains("tmblr.co"), url.contains("tumblr.com")
+                                             -> TumblrSite(url, context, plvUrlListener)
             else                             -> OtherSite(url, context, plvUrlListener)
         }
         site.getPLVUrl()
@@ -415,6 +418,69 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
             plvUrl.displayUrl = records.getString("videoUrl")
             plvUrl.thumbUrl = records.getString("thumbnailUrl")
             return plvUrl
+        }
+    }
+
+    private inner class TumblrSite(url: String, context: Context, listener: PLVUrlListener) : Site(url, context, listener) {
+
+        override fun getPLVUrl() {
+            if (!url.contains("tmblr.co")) requestAPI(url)
+
+            val task = object : AsyncGetURL() {
+                override fun onPostExecute(redirect: String) {
+                    super.onPostExecute(redirect)
+                    requestAPI(redirect)
+                }
+            }
+
+            task.execute(url)
+        }
+
+
+        private fun requestAPI(regularUrl : String){
+            val matcher = Pattern.compile("^https?://([^/]+)/post/(\\d+)/").matcher(regularUrl)
+            if (!matcher.find()) {
+                super.onParseFailed()
+            }
+            listener.onURLAccepted()
+
+            val host = matcher.group(1)
+            val id = matcher.group(2)
+
+            val api_key = context.getText(R.string.tumblr_key) as String
+            val request = "https://api.tumblr.com/v2/blog/${host}/posts?api_key=${api_key}&id=${id}"
+
+            Volley.newRequestQueue(context).add(MyJsonObjectRequest(context, request,
+                    Response.Listener { response ->
+                        try {
+                            listener.onGetPLVUrlFinished(parseTumblr(response, id))
+                        } catch (e: JSONException) {
+                            listener.onGetPLVUrlFailed("tumblr json parse error!")
+                            e.printStackTrace()
+                        } catch (e: IllegalStateException) {
+                            listener.onGetPLVUrlFailed(e.getMessage()!!)
+                        }
+                    })
+            );
+        }
+
+        @Throws(JSONException::class, IllegalStateException::class)
+        private fun parseTumblr(json: JSONObject, id: String): Array<PLVUrl> {
+            val post = json.getJSONObject("response").getJSONArray("posts").getJSONObject(0)
+            post.getString("type").let {
+                if (!"photo".equals(it)) throw IllegalStateException("Type of this post is ${it}, not photo!")
+            }
+
+            val photos = post.getJSONArray("photos")
+            return (0..photos.length() - 1).map {
+                val plvUrl = PLVUrl(url)
+                plvUrl.fileName = id
+                plvUrl.siteName = "tumblr"
+                val photo = photos.getJSONObject(it)
+                plvUrl.biggestUrl = photo.getJSONObject("original_size").getString("url")
+                // alt_sizes etc
+                plvUrl
+            }.toTypedArray()
         }
     }
 }
