@@ -125,7 +125,7 @@ public class ShowFragment extends Fragment {
                 super.onPostExecute(result);
                 if (!isAdded()) return;
 
-                if (result != null) {
+                if (result.getType() != null) {
                     plvUrl.setType(result.getType());
                     plvUrl.setHeight(result.getHeight());
                     plvUrl.setWidth(result.getWidth());
@@ -139,7 +139,8 @@ public class ShowFragment extends Fragment {
                     }
 
                 } else {
-                    Toast.makeText(getActivity(), getString(R.string.show_bitamap_error), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), getString(R.string.show_bitamap_error) +
+                            (result.getErrorMessage() != null ? "\n" + result.getErrorMessage() : ""), Toast.LENGTH_LONG).show();
                 }
 
             }
