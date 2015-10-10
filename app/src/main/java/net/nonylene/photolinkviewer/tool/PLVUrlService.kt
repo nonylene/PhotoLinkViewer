@@ -23,7 +23,7 @@ import javax.crypto.spec.SecretKeySpec
 class PLVUrlService(private val context: Context, private val plvUrlListener: PLVUrlService.PLVUrlListener) {
 
     interface PLVUrlListener {
-        fun onGetPLVUrlFinished(plvUrl: PLVUrl)
+        fun onGetPLVUrlFinished(plvUrls: Array<PLVUrl>)
         fun onGetPLVUrlFailed(text: String)
         fun onURLAccepted()
     }
@@ -98,7 +98,7 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
                     else       -> null
                 }
 
-                listener.onGetPLVUrlFinished(plvUrl)
+                listener.onGetPLVUrlFinished(arrayOf(plvUrl))
             }
         }
     }
@@ -120,7 +120,7 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
                     else       -> null
                 }
 
-                listener.onGetPLVUrlFinished(plvUrl)
+                listener.onGetPLVUrlFinished(arrayOf(plvUrl))
             }
         }
     }
@@ -143,7 +143,7 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
                     else     -> null
                 }
 
-                listener.onGetPLVUrlFinished(plvUrl)
+                listener.onGetPLVUrlFinished(arrayOf(plvUrl))
             }
         }
     }
@@ -174,7 +174,7 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
                     Volley.newRequestQueue(context).add(MyJsonObjectRequest(context, apiUrl,
                             Response.Listener { response ->
                                 try {
-                                    listener.onGetPLVUrlFinished(parseInstagram(response, plvUrl))
+                                    listener.onGetPLVUrlFinished(arrayOf(parseInstagram(response, plvUrl)))
                                 } catch (e: JSONException) {
                                     listener.onGetPLVUrlFailed("instagram JSON Parse Error!")
                                     e.printStackTrace()
@@ -191,7 +191,7 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
                     }
                     plvUrl.thumbUrl = "https://instagram.com/p/${id}/media/?size=m"
 
-                    listener.onGetPLVUrlFinished(plvUrl)
+                    listener.onGetPLVUrlFinished(arrayOf(plvUrl))
                 }
 
             }
@@ -236,7 +236,7 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
 
                 plvUrl.displayUrl = "https://gyazo.com/${id}/raw"
 
-                listener.onGetPLVUrlFinished(plvUrl)
+                listener.onGetPLVUrlFinished(arrayOf(plvUrl))
             }
         }
     }
@@ -253,7 +253,7 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
                 val file_url = "http://i.imgur.com/${id}.jpg"
                 plvUrl.displayUrl = file_url
 
-                listener.onGetPLVUrlFinished(plvUrl)
+                listener.onGetPLVUrlFinished(arrayOf(plvUrl))
             }
         }
     }
@@ -269,7 +269,7 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
 
                 plvUrl.displayUrl = url
 
-                listener.onGetPLVUrlFinished(plvUrl)
+                listener.onGetPLVUrlFinished(arrayOf(plvUrl))
             }
         }
     }
@@ -293,7 +293,7 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
                 Volley.newRequestQueue(context).add(MyJsonObjectRequest(context, request,
                         Response.Listener { response ->
                             try {
-                                listener.onGetPLVUrlFinished(parseFlickr(response, plvUrl))
+                                listener.onGetPLVUrlFinished(arrayOf(parseFlickr(response, plvUrl)))
                             } catch (e: JSONException) {
                                 listener.onGetPLVUrlFailed(context.getString(R.string.show_flickrjson_toast))
                                 e.printStackTrace()
@@ -343,7 +343,7 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
                 val task = object : AsyncGetURL() {
                     override fun onPostExecute(redirect: String) {
                         super.onPostExecute(redirect)
-                        listener.onGetPLVUrlFinished(parseNico(redirect, id, plvUrl))
+                        listener.onGetPLVUrlFinished(arrayOf(parseNico(redirect, id, plvUrl)))
                     }
                 }
 
@@ -399,7 +399,7 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
                 Volley.newRequestQueue(context).add(MyJsonObjectRequest(context, request,
                         Response.Listener { response ->
                             try {
-                                listener.onGetPLVUrlFinished(parseVine(response, plvUrl))
+                                listener.onGetPLVUrlFinished(arrayOf(parseVine(response, plvUrl)))
                             } catch (e: JSONException) {
                                 listener.onGetPLVUrlFailed(context.getString(R.string.show_flickrjson_toast))
                                 e.printStackTrace()

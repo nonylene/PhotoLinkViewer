@@ -347,7 +347,8 @@ public class TwitterStatusAdapter extends BaseAdapter {
             int position;
 
             @Override
-            public void onGetPLVUrlFinished(PLVUrl plvUrl) {
+            public void onGetPLVUrlFinished(PLVUrl[] plvUrls) {
+                PLVUrl plvUrl = plvUrls[0];
                 if (plvUrl.isVideo()){
                     controller.setVideoUrl(position, plvUrl);
                 }else {

@@ -270,7 +270,8 @@ public class TwitterDisplay extends Activity implements TwitterStatusAdapter.Twi
 
                             PLVUrlService plvUrlService = new PLVUrlService(TwitterDisplay.this, new PLVUrlService.PLVUrlListener() {
                                 @Override
-                                public void onGetPLVUrlFinished(@NotNull PLVUrl plvUrl) {
+                                public void onGetPLVUrlFinished(@NotNull PLVUrl[] plvUrls) {
+                                    PLVUrl plvUrl = plvUrls[0];
                                     if (plvUrl.isVideo()) {
                                         onVideoShowFragmentRequired(plvUrl);
                                     } else {

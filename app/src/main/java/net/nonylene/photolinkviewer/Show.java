@@ -70,14 +70,14 @@ public class Show extends Activity implements PLVUrlService.PLVUrlListener, Prog
     }
 
     @Override
-    public void onGetPLVUrlFinished(PLVUrl plvUrl) {
+    public void onGetPLVUrlFinished(PLVUrl[] plvUrls) {
         Bundle bundle = new Bundle();
         bundle.putBoolean("single_frag", true);
-        bundle.putParcelable("plvurl", plvUrl);
+        bundle.putParcelable("plvurl", plvUrls[0]);
         try {
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
 
-            if (plvUrl.isVideo()) {
+            if (plvUrls[0].isVideo()) {
                 VideoShowFragment videoShowFragment = new VideoShowFragment();
                 videoShowFragment.setArguments(bundle);
                 fragmentTransaction.replace(R.id.show_frag_replace, videoShowFragment);
