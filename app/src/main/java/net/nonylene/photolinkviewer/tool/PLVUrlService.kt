@@ -37,7 +37,7 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
             url.contains("twimg.com/media/") -> TwitterSite(url, context, plvUrlListener)
             url.contains("twipple.jp")       -> TwippleSite(url, context, plvUrlListener)
             url.contains("img.ly")           -> ImglySite(url, context, plvUrlListener)
-            url.contains("instagram.com"),  url.contains("instagr.am")
+            url.contains("instagram.com"), url.contains("instagr.am")
                                              -> InstagramSite(url, context, plvUrlListener)
             url.contains("gyazo.com")        -> GyazoSite(url, context, plvUrlListener)
             url.contains("imgur.com")        -> ImgurSite(url, context, plvUrlListener)
@@ -47,13 +47,13 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
         site.getPLVUrl()
     }
 
-    private abstract inner class Site(protected var url: String, protected var context: Context, protected val listener : PLVUrlListener) {
+    private abstract inner class Site(protected var url: String, protected var context: Context, protected val listener: PLVUrlListener) {
 
         protected fun wifiChecker(sharedPreferences: SharedPreferences): Boolean {
             //check wifi connecting and wifi setting enabled or not
             return sharedPreferences.getBoolean("wifi_switch", false) &&
                     (context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).activeNetworkInfo.type ==
-                        ConnectivityManager.TYPE_WIFI
+                            ConnectivityManager.TYPE_WIFI
         }
 
         protected fun getQuality(siteName: String): String {
@@ -62,7 +62,7 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
                     if (wifiChecker(sharedPreferences)) "wifi" else "3g", "large")
         }
 
-        protected fun getId(url : String, regex : String) : String? {
+        protected fun getId(url: String, regex: String): String? {
             val matcher = Pattern.compile(regex).matcher(url)
             if (!matcher.find()) {
                 onParseFailed()
@@ -92,10 +92,10 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
                 plvUrl.thumbUrl = url + ":small"
                 plvUrl.displayUrl = when (super.getQuality("twitter")) {
                     "original" -> plvUrl.biggestUrl
-                    "large" -> url + ":large"
-                    "medium" -> url
-                    "small" -> plvUrl.thumbUrl
-                    else -> null
+                    "large"    -> url + ":large"
+                    "medium"   -> url
+                    "small"    -> plvUrl.thumbUrl
+                    else       -> null
                 }
 
                 listener.onGetPLVUrlFinished(plvUrl)
@@ -115,9 +115,9 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
                 plvUrl.thumbUrl = "http://p.twipple.jp/show/large/" + id
                 plvUrl.displayUrl = when (super.getQuality("twipple")) {
                     "original" -> plvUrl.biggestUrl
-                    "large" -> plvUrl.thumbUrl
-                    "thumb" -> "http://p.twipple.jp/show/thumb/" + id
-                    else -> null
+                    "large"    -> plvUrl.thumbUrl
+                    "thumb"    -> "http://p.twipple.jp/show/thumb/" + id
+                    else       -> null
                 }
 
                 listener.onGetPLVUrlFinished(plvUrl)
@@ -137,10 +137,10 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
                 plvUrl.biggestUrl = "http://img.ly/show/full/" + id
                 plvUrl.thumbUrl = "http://img.ly/show/medium/" + id
                 plvUrl.displayUrl = when (super.getQuality("imgly")) {
-                    "full" -> plvUrl.biggestUrl
-                    "large" -> plvUrl.thumbUrl
+                    "full"   -> plvUrl.biggestUrl
+                    "large"  -> plvUrl.thumbUrl
                     "medium" -> "http://img.ly/show/medium/" + id
-                    else -> null
+                    else     -> null
                 }
 
                 listener.onGetPLVUrlFinished(plvUrl)
@@ -185,9 +185,9 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
                 } else {
                     plvUrl.biggestUrl = "https://instagram.com/p/${id}/media/?size=l"
                     plvUrl.displayUrl = when (super.getQuality("instagram")) {
-                        "large" -> plvUrl.biggestUrl
+                        "large"  -> plvUrl.biggestUrl
                         "medium" -> "https://instagram.com/p/${id}/media/?size=m"
-                        else -> null
+                        else     -> null
                     }
                     plvUrl.thumbUrl = "https://instagram.com/p/${id}/media/?size=m"
 
@@ -212,9 +212,9 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
 
             plvUrl.displayUrl =
                     when (super.getQuality("instagram")) {
-                        "large" -> fileUrls.getJSONObject("standard_resolution")
+                        "large"  -> fileUrls.getJSONObject("standard_resolution")
                         "medium" -> fileUrls.getJSONObject("low_resolution")
-                        else -> null
+                        else     -> null
                     }!!.getString("url")
 
             val imageUrls = data.getJSONObject("images")
@@ -278,9 +278,9 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
 
         override fun getPLVUrl() {
             when {
-                url.contains("flickr") -> super.getId(url, "^https?://[wm]w*\\.flickr\\.com/?#?/photos/[\\w@]+/(\\d+)")
+                url.contains("flickr")  -> super.getId(url, "^https?://[wm]w*\\.flickr\\.com/?#?/photos/[\\w@]+/(\\d+)")
                 url.contains("flic.kr") -> super.getId(url, "^https?://flic\\.kr/p/(\\w+)")?.let { Base58.decode(it) }
-                else -> null
+                else                    -> null
             }?.let { id ->
                 val plvUrl = PLVUrl(url)
 
@@ -319,9 +319,9 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
             plvUrl.thumbUrl = "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + secret + "_z.jpg"
             plvUrl.displayUrl = when (super.getQuality("flickr")) {
                 "original" -> plvUrl.biggestUrl
-                "large" -> "https://farm${farm}.staticflickr.com/${server}/${id}_${secret}_b.jpg"
-                "medium" -> plvUrl.thumbUrl
-                else -> null
+                "large"    -> "https://farm${farm}.staticflickr.com/${server}/${id}_${secret}_b.jpg"
+                "medium"   -> plvUrl.thumbUrl
+                else       -> null
             }
 
             return plvUrl
@@ -333,7 +333,7 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
         override fun getPLVUrl() {
             when {
                 url.contains("nico.ms") -> super.getId(url, "^https?://nico\\.ms/im(\\d+)")
-                else -> super.getId(url, "^https?://seiga.nicovideo.jp/seiga/im(\\d+)")
+                else                    -> super.getId(url, "^https?://seiga.nicovideo.jp/seiga/im(\\d+)")
             }?.let { id ->
                 val plvUrl = PLVUrl(url)
 
@@ -375,9 +375,9 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
             plvUrl.thumbUrl = "http://lohas.nicoseiga.jp/img/" + id + "m"
             plvUrl.displayUrl = when (quality) {
                 "original" -> biggest_url
-                "large" -> "http://lohas.nicoseiga.jp/img/" + id + "l"
-                "medium" -> plvUrl.thumbUrl
-                else -> null
+                "large"    -> "http://lohas.nicoseiga.jp/img/" + id + "l"
+                "medium"   -> plvUrl.thumbUrl
+                else       -> null
             }
 
             return plvUrl
