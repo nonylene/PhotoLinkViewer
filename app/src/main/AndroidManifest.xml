@@ -122,20 +122,29 @@
             </intent-filter>
 
             <intent-filter
-                android:label="PhotoLinkViewer - Vine">
+                android:label="PhotoLinkViewer - tumblr">
                 <action android:name="android.intent.action.VIEW"/>
 
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
 
                 <data
-                    android:host="vine.co"
-                    android:pathPattern="/v/..*"
+                    android:host="*.tumblr.com"
+                    android:pathPattern="/post/..*"
                     android:scheme="http"/>
+            </intent-filter>
+
+            <!-- separating because of unavailable of intent -->
+            <intent-filter
+                android:label="PhotoLinkViewer - tumblr">
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+
                 <data
-                    android:host="vine.co"
-                    android:pathPattern="/v/..*"
-                    android:scheme="https"/>
+                    android:host="tmblr.co"
+                    android:scheme="http"/>
             </intent-filter>
 
             <intent-filter
