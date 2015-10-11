@@ -489,16 +489,40 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
                 if (!"photo".equals(it)) throw IllegalStateException("Type of this post is ${it}, not photo!")
             }
 
+            val quality = super.getQuality("tumblr")
             val photos = post.getJSONArray("photos")
-            return (0..photos.length() - 1).map {
+
+            return (0..photos.length() - 1).map { i ->
                 val plvUrl = PLVUrl(url)
                 plvUrl.fileName = id
                 plvUrl.siteName = "tumblr"
-                val photo = photos.getJSONObject(it)
+
+                val photo = photos.getJSONObject(i)
                 plvUrl.biggestUrl = photo.getJSONObject("original_size").getString("url")
-                // alt_sizes etc
+
+                val altPhotos = photo.getJSONArray("alt_sizes").let {
+                    (0..it.length() - 1).map { i ->
+                        Photo(it.getJSONObject(i))
+                    }
+                }.sortedBy { it.width }
+
+                plvUrl.thumbUrl = altPhotos.getOrElse(2) { altPhotos.last() }.url
+                plvUrl.displayUrl = when (quality) {
+                    "original" -> plvUrl.biggestUrl
+                    "large"    -> altPhotos.getOrElse(4) { altPhotos.last() }.url
+                    "medium"   -> altPhotos.getOrElse(3) { altPhotos.last() }.url
+                    "small"    -> plvUrl.thumbUrl
+                    else       -> null
+                }
+
                 plvUrl
             }.toTypedArray()
+        }
+
+        private inner class Photo(photo : JSONObject) {
+            val url = photo.getString("url")
+            val width = photo.getInt("width")
+            val height = photo.getInt("height")
         }
     }
 }
