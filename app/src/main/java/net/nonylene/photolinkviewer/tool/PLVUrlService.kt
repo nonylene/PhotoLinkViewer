@@ -3,19 +3,23 @@ package net.nonylene.photolinkviewer.tool
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
-import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.preference.PreferenceManager
 import android.util.Base64
 import android.widget.Toast
 
 import com.android.volley.Response
 import com.android.volley.toolbox.Volley
+import com.squareup.okhttp.Callback
+import com.squareup.okhttp.Request
+import net.nonylene.photolinkviewer.controller.RedirectUrlController
 
 import net.nonylene.photolinkviewer.R
-import net.nonylene.photolinkviewer.async.AsyncGetURL
 
 import org.json.JSONException
 import org.json.JSONObject
+import java.io.IOException
 
 import java.util.regex.Pattern
 
@@ -343,14 +347,20 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
                 plvUrl.siteName = "nico"
                 plvUrl.fileName = id
 
-                val task = object : AsyncGetURL() {
-                    override fun onPostExecute(redirect: String) {
-                        super.onPostExecute(redirect)
-                        listener.onGetPLVUrlFinished(arrayOf(parseNico(redirect, id, plvUrl)))
+                RedirectUrlController(object : Callback{
+                    override fun onResponse(response: com.squareup.okhttp.Response) {
+                        Handler(Looper.getMainLooper()).post {
+                            listener.onGetPLVUrlFinished(arrayOf(parseNico(response.request().urlString(), id, plvUrl)))
+                        }
                     }
-                }
 
-                task.execute("http://seiga.nicovideo.jp/image/source/" + id)
+                    override fun onFailure(request: Request, e: IOException) {
+                        e.printStackTrace()
+                        Handler(Looper.getMainLooper()).post {
+                            listener.onGetPLVUrlFailed("connection error!")
+                        }
+                    }
+                }).getRedirect("http://seiga.nicovideo.jp/image/source/" + id)
             }
         }
 
@@ -426,22 +436,30 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
         override fun getPLVUrl() {
             if (!url.contains("tmblr.co")) requestAPI(url)
 
-            val task = object : AsyncGetURL() {
-                override fun onPostExecute(redirect: String) {
-                    super.onPostExecute(redirect)
-                    requestAPI(redirect)
+            RedirectUrlController(object : Callback{
+                override fun onResponse(response: com.squareup.okhttp.Response) {
+                    Handler(Looper.getMainLooper()).post {
+                        requestAPI(response.request().urlString())
+                    }
                 }
-            }
 
-            task.execute(url)
+                override fun onFailure(request: Request, e: IOException) {
+                    e.printStackTrace()
+                    Handler(Looper.getMainLooper()).post {
+                        listener.onGetPLVUrlFailed("connection error!")
+                    }
+                }
+            }).getRedirect(url)
         }
 
 
         private fun requestAPI(regularUrl : String){
-            val matcher = Pattern.compile("^https?://([^/]+)/post/(\\d+)/").matcher(regularUrl)
+            val matcher = Pattern.compile("^https?://([^/]+)/post/(\\d+)").matcher(regularUrl)
             if (!matcher.find()) {
                 super.onParseFailed()
+                return
             }
+
             listener.onURLAccepted()
 
             val host = matcher.group(1)
