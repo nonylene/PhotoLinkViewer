@@ -26,7 +26,7 @@ public class TwitterStatusAdapter extends BaseAdapter implements UserTweetView.T
     private ImageLoader imageLoader;
     private boolean isRequesting;
 
-    public TwitterStatusAdapter(Context context, ImageLoader imageLoader) {
+    public TwitterStatusAdapter(ImageLoader imageLoader) {
         this.imageLoader = imageLoader;
     }
 
@@ -153,9 +153,7 @@ public class TwitterStatusAdapter extends BaseAdapter implements UserTweetView.T
 
     public interface TwitterAdapterListener {
         void onShowFragmentRequired(PLVUrl plvUrl);
-
         void onVideoShowFragmentRequired(PLVUrl plvUrl);
-
         void onReadMoreClicked();
     }
 }

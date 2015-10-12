@@ -100,7 +100,7 @@ public class TwitterDisplay extends Activity implements TwitterStatusAdapter.Twi
         if (!url.contains("twitter.com")) return;
 
         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-        statusAdapter = new TwitterStatusAdapter(this, new ImageLoader(queue, new BitmapCache()));
+        statusAdapter = new TwitterStatusAdapter(new ImageLoader(queue, new BitmapCache()));
         statusAdapter.setTwitterAdapterListener(this);
 
         ListView listView = (ListView) findViewById(R.id.twitter_list_view);
