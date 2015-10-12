@@ -1,17 +1,14 @@
 package net.nonylene.photolinkviewer.view
 
-import android.annotation.TargetApi
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
-import butterknife.bindView
 import com.android.volley.toolbox.ImageLoader
 import com.android.volley.toolbox.NetworkImageView
 import net.nonylene.photolinkviewer.R
@@ -22,36 +19,38 @@ import twitter4j.Status
 import java.text.SimpleDateFormat
 import java.util.*
 
-class TwitterView : LinearLayout {
+class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(context, attrs) {
 
-    private val textView: TextView by bindView(R.id.twTxt)
-    private val snView: TextView by bindView(R.id.twSN)
-    private val dayView: TextView by bindView(R.id.twDay)
-    private val favView: TextView by bindView(R.id.favCount)
-    private val rtView: TextView by bindView(R.id.rtCount)
-    private val iconView: NetworkImageView by bindView(R.id.twImageView)
-    private val urlBaseLayout: LinearLayout by bindView(R.id.url_linear)
-    private val urlLayout: LinearLayout by bindView(R.id.url_base)
-    private val urlPhotoLayout: LinearLayout by bindView(R.id.url_photos)
-    private val photoBaseLayout: LinearLayout by bindView(R.id.photo_base)
-    private val photoLayout: LinearLayout by bindView(R.id.photos)
+    private var textView: TextView? = null
+    private var snView: TextView? = null
+    private var dayView: TextView? = null
+    private var favView: TextView? = null
+    private var rtView: TextView? = null
+    private var iconView: NetworkImageView? = null
+    private var urlBaseLayout: LinearLayout? = null
+    private var urlLayout: LinearLayout? = null
+    private var urlPhotoLayout: LinearLayout? = null
+    private var photoBaseLayout: LinearLayout? = null
+    private var photoLayout: LinearLayout? = null
 
     public var imageLoader: ImageLoader? = null
     public var twitterViewListener: TwitterViewListener? = null
 
-    private val dp = context.resources.displayMetrics.density
+    private val DP = context.resources.displayMetrics.density
 
-    constructor(context: Context) : super(context) {
-    }
-
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-    }
-
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {
+    protected override fun onFinishInflate() {
+        super.onFinishInflate()
+        textView = findViewById(R.id.twTxt) as TextView
+        snView = findViewById(R.id.twSN) as TextView
+        dayView = findViewById(R.id.twDay) as TextView
+        favView = findViewById(R.id.favCount) as TextView
+        rtView= findViewById(R.id.rtCount) as TextView
+        iconView = findViewById(R.id.twImageView) as NetworkImageView
+        urlBaseLayout = findViewById(R.id.url_base) as LinearLayout
+        urlLayout = findViewById(R.id.url_linear) as LinearLayout
+        urlPhotoLayout = findViewById(R.id.url_photos) as LinearLayout
+        photoBaseLayout = findViewById(R.id.photo_base) as LinearLayout
+        photoLayout = findViewById(R.id.photos) as LinearLayout
     }
 
     public fun setEntry(status: Status) {
@@ -59,31 +58,31 @@ class TwitterView : LinearLayout {
         val finStatus = if (status.isRetweet) status.retweetedStatus else status
 
         // put status on text
-        textView.text = finStatus.text
-        dayView.text = SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(finStatus.createdAt)
-        favView.text = "fav: " + finStatus.favoriteCount
-        rtView.text = "RT: " + finStatus.retweetCount
+        textView!!.text = finStatus.text
+        dayView!!.text = SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(finStatus.createdAt)
+        favView!!.text = "fav: " + finStatus.favoriteCount
+        rtView!!.text = "RT: " + finStatus.retweetCount
 
         finStatus.user.let { user ->
-            snView.text = user.name + " @" + user.screenName
+            snView!!.text = user.name + " @" + user.screenName
 
             if (user.isProtected) {
                 // add key icon
-                val iconSize = (17 * dp).toInt()
+                val iconSize = (17 * DP).toInt()
                 // resize app icon (bitmap_factory makes low-quality images)
                 val protect = context.resources.getDrawable(R.drawable.lock)
                 protect.setBounds(0, 0, iconSize, iconSize)
                 // set app-icon and bounds
-                snView.setCompoundDrawables(protect, null, null, null)
+                snView!!.setCompoundDrawables(protect, null, null, null)
             } else {
                 // initialize
-                snView.setCompoundDrawables(null, null, null, null)
+                snView!!.setCompoundDrawables(null, null, null, null)
             }
             // set icon
-            iconView.setImageUrl(user.biggerProfileImageURL, imageLoader)
-            iconView.setBackgroundResource(R.drawable.twitter_image_design)
+            iconView!!.setImageUrl(user.biggerProfileImageURL, imageLoader)
+            iconView!!.setBackgroundResource(R.drawable.twitter_image_design)
             //show user when tapped
-            iconView.setOnClickListener {
+            iconView!!.setOnClickListener {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://twitter.com/" + user.screenName))
                 context.startActivity(intent)
             }
@@ -91,13 +90,13 @@ class TwitterView : LinearLayout {
 
         status.urlEntities.let { urlEntities ->
             // initialize
-            urlLayout.removeAllViews()
-            urlPhotoLayout.removeAllViews()
+            urlLayout!!.removeAllViews()
+            urlPhotoLayout!!.removeAllViews()
 
             if (!urlEntities.isEmpty()) {
-                urlBaseLayout.visibility = View.VISIBLE
+                urlBaseLayout!!.visibility = View.VISIBLE
 
-                val controller = PhotoViewController(urlPhotoLayout)
+                val controller = PhotoViewController(urlPhotoLayout!!)
 
                 for (urlEntity in urlEntities) {
                     val url = urlEntity.expandedURL
@@ -106,17 +105,17 @@ class TwitterView : LinearLayout {
                     service.requestGetPLVUrl(url)
                 }
             } else {
-                urlBaseLayout.visibility = View.GONE
+                urlBaseLayout!!.visibility = View.GONE
             }
         }
 
         status.extendedMediaEntities.let { mediaEntities ->
             // initialize
-            photoLayout.removeAllViews()
+            photoLayout!!.removeAllViews()
             if (!mediaEntities.isEmpty()) {
-                photoBaseLayout.visibility = View.VISIBLE
+                photoBaseLayout!!.visibility = View.VISIBLE
 
-                val controller = PhotoViewController(photoLayout)
+                val controller = PhotoViewController(photoLayout!!)
 
                 for (mediaEntity in mediaEntities) {
                     val url = mediaEntity.mediaURLHttps
@@ -136,10 +135,11 @@ class TwitterView : LinearLayout {
                     }
                 }
             } else {
-                photoBaseLayout.visibility = View.GONE
+                photoBaseLayout!!.visibility = View.GONE
             }
         }
     }
+
 
     private fun getPLVUrlListener(controller: PhotoViewController): PLVUrlService.PLVUrlListener {
         return (object : PLVUrlService.PLVUrlListener {
@@ -163,13 +163,13 @@ class TwitterView : LinearLayout {
     }
 
     private fun addUrl(url: String) {
-        val textView = LayoutInflater.from(urlLayout.context).inflate(R.layout.twitter_url, urlLayout, false) as TextView
+        val textView = LayoutInflater.from(urlLayout!!.context).inflate(R.layout.twitter_url, urlLayout, false) as TextView
         textView.text = url
         textView.paint.isUnderlineText = true
         textView.setOnClickListener {
             context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
         }
-        urlLayout.addView(textView)
+        urlLayout!!.addView(textView)
     }
 
     private fun getBiggestMp4Url(variants: Array<ExtendedMediaEntity.Variant>): String {
