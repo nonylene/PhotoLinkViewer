@@ -36,6 +36,10 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
     public var imageLoader: ImageLoader? = null
     public var twitterViewListener: TwitterViewListener? = null
 
+    public var status : Status? = null
+        private set
+
+
     private val DP = context.resources.displayMetrics.density
 
     protected override fun onFinishInflate() {
@@ -54,6 +58,8 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
     }
 
     public fun setEntry(status: Status) {
+        this.status = status
+
         //retweet check
         val finStatus = if (status.isRetweet) status.retweetedStatus else status
 
