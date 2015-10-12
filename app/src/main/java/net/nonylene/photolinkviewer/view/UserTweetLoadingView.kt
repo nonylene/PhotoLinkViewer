@@ -6,10 +6,10 @@ import android.util.TypedValue
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
-import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import net.nonylene.photolinkviewer.R
 
-class UserTweetLoadingView(context: Context, attr: AttributeSet?) : LinearLayout(context, attr){
+class UserTweetLoadingView(context: Context, attr: AttributeSet?) : RelativeLayout(context, attr){
 
     private val rotateAnimation : Animation = AnimationUtils.loadAnimation(context, R.anim.rotate)
     private val selectableBackgroundId : Int

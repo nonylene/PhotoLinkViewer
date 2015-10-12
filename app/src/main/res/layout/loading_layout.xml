@@ -1,22 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<net.nonylene.photolinkviewer.view.UserTweetLoadingView xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:gravity="center"
-              android:background="?android:attr/selectableItemBackground"
-              android:orientation="horizontal"
-              android:padding="10dp">
+<net.nonylene.photolinkviewer.view.UserTweetLoadingView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/twitter_back">
 
-    <ImageView
-        android:id="@+id/loading_imageview"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="10dp"
-        android:src="@drawable/ic_autorenew_black_24dp"/>
+        android:background="?android:attr/selectableItemBackground"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="10dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Read more..."/>
+        <ImageView
+            android:id="@+id/loading_imageview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/ic_autorenew_black_24dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Read more..."/>
+
+    </LinearLayout>
 
 </net.nonylene.photolinkviewer.view.UserTweetLoadingView>
