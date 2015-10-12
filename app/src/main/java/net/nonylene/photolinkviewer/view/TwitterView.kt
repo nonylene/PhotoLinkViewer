@@ -89,53 +89,55 @@ class TwitterView : LinearLayout {
             }
         }
 
-        val urlEntities = status.urlEntities
-        // initialize
-        urlLayout.removeAllViews()
-        urlPhotoLayout.removeAllViews()
+        status.urlEntities.let { urlEntities ->
+            // initialize
+            urlLayout.removeAllViews()
+            urlPhotoLayout.removeAllViews()
 
-        if (!urlEntities.isEmpty()) {
-            urlBaseLayout.visibility = View.VISIBLE
+            if (!urlEntities.isEmpty()) {
+                urlBaseLayout.visibility = View.VISIBLE
 
-            val controller = PhotoViewController(urlPhotoLayout)
+                val controller = PhotoViewController(urlPhotoLayout)
 
-            for (urlEntity in urlEntities) {
-                val url = urlEntity.expandedURL
-                addUrl(url)
-                val service = PLVUrlService(context, getPLVUrlListener(controller))
-                service.requestGetPLVUrl(url)
-            }
-        } else {
-            urlBaseLayout.visibility = View.GONE
-        }
-
-        val mediaEntities = status.extendedMediaEntities
-        // initialize
-        photoLayout.removeAllViews()
-        if (!mediaEntities.isEmpty()) {
-            photoBaseLayout.visibility = View.VISIBLE
-
-            val controller = PhotoViewController(photoLayout)
-
-            for (mediaEntity in mediaEntities) {
-                val url = mediaEntity.mediaURLHttps
-
-                if (mediaEntity.type in arrayOf("animated_gif", "video")) {
-                    mediaEntity.videoAspectRatioHeight
-                    val file_url = getBiggestMp4Url(mediaEntity.videoVariants)
-                    val plvUrl = PLVUrl(mediaEntity.mediaURLHttps)
-                    plvUrl.siteName = "twitter"
-                    plvUrl.thumbUrl = mediaEntity.mediaURLHttps
-                    plvUrl.displayUrl = file_url
-                    plvUrl.setIsVideo(true)
-                    controller.setVideoUrl(controller.addImageView(), plvUrl)
-                } else {
+                for (urlEntity in urlEntities) {
+                    val url = urlEntity.expandedURL
+                    addUrl(url)
                     val service = PLVUrlService(context, getPLVUrlListener(controller))
                     service.requestGetPLVUrl(url)
                 }
+            } else {
+                urlBaseLayout.visibility = View.GONE
             }
-        } else {
-            photoBaseLayout.visibility = View.GONE
+        }
+
+        status.extendedMediaEntities.let { mediaEntities ->
+            // initialize
+            photoLayout.removeAllViews()
+            if (!mediaEntities.isEmpty()) {
+                photoBaseLayout.visibility = View.VISIBLE
+
+                val controller = PhotoViewController(photoLayout)
+
+                for (mediaEntity in mediaEntities) {
+                    val url = mediaEntity.mediaURLHttps
+
+                    if (mediaEntity.type in arrayOf("animated_gif", "video")) {
+                        mediaEntity.videoAspectRatioHeight
+                        val file_url = getBiggestMp4Url(mediaEntity.videoVariants)
+                        val plvUrl = PLVUrl(mediaEntity.mediaURLHttps)
+                        plvUrl.siteName = "twitter"
+                        plvUrl.thumbUrl = mediaEntity.mediaURLHttps
+                        plvUrl.displayUrl = file_url
+                        plvUrl.setIsVideo(true)
+                        controller.setVideoUrl(controller.addImageView(), plvUrl)
+                    } else {
+                        val service = PLVUrlService(context, getPLVUrlListener(controller))
+                        service.requestGetPLVUrl(url)
+                    }
+                }
+            } else {
+                photoBaseLayout.visibility = View.GONE
+            }
         }
     }
 
