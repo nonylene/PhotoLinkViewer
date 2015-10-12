@@ -24,20 +24,20 @@ import java.util.*
 
 class TwitterView : LinearLayout {
 
-    private val textView : TextView by bindView(R.id.twTxt)
-    private val snView : TextView by bindView(R.id.twSN)
-    private val dayView : TextView by bindView(R.id.twDay)
-    private val favView : TextView by bindView(R.id.favCount)
-    private val rtView : TextView by bindView(R.id.rtCount)
-    private val iconView : NetworkImageView by bindView(R.id.twImageView)
-    private val urlBaseLayout : LinearLayout by bindView(R.id.url_linear)
-    private val urlLayout : LinearLayout by bindView(R.id.url_base)
-    private val urlPhotoLayout : LinearLayout by bindView(R.id.url_photos)
-    private val photoBaseLayout : LinearLayout by bindView(R.id.photo_base)
-    private val photoLayout : LinearLayout by bindView(R.id.photos)
+    private val textView: TextView by bindView(R.id.twTxt)
+    private val snView: TextView by bindView(R.id.twSN)
+    private val dayView: TextView by bindView(R.id.twDay)
+    private val favView: TextView by bindView(R.id.favCount)
+    private val rtView: TextView by bindView(R.id.rtCount)
+    private val iconView: NetworkImageView by bindView(R.id.twImageView)
+    private val urlBaseLayout: LinearLayout by bindView(R.id.url_linear)
+    private val urlLayout: LinearLayout by bindView(R.id.url_base)
+    private val urlPhotoLayout: LinearLayout by bindView(R.id.url_photos)
+    private val photoBaseLayout: LinearLayout by bindView(R.id.photo_base)
+    private val photoLayout: LinearLayout by bindView(R.id.photos)
 
-    public var imageLoader : ImageLoader? = null
-    public var twitterViewListener : TwitterViewListener? = null
+    public var imageLoader: ImageLoader? = null
+    public var twitterViewListener: TwitterViewListener? = null
 
     private val dp = context.resources.displayMetrics.density
 
@@ -54,7 +54,7 @@ class TwitterView : LinearLayout {
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {
     }
 
-    public fun setEntry(status : Status) {
+    public fun setEntry(status: Status) {
         //retweet check
         val finStatus = if (status.isRetweet) status.retweetedStatus else status
 
@@ -82,21 +82,19 @@ class TwitterView : LinearLayout {
             // set icon
             iconView.setImageUrl(user.biggerProfileImageURL, imageLoader)
             iconView.setBackgroundResource(R.drawable.twitter_image_design)
-
             //show user when tapped
-            iconView.setOnClickListener{
+            iconView.setOnClickListener {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://twitter.com/" + user.screenName))
                 context.startActivity(intent)
             }
         }
 
-
         val urlEntities = status.urlEntities
         // initialize
         urlLayout.removeAllViews()
         urlPhotoLayout.removeAllViews()
-        if (urlEntities.size() > 0) {
 
+        if (!urlEntities.isEmpty()) {
             urlBaseLayout.visibility = View.VISIBLE
 
             val controller = PhotoViewController(urlPhotoLayout)
@@ -104,7 +102,6 @@ class TwitterView : LinearLayout {
             for (urlEntity in urlEntities) {
                 val url = urlEntity.expandedURL
                 addUrl(url)
-
                 val service = PLVUrlService(context, getPLVUrlListener(controller))
                 service.requestGetPLVUrl(url)
             }
@@ -115,17 +112,15 @@ class TwitterView : LinearLayout {
         val mediaEntities = status.extendedMediaEntities
         // initialize
         photoLayout.removeAllViews()
-        if (mediaEntities.size() > 0) {
-
+        if (!mediaEntities.isEmpty()) {
             photoBaseLayout.visibility = View.VISIBLE
 
             val controller = PhotoViewController(photoLayout)
 
             for (mediaEntity in mediaEntities) {
-
                 val url = mediaEntity.mediaURLHttps
 
-                if (("animated_gif") == mediaEntity.type || ("video") == mediaEntity.type) {
+                if (mediaEntity.type in arrayOf("animated_gif", "video")) {
                     mediaEntity.videoAspectRatioHeight
                     val file_url = getBiggestMp4Url(mediaEntity.videoVariants)
                     val plvUrl = PLVUrl(mediaEntity.mediaURLHttps)
@@ -144,18 +139,18 @@ class TwitterView : LinearLayout {
         }
     }
 
-    private fun getPLVUrlListener(controller : PhotoViewController) : PLVUrlService.PLVUrlListener {
+    private fun getPLVUrlListener(controller: PhotoViewController): PLVUrlService.PLVUrlListener {
         return (object : PLVUrlService.PLVUrlListener {
-            var position : Int? = null
+            var position: Int? = null
 
-            override public fun onGetPLVUrlFinished(plvUrls : Array<PLVUrl>) {
+            override public fun onGetPLVUrlFinished(plvUrls: Array<PLVUrl>) {
                 val plvUrl = plvUrls[0]
 
                 if (plvUrl.isVideo) controller.setVideoUrl(position!!, plvUrl)
                 else controller.setImageUrl(position!!, plvUrl)
             }
 
-            override public fun onGetPLVUrlFailed(text : String) {
+            override public fun onGetPLVUrlFailed(text: String) {
 
             }
 
@@ -165,19 +160,19 @@ class TwitterView : LinearLayout {
         })
     }
 
-    private fun addUrl(url : String) {
+    private fun addUrl(url: String) {
         val textView = LayoutInflater.from(urlLayout.context).inflate(R.layout.twitter_url, urlLayout, false) as TextView
         textView.text = url
         textView.paint.isUnderlineText = true
-        textView.setOnClickListener{
+        textView.setOnClickListener {
             context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
         }
         urlLayout.addView(textView)
     }
 
-    private fun getBiggestMp4Url(variants : Array<ExtendedMediaEntity.Variant>) : String {
+    private fun getBiggestMp4Url(variants: Array<ExtendedMediaEntity.Variant>): String {
         return variants.filter {
-            ("video/mp4").equals(it.contentType)
+            ("video/mp4") == it.contentType
         }.maxBy { it.bitrate }!!.url
     }
 
@@ -212,7 +207,7 @@ class TwitterView : LinearLayout {
         fun setImageUrl(position: Int, plvUrl: PLVUrl) {
             val imageView = imageViewList.get(position)
 
-            imageView.setOnClickListener{
+            imageView.setOnClickListener {
                 twitterViewListener?.onShowFragmentRequired(plvUrl)
             }
             imageView.setImageUrl(plvUrl.thumbUrl, imageLoader)
@@ -222,7 +217,7 @@ class TwitterView : LinearLayout {
             val imageView = imageViewList.get(position)
             (imageView.parent as FrameLayout).getChildAt(1).visibility = View.VISIBLE
 
-            imageView.setOnClickListener{
+            imageView.setOnClickListener {
                 twitterViewListener?.onVideoShowFragmentRequired(plvUrl)
             }
             imageView.setImageUrl(plvUrl.thumbUrl, imageLoader)
@@ -230,7 +225,7 @@ class TwitterView : LinearLayout {
     }
 
     public interface TwitterViewListener {
-        fun onShowFragmentRequired(plvUrl : PLVUrl)
-        fun onVideoShowFragmentRequired(plvUrl : PLVUrl)
+        fun onShowFragmentRequired(plvUrl: PLVUrl)
+        fun onVideoShowFragmentRequired(plvUrl: PLVUrl)
     }
 }
