@@ -460,8 +460,6 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
                 return
             }
 
-            listener.onURLAccepted()
-
             val host = matcher.group(1)
             val id = matcher.group(2)
 
@@ -488,6 +486,8 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
             post.getString("type").let {
                 if (!"photo".equals(it)) throw IllegalStateException("Type of this post is ${it}, not photo!")
             }
+
+            listener.onURLAccepted()
 
             val quality = super.getQuality("tumblr")
             val photos = post.getJSONArray("photos")
