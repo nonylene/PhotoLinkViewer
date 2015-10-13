@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <net.nonylene.photolinkviewer.view.UserTweetView
     android:id="@+id/baseLayout"
-              xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:padding="4dp"
-              android:orientation="vertical">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/twitter_back"
+    android:orientation="vertical"
+    android:padding="4dp">
 
 
     <LinearLayout
