@@ -121,6 +121,8 @@ class TwitterDisplay : Activity(), TwitterStatusAdapter.TwitterAdapterListener, 
         mTwitterSingleLoadingView!!.visibility = View.GONE
         mTwitterSingleLoadingView!!.loadingViewListener = this
 
+        mTwitterSingleScrollView!!.isVerticalScrollBarEnabled = false
+
         val matcher = Pattern.compile("^https?://twitter\\.com/\\w+/status[es]*/(\\d+)").matcher(url)
         if (!matcher.find()) return
         val id_long = java.lang.Long.parseLong(matcher.group(1))
@@ -186,6 +188,7 @@ class TwitterDisplay : Activity(), TwitterStatusAdapter.TwitterAdapterListener, 
         } else {
             replyId = mTwitterSingleView!!.status!!.inReplyToStatusId
             mTwitterSingleScrollView!!.max = 200
+            mTwitterSingleScrollView!!.isVerticalScrollBarEnabled = true
             mTweetBaseLayout!!.setGravity(Gravity.CENTER_HORIZONTAL)
         }
         twitter!!.showStatus(replyId)
