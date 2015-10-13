@@ -38,7 +38,6 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
     public var status : Status? = null
         private set
 
-
     private val DP = context.resources.displayMetrics.density
 
     protected override fun onFinishInflate() {
