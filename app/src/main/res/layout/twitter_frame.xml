@@ -3,7 +3,7 @@
              android:layout_width="wrap_content"
              android:layout_height="wrap_content" >
 
-    <net.nonylene.photolinkviewer.tool.SquareNetworkImageView
+    <net.nonylene.photolinkviewer.view.SquareNetworkImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="1dp"

@@ -1,4 +1,4 @@
-package net.nonylene.photolinkviewer.tool;
+package net.nonylene.photolinkviewer.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
