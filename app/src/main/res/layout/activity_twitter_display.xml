@@ -15,16 +15,36 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"/>
 
-    <ListView
-        android:id="@+id/twitter_list_view"
+    <LinearLayout
+        android:id="@+id/tweet_base_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_height="match_parent"
         android:layout_marginBottom="50dp"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:layout_marginTop="50dp"
-        android:background="@color/twitter_back"/>
+        android:animateLayoutChanges="true"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:orientation="vertical">
+
+            <include
+                android:id="@+id/twitter_single_view"
+                layout="@layout/twitter_status_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <include
+                android:id="@+id/twitter_single_loading"
+                layout="@layout/loading_layout"/>
+        </LinearLayout>
+
+    </LinearLayout>
 
     <FrameLayout
         android:id="@+id/show_frag_replace"
