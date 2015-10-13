@@ -27,22 +27,36 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+        <net.nonylene.photolinkviewer.view.HeightMaxableScrollView
+            android:id="@+id/twitter_single_scroll"
             android:layout_marginBottom="10dp"
-            android:orientation="vertical">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-            <include
-                android:id="@+id/twitter_single_view"
-                layout="@layout/twitter_status_list"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-            <include
-                android:id="@+id/twitter_single_loading"
-                layout="@layout/loading_layout"/>
-        </LinearLayout>
+                <include
+                    android:id="@+id/twitter_single_view"
+                    layout="@layout/twitter_status_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <ImageView
+                    android:id="@+id/twitter_single_divider"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/divider"/>
+
+                <include
+                    android:id="@+id/twitter_single_loading"
+                    layout="@layout/loading_layout"/>
+            </LinearLayout>
+
+        </net.nonylene.photolinkviewer.view.HeightMaxableScrollView>
 
     </LinearLayout>
 

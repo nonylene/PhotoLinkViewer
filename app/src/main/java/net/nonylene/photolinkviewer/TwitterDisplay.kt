@@ -33,6 +33,7 @@ import net.nonylene.photolinkviewer.tool.PLVUrl
 import net.nonylene.photolinkviewer.tool.PLVUrlService
 import net.nonylene.photolinkviewer.tool.ProgressBarListener
 import net.nonylene.photolinkviewer.tool.TwitterStatusAdapter
+import net.nonylene.photolinkviewer.view.HeightMaxableScrollView
 import net.nonylene.photolinkviewer.view.UserTweetLoadingView
 import net.nonylene.photolinkviewer.view.UserTweetView
 
@@ -56,6 +57,7 @@ class TwitterDisplay : Activity(), TwitterStatusAdapter.TwitterAdapterListener, 
     private var isInitialized = false
     private var mImageLoader: ImageLoader? = null
 
+    private var mTwitterSingleScrollView : HeightMaxableScrollView? = null
     private var mTwitterSingleView: UserTweetView? = null
     private var mTwitterSingleLoadingView: UserTweetLoadingView? = null
     private var mTwitterSingleDivider: View? = null
@@ -66,6 +68,7 @@ class TwitterDisplay : Activity(), TwitterStatusAdapter.TwitterAdapterListener, 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_twitter_display)
 
+        mTwitterSingleScrollView = findViewById(R.id.twitter_single_scroll) as HeightMaxableScrollView
         mTwitterSingleView = findViewById(R.id.twitter_single_view) as UserTweetView
         mTwitterSingleLoadingView = findViewById(R.id.twitter_single_loading) as UserTweetLoadingView
         mTwitterSingleDivider = findViewById(R.id.twitter_single_divider) as ImageView
@@ -182,6 +185,7 @@ class TwitterDisplay : Activity(), TwitterStatusAdapter.TwitterAdapterListener, 
             replyId = statusAdapter!!.lastStatus!!.inReplyToStatusId
         } else {
             replyId = mTwitterSingleView!!.status!!.inReplyToStatusId
+            mTwitterSingleScrollView!!.max = 200
             mTweetBaseLayout!!.setGravity(Gravity.CENTER_HORIZONTAL)
         }
         twitter!!.showStatus(replyId)
