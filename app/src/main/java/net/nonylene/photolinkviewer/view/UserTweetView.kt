@@ -14,7 +14,6 @@ import com.android.volley.toolbox.NetworkImageView
 import net.nonylene.photolinkviewer.R
 import net.nonylene.photolinkviewer.tool.PLVUrl
 import net.nonylene.photolinkviewer.tool.PLVUrlService
-import twitter4j.ExtendedMediaEntity
 import twitter4j.Status
 import java.text.SimpleDateFormat
 import java.util.*
@@ -128,7 +127,12 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
 
                     if (mediaEntity.type in arrayOf("animated_gif", "video")) {
                         mediaEntity.videoAspectRatioHeight
-                        val file_url = getBiggestMp4Url(mediaEntity.videoVariants)
+
+                        // get biggest url
+                        val file_url = mediaEntity.videoVariants.filter {
+                            ("video/mp4") == it.contentType
+                        }.maxBy { it.bitrate }!!.url
+
                         val plvUrl = PLVUrl(mediaEntity.mediaURLHttps)
                         plvUrl.siteName = "twitter"
                         plvUrl.thumbUrl = mediaEntity.mediaURLHttps
@@ -176,12 +180,6 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
             context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
         }
         urlLayout!!.addView(textView)
-    }
-
-    private fun getBiggestMp4Url(variants: Array<ExtendedMediaEntity.Variant>): String {
-        return variants.filter {
-            ("video/mp4") == it.contentType
-        }.maxBy { it.bitrate }!!.url
     }
 
     private inner class PhotoViewController(private val baseLayout: LinearLayout) {
