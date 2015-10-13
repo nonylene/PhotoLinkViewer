@@ -14,15 +14,11 @@ import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v7.app.AlertDialog
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.Toast
+import android.widget.*
 
 import com.android.volley.toolbox.ImageLoader
 import com.android.volley.toolbox.Volley
@@ -62,6 +58,7 @@ class TwitterDisplay : Activity(), TwitterStatusAdapter.TwitterAdapterListener, 
 
     private var mTwitterSingleView: UserTweetView? = null
     private var mTwitterSingleLoadingView: UserTweetLoadingView? = null
+    private var mTwitterSingleDivider: View? = null
     private var mProgressBar: ProgressBar? = null
     private var mTweetBaseLayout: LinearLayout? = null
 
@@ -71,6 +68,7 @@ class TwitterDisplay : Activity(), TwitterStatusAdapter.TwitterAdapterListener, 
 
         mTwitterSingleView = findViewById(R.id.twitter_single_view) as UserTweetView
         mTwitterSingleLoadingView = findViewById(R.id.twitter_single_loading) as UserTweetLoadingView
+        mTwitterSingleDivider = findViewById(R.id.twitter_single_divider) as ImageView
         mProgressBar = findViewById(R.id.show_progress) as ProgressBar
         mTweetBaseLayout = findViewById(R.id.tweet_base_view) as LinearLayout
 
@@ -274,19 +272,21 @@ class TwitterDisplay : Activity(), TwitterStatusAdapter.TwitterAdapterListener, 
                         hideProgressBar()
                         mTwitterSingleView!!.visibility = View.VISIBLE
                         mTwitterSingleView!!.setEntry(status)
-                        if (status.inReplyToScreenName != null)
+                        if (status.inReplyToScreenName != null) {
                             mTwitterSingleLoadingView!!.visibility = View.VISIBLE
+                            mTwitterSingleDivider!!.visibility = View.VISIBLE
+                        }
+
                     }
                 } else {
                     if (statusAdapter == null) {
                         statusAdapter = TwitterStatusAdapter(mImageLoader!!)
-                        statusAdapter!!.setTwitterAdapterListener(this@TwitterDisplay)
-                        val recyclerView = LayoutInflater.from(this@TwitterDisplay)
-                                .inflate(R.layout.tweets_recycler_view, mTweetBaseLayout, false) as RecyclerView
-                        recyclerView.layoutManager = LinearLayoutManager(this@TwitterDisplay)
-                        recyclerView.adapter = statusAdapter
-                        mTweetBaseLayout!!.addView(recyclerView)
+                        statusAdapter!!.twitterAdapterListener = this@TwitterDisplay
+                        val listView = LayoutInflater.from(this@TwitterDisplay).inflate(R.layout.tweets_list_view, mTweetBaseLayout, false) as ListView
+                        listView.adapter = statusAdapter
+                        mTweetBaseLayout!!.addView(listView)
                         mTwitterSingleLoadingView!!.visibility = View.GONE
+                        mTwitterSingleDivider!!.visibility = View.GONE
                     }
                     statusAdapter!!.addItem(status)
                 }

@@ -1,9 +1,9 @@
 package net.nonylene.photolinkviewer.tool
 
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.BaseAdapter
 
 import com.android.volley.toolbox.ImageLoader
 
@@ -15,15 +15,16 @@ import java.util.ArrayList
 
 import twitter4j.Status
 
-class TwitterStatusAdapter(private val imageLoader: ImageLoader) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), UserTweetView.TwitterViewListener, UserTweetLoadingView.LoadingViewListener {
+class TwitterStatusAdapter(private val imageLoader: ImageLoader) : BaseAdapter(), UserTweetView.TwitterViewListener, UserTweetLoadingView.LoadingViewListener {
 
     private val statusList = ArrayList<Status?>()
-    private var twitterAdapterListener: TwitterAdapterListener? = null
+
+    var twitterAdapterListener: TwitterAdapterListener? = null
 
     private var isRequesting: Boolean = false
         set(value) {
             field = value
-            notifyItemChanged(statusList.size() - 1)
+            notifyDataSetChanged()
         }
 
     val lastStatus: Status?
@@ -39,21 +40,6 @@ class TwitterStatusAdapter(private val imageLoader: ImageLoader) : RecyclerView.
         twitterAdapterListener?.onVideoShowFragmentRequired(plvUrl)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder? {
-        val inflater = LayoutInflater.from(parent.context)
-        if (viewType == ItemType.LOADING.id)
-            return UserLoadingViewHolder(inflater.inflate(R.layout.loading_layout, parent, false))
-        else
-            return UserTweetViewHolder(inflater.inflate(R.layout.twitter_status_list, parent, false))
-    }
-
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when (getItemViewTypeEnum(position)) {
-            ItemType.STATUS -> (holder as UserTweetViewHolder).setContent(statusList.get(position)!!)
-            ItemType.LOADING -> (holder as UserLoadingViewHolder).setContent(isRequesting)
-        }
-    }
-
     override fun getItemViewType(position: Int): Int {
         return getItemViewTypeEnum(position).id
     }
@@ -62,24 +48,52 @@ class TwitterStatusAdapter(private val imageLoader: ImageLoader) : RecyclerView.
         return statusList.get(position)?.let { ItemType.STATUS } ?: ItemType.LOADING
     }
 
-    override fun getItemCount(): Int {
+    // not selectable base view
+    override public fun isEnabled(position : Int) : Boolean{
+        return getItemViewTypeEnum(position) != ItemType.STATUS;
+    }
+
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
+        val inflater = LayoutInflater.from(parent!!.context)
+        if (getItemViewTypeEnum(position) == ItemType.LOADING) {
+            val loadView = (convertView?.let { it } ?: inflater.inflate(R.layout.loading_layout, parent, false)) as UserTweetLoadingView
+            loadView.loadingViewListener = this
+            loadView.setIsRequesting(isRequesting)
+            return loadView
+        } else {
+            val tweetView = (convertView?.let { it } ?: inflater.inflate(R.layout.twitter_status_list, parent, false)) as UserTweetView
+            tweetView.imageLoader = imageLoader
+            tweetView.twitterViewListener = this
+            tweetView.setEntry(getItem(position)!!)
+            return tweetView
+        }
+    }
+
+    override fun getItem(position: Int): Status? {
+        return statusList.get(position)
+    }
+
+    override fun getItemId(position: Int): Long {
+        return 0
+    }
+
+    override fun getCount(): Int {
         return statusList.size()
     }
 
-    fun setTwitterAdapterListener(twitterAdapterListener: TwitterAdapterListener) {
-        this.twitterAdapterListener = twitterAdapterListener
+    override fun getViewTypeCount(): Int {
+        return ItemType.values().size()
     }
 
-    public fun addItem(status: Status) {
-        var startSize = statusList.size()
 
+    public fun addItem(status: Status) {
         // init -> add loading footer
         if (statusList.isEmpty()) statusList.addAll(arrayOf(status, null))
         else statusList.add(statusList.size() - 1, status)
 
         if (status.inReplyToScreenName == null) statusList.remove(statusList.size() - 1)
 
-        notifyItemRangeInserted(startSize - 1, statusList.size() - startSize)
+        notifyDataSetChanged()
 
         if (status.inReplyToScreenName != null){
             // auto pager
@@ -95,33 +109,6 @@ class TwitterStatusAdapter(private val imageLoader: ImageLoader) : RecyclerView.
 
     private enum class ItemType internal constructor(val id: Int) {
         STATUS(0), LOADING(1)
-    }
-
-    private inner class UserTweetViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val tweetView : UserTweetView
-
-        init {
-            tweetView = itemView as UserTweetView
-            tweetView.imageLoader = imageLoader
-            tweetView.twitterViewListener = this@TwitterStatusAdapter
-        }
-
-        public fun setContent(status : Status) {
-            tweetView.setEntry(status)
-        }
-    }
-
-    private inner class UserLoadingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val loadingView : UserTweetLoadingView
-
-        init {
-            loadingView = itemView as UserTweetLoadingView
-            loadingView.loadingViewListener = this@TwitterStatusAdapter
-        }
-
-        public fun setContent(isRequesting : Boolean) {
-            loadingView.setIsRequesting(isRequesting)
-        }
     }
 
     interface TwitterAdapterListener {
