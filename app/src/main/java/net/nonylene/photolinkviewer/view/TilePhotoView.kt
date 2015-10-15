@@ -12,6 +12,7 @@ import net.nonylene.photolinkviewer.R
 import net.nonylene.photolinkviewer.tool.PLVUrl
 import java.util.*
 
+// TODO: use gridView to multiple photos
 public class TilePhotoView(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs) {
     private val imageViewList = ArrayList<NetworkImageView>()
     private val inflater : LayoutInflater
@@ -21,6 +22,7 @@ public class TilePhotoView(context: Context, attrs: AttributeSet) : LinearLayout
 
     init {
         inflater = LayoutInflater.from(context)
+        orientation = LinearLayout.VERTICAL
     }
 
     public fun addImageView(): Int {

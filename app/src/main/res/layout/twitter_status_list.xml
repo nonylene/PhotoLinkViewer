@@ -109,8 +109,7 @@
             <net.nonylene.photolinkviewer.view.TilePhotoView
                 android:id="@+id/url_photos"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"/>
+                android:layout_height="wrap_content"/>
 
         </LinearLayout>
     </LinearLayout>
@@ -136,8 +135,7 @@
             android:id="@+id/photos"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"/>
+            android:layout_weight="1"/>
     </LinearLayout>
 
 </net.nonylene.photolinkviewer.view.UserTweetView>
