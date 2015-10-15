@@ -88,7 +88,6 @@ class TwitterDisplay : Activity(), TwitterStatusAdapter.TwitterAdapterListener, 
             Log.d("cache", "HTTP response cache installation failed")
         }
 
-        // get intent and purse url
         if (Intent.ACTION_VIEW != intent.action) {
             Toast.makeText(this, "Intent Error!", Toast.LENGTH_LONG).show()
             return
