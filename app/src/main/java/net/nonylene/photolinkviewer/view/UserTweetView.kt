@@ -6,7 +6,6 @@ import android.net.Uri
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.android.volley.toolbox.ImageLoader
@@ -16,7 +15,6 @@ import net.nonylene.photolinkviewer.tool.PLVUrl
 import net.nonylene.photolinkviewer.tool.PLVUrlService
 import twitter4j.Status
 import java.text.SimpleDateFormat
-import java.util.*
 
 class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(context, attrs) {
 
@@ -28,9 +26,9 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
     private var iconView: NetworkImageView? = null
     private var urlBaseLayout: LinearLayout? = null
     private var urlLayout: LinearLayout? = null
-    private var urlPhotoLayout: LinearLayout? = null
+    private var urlPhotoLayout: TilePhotoView? = null
     private var photoBaseLayout: LinearLayout? = null
-    private var photoLayout: LinearLayout? = null
+    private var photoLayout: TilePhotoView? = null
 
     public var imageLoader: ImageLoader? = null
     public var twitterViewListener: TwitterViewListener? = null
@@ -50,9 +48,9 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
         iconView = findViewById(R.id.twImageView) as NetworkImageView
         urlBaseLayout = findViewById(R.id.url_base) as LinearLayout
         urlLayout = findViewById(R.id.url_linear) as LinearLayout
-        urlPhotoLayout = findViewById(R.id.url_photos) as LinearLayout
+        urlPhotoLayout = findViewById(R.id.url_photos) as TilePhotoView
         photoBaseLayout = findViewById(R.id.photo_base) as LinearLayout
-        photoLayout = findViewById(R.id.photos) as LinearLayout
+        photoLayout = findViewById(R.id.photos) as TilePhotoView
     }
 
     public fun setEntry(status: Status) {
@@ -100,12 +98,13 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
             if (!urlEntities.isEmpty()) {
                 urlBaseLayout!!.visibility = View.VISIBLE
 
-                val controller = PhotoViewController(urlPhotoLayout!!)
+                urlPhotoLayout!!.twitterViewListener = twitterViewListener
+                urlPhotoLayout!!.imageLoader = imageLoader
 
                 for (urlEntity in urlEntities) {
                     val url = urlEntity.expandedURL
                     addUrl(url)
-                    val service = PLVUrlService(context, getPLVUrlListener(controller))
+                    val service = PLVUrlService(context, getPLVUrlListener(urlPhotoLayout!!))
                     service.requestGetPLVUrl(url)
                 }
             } else {
@@ -119,7 +118,8 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
             if (!mediaEntities.isEmpty()) {
                 photoBaseLayout!!.visibility = View.VISIBLE
 
-                val controller = PhotoViewController(photoLayout!!)
+                photoLayout!!.twitterViewListener = twitterViewListener
+                photoLayout!!.imageLoader = imageLoader
 
                 for (mediaEntity in mediaEntities) {
                     val url = mediaEntity.mediaURLHttps
@@ -137,9 +137,9 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
                         plvUrl.thumbUrl = mediaEntity.mediaURLHttps
                         plvUrl.displayUrl = file_url
                         plvUrl.setIsVideo(true)
-                        controller.setVideoUrl(controller.addImageView(), plvUrl)
+                        photoLayout!!.setVideoUrl(photoLayout!!.addImageView(), plvUrl)
                     } else {
-                        val service = PLVUrlService(context, getPLVUrlListener(controller))
+                        val service = PLVUrlService(context, getPLVUrlListener(photoLayout!!))
                         service.requestGetPLVUrl(url)
                     }
                 }
@@ -150,15 +150,15 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
     }
 
 
-    private fun getPLVUrlListener(controller: PhotoViewController): PLVUrlService.PLVUrlListener {
+    private fun getPLVUrlListener(tileView: TilePhotoView): PLVUrlService.PLVUrlListener {
         return (object : PLVUrlService.PLVUrlListener {
             var position: Int? = null
 
             override public fun onGetPLVUrlFinished(plvUrls: Array<PLVUrl>) {
                 val plvUrl = plvUrls[0]
 
-                if (plvUrl.isVideo) controller.setVideoUrl(position!!, plvUrl)
-                else controller.setImageUrl(position!!, plvUrl)
+                if (plvUrl.isVideo) tileView.setVideoUrl(position!!, plvUrl)
+                else tileView.setImageUrl(position!!, plvUrl)
             }
 
             override public fun onGetPLVUrlFailed(text: String) {
@@ -166,7 +166,7 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
             }
 
             override public fun onURLAccepted() {
-                position = controller.addImageView();
+                position = tileView.addImageView();
             }
         })
     }
@@ -179,54 +179,6 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
             context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
         }
         urlLayout!!.addView(textView)
-    }
-
-    private inner class PhotoViewController(private val baseLayout: LinearLayout) {
-        private val imageViewList = ArrayList<NetworkImageView>()
-        private val inflater: LayoutInflater
-
-        init {
-            inflater = LayoutInflater.from(baseLayout.context)
-        }
-
-        fun addImageView(): Int {
-            // prev is last linear_layout
-            val size = imageViewList.size()
-
-            val frameLayout: FrameLayout
-            if (size % 2 == 0) {
-                // make new linear_layout and put below prev
-                val new_layout = inflater.inflate(R.layout.twitter_photos, baseLayout, false) as LinearLayout
-                baseLayout.addView(new_layout)
-                frameLayout = new_layout.getChildAt(0) as FrameLayout
-            } else {
-                val prevLayout = baseLayout.getChildAt(baseLayout.childCount - 1) as LinearLayout
-                // put new photo below prev photo (not new linear_layout)
-                frameLayout = prevLayout.getChildAt(1) as FrameLayout
-            }
-            imageViewList.add(frameLayout.getChildAt(0) as NetworkImageView)
-
-            return size
-        }
-
-        fun setImageUrl(position: Int, plvUrl: PLVUrl) {
-            val imageView = imageViewList.get(position)
-
-            imageView.setOnClickListener {
-                twitterViewListener?.onShowFragmentRequired(plvUrl)
-            }
-            imageView.setImageUrl(plvUrl.thumbUrl, imageLoader)
-        }
-
-        fun setVideoUrl(position: Int, plvUrl: PLVUrl) {
-            val imageView = imageViewList.get(position)
-            (imageView.parent as FrameLayout).getChildAt(1).visibility = View.VISIBLE
-
-            imageView.setOnClickListener {
-                twitterViewListener?.onVideoShowFragmentRequired(plvUrl)
-            }
-            imageView.setImageUrl(plvUrl.thumbUrl, imageLoader)
-        }
     }
 
     public interface TwitterViewListener {
