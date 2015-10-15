@@ -112,8 +112,7 @@ class TwitterDisplay : Activity(), TwitterStatusAdapter.TwitterAdapterListener, 
             return
         }
 
-        val queue = Volley.newRequestQueue(applicationContext)
-        mImageLoader = ImageLoader(queue, BitmapCache())
+        mImageLoader = ImageLoader(Volley.newRequestQueue(applicationContext), BitmapCache())
         mTwitterSingleView!!.imageLoader = mImageLoader
         mTwitterSingleView!!.twitterViewListener = this
         mTwitterSingleView!!.visibility = View.GONE
@@ -127,9 +126,7 @@ class TwitterDisplay : Activity(), TwitterStatusAdapter.TwitterAdapterListener, 
         if (!matcher.find()) return
         val id_long = java.lang.Long.parseLong(matcher.group(1))
 
-        // oAuthed
         try {
-            // get twitter async
             twitter = MyAsyncTwitter.getAsyncTwitter(applicationContext)
             twitter!!.addListener(twitterListener)
             twitter!!.showStatus(id_long)
@@ -200,7 +197,7 @@ class TwitterDisplay : Activity(), TwitterStatusAdapter.TwitterAdapterListener, 
 
     class ChangeAccountDialog : DialogFragment() {
 
-        override fun onCreateDialog(savedInstanceState: Bundle): Dialog {
+        override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
             val accountsList = MyAsyncTwitter.getAccountsList(activity)
             val screen_list = accountsList.screenList
             val row_id_list = accountsList.rowIdList
