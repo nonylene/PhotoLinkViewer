@@ -7,7 +7,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.ScrollView
 
-class HeightMaxableScrollView : ScrollView {
+class HeightScalableScrollView : ScrollView {
 
     private val DP = context.resources.displayMetrics.density
 

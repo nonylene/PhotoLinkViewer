@@ -27,7 +27,7 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <net.nonylene.photolinkviewer.view.HeightMaxableScrollView
+        <net.nonylene.photolinkviewer.view.HeightScalableScrollView
             android:id="@+id/twitter_single_scroll"
             android:layout_marginBottom="10dp"
             android:layout_width="match_parent"
@@ -56,7 +56,7 @@
                     layout="@layout/loading_layout"/>
             </LinearLayout>
 
-        </net.nonylene.photolinkviewer.view.HeightMaxableScrollView>
+        </net.nonylene.photolinkviewer.view.HeightScalableScrollView>
 
     </LinearLayout>
 
