@@ -29,7 +29,7 @@ class TwitterStatusAdapter(private val imageLoader: ImageLoader) : BaseAdapter()
 
     val lastStatus: Status?
         get() {
-            return statusList.last()?.let { it } ?: statusList.get(statusList.size() - 2)
+            return statusList.last() ?: statusList.get(statusList.size() - 2)
         }
 
     override fun onShowFragmentRequired(plvUrl: PLVUrl) {
@@ -56,12 +56,12 @@ class TwitterStatusAdapter(private val imageLoader: ImageLoader) : BaseAdapter()
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
         val inflater = LayoutInflater.from(parent!!.context)
         if (getItemViewTypeEnum(position) == ItemType.LOADING) {
-            val loadView = (convertView?.let { it } ?: inflater.inflate(R.layout.loading_layout, parent, false)) as UserTweetLoadingView
+            val loadView = (convertView ?: inflater.inflate(R.layout.loading_layout, parent, false)) as UserTweetLoadingView
             loadView.loadingViewListener = this
             loadView.setIsRequesting(isRequesting)
             return loadView
         } else {
-            val tweetView = (convertView?.let { it } ?: inflater.inflate(R.layout.twitter_status_list, parent, false)) as UserTweetView
+            val tweetView = (convertView ?: inflater.inflate(R.layout.twitter_status_list, parent, false)) as UserTweetView
             tweetView.imageLoader = imageLoader
             tweetView.twitterViewListener = this
             tweetView.setEntry(getItem(position)!!)
