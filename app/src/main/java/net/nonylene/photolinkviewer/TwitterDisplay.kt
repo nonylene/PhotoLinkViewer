@@ -183,7 +183,7 @@ class TwitterDisplay : Activity(), TwitterStatusAdapter.TwitterAdapterListener, 
             replyId = statusAdapter!!.lastStatus!!.inReplyToStatusId
         } else {
             replyId = mTwitterSingleView!!.status!!.inReplyToStatusId
-            mTwitterSingleScrollView!!.max = 200
+            mTwitterSingleScrollView!!.max = (resources.displayMetrics.heightPixels / 3.5f).toInt()
             mTwitterSingleScrollView!!.isVerticalScrollBarEnabled = true
             mTweetBaseLayout!!.setGravity(Gravity.CENTER_HORIZONTAL)
         }

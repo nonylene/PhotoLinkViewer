@@ -9,8 +9,6 @@ import android.widget.ScrollView
 
 class HeightScalableScrollView : ScrollView {
 
-    private val DP = context.resources.displayMetrics.density
-
     var max : Int? = null
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -28,7 +26,7 @@ class HeightScalableScrollView : ScrollView {
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, max?.let {
-            View.MeasureSpec.makeMeasureSpec((it* DP).toInt(), View.MeasureSpec.AT_MOST)
+            View.MeasureSpec.makeMeasureSpec((it).toInt(), View.MeasureSpec.AT_MOST)
         } ?: heightMeasureSpec)
     }
 }
