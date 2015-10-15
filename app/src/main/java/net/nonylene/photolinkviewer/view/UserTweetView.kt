@@ -155,10 +155,10 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
             var position: Int? = null
 
             override public fun onGetPLVUrlFinished(plvUrls: Array<PLVUrl>) {
-                val plvUrl = plvUrls[0]
-
-                if (plvUrl.isVideo) tileView.setVideoUrl(position!!, plvUrl)
-                else tileView.setImageUrl(position!!, plvUrl)
+                plvUrls.map { plvUrl ->
+                    if (plvUrl.isVideo) tileView.setVideoUrl(position!!, plvUrl)
+                    else tileView.setImageUrl(position!!, plvUrl)
+                }
             }
 
             override public fun onGetPLVUrlFailed(text: String) {

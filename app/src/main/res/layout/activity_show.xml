@@ -15,6 +15,23 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"/>
 
+    <ScrollView
+        android:id="@+id/show_activity_scroll"
+        android:background="@color/twitter_back"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="50dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="50dp"
+        android:visibility="gone">
+
+        <net.nonylene.photolinkviewer.view.TilePhotoView
+            android:id="@+id/show_activity_tile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </ScrollView>
+
     <FrameLayout
         android:id="@+id/show_frag_replace"
         android:layout_width="match_parent"
