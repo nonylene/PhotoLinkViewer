@@ -89,7 +89,7 @@ class Show : Activity(), PLVUrlService.PLVUrlListener, ProgressBarListener, User
             tileView!!.twitterViewListener = this
             tileView!!.imageLoader = ImageLoader(Volley.newRequestQueue(applicationContext), BitmapCache())
 
-            plvUrls.map { plvUrl ->
+            plvUrls.forEach { plvUrl ->
                 val position = tileView!!.addImageView()
                 if (plvUrl.isVideo) tileView!!.setVideoUrl(position, plvUrl)
                 else tileView!!.setImageUrl(position, plvUrl)
