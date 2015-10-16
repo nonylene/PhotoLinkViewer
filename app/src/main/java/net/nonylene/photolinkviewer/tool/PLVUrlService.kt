@@ -30,6 +30,7 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
     interface PLVUrlListener {
         fun onGetPLVUrlFinished(plvUrls: Array<PLVUrl>)
         fun onGetPLVUrlFailed(text: String)
+        // called on same called thread
         fun onURLAccepted()
     }
 
@@ -360,7 +361,7 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
                             listener.onGetPLVUrlFailed("connection error!")
                         }
                     }
-                }).getRedirect("http://seiga.nicovideo.jp/image/source/" + id)
+                }, context).getRedirect("http://seiga.nicovideo.jp/image/source/" + id)
             }
         }
 
@@ -449,7 +450,9 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
                         listener.onGetPLVUrlFailed("connection error!")
                     }
                 }
-            }).getRedirect(url)
+            }, context).getRedirect(url)
+
+            listener.onURLAccepted()
         }
 
 
@@ -486,8 +489,6 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
             post.getString("type").let {
                 if (!"photo".equals(it)) throw IllegalStateException("Type of this post is ${it}, not photo!")
             }
-
-            listener.onURLAccepted()
 
             val quality = super.getQuality("tumblr")
             val photos = post.getJSONArray("photos")
