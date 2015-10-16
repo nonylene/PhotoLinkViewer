@@ -14,7 +14,10 @@ import java.util.*
 
 // TODO: use gridView to multiple photos
 public class TilePhotoView(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs) {
-    private val imageViewList = ArrayList<NetworkImageView>()
+
+    // null -> canceled
+    // arrayListOf(null) -> empty view
+    private val frameLayoutListList = ArrayList<ArrayList<PLVUrl?>?>()
     private val inflater : LayoutInflater
 
     public var twitterViewListener: UserTweetView.TwitterViewListener? = null
@@ -25,42 +28,74 @@ public class TilePhotoView(context: Context, attrs: AttributeSet) : LinearLayout
         orientation = LinearLayout.VERTICAL
     }
 
+    // add empty view
     public fun addImageView(): Int {
         // prev is last linear_layout
-        val size = imageViewList.size()
-
-        val frameLayout: FrameLayout
-        if (size % 2 == 0) {
-            // make new linear_layout and put below prev
-            val new_layout = inflater.inflate(R.layout.twitter_photos, this , false) as LinearLayout
-            addView(new_layout)
-            frameLayout = new_layout.getChildAt(0) as FrameLayout
-        } else {
-            val prevLayout = getChildAt(childCount - 1) as LinearLayout
-            // put new photo below prev photo (not new linear_layout)
-            frameLayout = prevLayout.getChildAt(1) as FrameLayout
-        }
-        imageViewList.add(frameLayout.getChildAt(0) as NetworkImageView)
-
-        return size
+        frameLayoutListList.add(arrayListOf(null))
+        return frameLayoutListList.size() - 1
     }
 
-    public fun setImageUrl(position: Int, plvUrl: PLVUrl) {
-        val imageView = imageViewList.get(position)
-
-        imageView.setOnClickListener {
-            twitterViewListener?.onShowFragmentRequired(plvUrl)
-        }
-        imageView.setImageUrl(plvUrl.thumbUrl, imageLoader)
+    // remove canceled view
+    public fun removeImageView(position: Int) {
+        frameLayoutListList.set(position, null)
     }
 
-    public fun setVideoUrl(position: Int, plvUrl: PLVUrl) {
-        val imageView = imageViewList.get(position)
-        (imageView.parent as FrameLayout).getChildAt(1).visibility = View.VISIBLE
+    public fun setPLVUrl(position: Int, plvUrl: PLVUrl) {
+        if (frameLayoutListList.size() > position) frameLayoutListList.set(position, arrayListOf(plvUrl))
+    }
 
-        imageView.setOnClickListener {
-            twitterViewListener?.onVideoShowFragmentRequired(plvUrl)
+    public fun setPLVUrls(position: Int, plvUrls: Array<PLVUrl>) {
+        if (frameLayoutListList.size() > position) frameLayoutListList.set(position, plvUrls.toArrayList())
+    }
+
+    public fun notifyChanged() {
+        val frameLayoutCombinedList = frameLayoutListList.fold(ArrayList<PLVUrl?>()) { combined, list ->
+            list?.let { combined.addAll(list) }
+            combined
         }
-        imageView.setImageUrl(plvUrl.thumbUrl, imageLoader)
+
+        frameLayoutCombinedList.withIndex().forEach { iv ->
+            val frameLayout: FrameLayout
+
+            if (childCount > iv.index / 2) {
+                frameLayout = (getChildAt((iv.index / 2).toInt()) as LinearLayout).getChildAt(iv.index % 2) as FrameLayout
+            } else {
+                // new generation
+                if (iv.index % 2 == 0) {
+                    // make new linear_layout and put below prev
+                    val new_layout = inflater.inflate(R.layout.twitter_photos, this , false) as LinearLayout
+                    addView(new_layout)
+                    frameLayout = new_layout.getChildAt(0) as FrameLayout
+                } else {
+                    val prevLayout = getChildAt(childCount - 1) as LinearLayout
+                    // put new photo below prev photo (not new linear_layout)
+                    frameLayout = prevLayout.getChildAt(1) as FrameLayout
+                }
+            }
+
+            val networkImageView = frameLayout.getChildAt(0) as NetworkImageView
+
+            iv.value?.let { plv ->
+                if (plv.isVideo) {
+                    frameLayout.getChildAt(1).visibility = View.VISIBLE
+                    networkImageView.setOnClickListener {
+                        twitterViewListener?.onVideoShowFragmentRequired(plv)
+                    }
+                } else {
+                    networkImageView.setOnClickListener {
+                        twitterViewListener?.onShowFragmentRequired(plv)
+                    }
+                }
+                networkImageView.setImageUrl(plv.thumbUrl, imageLoader)
+            }
+        }
+
+        // reverse -> not removed
+        ((frameLayoutCombinedList.size() + 1) / 2..childCount - 1).forEach { removeViewAt(it) }
+    }
+
+    public fun initialize() {
+        removeAllViews()
+        frameLayoutListList.clear()
     }
 }

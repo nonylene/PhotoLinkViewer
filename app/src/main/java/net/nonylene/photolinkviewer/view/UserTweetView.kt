@@ -93,7 +93,7 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
         status.urlEntities.let { urlEntities ->
             // initialize
             urlLayout!!.removeAllViews()
-            urlPhotoLayout!!.removeAllViews()
+            urlPhotoLayout!!.initialize()
 
             if (!urlEntities.isEmpty()) {
                 urlBaseLayout!!.visibility = View.VISIBLE
@@ -114,7 +114,7 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
 
         status.extendedMediaEntities.let { mediaEntities ->
             // initialize
-            photoLayout!!.removeAllViews()
+            photoLayout!!.initialize()
             if (!mediaEntities.isEmpty()) {
                 photoBaseLayout!!.visibility = View.VISIBLE
 
@@ -137,12 +137,13 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
                         plvUrl.thumbUrl = mediaEntity.mediaURLHttps
                         plvUrl.displayUrl = file_url
                         plvUrl.setIsVideo(true)
-                        photoLayout!!.setVideoUrl(photoLayout!!.addImageView(), plvUrl)
+                        photoLayout!!.setPLVUrl(photoLayout!!.addImageView(), plvUrl)
                     } else {
                         val service = PLVUrlService(context, getPLVUrlListener(photoLayout!!))
                         service.requestGetPLVUrl(url)
                     }
                 }
+                photoLayout!!.notifyChanged()
             } else {
                 photoBaseLayout!!.visibility = View.GONE
             }
@@ -155,18 +156,20 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
             var position: Int? = null
 
             override public fun onGetPLVUrlFinished(plvUrls: Array<PLVUrl>) {
-                plvUrls.forEach { plvUrl ->
-                    if (plvUrl.isVideo) tileView.setVideoUrl(position!!, plvUrl)
-                    else tileView.setImageUrl(position!!, plvUrl)
-                }
+                tileView.setPLVUrls(position!!, plvUrls)
+                tileView.notifyChanged()
             }
 
             override public fun onGetPLVUrlFailed(text: String) {
-
+                position?.let {
+                    tileView.removeImageView(it)
+                    tileView.notifyChanged()
+                }
             }
 
             override public fun onURLAccepted() {
                 position = tileView.addImageView();
+                tileView.notifyChanged()
             }
         })
     }

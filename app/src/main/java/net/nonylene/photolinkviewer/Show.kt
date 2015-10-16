@@ -71,8 +71,7 @@ class Show : Activity(), PLVUrlService.PLVUrlListener, ProgressBarListener, User
         super.onStop()
 
         // flash cache
-        val cache = HttpResponseCache.getInstalled()
-        cache?.flush()
+        HttpResponseCache.getInstalled()?.flush()
     }
 
     override fun onGetPLVUrlFinished(plvUrls: Array<PLVUrl>) {
@@ -88,12 +87,8 @@ class Show : Activity(), PLVUrlService.PLVUrlListener, ProgressBarListener, User
             scrollView!!.visibility = View.VISIBLE
             tileView!!.twitterViewListener = this
             tileView!!.imageLoader = ImageLoader(Volley.newRequestQueue(applicationContext), BitmapCache())
-
-            plvUrls.forEach { plvUrl ->
-                val position = tileView!!.addImageView()
-                if (plvUrl.isVideo) tileView!!.setVideoUrl(position, plvUrl)
-                else tileView!!.setImageUrl(position, plvUrl)
-            }
+            tileView!!.setPLVUrls(tileView!!.addImageView(), plvUrls)
+            tileView!!.notifyChanged()
         }
     }
 
