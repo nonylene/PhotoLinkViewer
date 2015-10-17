@@ -113,5 +113,6 @@
     <string name="instagram_api_summary">get Instagram video and photos via API.\nYou need to authorize your instagram account.</string>
     <string name="twitter_tweet_toast">tweeted!</string>
     <string name="tweet">tweet!</string>
+    <string name="resize_message">"Image was resized because it exceeded ImageView size limit.\nOriginal size is : "</string>
 
 </resources>

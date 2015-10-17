@@ -102,5 +102,6 @@
     <string name="instagram_unoauth_text">認証解除</string>
     <string name="twitter_tweet_toast">ツイートしました</string>
     <string name="tweet">ツイート</string>
+    <string name="resize_message">"ImageViewの最大サイズを超えたため縮小されました\n原サイズ: "</string>
 
 </resources>

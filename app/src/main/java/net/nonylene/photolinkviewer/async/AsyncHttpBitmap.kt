@@ -31,9 +31,14 @@ class AsyncHttpBitmap(context: Context, private val plvUrl: PLVUrl, private val 
             // if bitmap size is bigger than limit, load small photo
             val bitmap: Bitmap
             if (max_size < Math.max(plvUrl.height, plvUrl.width)) {
-                val size = Math.max(plvUrl.height, plvUrl.width) / max_size + 1
-                val options2 = BitmapFactory.Options()
-                options2.inSampleSize = size
+                val options2 = BitmapFactory.Options().apply {
+                    inSampleSize = Math.max(plvUrl.height, plvUrl.width) / max_size + 1
+                }
+                httpResult.apply {
+                    isResized = true
+                    originalWidth = plvUrl.height
+                    originalHeight = plvUrl.width
+                }
                 bitmap = BitmapFactory.decodeStream(inputStream, null, options2)
             } else {
                 bitmap = BitmapFactory.decodeStream(inputStream)
@@ -78,5 +83,8 @@ class AsyncHttpBitmap(context: Context, private val plvUrl: PLVUrl, private val 
     inner class Result {
         var bitmap: Bitmap? = null
         var url: String? = null
+        var originalWidth: Int = 0
+        var originalHeight: Int = 0
+        var isResized: Boolean = false
     }
 }
