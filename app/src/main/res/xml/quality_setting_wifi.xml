@@ -55,5 +55,12 @@
             android:entryValues="@array/nicoseiga_quality_value"
             android:key="nicoseiga_quality_wifi"
             android:title="@string/nicoseiga_quality_title"/>
+
+        <ListPreference
+            android:dialogTitle="@string/quality_setting_dialogtitle"
+            android:entries="@array/tumblr_quality"
+            android:entryValues="@array/tumblr_quality_value"
+            android:key="tumblr_quality_wifi"
+            android:title="@string/tumblr_quality_title"/>
     </PreferenceCategory>
 </PreferenceScreen>

@@ -62,6 +62,7 @@
     <string name="instagram_quality_title" translatable="false">instagram</string>
     <string name="twitter_quality_title" translatable="false">twitter</string>
     <string name="nicoseiga_quality_title">niconico seiga</string>
+    <string name="tumblr_quality_title" translatable="false">tumblr</string>
     <string name="batch_dialog_title">Please choose</string>
     <string name="quality_batch_title">Batch quality setting</string>
     <string name="quality_batch_summary">Set quality in a lump</string>

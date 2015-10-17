@@ -44,6 +44,12 @@
         <item>large</item>
         <item>medium</item>
     </array>
+    <array name="tumblr_quality">
+        <item>original</item>
+        <item>large</item>
+        <item>medium</item>
+        <item>small</item>
+    </array>
 
     <array name="flickr_quality_value">
         <item>original</item>
@@ -74,5 +80,11 @@
         <item>original</item>
         <item>large</item>
         <item>medium</item>
+    </array>
+    <array name="tumblr_quality_value">
+        <item>original</item>
+        <item>large</item>
+        <item>medium</item>
+        <item>small</item>
     </array>
 </resources>
