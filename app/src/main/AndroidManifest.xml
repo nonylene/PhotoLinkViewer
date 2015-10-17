@@ -149,6 +149,23 @@
             </intent-filter>
 
             <intent-filter
+                android:label="PhotoLinkViewer - Vine">
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+
+                <data
+                    android:host="vine.co"
+                    android:pathPattern="/v/..*"
+                    android:scheme="http"/>
+                <data
+                    android:host="vine.co"
+                    android:pathPattern="/v/..*"
+                    android:scheme="https"/>
+            </intent-filter>
+
+            <intent-filter
                 android:label="PhotoLinkViewer - instagram">
                 <action android:name="android.intent.action.VIEW"/>
 
