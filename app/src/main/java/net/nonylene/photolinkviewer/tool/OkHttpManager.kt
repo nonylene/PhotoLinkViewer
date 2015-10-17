@@ -5,12 +5,15 @@ import android.util.Log
 import com.squareup.okhttp.Cache
 import com.squareup.okhttp.Interceptor
 import com.squareup.okhttp.OkHttpClient
+import com.squareup.picasso.OkHttpDownloader
+import com.squareup.picasso.Picasso
 import java.io.File
 import java.io.IOException
 
 object OkHttpManager {
     private val okHttpClient : OkHttpClient = OkHttpClient()
     private var cache : Cache? = null
+    private var picasso : Picasso? = null
 
     public fun getOkHttpClient(context: Context) : OkHttpClient {
         if (cache == null){
@@ -30,6 +33,17 @@ object OkHttpManager {
             })
         }
         return okHttpClient
+    }
+
+    public fun getPicasso(context: Context) : Picasso {
+        if (picasso == null) {
+            picasso = Picasso.Builder(context)
+                .downloader(OkHttpDownloader(getOkHttpClient(context)))
+                .build()
+            picasso?.isLoggingEnabled = true
+            picasso?.setIndicatorsEnabled(true)
+        }
+        return picasso!!
     }
 
 }
