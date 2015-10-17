@@ -38,7 +38,7 @@ class Show : Activity(), PLVUrlService.PLVUrlListener, ProgressBarListener, User
         //enable cache
         try {
             val httpCacheDir = File(applicationContext.cacheDir, "http")
-            val httpCacheSize = 10 * 1024 * 1024.toLong() // 10 MB
+            val httpCacheSize = 5 * 1024 * 1024.toLong() // 5 MB
             HttpResponseCache.install(httpCacheDir, httpCacheSize)
         } catch (e: IOException) {
             Log.d("cache", "HTTP response cache installation failed")
