@@ -40,8 +40,6 @@ object OkHttpManager {
             picasso = Picasso.Builder(context)
                 .downloader(OkHttpDownloader(getOkHttpClient(context)))
                 .build()
-            picasso?.isLoggingEnabled = true
-            picasso?.setIndicatorsEnabled(true)
         }
         return picasso!!
     }
