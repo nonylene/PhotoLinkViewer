@@ -23,19 +23,12 @@ import net.nonylene.photolinkviewer.tool.ProgressBarListener;
 
 public class VideoShowFragment extends Fragment {
     private View view;
-    private ImageView imageView;
     private FrameLayout videoShowFrameLayout;
     private ProgressBar progressBar;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.videoshow_fragment, container, false);
-        imageView = (ImageView) view.findViewById(R.id.video_image);
         videoShowFrameLayout = (FrameLayout) view.findViewById(R.id.videoshowframe);
         progressBar = (ProgressBar) view.findViewById(R.id.show_progress);
         if (getArguments().getBoolean("single_frag", false)) {
@@ -47,59 +40,10 @@ public class VideoShowFragment extends Fragment {
         return view;
     }
 
-    class VideoOnTouchListener implements View.OnTouchListener {
-
-        @Override
-        public boolean onTouch(View v, MotionEvent e) {
-            if (e.getAction() == MotionEvent.ACTION_UP) {
-                pauseStop();
-                imageView.setImageResource(R.drawable.ic_play_arrow_white_48dp);
-            } else if (e.getAction() == MotionEvent.ACTION_DOWN) {
-                imageView.setImageResource(R.drawable.ic_play_arrow_grey_48dp);
-            }
-            return true;
-        }
-
-        private void pauseStop() {
-            // resume() doesn't work
-            VideoView videoView = (VideoView) view.findViewById(R.id.videoview);
-            if (videoView.isPlaying()) {
-                imageView.setVisibility(View.VISIBLE);
-                videoView.pause();
-            } else {
-                imageView.setVisibility(View.GONE);
-                videoView.start();
-            }
-        }
-
-    }
-
     private void playVideo(PLVUrl plvUrl) {
         // view video
         final VideoView videoView = (VideoView) view.findViewById(R.id.videoview);
         videoView.setVideoURI(Uri.parse(plvUrl.getDisplayUrl()));
-        if ("vine".equals(plvUrl.getSiteName())) {
-            // touch to stop
-            videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                @Override
-                public void onPrepared(MediaPlayer mp) {
-                    //remove progressbar
-                    removeProgressBar();
-                    videoShowFrameLayout.setBackgroundColor(getResources().getColor(R.color.background));
-                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                    videoView.setBackgroundColor(Color.TRANSPARENT);
-                    if (preferences.getBoolean("video_play", true)) {
-                        videoView.start();
-                    } else {
-                        imageView.setVisibility(View.VISIBLE);
-                        videoView.seekTo(1);
-                    }
-                }
-            });
-            VideoOnTouchListener videoOnTouchListener = new VideoOnTouchListener();
-            videoView.setOnTouchListener(videoOnTouchListener);
-
-        } else {
             final MediaController mediaController = new MediaController(getActivity());
             videoView.setMediaController(mediaController);
             // touch to stop
@@ -133,7 +77,6 @@ public class VideoShowFragment extends Fragment {
                     return true;
                 }
             });
-        }
 
         // loop
         videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
