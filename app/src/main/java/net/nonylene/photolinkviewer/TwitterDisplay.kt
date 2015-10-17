@@ -9,7 +9,6 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.database.sqlite.SQLiteException
-import android.net.http.HttpResponseCache
 import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -33,8 +32,6 @@ import net.nonylene.photolinkviewer.view.HeightScalableScrollView
 import net.nonylene.photolinkviewer.view.UserTweetLoadingView
 import net.nonylene.photolinkviewer.view.UserTweetView
 
-import java.io.File
-import java.io.IOException
 import java.util.regex.Pattern
 
 import twitter4j.AsyncTwitter
@@ -72,15 +69,6 @@ class TwitterDisplay : Activity(), TwitterStatusAdapter.TwitterAdapterListener, 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             mTweetBaseLayout!!.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
-        }
-
-        //enable cache
-        try {
-            val httpCacheDir = File(applicationContext.cacheDir, "http")
-            val httpCacheSize = 10 * 1024 * 1024.toLong() // 10 MB
-            HttpResponseCache.install(httpCacheDir, httpCacheSize)
-        } catch (e: IOException) {
-            Log.d("cache", "HTTP response cache installation failed")
         }
 
         if (Intent.ACTION_VIEW != intent.action) {
@@ -288,10 +276,5 @@ class TwitterDisplay : Activity(), TwitterStatusAdapter.TwitterAdapterListener, 
                 }
             }
         }
-    }
-
-    override fun onStop() {
-        super.onStop()
-        HttpResponseCache.getInstalled()?.flush()
     }
 }

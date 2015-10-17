@@ -107,8 +107,8 @@ public class ShowFragment extends Fragment {
             }
         });
 
-        if (!preferences.getBoolean("initialized19", false)) {
-            Initialize.initialize19(getActivity());
+        if (!preferences.getBoolean("initialized39", false)) {
+            Initialize.INSTANCE$.initialize39(getActivity());
         }
 
         if (getArguments().getBoolean("single_frag", false)) {

@@ -18,12 +18,12 @@ import com.android.volley.AuthFailureError
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.squareup.picasso.Picasso
 
 import net.nonylene.photolinkviewer.dialog.DeleteDialogFragment
 import net.nonylene.photolinkviewer.tool.Encryption
 import net.nonylene.photolinkviewer.tool.OkHttpManager
+import net.nonylene.photolinkviewer.tool.VolleyManager
 
 import org.json.JSONException
 import org.json.JSONObject
@@ -45,7 +45,7 @@ class IOAuthActivity : AppCompatActivity(), DeleteDialogFragment.DeleteDialogCal
         setContentView(R.layout.activity_instagram)
 
         preferences = getSharedPreferences("preference", Context.MODE_PRIVATE)
-        queue = Volley.newRequestQueue(this)
+        queue = VolleyManager.getRequestQueue(this)
 
         iconView = findViewById(R.id.instagram_image_view) as ImageView
         screenNameView = findViewById(R.id.instagram_screen_name) as TextView

@@ -3,9 +3,7 @@ package net.nonylene.photolinkviewer
 import android.app.Activity
 import android.app.Fragment
 import android.content.Intent
-import android.net.http.HttpResponseCache
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.ScrollView
 import android.widget.Toast
@@ -19,9 +17,6 @@ import net.nonylene.photolinkviewer.tool.ProgressBarListener
 import net.nonylene.photolinkviewer.view.TilePhotoView
 import net.nonylene.photolinkviewer.view.UserTweetView
 
-import java.io.File
-import java.io.IOException
-
 class Show : Activity(), PLVUrlService.PLVUrlListener, ProgressBarListener, UserTweetView.TwitterViewListener {
 
     private var isSingle : Boolean = true
@@ -34,15 +29,6 @@ class Show : Activity(), PLVUrlService.PLVUrlListener, ProgressBarListener, User
 
         scrollView = findViewById(R.id.show_activity_scroll) as ScrollView
         tileView = findViewById(R.id.show_activity_tile) as TilePhotoView
-
-        //enable cache
-        try {
-            val httpCacheDir = File(applicationContext.cacheDir, "http")
-            val httpCacheSize = 5 * 1024 * 1024.toLong() // 5 MB
-            HttpResponseCache.install(httpCacheDir, httpCacheSize)
-        } catch (e: IOException) {
-            Log.d("cache", "HTTP response cache installation failed")
-        }
 
         //receive intent
         if (Intent.ACTION_VIEW != intent.action) {
@@ -62,13 +48,6 @@ class Show : Activity(), PLVUrlService.PLVUrlListener, ProgressBarListener, User
         fragmentTransaction.commit()
 
         PLVUrlService(this, this).requestGetPLVUrl(url)
-    }
-
-    override fun onStop() {
-        super.onStop()
-
-        // flash cache
-        HttpResponseCache.getInstalled()?.flush()
     }
 
     override fun onGetPLVUrlFinished(plvUrls: Array<PLVUrl>) {
