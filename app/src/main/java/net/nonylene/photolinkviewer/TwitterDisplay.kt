@@ -67,7 +67,7 @@ class TwitterDisplay : Activity(), TwitterStatusAdapter.TwitterAdapterListener, 
         mProgressBar = findViewById(R.id.show_progress) as ProgressBar
         mTweetBaseLayout = findViewById(R.id.tweet_base_view) as LinearLayout
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
             mTweetBaseLayout!!.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
         }
 
