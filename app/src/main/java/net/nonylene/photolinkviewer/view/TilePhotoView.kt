@@ -5,14 +5,16 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.LinearLayout
 import com.android.volley.toolbox.ImageLoader
 import com.android.volley.toolbox.NetworkImageView
+import com.squareup.picasso.Picasso
 import net.nonylene.photolinkviewer.R
+import net.nonylene.photolinkviewer.tool.OkHttpManager
 import net.nonylene.photolinkviewer.tool.PLVUrl
 import java.util.*
 
-// TODO: use gridView to multiple photos
 public class TilePhotoView(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs) {
 
     // null -> canceled
@@ -21,11 +23,13 @@ public class TilePhotoView(context: Context, attrs: AttributeSet) : LinearLayout
     private val inflater : LayoutInflater
 
     public var twitterViewListener: UserTweetView.TwitterViewListener? = null
+    private val picasso : Picasso
     public var imageLoader : ImageLoader? = null
 
     init {
         inflater = LayoutInflater.from(context)
         orientation = LinearLayout.VERTICAL
+        picasso = OkHttpManager.getPicasso(context)
     }
 
     // add empty view
@@ -73,7 +77,7 @@ public class TilePhotoView(context: Context, attrs: AttributeSet) : LinearLayout
                 }
             }
 
-            val networkImageView = frameLayout.getChildAt(0) as NetworkImageView
+            val networkImageView = frameLayout.getChildAt(0) as ImageView
 
             iv.value?.let { plv ->
                 if (plv.isVideo) {
@@ -86,7 +90,7 @@ public class TilePhotoView(context: Context, attrs: AttributeSet) : LinearLayout
                         twitterViewListener?.onShowFragmentRequired(plv)
                     }
                 }
-                networkImageView.setImageUrl(plv.thumbUrl, imageLoader)
+                picasso.load(plv.thumbUrl).into(networkImageView)
             }
         }
 
