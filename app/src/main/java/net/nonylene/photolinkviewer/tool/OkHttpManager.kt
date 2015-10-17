@@ -20,7 +20,7 @@ object OkHttpManager {
             //enable cache
             try {
                 val cacheDir = File(context.applicationContext.cacheDir, "okhttp")
-                cache = Cache(cacheDir, 3 * 1024 * 1024) // 3 MB
+                cache = Cache(cacheDir, 10 * 1024 * 1024) // 10 MB
             } catch (e: IOException) {
                 Log.d("cache", "HTTP response cache installation failed")
             }
@@ -46,4 +46,7 @@ object OkHttpManager {
         return picasso!!
     }
 
+    public fun flushCache() {
+        cache?.flush()
+    }
 }
