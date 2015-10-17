@@ -15,7 +15,7 @@
         android:layout_margin="2dp"
         android:orientation="horizontal">
 
-        <com.android.volley.toolbox.NetworkImageView
+        <ImageView
             android:id="@+id/twImageView"
             android:layout_width="52dp"
             android:layout_height="52dp"

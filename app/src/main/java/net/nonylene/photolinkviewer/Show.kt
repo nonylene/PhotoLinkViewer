@@ -9,13 +9,10 @@ import android.util.Log
 import android.view.View
 import android.widget.ScrollView
 import android.widget.Toast
-import com.android.volley.toolbox.ImageLoader
-import com.android.volley.toolbox.Volley
 
 import net.nonylene.photolinkviewer.fragment.OptionFragment
 import net.nonylene.photolinkviewer.fragment.ShowFragment
 import net.nonylene.photolinkviewer.fragment.VideoShowFragment
-import net.nonylene.photolinkviewer.tool.BitmapCache
 import net.nonylene.photolinkviewer.tool.PLVUrl
 import net.nonylene.photolinkviewer.tool.PLVUrlService
 import net.nonylene.photolinkviewer.tool.ProgressBarListener
@@ -86,7 +83,6 @@ class Show : Activity(), PLVUrlService.PLVUrlListener, ProgressBarListener, User
             isSingle = false
             scrollView!!.visibility = View.VISIBLE
             tileView!!.twitterViewListener = this
-            tileView!!.imageLoader = ImageLoader(Volley.newRequestQueue(applicationContext), BitmapCache())
             tileView!!.setPLVUrls(tileView!!.addImageView(), plvUrls)
             tileView!!.notifyChanged()
         }

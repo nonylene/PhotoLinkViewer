@@ -19,6 +19,7 @@ import android.app.Fragment;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.util.TimingLogger;
 import android.view.Display;
 import android.view.GestureDetector;
 import android.view.Gravity;
@@ -59,6 +60,8 @@ public class ShowFragment extends Fragment {
     private float firstzoom = 1;
     private MyQuickScale quickScale;
 
+    private TimingLogger mLogger;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +69,8 @@ public class ShowFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        mLogger = new TimingLogger("TEST", "plv");
+
         preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         view = inflater.inflate(R.layout.show_fragment, container, false);
@@ -112,6 +117,7 @@ public class ShowFragment extends Fragment {
         }
 
         PLVUrl plvUrl = getArguments().getParcelable("plvurl");
+        mLogger.addSplit("start");
         getAsyncGetSizeType(plvUrl).execute(plvUrl.getDisplayUrl());
 
         return view;
@@ -119,10 +125,12 @@ public class ShowFragment extends Fragment {
 
     private AsyncGetSizeType getAsyncGetSizeType(final PLVUrl plvUrl) {
 
-        return new AsyncGetSizeType() {
+        return new AsyncGetSizeType(getActivity()) {
             @Override
             protected void onPostExecute(AsyncGetSizeType.Result result) {
                 super.onPostExecute(result);
+                mLogger.addSplit("end");
+                mLogger.dumpToLog();
                 if (!isAdded()) return;
 
                 if (result.getType() != null) {

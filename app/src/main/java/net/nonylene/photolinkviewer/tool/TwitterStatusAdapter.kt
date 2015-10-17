@@ -5,8 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 
-import com.android.volley.toolbox.ImageLoader
-
 import net.nonylene.photolinkviewer.R
 import net.nonylene.photolinkviewer.view.UserTweetLoadingView
 import net.nonylene.photolinkviewer.view.UserTweetView
@@ -15,7 +13,7 @@ import java.util.ArrayList
 
 import twitter4j.Status
 
-class TwitterStatusAdapter(private val imageLoader: ImageLoader) : BaseAdapter(), UserTweetView.TwitterViewListener, UserTweetLoadingView.LoadingViewListener {
+class TwitterStatusAdapter() : BaseAdapter(), UserTweetView.TwitterViewListener, UserTweetLoadingView.LoadingViewListener {
 
     private val statusList = ArrayList<Status?>()
 
@@ -62,7 +60,6 @@ class TwitterStatusAdapter(private val imageLoader: ImageLoader) : BaseAdapter()
             return loadView
         } else {
             val tweetView = (convertView ?: inflater.inflate(R.layout.twitter_status_list, parent, false)) as UserTweetView
-            tweetView.imageLoader = imageLoader
             tweetView.twitterViewListener = this
             tweetView.setEntry(getItem(position)!!)
             return tweetView

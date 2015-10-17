@@ -20,14 +20,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 
-import com.android.volley.toolbox.ImageLoader
-import com.android.volley.toolbox.Volley
-
 import net.nonylene.photolinkviewer.fragment.OptionFragment
 import net.nonylene.photolinkviewer.fragment.ShowFragment
 import net.nonylene.photolinkviewer.fragment.TwitterOptionFragment
 import net.nonylene.photolinkviewer.fragment.VideoShowFragment
-import net.nonylene.photolinkviewer.tool.BitmapCache
 import net.nonylene.photolinkviewer.tool.MyAsyncTwitter
 import net.nonylene.photolinkviewer.tool.PLVUrl
 import net.nonylene.photolinkviewer.tool.PLVUrlService
@@ -55,7 +51,6 @@ class TwitterDisplay : Activity(), TwitterStatusAdapter.TwitterAdapterListener, 
     private var twitter: AsyncTwitter? = null
     private var isSingle: Boolean = false
     private var isInitialized = false
-    private var mImageLoader: ImageLoader? = null
 
     private var mTwitterSingleScrollView : HeightScalableScrollView? = null
     private var mTwitterSingleView: UserTweetView? = null
@@ -111,8 +106,6 @@ class TwitterDisplay : Activity(), TwitterStatusAdapter.TwitterAdapterListener, 
             return
         }
 
-        mImageLoader = ImageLoader(Volley.newRequestQueue(applicationContext), BitmapCache())
-        mTwitterSingleView!!.imageLoader = mImageLoader
         mTwitterSingleView!!.twitterViewListener = this
         mTwitterSingleView!!.visibility = View.GONE
 
@@ -283,7 +276,7 @@ class TwitterDisplay : Activity(), TwitterStatusAdapter.TwitterAdapterListener, 
                     }
                 } else {
                     if (statusAdapter == null) {
-                        statusAdapter = TwitterStatusAdapter(mImageLoader!!)
+                        statusAdapter = TwitterStatusAdapter()
                         statusAdapter!!.twitterAdapterListener = this@TwitterDisplay
                         val listView = LayoutInflater.from(this@TwitterDisplay).inflate(R.layout.tweets_list_view, mTweetBaseLayout, false) as ListView
                         listView.adapter = statusAdapter

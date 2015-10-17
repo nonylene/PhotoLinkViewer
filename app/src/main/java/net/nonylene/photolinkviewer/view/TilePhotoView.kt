@@ -7,8 +7,6 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
-import com.android.volley.toolbox.ImageLoader
-import com.android.volley.toolbox.NetworkImageView
 import com.squareup.picasso.Picasso
 import net.nonylene.photolinkviewer.R
 import net.nonylene.photolinkviewer.tool.OkHttpManager
@@ -24,7 +22,6 @@ public class TilePhotoView(context: Context, attrs: AttributeSet) : LinearLayout
 
     public var twitterViewListener: UserTweetView.TwitterViewListener? = null
     private val picasso : Picasso
-    public var imageLoader : ImageLoader? = null
 
     init {
         inflater = LayoutInflater.from(context)
@@ -77,20 +74,20 @@ public class TilePhotoView(context: Context, attrs: AttributeSet) : LinearLayout
                 }
             }
 
-            val networkImageView = frameLayout.getChildAt(0) as ImageView
+            val imageView = frameLayout.getChildAt(0) as ImageView
 
             iv.value?.let { plv ->
                 if (plv.isVideo) {
                     frameLayout.getChildAt(1).visibility = View.VISIBLE
-                    networkImageView.setOnClickListener {
+                    imageView.setOnClickListener {
                         twitterViewListener?.onVideoShowFragmentRequired(plv)
                     }
                 } else {
-                    networkImageView.setOnClickListener {
+                    imageView.setOnClickListener {
                         twitterViewListener?.onShowFragmentRequired(plv)
                     }
                 }
-                picasso.load(plv.thumbUrl).into(networkImageView)
+                picasso.load(plv.thumbUrl).into(imageView)
             }
         }
 

@@ -9,6 +9,7 @@ import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.util.Base64
 import android.view.View
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -16,14 +17,13 @@ import android.widget.Toast
 import com.android.volley.AuthFailureError
 import com.android.volley.Request
 import com.android.volley.RequestQueue
-import com.android.volley.toolbox.ImageLoader
-import com.android.volley.toolbox.NetworkImageView
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.squareup.picasso.Picasso
 
 import net.nonylene.photolinkviewer.dialog.DeleteDialogFragment
-import net.nonylene.photolinkviewer.tool.BitmapCache
 import net.nonylene.photolinkviewer.tool.Encryption
+import net.nonylene.photolinkviewer.tool.OkHttpManager
 
 import org.json.JSONException
 import org.json.JSONObject
@@ -34,11 +34,11 @@ import java.util.HashMap
 class IOAuthActivity : AppCompatActivity(), DeleteDialogFragment.DeleteDialogCallBack {
 
     private var preferences: SharedPreferences? = null
-    private var iconView: NetworkImageView? = null
+    private var iconView: ImageView? = null
     private var screenNameView: TextView? = null
     private var unOAuthLayout: LinearLayout? = null
     private var queue: RequestQueue? = null
-    private var loader: ImageLoader? = null
+    private var picasso: Picasso? = null
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,11 +46,12 @@ class IOAuthActivity : AppCompatActivity(), DeleteDialogFragment.DeleteDialogCal
 
         preferences = getSharedPreferences("preference", Context.MODE_PRIVATE)
         queue = Volley.newRequestQueue(this)
-        loader = ImageLoader(queue, BitmapCache())
 
-        iconView = findViewById(R.id.instagram_image_view) as NetworkImageView
+        iconView = findViewById(R.id.instagram_image_view) as ImageView
         screenNameView = findViewById(R.id.instagram_screen_name) as TextView
         unOAuthLayout = findViewById(R.id.instagram_unauth_layout) as LinearLayout
+
+        picasso = OkHttpManager.getPicasso(this)
 
         // oauth button
         findViewById(R.id.instagram_oauth_button).setOnClickListener{
@@ -81,9 +82,9 @@ class IOAuthActivity : AppCompatActivity(), DeleteDialogFragment.DeleteDialogCal
 
         if (preferences!!.getBoolean("instagram_authorized", false)) {
             screenNameView!!.text = preferences!!.getString("instagram_username", null)
-            iconView!!.setImageUrl(preferences!!.getString("instagram_icon", null), loader)
+            picasso!!.load(preferences!!.getString("instagram_icon", null)).into(iconView)
         } else {
-            iconView!!.setDefaultImageResId(R.drawable.instagram_logo)
+            iconView!!.setImageResource(R.drawable.instagram_logo)
             unOAuthLayout!!.visibility = View.GONE
         }
     }
@@ -143,8 +144,7 @@ class IOAuthActivity : AppCompatActivity(), DeleteDialogFragment.DeleteDialogCal
             screenNameView!!.text = username
 
             // if not null, icon would not updated
-            iconView!!.setImageUrl(null, loader)
-            iconView!!.setImageUrl(profile_picture, loader)
+            picasso!!.load(profile_picture).into(iconView)
             unOAuthLayout!!.visibility = View.VISIBLE
 
         } catch (e: JSONException) {

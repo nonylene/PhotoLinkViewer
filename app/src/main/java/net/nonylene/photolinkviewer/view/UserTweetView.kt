@@ -6,11 +6,11 @@ import android.net.Uri
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.android.volley.toolbox.ImageLoader
-import com.android.volley.toolbox.NetworkImageView
 import net.nonylene.photolinkviewer.R
+import net.nonylene.photolinkviewer.tool.OkHttpManager
 import net.nonylene.photolinkviewer.tool.PLVUrl
 import net.nonylene.photolinkviewer.tool.PLVUrlService
 import twitter4j.Status
@@ -23,14 +23,13 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
     private var dayView: TextView? = null
     private var favView: TextView? = null
     private var rtView: TextView? = null
-    private var iconView: NetworkImageView? = null
+    private var iconView: ImageView? = null
     private var urlBaseLayout: LinearLayout? = null
     private var urlLayout: LinearLayout? = null
     private var urlPhotoLayout: TilePhotoView? = null
     private var photoBaseLayout: LinearLayout? = null
     private var photoLayout: TilePhotoView? = null
 
-    public var imageLoader: ImageLoader? = null
     public var twitterViewListener: TwitterViewListener? = null
 
     public var status : Status? = null
@@ -45,7 +44,7 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
         dayView = findViewById(R.id.twDay) as TextView
         favView = findViewById(R.id.favCount) as TextView
         rtView= findViewById(R.id.rtCount) as TextView
-        iconView = findViewById(R.id.twImageView) as NetworkImageView
+        iconView = findViewById(R.id.twImageView) as ImageView
         urlBaseLayout = findViewById(R.id.url_base) as LinearLayout
         urlLayout = findViewById(R.id.url_linear) as LinearLayout
         urlPhotoLayout = findViewById(R.id.url_photos) as TilePhotoView
@@ -81,7 +80,7 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
                 snView!!.setCompoundDrawables(null, null, null, null)
             }
             // set icon
-            iconView!!.setImageUrl(user.biggerProfileImageURL, imageLoader)
+            OkHttpManager.getPicasso(context).load(user.biggerProfileImageURL).into(iconView)
             iconView!!.setBackgroundResource(R.drawable.twitter_image_design)
             //show user when tapped
             iconView!!.setOnClickListener {
@@ -99,7 +98,6 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
                 urlBaseLayout!!.visibility = View.VISIBLE
 
                 urlPhotoLayout!!.twitterViewListener = twitterViewListener
-                urlPhotoLayout!!.imageLoader = imageLoader
 
                 for (urlEntity in urlEntities) {
                     val url = urlEntity.expandedURL
@@ -119,7 +117,6 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
                 photoBaseLayout!!.visibility = View.VISIBLE
 
                 photoLayout!!.twitterViewListener = twitterViewListener
-                photoLayout!!.imageLoader = imageLoader
 
                 for (mediaEntity in mediaEntities) {
                     val url = mediaEntity.mediaURLHttps

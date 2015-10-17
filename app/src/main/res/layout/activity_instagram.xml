@@ -5,7 +5,7 @@
               android:gravity="center"
               android:orientation="vertical">
 
-    <com.android.volley.toolbox.NetworkImageView
+    <ImageView
         android:id="@+id/instagram_image_view"
         android:layout_width="96dp"
         android:layout_height="96dp"
