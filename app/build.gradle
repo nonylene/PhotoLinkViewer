@@ -7,10 +7,10 @@ android {
 
     defaultConfig {
         applicationId "net.nonylene.photolinkviewer"
-        minSdkVersion 14
+        minSdkVersion 15
         targetSdkVersion 22
-        versionCode 38
-        versionName "2.1.0"
+        versionCode 39
+        versionName "2.2.0"
     }
     packagingOptions {
         exclude 'META-INF/LICENSE.txt'
