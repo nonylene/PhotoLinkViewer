@@ -60,6 +60,7 @@ class Show : Activity(), PLVUrlService.PLVUrlListener, ProgressBarListener, User
             else onShowFragmentRequired(plvUrls[0])
         } else {
             isSingle = false
+            hideProgressBar()
             scrollView!!.visibility = View.VISIBLE
             tileView!!.twitterViewListener = this
             tileView!!.setPLVUrls(tileView!!.addImageView(), plvUrls)
