@@ -256,7 +256,7 @@ class TwitterDisplay : Activity(), TwitterStatusAdapter.TwitterAdapterListener, 
                         hideProgressBar()
                         mTwitterSingleView!!.visibility = View.VISIBLE
                         mTwitterSingleView!!.setEntry(status)
-                        if (status.inReplyToScreenName != null) {
+                        if (status.inReplyToStatusId != (-1).toLong()) {
                             mTwitterSingleLoadingView!!.visibility = View.VISIBLE
                             mTwitterSingleDivider!!.visibility = View.VISIBLE
                         }

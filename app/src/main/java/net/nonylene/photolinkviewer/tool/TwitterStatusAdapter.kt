@@ -19,7 +19,7 @@ class TwitterStatusAdapter() : BaseAdapter(), UserTweetView.TwitterViewListener,
 
     var twitterAdapterListener: TwitterAdapterListener? = null
 
-    private var isRequesting: Boolean = false
+    private var isRequesting: Boolean = true
         set(value) {
             field = value
             notifyDataSetChanged()
@@ -88,13 +88,13 @@ class TwitterStatusAdapter() : BaseAdapter(), UserTweetView.TwitterViewListener,
         if (statusList.isEmpty()) statusList.addAll(arrayOf(status, null))
         else statusList.add(statusList.size() - 1, status)
 
-        if (status.inReplyToScreenName == null) statusList.remove(statusList.size() - 1)
+        if (status.inReplyToStatusId == (-1).toLong()) statusList.remove(statusList.size() - 1)
 
         notifyDataSetChanged()
 
-        if (status.inReplyToScreenName != null){
+        if (status.inReplyToStatusId != (-1).toLong()){
             // auto pager
-            if (statusList.size() % 4 != 2) twitterAdapterListener?.onReadMoreClicked()
+            if (statusList.size() % 4 != 1) twitterAdapterListener?.onReadMoreClicked()
             else isRequesting = false
         }
     }
