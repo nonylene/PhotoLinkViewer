@@ -9,8 +9,8 @@ android {
         applicationId "net.nonylene.photolinkviewer"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 39
-        versionName "2.2.0"
+        versionCode 40
+        versionName "2.2.1"
     }
     packagingOptions {
         exclude 'META-INF/LICENSE.txt'
