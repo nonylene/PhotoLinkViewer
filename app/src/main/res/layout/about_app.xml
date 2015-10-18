@@ -40,13 +40,41 @@
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:autoLink="web"
-            android:text="@string/about_app_4j"/>
+            android:text="@string/about_app_twitter4j"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:text="@string/about_app_twitter4j"
+            android:text="@string/about_app_twitter4j_licence"
+            android:typeface="monospace"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:autoLink="web"
+            android:text="@string/about_app_okhttp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="@string/about_app_okhttp_licence"
+            android:typeface="monospace"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:autoLink="web"
+            android:text="@string/about_app_picasso"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="@string/about_app_picasso_licence"
             android:typeface="monospace"/>
     </LinearLayout>
 </ScrollView>
