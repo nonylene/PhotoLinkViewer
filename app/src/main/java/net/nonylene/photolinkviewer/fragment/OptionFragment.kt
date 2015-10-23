@@ -17,23 +17,19 @@ import net.nonylene.photolinkviewer.Settings
 
 class OptionFragment : Fragment() {
 
-    private var otherButtons : View? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view : View = inflater.inflate(R.layout.option_fragment, container, false)
+
+        val otherButtons = view.findViewById(R.id.buttons)
 
         view.findViewById(R.id.basebutton).setOnClickListener{ baseButton ->
             val rotateFlag = baseButton.getTag(R.id.ROTATE_FLAG_TAG) as Boolean? ?: false
             if (rotateFlag) {
                 (baseButton as ImageButton).setImageResource(R.drawable.up_button_design)
-                otherButtons!!.visibility = View.GONE
+                otherButtons.visibility = View.GONE
             } else {
                 (baseButton as ImageButton).setImageResource(R.drawable.down_button_design)
-                otherButtons!!.visibility = View.VISIBLE
+                otherButtons.visibility = View.VISIBLE
             }
             baseButton.setTag(R.id.ROTATE_FLAG_TAG, !rotateFlag)
         }
@@ -57,8 +53,6 @@ class OptionFragment : Fragment() {
         view.findViewById(R.id.rotate_leftbutton).setOnClickListener {
             rotateImg(false)
         }
-
-        otherButtons = view.findViewById(R.id.buttons)
 
         return view
     }
