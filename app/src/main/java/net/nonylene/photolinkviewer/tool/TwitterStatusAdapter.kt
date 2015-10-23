@@ -27,7 +27,7 @@ class TwitterStatusAdapter() : BaseAdapter(), UserTweetView.TwitterViewListener,
 
     val lastStatus: Status?
         get() {
-            return statusList.last() ?: statusList.get(statusList.size() - 2)
+            return statusList.last() ?: statusList[statusList.size - 2]
         }
 
     override fun onShowFragmentRequired(plvUrl: PLVUrl) {
@@ -43,7 +43,7 @@ class TwitterStatusAdapter() : BaseAdapter(), UserTweetView.TwitterViewListener,
     }
 
     private fun getItemViewTypeEnum(position: Int): ItemType {
-        return statusList.get(position)?.let { ItemType.STATUS } ?: ItemType.LOADING
+        return statusList[position]?.let { ItemType.STATUS } ?: ItemType.LOADING
     }
 
     // not selectable base view
@@ -67,7 +67,7 @@ class TwitterStatusAdapter() : BaseAdapter(), UserTweetView.TwitterViewListener,
     }
 
     override fun getItem(position: Int): Status? {
-        return statusList.get(position)
+        return statusList[position]
     }
 
     override fun getItemId(position: Int): Long {
@@ -75,26 +75,26 @@ class TwitterStatusAdapter() : BaseAdapter(), UserTweetView.TwitterViewListener,
     }
 
     override fun getCount(): Int {
-        return statusList.size()
+        return statusList.size
     }
 
     override fun getViewTypeCount(): Int {
-        return ItemType.values().size()
+        return ItemType.values.size
     }
 
 
     public fun addItem(status: Status) {
         // init -> add loading footer
         if (statusList.isEmpty()) statusList.addAll(arrayOf(status, null))
-        else statusList.add(statusList.size() - 1, status)
+        else statusList.add(statusList.size - 1, status)
 
-        if (status.inReplyToStatusId == (-1).toLong()) statusList.remove(statusList.size() - 1)
+        if (status.inReplyToStatusId == (-1).toLong()) statusList.removeAt(statusList.size - 1)
 
         notifyDataSetChanged()
 
         if (status.inReplyToStatusId != (-1).toLong()){
             // auto pager
-            if (statusList.size() % 4 != 1) twitterAdapterListener?.onReadMoreClicked()
+            if (statusList.size % 4 != 1) twitterAdapterListener?.onReadMoreClicked()
             else isRequesting = false
         }
     }

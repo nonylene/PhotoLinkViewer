@@ -103,7 +103,7 @@ public class ShowFragment extends Fragment {
         });
 
         if (!preferences.getBoolean("initialized39", false)) {
-            Initialize.INSTANCE$.initialize39(getActivity());
+            Initialize.INSTANCE.initialize39(getActivity());
         }
 
         if (getArguments().getBoolean("single_frag", false)) {
@@ -386,7 +386,7 @@ public class ShowFragment extends Fragment {
                 LinearLayout linearLayout = (LinearLayout) getActivity().findViewById(R.id.rotate_root);
                 linearLayout.setVisibility(View.VISIBLE);
 
-                if (result.getIsResized()) {
+                if (result.isResized()) {
                     Toast.makeText(view.getContext(),
                             getString(R.string.resize_message) + result.getOriginalWidth() + "x" + result.getOriginalHeight() ,
                             Toast.LENGTH_LONG).show();
