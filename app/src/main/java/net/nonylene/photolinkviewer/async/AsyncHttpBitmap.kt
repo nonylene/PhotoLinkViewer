@@ -48,6 +48,8 @@ class AsyncHttpBitmap(context: Context, private val plvUrl: PLVUrl, private val 
                 inJustDecodeBounds = true
             }
             BitmapFactory.decodeStream(inputStream, null, options)
+            httpResult.originalWidth = options.outWidth
+            httpResult.originalHeight = options.outHeight
             inputStream.reset()
 
             // read binary and get type
@@ -58,7 +60,7 @@ class AsyncHttpBitmap(context: Context, private val plvUrl: PLVUrl, private val 
 
             // if bitmap size is bigger than limit, load small photo
             val bitmap: Bitmap?
-            if (max_size < Math.max(plvUrl.height, plvUrl.width)) {
+            if (max_size < Math.max(options.outHeight, options.outWidth)) {
                 val options2 = BitmapFactory.Options().apply {
                     inSampleSize = Math.max(options.outHeight, options.outWidth) / max_size + 1
                 }
