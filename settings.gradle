@@ -1,1 +1,2 @@
-include ':app',':modules:volley'
+include ':app', ':modules:volley', ':picasso'
+project(':picasso').projectDir = new File('modules/picasso/picasso')

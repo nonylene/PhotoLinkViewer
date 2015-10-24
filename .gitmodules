@@ -1,3 +1,6 @@
 [submodule "modules/volley"]
 	path = modules/volley
 	url = https://android.googlesource.com/platform/frameworks/volley
+[submodule "modules/picasso"]
+	path = modules/picasso
+	url = git@github.com:nonylene/picasso.git
