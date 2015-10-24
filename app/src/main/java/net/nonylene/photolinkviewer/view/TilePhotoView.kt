@@ -51,7 +51,7 @@ public class TilePhotoView(context: Context, attrs: AttributeSet) : LinearLayout
 
     public fun notifyChanged() {
         val frameLayoutCombinedList = frameLayoutListList.fold(ArrayList<PLVUrl?>()) { combined, list ->
-            list?.let { combined.addAll(list) }
+            list?.let { combined.addAll(it) }
             combined
         }
 
