@@ -26,7 +26,6 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile project(':picasso')
     compile project(':modules:volley')
     compile "com.android.support:appcompat-v7:23.+"
     compile 'com.android.support:support-v13:23.+'
@@ -35,6 +34,7 @@ dependencies {
     compile 'org.twitter4j:twitter4j-http2-support:4.0.4'
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile 'com.squareup.okhttp:okhttp:2.5.0'
+    compile 'com.squareup.picasso:picasso:2.5.2'
 }
 buildscript {
     ext.kotlin_version = '1.0.0-beta-1038'

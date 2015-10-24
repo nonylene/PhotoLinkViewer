@@ -1,2 +1,1 @@
-include ':app', ':modules:volley', ':picasso'
-project(':picasso').projectDir = new File('modules/picasso/picasso')
+include ':app', ':modules:volley'
