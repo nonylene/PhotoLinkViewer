@@ -67,7 +67,8 @@ class ShowFragment : Fragment() {
         progressBar = baseView!!.findViewById(R.id.showprogress) as ProgressBar
 
         val scaleGestureDetector = ScaleGestureDetector(activity, simpleOnScaleGestureListener())
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        // TODO: use Build.VERSION_CODES.KITKAT
+        if (Build.VERSION.SDK_INT >= 19) {
             scaleGestureDetector.isQuickScaleEnabled = false
         }
 
