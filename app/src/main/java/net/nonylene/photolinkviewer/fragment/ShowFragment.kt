@@ -265,6 +265,15 @@ class ShowFragment : Fragment() {
             plvUrl.type = result.type
             plvUrl.height = result.originalHeight
             plvUrl.width = result.originalWidth
+
+            val bitmap = result.bitmap
+
+            if (bitmap == null) {
+                Toast.makeText(baseView!!.context, getString(R.string.show_bitamap_error) +
+                        result.errorMessage?.let { "\n" + it }, Toast.LENGTH_LONG).show()
+                return
+            }
+
             addDLButton(plvUrl)
 
             if ("gif" == result.type) {
@@ -274,19 +283,11 @@ class ShowFragment : Fragment() {
                 removeProgressBar()
             }
 
-            val bitmap = result.bitmap
-
             val display = activity.windowManager.defaultDisplay
             val size = Point()
             display.getSize(size)
             val dispWidth = size.x
             val dispHeight = size.y
-
-            if (bitmap == null) {
-                Toast.makeText(baseView!!.context, getString(R.string.show_bitamap_error) +
-                        result.errorMessage?.let { "\n" + it }, Toast.LENGTH_LONG).show()
-                return
-            }
 
             //get bitmap size
             val origWidth = bitmap.width.toFloat()
