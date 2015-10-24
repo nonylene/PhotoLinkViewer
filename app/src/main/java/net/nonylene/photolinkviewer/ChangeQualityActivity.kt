@@ -44,7 +44,7 @@ class ChangeQualityActivity : AppCompatActivity(), LTEFragment.OnWifiSwitchListe
         }
 
         override fun getCount(): Int {
-            return titles!!.size
+            return titles!!.size()
         }
 
         override fun getItemPosition(any : Any?): Int {

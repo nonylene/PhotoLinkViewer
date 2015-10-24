@@ -33,7 +33,7 @@ public class TilePhotoView(context: Context, attrs: AttributeSet) : LinearLayout
     public fun addImageView(): Int {
         // prev is last linear_layout
         frameLayoutListList.add(arrayListOf(null))
-        return frameLayoutListList.size - 1
+        return frameLayoutListList.size() - 1
     }
 
     // remove canceled view
@@ -42,11 +42,11 @@ public class TilePhotoView(context: Context, attrs: AttributeSet) : LinearLayout
     }
 
     public fun setPLVUrl(position: Int, plvUrl: PLVUrl) {
-        if (frameLayoutListList.size > position) frameLayoutListList.set(position, arrayListOf(plvUrl))
+        if (frameLayoutListList.size() > position) frameLayoutListList.set(position, arrayListOf(plvUrl))
     }
 
     public fun setPLVUrls(position: Int, plvUrls: Array<PLVUrl>) {
-        if (frameLayoutListList.size > position) frameLayoutListList.set(position, plvUrls.toArrayList())
+        if (frameLayoutListList.size() > position) frameLayoutListList.set(position, plvUrls.toArrayList())
     }
 
     public fun notifyChanged() {
@@ -92,7 +92,7 @@ public class TilePhotoView(context: Context, attrs: AttributeSet) : LinearLayout
         }
 
         // reverse -> not removed
-        ((frameLayoutCombinedList.size + 1) / 2..childCount - 1).forEach { removeViewAt(it) }
+        ((frameLayoutCombinedList.size() + 1) / 2..childCount - 1).forEach { removeViewAt(it) }
     }
 
     public fun initialize() {

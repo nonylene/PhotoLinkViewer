@@ -190,8 +190,8 @@ class TwitterDisplay : Activity(), TwitterStatusAdapter.TwitterAdapterListener, 
                     .setSingleChoiceItems(screen_list.toTypedArray(), screen_list.indexOf(current_name),
                             DialogInterface.OnClickListener { dialogInterface, position ->
                                 // save rowid and screen name to preference
-                                sharedPreferences.edit().putInt("account", row_id_list[position]).apply()
-                                sharedPreferences.edit().putString("screen_name", screen_list[position]).apply()
+                                sharedPreferences.edit().putInt("account", row_id_list.get(position)).apply()
+                                sharedPreferences.edit().putString("screen_name", screen_list.get(position)).apply()
                                 //reload activity
                                 startActivity(activity.intent)
                                 dialog.dismiss()
@@ -227,7 +227,7 @@ class TwitterDisplay : Activity(), TwitterStatusAdapter.TwitterAdapterListener, 
 
                     // if number of media entity is one, show fragment directly
                     if (!PreferenceManager.getDefaultSharedPreferences(applicationContext).getBoolean("disp_tweet", false)
-                            && (url!!.contains("/photo") || url!!.contains("/video")) && mediaEntities.size == 1) {
+                            && (url!!.contains("/photo") || url!!.contains("/video")) && mediaEntities.size() == 1) {
                         isSingle = true
                         val mediaEntity = mediaEntities[0]
 

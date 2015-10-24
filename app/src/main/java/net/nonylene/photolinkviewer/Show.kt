@@ -55,7 +55,7 @@ class Show : Activity(), PLVUrlService.PLVUrlListener, ProgressBarListener, User
         bundle.putBoolean("single_frag", true)
         bundle.putParcelable("plvurl", plvUrls[0])
 
-        if (plvUrls.size == 1) {
+        if (plvUrls.size() == 1) {
             if (plvUrls[0].isVideo) onVideoShowFragmentRequired(plvUrls[0])
             else onShowFragmentRequired(plvUrls[0])
         } else {
