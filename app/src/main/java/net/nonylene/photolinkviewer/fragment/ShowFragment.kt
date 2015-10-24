@@ -268,6 +268,7 @@ class ShowFragment : Fragment() {
 
             if ("gif" == result.type) {
                 addWebView(plvUrl)
+                return
             } else {
                 removeProgressBar()
             }
