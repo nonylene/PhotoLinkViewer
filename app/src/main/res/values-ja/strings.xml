@@ -31,18 +31,12 @@
     <string name="show_flickrjson_toast">flickr解析エラー</string>
     <string name="twitter_error_toast">twitter認証エラー</string>
     <string name="toauth_failed_token">tokenの取得に失敗しました</string>
-    <string name="toast_favorite">お気に入りに登録しました</string>
-    <string name="toast_retweet">リツイートしました</string>
-    <string name="favorite_dialog_message">このツイートをお気に入り登録しますか？</string>
-    <string name="favorite_dialog_title">お気に入り登録</string>
     <string name="retweet_dialog_message">このツイートをRTしますか？</string>
     <string name="retweet_dialog_title">リツイート</string>
     <string name="toauth_failed_twitter4j">twitterエラー</string>
     <string name="toauth_button">アカウント追加</string>
     <string name="toauth_update_button">アカウント情報更新</string>
-    <string name="favorite_dialog_message_account">アカウント: \@</string>
-    <string name="retweet_dialog_message_account">アカウント: \@</string>
-    <string name="twitter_favorite_toast">お気に入りに登録しました</string>
+    <string name="twitter_like_toast">いいねしました</string>
     <string name="twitter_retweet_toast">リツイートしました</string>
     <string name="setting_quality_dialogtitle">一部のサイトでは適応されません</string>
     <string name="setting_quality_summary">タップして開く</string>
@@ -103,5 +97,8 @@
     <string name="twitter_tweet_toast">ツイートしました</string>
     <string name="tweet">ツイート</string>
     <string name="resize_message">"ImageViewの最大サイズを超えたため縮小されました\n原サイズ: "</string>
+    <string name="resize_action_message">詳細</string>
+    <string name="like_dialog_message">このツイートをいいねしますか？</string>
+    <string name="like_dialog_title">いいねする</string>
 
 </resources>

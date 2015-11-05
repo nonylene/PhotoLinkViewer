@@ -21,7 +21,7 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
     private var textView: TextView? = null
     private var snView: TextView? = null
     private var dayView: TextView? = null
-    private var favView: TextView? = null
+    private var likeView: TextView? = null
     private var rtView: TextView? = null
     private var iconView: ImageView? = null
     private var urlBaseLayout: LinearLayout? = null
@@ -42,7 +42,7 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
         textView = findViewById(R.id.twTxt) as TextView
         snView = findViewById(R.id.twSN) as TextView
         dayView = findViewById(R.id.twDay) as TextView
-        favView = findViewById(R.id.favCount) as TextView
+        likeView = findViewById(R.id.likeCount) as TextView
         rtView= findViewById(R.id.rtCount) as TextView
         iconView = findViewById(R.id.twImageView) as ImageView
         urlBaseLayout = findViewById(R.id.url_base) as LinearLayout
@@ -61,7 +61,7 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
         // put status on text
         textView!!.text = finStatus.text
         dayView!!.text = SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(finStatus.createdAt)
-        favView!!.text = "fav: " + finStatus.favoriteCount
+        likeView!!.text = "Like: " + finStatus.favoriteCount
         rtView!!.text = "RT: " + finStatus.retweetCount
 
         finStatus.user.let { user ->

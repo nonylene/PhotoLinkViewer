@@ -12,7 +12,7 @@
             <item>
                 <bitmap
                     android:gravity="center"
-                    android:src="@drawable/ic_star_white_36dp"/>
+                    android:src="@drawable/ic_favorite_white_36dp"/>
             </item>
         </layer-list>
     </item>

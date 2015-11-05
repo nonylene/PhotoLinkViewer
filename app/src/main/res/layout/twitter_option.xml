@@ -39,14 +39,14 @@
             android:src="@drawable/shadow"/>
 
         <ImageButton
-            android:id="@+id/favorite_button"
+            android:id="@+id/like_button"
             android:layout_width="@dimen/layer_button_size"
             android:layout_height="@dimen/layer_button_size"
             android:layout_gravity="center"
             android:background="@null"
-            android:contentDescription="@string/favorite_button_description"
+            android:contentDescription="@string/like_button_description"
             android:scaleType="fitXY"
-            android:src="@drawable/favorite_button_design"/>
+            android:src="@drawable/like_button_design"/>
 
     </FrameLayout>
 </LinearLayout>

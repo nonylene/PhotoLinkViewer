@@ -28,7 +28,7 @@ import twitter4j.TwitterMethod
 class TwitterOptionFragment : Fragment() {
 
     companion object {
-        private val FAVORITE_CODE = 1
+        private val LIKE_CODE = 1
         private val RETWEET_CODE = 2
     }
 
@@ -45,11 +45,11 @@ class TwitterOptionFragment : Fragment() {
             }
         }
 
-        view.findViewById(R.id.favorite_button).setOnClickListener{
+        view.findViewById(R.id.like_button).setOnClickListener{
             TwitterDialogFragment().apply {
                 arguments = bundle
-                setTargetFragment(this@TwitterOptionFragment, FAVORITE_CODE)
-                show(this@TwitterOptionFragment.fragmentManager, "favorite")
+                setTargetFragment(this@TwitterOptionFragment, LIKE_CODE)
+                show(this@TwitterOptionFragment.fragmentManager, "like")
             }
         }
         return view
@@ -88,9 +88,9 @@ class TwitterOptionFragment : Fragment() {
             val builder = AlertDialog.Builder(activity)
             // change behave for request code
             when (requestCode) {
-                FAVORITE_CODE -> {
-                    textView.text = getString(R.string.favorite_dialog_message)
-                    builder.setTitle(getString(R.string.favorite_dialog_title))
+                LIKE_CODE -> {
+                    textView.text = getString(R.string.like_dialog_message)
+                    builder.setTitle(getString(R.string.like_dialog_title))
                 }
                 RETWEET_CODE  -> {
                     textView.text = getString(R.string.retweet_dialog_message)
@@ -113,7 +113,7 @@ class TwitterOptionFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
         super.onActivityResult(requestCode, resultCode, data)
         val applicationContext = activity.applicationContext
-        // request code > favorite or retweet
+        // request code > like or retweet
         // result code > row_id
         // intent > id_long
         val twitter = MyAsyncTwitter.getAsyncTwitter(activity, resultCode).apply {
@@ -128,7 +128,7 @@ class TwitterOptionFragment : Fragment() {
 
                 override fun createdFavorite(status: Status?) {
                     Handler(Looper.getMainLooper()).post{
-                        Toast.makeText(applicationContext, applicationContext.getString(R.string.twitter_favorite_toast), Toast.LENGTH_LONG).show()
+                        Toast.makeText(applicationContext, applicationContext.getString(R.string.twitter_like_toast), Toast.LENGTH_LONG).show()
                     }
                 }
 
@@ -142,7 +142,7 @@ class TwitterOptionFragment : Fragment() {
 
         val id_long = data.getLongExtra("id_long", -1)
         when (requestCode) {
-            FAVORITE_CODE -> twitter.createFavorite(id_long)
+            LIKE_CODE -> twitter.createFavorite(id_long)
             RETWEET_CODE  -> twitter.retweetStatus(id_long)
         }
     }
