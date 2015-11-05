@@ -68,8 +68,7 @@ class ShowFragment : Fragment() {
         progressBar = baseView!!.findViewById(R.id.showprogress) as ProgressBar
 
         val scaleGestureDetector = ScaleGestureDetector(activity, simpleOnScaleGestureListener())
-        // TODO: use Build.VERSION_CODES.KITKAT
-        if (Build.VERSION.SDK_INT >= 19) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             scaleGestureDetector.isQuickScaleEnabled = false
         }
 
@@ -129,7 +128,7 @@ class ShowFragment : Fragment() {
         override fun onDoubleTapEvent(e: MotionEvent): Boolean {
             if (e.action == MotionEvent.ACTION_UP) {
                 quickScale?.let {
-                    if (double_zoom && !it.moved()) doubleZoom(e)
+                    if (double_zoom && !it.moved) doubleZoom(e)
                     quickScale = null
                 }
             }
@@ -166,7 +165,7 @@ class ShowFragment : Fragment() {
         private val initialX: Float
         private var basezoom: Float = 0f
         private var old_zoom: Float = 0f
-        private var moved = false
+        var moved = false
 
         init {
             initialY = e.y
@@ -200,10 +199,6 @@ class ShowFragment : Fragment() {
                 matrix.postScale(scale, scale, initialX, initialY)
                 imageView!!.imageMatrix = matrix
             }
-        }
-
-        fun moved(): Boolean {
-            return moved
         }
     }
 
