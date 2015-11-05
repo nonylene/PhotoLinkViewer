@@ -15,6 +15,7 @@ import android.os.Bundle
 import android.app.Fragment
 import android.os.Environment
 import android.preference.PreferenceManager
+import android.support.design.widget.Snackbar
 import android.text.TextUtils
 import android.view.GestureDetector
 import android.view.Gravity
@@ -330,9 +331,12 @@ class ShowFragment : Fragment() {
             activity.findViewById(R.id.rotate_root).visibility = View.VISIBLE
 
             if (result.isResized) {
-                Toast.makeText(baseView!!.context,
+                Snackbar.make(baseView,
                         getString(R.string.resize_message) + result.originalWidth + "x" + result.originalHeight,
-                        Toast.LENGTH_LONG).show()
+                        Snackbar.LENGTH_LONG)
+                .setAction(R.string.resize_action_message, View.OnClickListener {
+                    // jump to detail
+                })
             }
         }
 
