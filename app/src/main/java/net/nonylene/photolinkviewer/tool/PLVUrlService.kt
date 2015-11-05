@@ -176,7 +176,7 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
 
                     val keyByte = Base64.decode(preferences.getString("instagram_key", null), Base64.DEFAULT)
                     val tokenByte = Base64.decode(preferences.getString("instagram_token", null), Base64.DEFAULT)
-                    val token = Encryption.decrypt(tokenByte, SecretKeySpec(keyByte, 0, keyByte.size(), "AES"))
+                    val token = Encryption.decrypt(tokenByte, SecretKeySpec(keyByte, 0, keyByte.size, "AES"))
                     val apiUrl = "https://api.instagram.com/v1/media/shortcode/${id}?access_token=${token}"
 
                     VolleyManager.getRequestQueue(context).add(MyJsonObjectRequest(context, apiUrl,
@@ -477,7 +477,7 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
                             listener.onGetPLVUrlFailed("tumblr json parse error!")
                             e.printStackTrace()
                         } catch (e: IllegalStateException) {
-                            listener.onGetPLVUrlFailed(e.getMessage()!!)
+                            listener.onGetPLVUrlFailed(e.message!!)
                         }
                     })
             );
