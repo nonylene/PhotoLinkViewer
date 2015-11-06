@@ -329,6 +329,13 @@
                 android:value=".Settings"/>
         </activity>
 
+        <activity
+            android:name=".MaxSizePreferenceActivity"
+            android:parentActivityName=".Settings">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Settings"/>
+        </activity>
     </application>
 
 </manifest>

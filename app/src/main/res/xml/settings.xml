@@ -2,6 +2,9 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <PreferenceCategory
+        android:title="Account">
+
     <Preference
         android:summary="@string/pref_twitter_summary"
         android:title="@string/pref_twitter_title">
@@ -10,6 +13,20 @@
             android:targetClass="net.nonylene.photolinkviewer.TOAuth"
             android:targetPackage="net.nonylene.photolinkviewer"/>
     </Preference>
+
+
+        <Preference
+            android:key="instagram_preference"
+            android:summary="@string/instagram_preference_summary"
+            android:title="@string/instagram_pregerence_title"/>
+
+        <SwitchPreference
+            android:key="instagram_api"
+            android:summary="@string/instagram_api_summary"
+            android:title="@string/instagram_api_title"/>
+
+    </PreferenceCategory>
+
 
     <PreferenceCategory
         android:title="@string/display_title">
@@ -42,6 +59,14 @@
             android:summary="@string/adjust_summary"
             android:title="@string/adjust_title"/>
 
+        <Preference
+            android:summary="Tap to open"
+            android:title="Max preview image size">
+            <intent
+                android:action="android.intent.action.view"
+                android:targetClass="net.nonylene.photolinkviewer.MaxSizePreferenceActivity"
+                android:targetPackage="net.nonylene.photolinkviewer"/>
+        </Preference>
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -93,22 +118,6 @@
                 android:key="double_zoom"
                 android:summary="@string/double_zoom_summary"
                 android:title="@string/double_zoom_title"/>
-
-            <PreferenceCategory
-                android:title="@string/instagram_category_title">
-
-                <Preference
-                    android:key="instagram_preference"
-                    android:summary="@string/instagram_preference_summary"
-                    android:title="@string/instagram_pregerence_title"/>
-
-                <SwitchPreference
-                    android:key="instagram_api"
-                    android:summary="@string/instagram_api_summary"
-                    android:title="@string/instagram_api_title"/>
-
-            </PreferenceCategory>
-
 
         </PreferenceScreen>
 

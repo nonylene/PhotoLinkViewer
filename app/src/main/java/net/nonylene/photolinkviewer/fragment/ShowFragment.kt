@@ -16,6 +16,7 @@ import android.app.Fragment
 import android.os.Environment
 import android.preference.PreferenceManager
 import android.support.design.widget.Snackbar
+import android.support.v7.app.AlertDialog
 import android.text.TextUtils
 import android.view.GestureDetector
 import android.view.Gravity
@@ -253,7 +254,7 @@ class ShowFragment : Fragment() {
         }
 
         override fun onCreateLoader(id: Int, bundle: Bundle): Loader<AsyncHttpBitmap.Result> {
-            val max_size = 2048
+            val max_size = preferences!!.getInt("imageview_max_size", 2) * 1024
             return AsyncHttpBitmap(activity.applicationContext, bundle.getParcelable<PLVUrl>("plvurl"), max_size)
         }
 
@@ -331,6 +332,14 @@ class ShowFragment : Fragment() {
                         Snackbar.LENGTH_LONG)
                 .setAction(R.string.resize_action_message, View.OnClickListener {
                     // jump to detail
+                    AlertDialog.Builder(activity)
+                            .setTitle(getString(R.string.account_dialog_title))
+                            .setMessage("hogehoge")
+                            .setPositiveButton(getString(android.R.string.ok), null)
+                            .setNeutralButton("Preference", { dialogInterface, i ->
+
+                            })
+                            .create()
                 })
             }
         }
