@@ -110,7 +110,7 @@ class TwitterOptionFragment : Fragment() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         val applicationContext = activity.applicationContext
         // request code > like or retweet
@@ -140,7 +140,7 @@ class TwitterOptionFragment : Fragment() {
             })
         }
 
-        val id_long = data.getLongExtra("id_long", -1)
+        val id_long = data!!.getLongExtra("id_long", -1)
         when (requestCode) {
             LIKE_CODE -> twitter.createFavorite(id_long)
             RETWEET_CODE  -> twitter.retweetStatus(id_long)

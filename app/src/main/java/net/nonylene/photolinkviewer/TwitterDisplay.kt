@@ -88,8 +88,7 @@ class TwitterDisplay : Activity(), TwitterStatusAdapter.TwitterAdapterListener, 
 
         if (!getSharedPreferences("preference", Context.MODE_PRIVATE).getBoolean("authorized", false)) {
             Toast.makeText(applicationContext, getString(R.string.twitter_display_oauth), Toast.LENGTH_LONG).show()
-            val intent = Intent(this, TOAuth::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, TOAuth::class.java))
             finish()
             return
         }
