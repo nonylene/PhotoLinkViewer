@@ -11,7 +11,7 @@ import net.nonylene.photolinkviewer.tool.PLVUrl
 import java.io.BufferedInputStream
 
 import java.io.IOException
-import java.util.*
+import java.util.Arrays
 
 class AsyncHttpBitmap(context: Context, private val plvUrl: PLVUrl, private val max_size: Int) : AsyncTaskLoader<AsyncHttpBitmap.Result>(context) {
 
@@ -25,23 +25,31 @@ class AsyncHttpBitmap(context: Context, private val plvUrl: PLVUrl, private val 
         val httpResult = Result()
 
         try {
-            val response = OkHttpManager.getOkHttpClient(context).newCall(
-                    Request.Builder()
-                            .url(plvUrl.displayUrl)
-                            .get()
-                            .build()
-            ).execute()
+            val client = OkHttpManager.getOkHttpClient(context)
+
+            val request = Request.Builder()
+                    .url(plvUrl.displayUrl)
+                    .get()
+                    .build()
+
+            val response = client.newCall(request).execute()
 
             if (!response.isSuccessful) {
                 httpResult.errorMessage =  "${response.code()} - ${response.message()}"
                 return httpResult
             }
 
-            val inputStream = response.body().byteStream().let {
+            var inputStream = response.body().byteStream().let {
                 if (it.markSupported()) it else BufferedInputStream(it)
             }
 
             inputStream.mark(65536);
+
+            // read binary and get type
+            val yaBinary = ByteArray(4)
+            inputStream.read(yaBinary, 0, 4)
+            httpResult.type = getFileType(yaBinary)
+            inputStream.reset()
 
             // get bitmap size
             val options = BitmapFactory.Options().apply {
@@ -50,13 +58,13 @@ class AsyncHttpBitmap(context: Context, private val plvUrl: PLVUrl, private val 
             BitmapFactory.decodeStream(inputStream, null, options)
             httpResult.originalWidth = options.outWidth
             httpResult.originalHeight = options.outHeight
-            inputStream.reset()
+            try {
+                inputStream.reset()
+            } catch (ignored: IOException) {
+                // weak devices sometimes over buffer limit. new call
+                inputStream = client.newCall(request).execute().body().byteStream()
+            }
 
-            // read binary and get type
-            val yaBinary = ByteArray(4)
-            inputStream.read(yaBinary, 0, 4)
-            httpResult.type = getFileType(yaBinary)
-            inputStream.reset()
 
             // if bitmap size is bigger than limit, load small photo
             val bitmap: Bitmap?
