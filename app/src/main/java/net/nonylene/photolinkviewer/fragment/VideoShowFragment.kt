@@ -76,6 +76,7 @@ class VideoShowFragment : Fragment() {
         // prevent infinite loading
         videoView.setOnErrorListener { mediaPlayer, what, extra ->
             videoView.setOnCompletionListener(null)
+            videoView.stopPlayback()
             false
         }
     }
