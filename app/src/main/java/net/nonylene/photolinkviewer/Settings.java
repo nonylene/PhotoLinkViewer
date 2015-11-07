@@ -46,7 +46,7 @@ public class Settings extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (!preferences.getBoolean("initialized39", false)) {
-            Initialize.INSTANCE$.initialize39(this);
+            Initialize.INSTANCE.initialize39(this);
         }
         getFragmentManager().beginTransaction().replace(android.R.id.content, new SettingsFragment()).commit();
     }

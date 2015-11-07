@@ -1,5 +1,6 @@
 package net.nonylene.photolinkviewer.fragment
 
+import android.app.Dialog
 import android.app.DownloadManager
 import android.app.LoaderManager
 import android.content.Context
@@ -16,6 +17,7 @@ import android.app.Fragment
 import android.os.Environment
 import android.preference.PreferenceManager
 import android.support.design.widget.Snackbar
+import android.app.DialogFragment
 import android.support.v7.app.AlertDialog
 import android.text.TextUtils
 import android.view.GestureDetector
@@ -33,6 +35,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.Toast
+import net.nonylene.photolinkviewer.MaxSizePreferenceActivity
 
 import net.nonylene.photolinkviewer.R
 import net.nonylene.photolinkviewer.async.AsyncHttpBitmap
@@ -330,17 +333,12 @@ class ShowFragment : Fragment() {
                 Snackbar.make(baseView,
                         getString(R.string.resize_message) + result.originalWidth + "x" + result.originalHeight,
                         Snackbar.LENGTH_LONG)
-                .setAction(R.string.resize_action_message, View.OnClickListener {
-                    // jump to detail
-                    AlertDialog.Builder(activity)
-                            .setTitle(getString(R.string.account_dialog_title))
-                            .setMessage("hogehoge")
-                            .setPositiveButton(getString(android.R.string.ok), null)
-                            .setNeutralButton("Preference", { dialogInterface, i ->
-
-                            })
-                            .create()
+                .setAction(R.string.resize_action_message, {
+                    MaxSizeDialogFragment().apply {
+                        show(this@ShowFragment.fragmentManager, "about");
+                    }
                 })
+                .show()
             }
         }
 
@@ -505,5 +503,19 @@ class ShowFragment : Fragment() {
     private fun removeProgressBar() {
         showFrameLayout!!.removeView(progressBar)
         (activity as? ProgressBarListener)?.hideProgressBar()
+    }
+
+    class MaxSizeDialogFragment : DialogFragment() {
+
+        override fun onCreateDialog(savedInstanceState: Bundle?): Dialog? {
+            return AlertDialog.Builder(activity)
+                    .setTitle("Image was resized")
+                    .setMessage("Each device has different max size limit of ImageView (2048px or 4096px usually. This app set limit as 2048px by default.)\nImage will be resized when loading image is bigger than this limit (You can get original size image by downloading).\n\nYou can set this parameter in settings.")
+                    .setPositiveButton(getString(android.R.string.ok), null)
+                    .setNeutralButton("Go setting", { dialogInterface, i ->
+                        startActivity(Intent(activity, MaxSizePreferenceActivity::class.java))
+                    })
+                    .create()
+        }
     }
 }

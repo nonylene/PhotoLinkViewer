@@ -17,15 +17,12 @@ class MaxSizePreferenceActivity : AppCompatActivity() {
         color = Color.BLACK
     }
     private val bluePaint = Paint().apply {
-        style = Paint.Style.FILL
         color = Color.parseColor("#4cb6ed")
     }
     private val greenPaint = Paint().apply {
-        style = Paint.Style.FILL
         color = Color.parseColor("#46d249")
     }
     private val redPaint = Paint().apply {
-        style = Paint.Style.FILL
         color = Color.parseColor("#f4554f")
     }
     private val textPaint = Paint().apply {
