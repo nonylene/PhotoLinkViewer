@@ -102,7 +102,6 @@
     <string name="instagram_not_authorized">Not authorized</string>
     <string name="instagram_oauth_text">Auth</string>
     <string name="instagram_unoauth_text">UnAuth</string>
-    <string name="instagram_category_title" translatable="false">Instagram</string>
     <string name="instagram_preference_summary">Tap to open</string>
     <string name="instagram_pregerence_title">Instagram account settings</string>
     <string name="instagram_api_title">Use instagram API</string>
@@ -115,5 +114,12 @@
     <string name="about_app_okhttp_licence" translatable="false">Copyright 2014 Square, Inc.\n\nLicensed under the Apache License, Version 2.0 (the \"License\");\nyou may not use this file except in compliance with the License.\nYou may obtain a copy of the License at\n\n http://www.apache.org/licenses/LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software\ndistributed under the License is distributed on an \"AS IS\" BASIS,\nWITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\nSee the License for the specific language governing permissions and\nlimitations under the License.</string>
     <string name="about_app_picasso" translatable="false">* Picasso - http://square.github.io/picasso/</string>
     <string name="about_app_picasso_licence" translatable="false">Copyright 2013 Square, Inc.\n\nLicensed under the Apache License, Version 2.0 (the \"License\");\nyou may not use this file except in compliance with the License.\nYou may obtain a copy of the License at\n\n http://www.apache.org/licenses/LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software\ndistributed under the License is distributed on an \"AS IS\" BASIS,\nWITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\nSee the License for the specific language governing permissions and\nlimitations under the License.</string>
+    <string name="setting_size_title">Max preview image size</string>
+    <string name="setting_size_summary">Tap to open</string>
+    <string name="max_preference_description">You can set max size of ImageView here.\nPlease check whether your device can display max size image.\nBig size may cause crash due to memory.\nDownloaded images don\'t depend on this setting.</string>
+    <string name="max_preference_button">Set this size</string>
+    <string name="image_resized_dialog_title">Image was resized</string>
+    <string name="image_resized_dialog_text">Each device has different max size limit of ImageView (2048px or 4096px usually. This app set limit as 2048px by default.)\nImage will be resized when loading image is bigger than this limit (You can get original size image by downloading).\n\nYou can set this parameter in settings.</string>
+    <string name="image_resized_dialog_neutral">Go setting</string>
 
 </resources>

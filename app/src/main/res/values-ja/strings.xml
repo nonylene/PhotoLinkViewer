@@ -96,9 +96,16 @@
     <string name="instagram_unoauth_text">認証解除</string>
     <string name="twitter_tweet_toast">ツイートしました</string>
     <string name="tweet">ツイート</string>
-    <string name="resize_message">"ImageViewの最大サイズを超えたため縮小されました\n原サイズ: "</string>
+    <string name="resize_message">"元サイズ: "</string>
     <string name="resize_action_message">詳細</string>
     <string name="like_dialog_message">このツイートをいいねしますか？</string>
     <string name="like_dialog_title">いいねする</string>
+    <string name="setting_size_summary">タップして開く</string>
+    <string name="setting_size_title">プレビューする最大サイズ</string>
+    <string name="max_preference_button">サイズを設定</string>
+    <string name="max_preference_description">ImageViewの最大サイズを設定できます。あなたのデバイスで下の画像が選択したサイズで見れるかどうか確認してください。\n大きなサイズを指定するとメモリ不足によりクラッシュする可能性があります。また、この設定はダウンロードする画像には関係ありません。</string>
+    <string name="image_resized_dialog_neutral">設定</string>
+    <string name="image_resized_dialog_title">画像の縮小</string>
+    <string name="image_resized_dialog_text">デバイスによって固有の表示可能な最大サイズ(大抵 2048 or 4096px です)があり、それ以上になると縮小されます。ダウンロード時には縮小されません。\n\n最大値は設定で調整できます。</string>
 
 </resources>

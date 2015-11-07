@@ -509,10 +509,10 @@ class ShowFragment : Fragment() {
 
         override fun onCreateDialog(savedInstanceState: Bundle?): Dialog? {
             return AlertDialog.Builder(activity)
-                    .setTitle("Image was resized")
-                    .setMessage("Each device has different max size limit of ImageView (2048px or 4096px usually. This app set limit as 2048px by default.)\nImage will be resized when loading image is bigger than this limit (You can get original size image by downloading).\n\nYou can set this parameter in settings.")
+                    .setTitle(getString(R.string.image_resized_dialog_title))
+                    .setMessage(getString(R.string.image_resized_dialog_text))
                     .setPositiveButton(getString(android.R.string.ok), null)
-                    .setNeutralButton("Go setting", { dialogInterface, i ->
+                    .setNeutralButton(getString(R.string.image_resized_dialog_neutral), { dialogInterface, i ->
                         startActivity(Intent(activity, MaxSizePreferenceActivity::class.java))
                     })
                     .create()

@@ -60,8 +60,8 @@
             android:title="@string/adjust_title"/>
 
         <Preference
-            android:summary="Tap to open"
-            android:title="Max preview image size">
+            android:summary="@string/setting_size_summary"
+            android:title="@string/setting_size_title">
             <intent
                 android:action="android.intent.action.view"
                 android:targetClass="net.nonylene.photolinkviewer.MaxSizePreferenceActivity"
