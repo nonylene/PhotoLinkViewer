@@ -10,7 +10,6 @@ import android.util.Base64
 import android.widget.Toast
 
 import com.android.volley.Response
-import com.android.volley.toolbox.Volley
 import com.squareup.okhttp.Callback
 import com.squareup.okhttp.Request
 import net.nonylene.photolinkviewer.controller.RedirectUrlController
@@ -435,22 +434,24 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
     private inner class TumblrSite(url: String, context: Context, listener: PLVUrlListener) : Site(url, context, listener) {
 
         override fun getPLVUrl() {
-            if (!url.contains("tmblr.co")) requestAPI(url)
-
-            RedirectUrlController(object : Callback{
-                override fun onResponse(response: com.squareup.okhttp.Response) {
-                    Handler(Looper.getMainLooper()).post {
-                        requestAPI(response.request().urlString())
+            if (!url.contains("tmblr.co")) {
+                requestAPI(url)
+            } else {
+                RedirectUrlController(object : Callback{
+                    override fun onResponse(response: com.squareup.okhttp.Response) {
+                        Handler(Looper.getMainLooper()).post {
+                            requestAPI(response.request().urlString())
+                        }
                     }
-                }
 
-                override fun onFailure(request: Request, e: IOException) {
-                    e.printStackTrace()
-                    Handler(Looper.getMainLooper()).post {
-                        listener.onGetPLVUrlFailed("connection error!")
+                    override fun onFailure(request: Request, e: IOException) {
+                        e.printStackTrace()
+                        Handler(Looper.getMainLooper()).post {
+                            listener.onGetPLVUrlFailed("connection error!")
+                        }
                     }
-                }
-            }, context).getRedirect(url)
+                }, context).getRedirect(url)
+            }
 
             listener.onURLAccepted()
         }
