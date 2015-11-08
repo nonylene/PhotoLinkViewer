@@ -61,7 +61,7 @@ class MaxSizePreferenceActivity : AppCompatActivity() {
         setButton!!.setOnClickListener {
             val size = seekBar!!.progress + 1
             sharedPref.edit().putInt("imageview_max_size", size).apply()
-            Toast.makeText(this.applicationContext, "Set max size to ${size * 1024}px!", Toast.LENGTH_LONG).show()
+            Toast.makeText(this.applicationContext, getString(R.string.max_preference_toast, size * 1024), Toast.LENGTH_LONG).show()
         }
 
         val index = sharedPref.getInt("imageview_max_size", 2) - 1;
@@ -70,7 +70,7 @@ class MaxSizePreferenceActivity : AppCompatActivity() {
     }
 
     private fun updateImageView(index: Int) {
-        imageView!!.setImageBitmap(null)
+        imageView!!.setImageDrawable(null)
         val size = (index + 1) * 1024
         val s2 = size / 2f
         val scaledBitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
