@@ -1,5 +1,6 @@
 package net.nonylene.photolinkviewer.fragment
 
+import android.Manifest
 import android.app.Dialog
 import android.app.DownloadManager
 import android.app.LoaderManager
@@ -18,6 +19,9 @@ import android.os.Environment
 import android.preference.PreferenceManager
 import android.support.design.widget.Snackbar
 import android.app.DialogFragment
+import android.content.pm.PackageManager
+import android.support.v13.app.FragmentCompat
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.text.TextUtils
 import android.view.GestureDetector
@@ -53,10 +57,13 @@ class ShowFragment : Fragment() {
     private var showFrameLayout: FrameLayout? = null
     private var progressBar: ProgressBar? = null
 
+    private val STORAGE_PERMISSION_REQUEST = 3
+
     private var preferences: SharedPreferences? = null
     private var firstzoom = 1f
     private var quickScale: MyQuickScale? = null
     private var applicationContext : Context? = null
+    private var saveBundle: Bundle? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -407,6 +414,17 @@ class ShowFragment : Fragment() {
         return bundle
     }
 
+    private fun saveOrRequestPermission(bundle: Bundle) {
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            saveBundle = bundle
+            FragmentCompat.requestPermissions(this,
+                    arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), STORAGE_PERMISSION_REQUEST)
+        } else {
+            save(bundle)
+        }
+    }
+
     private fun save(bundle: Bundle) {
         val uri = Uri.parse(bundle.getString("original_url"))
         val filename = bundle.getString("filename")
@@ -430,7 +448,20 @@ class ShowFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
-            0 -> save(data.getBundleExtra("bundle"))
+            0 -> saveOrRequestPermission(data.getBundleExtra("bundle"))
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>?, grantResults: IntArray?) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            STORAGE_PERMISSION_REQUEST -> {
+                if (grantResults?.getOrNull(0) == PackageManager.PERMISSION_GRANTED) {
+                    save(saveBundle!!)
+                } else {
+                    Toast.makeText(applicationContext!!, applicationContext!!.getString(R.string.permission_denied), Toast.LENGTH_LONG).show()
+                }
+            }
         }
     }
 
@@ -441,7 +472,7 @@ class ShowFragment : Fragment() {
         dlButton.setOnClickListener{
             // download direct
             if (preferences!!.getBoolean("skip_dialog", false)) {
-                save(getFileNames(plvUrl))
+                saveOrRequestPermission(getFileNames(plvUrl))
             } else {
                 // open dialog
                 SaveDialogFragment().apply {

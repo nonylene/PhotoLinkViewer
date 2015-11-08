@@ -118,8 +118,10 @@
     <string name="setting_size_summary">Tap to open</string>
     <string name="max_preference_description">You can set max size of ImageView here.\nPlease check whether your device can display max size image.\nBig size may cause crash due to memory.\nDownloaded images don\'t depend on this setting.</string>
     <string name="max_preference_button">Set this size</string>
+    <string name="max_preference_toast">Set max size as %1$d px!</string>
     <string name="image_resized_dialog_title">Image was resized</string>
     <string name="image_resized_dialog_text">Each device has different max size limit of ImageView (2048px or 4096px usually. This app set limit as 2048px by default.)\nImage will be resized when loading image is bigger than this limit (You can get original size image by downloading).\n\nYou can set this parameter in settings.</string>
     <string name="image_resized_dialog_neutral">Go setting</string>
+    <string name="permission_denied">Permission request denied.</string>
 
 </resources>
