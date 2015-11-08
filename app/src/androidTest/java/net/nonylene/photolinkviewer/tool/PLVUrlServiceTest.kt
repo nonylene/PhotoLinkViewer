@@ -276,7 +276,7 @@ class PLVUrlServiceTest {
 
     @Test
     fun requestOtherUrlTest() {
-        val countDownLatch = CountDownLatch(2)
+        val countDownLatch = CountDownLatch(1)
 
         getServiceWithSuccessListener({
             it[0].apply {
