@@ -11,6 +11,7 @@ android {
         targetSdkVersion 23
         versionCode 43
         versionName "2.2.4"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     packagingOptions {
         exclude 'META-INF/LICENSE.txt'
@@ -36,6 +37,13 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile 'com.squareup.okhttp:okhttp:2.5.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
+
+    androidTestCompile('com.android.support.test:runner:0.4'){
+        exclude module: 'support-annotations'
+    }
+    androidTestCompile('com.android.support.test:rules:0.4'){
+        exclude module: 'support-annotations'
+    }
 }
 
 buildscript {
