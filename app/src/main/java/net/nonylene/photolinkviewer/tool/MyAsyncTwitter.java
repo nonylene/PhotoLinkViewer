@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Base64;
 
+import net.nonylene.photolinkviewer.BuildConfig;
 import net.nonylene.photolinkviewer.R;
 
 import java.util.ArrayList;
@@ -51,8 +52,8 @@ public class MyAsyncTwitter {
 
     private static AsyncTwitter getTwitterFromId(SQLiteDatabase database, Context context, int row_id) {
         // oAuthed
-        String apikey = (String) context.getText(R.string.twitter_key);
-        String apisecret = (String) context.getText(R.string.twitter_secret);
+        String apikey = BuildConfig.TWITTER_KEY;
+        String apisecret = BuildConfig.TWITTER_SECRET;
         Cursor cursor = database.rawQuery("select token, token_secret, key from accounts where rowid = ?", new String[]{String.valueOf(row_id)});
         // rowid only one row
         cursor.moveToFirst();

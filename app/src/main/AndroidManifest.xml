@@ -296,7 +296,7 @@
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
 
-                <data android:scheme="@string/instagram_callback_scheme"/>
+                <data android:scheme="${instagramCallbackScheme}"/>
             </intent-filter>
         </activity>
 

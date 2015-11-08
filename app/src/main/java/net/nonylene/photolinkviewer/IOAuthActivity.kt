@@ -59,8 +59,8 @@ class IOAuthActivity : AppCompatActivity(), DeleteDialogFragment.DeleteDialogCal
                     .scheme("https")
                     .authority("api.instagram.com")
                     .path("/oauth/authorize/")
-                    .appendQueryParameter("client_id", getString(R.string.instagram_key))
-                    .appendQueryParameter("redirect_uri", getString(R.string.instagram_callback_scheme) + "://callback")
+                    .appendQueryParameter("client_id", BuildConfig.INSTAGRAM_KEY)
+                    .appendQueryParameter("redirect_uri", BuildConfig.INSTAGRAM_CALLBACK_SCHEME + "://callback")
                     .appendQueryParameter("response_type", "code")
                     .build()
             startActivity(Intent(Intent.ACTION_VIEW, uri))
@@ -105,11 +105,10 @@ class IOAuthActivity : AppCompatActivity(), DeleteDialogFragment.DeleteDialogCal
             @Throws(AuthFailureError::class)
             override fun getParams(): Map<String, String> {
                 val params = HashMap<String, String>()
-                params.put("client_id", getString(R.string.instagram_key))
-                params.put("client_secret", getString(R.string.instagram_secret))
+                params.put("client_id", BuildConfig.INSTAGRAM_KEY)
+                params.put("client_secret", BuildConfig.INSTAGRAM_SECRET)
                 params.put("grant_type", "authorization_code")
-                params.put("redirect_uri",
-                        getString(R.string.instagram_callback_scheme) + "://callback")
+                params.put("redirect_uri", BuildConfig.INSTAGRAM_CALLBACK_SCHEME + "://callback")
                 params.put("code", code)
                 return params
             }

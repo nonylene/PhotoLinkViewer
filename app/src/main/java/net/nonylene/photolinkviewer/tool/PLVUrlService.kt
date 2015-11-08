@@ -12,6 +12,7 @@ import android.widget.Toast
 import com.android.volley.Response
 import com.squareup.okhttp.Callback
 import com.squareup.okhttp.Request
+import net.nonylene.photolinkviewer.BuildConfig
 import net.nonylene.photolinkviewer.controller.RedirectUrlController
 
 import net.nonylene.photolinkviewer.R
@@ -294,7 +295,7 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
                 plvUrl.siteName = "flickr"
                 plvUrl.fileName = id
 
-                val api_key = context.getText(R.string.flickr_key) as String
+                val api_key = BuildConfig.FLICKR_KEY
                 val request = "https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&format=json&nojsoncallback=1&api_key=${api_key}&photo_id=${id}"
 
                 VolleyManager.getRequestQueue(context).add(MyJsonObjectRequest(context, request,
@@ -467,7 +468,7 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
             val host = matcher.group(1)
             val id = matcher.group(2)
 
-            val api_key = context.getText(R.string.tumblr_key) as String
+            val api_key = BuildConfig.TUMBLR_KEY
             val request = "https://api.tumblr.com/v2/blog/${host}/posts?api_key=${api_key}&id=${id}"
 
             VolleyManager.getRequestQueue(context).add(MyJsonObjectRequest(context, request,

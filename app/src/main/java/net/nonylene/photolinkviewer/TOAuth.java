@@ -141,8 +141,8 @@ public class TOAuth extends AppCompatActivity implements DeleteDialogFragment.De
         public void onClick(View v) {
             try {
                 twitter = new AsyncTwitterFactory().getInstance();
-                String apikey = (String) getText(R.string.twitter_key);
-                String apisecret = (String) getText(R.string.twitter_secret);
+                String apikey = BuildConfig.TWITTER_KEY;
+                String apisecret = BuildConfig.TWITTER_SECRET;
                 twitter.setOAuthConsumer(apikey, apisecret);
                 twitter.addListener(twitterListener);
                 twitter.getOAuthRequestTokenAsync("plvtwitter://callback");
@@ -170,8 +170,8 @@ public class TOAuth extends AppCompatActivity implements DeleteDialogFragment.De
         @Override
         public void gotOAuthAccessToken(AccessToken token) {
             try {
-                String apikey = (String) getText(R.string.twitter_key);
-                String apisecret = (String) getText(R.string.twitter_secret);
+                String apikey = BuildConfig.TWITTER_KEY;
+                String apisecret = BuildConfig.TWITTER_SECRET;
                 // get oauthed user_name and user_id and icon_url
                 Twitter twitterNotAsync = new TwitterFactory().getInstance();
                 twitterNotAsync.setOAuthConsumer(apikey, apisecret);
