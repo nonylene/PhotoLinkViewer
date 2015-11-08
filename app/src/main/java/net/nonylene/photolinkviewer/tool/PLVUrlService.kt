@@ -379,10 +379,12 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
 
             val quality = super.getQuality("nicoseiga")
 
-            if (redirect.contains("account.nicovideo.jp") && (original || quality == "original")) {
+            if (redirect.contains("account.nicovideo.jp")) {
                 // cannot preview original photo
                 biggest_url = "http://lohas.nicoseiga.jp/img/" + id + "l"
-                Toast.makeText(context, context.getString(R.string.nico_original_toast), Toast.LENGTH_LONG).show()
+                if (original || quality == "original") {
+                    Toast.makeText(context, context.getString(R.string.nico_original_toast), Toast.LENGTH_LONG).show()
+                }
             }
 
             plvUrl.biggestUrl = biggest_url
