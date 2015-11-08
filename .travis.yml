@@ -14,7 +14,7 @@ env:
   - secure: vc1NODXTGFFW91yIW80zzeR1oFwgY3h+g5LjlzpQcEl6sVvF0IgaqtODemPELZqSnzjTZxcO3cAH9MYNo/2Cymi3pQkid6CulJ/p3utva9sKUXoa2xR3+RsjTUsKLHeMZ+/yEa9shuTRCmM7vwh9wxklNgMktjhDraa4uvCHuD8fDMtoPDN7pwtr6FXHMM2d8Iq5CvyzjqZl8aU9STd3AYJQ4lvXycORY0o5xnkrGUCXduXxs+r5LH8wrdo5mNdax3vqj9E/DreQh/nJPYGwFZjL1Srnyst9K6rBVPSogqPCfX2Xry3aIvdHvnymQgE39gwgaKtXt8IkRScZ06vaVXrO7GMC9W9PQXWGwsprtWWweLQDzvY06QHiPoMpTv1Ax6vh1AStcB2QBIcfbGEN9rzEb7ubE7saxQDc8GT2yoF14zT+PcOOR4NJGvpBa3k+fmDtmlQVaDx0+PWAQXkuXdh95LWWRCxzblWTguu5lzMnTvEu/BjQSjfR22PG9qY5cVnpZSCOAV6M1zrTEF/MP1WU6vowkDj9EqO5Ea37gMY1ersXByFnz/RMMeJx4byLrgJFTAcSXWQoIfD7zeqibtYAfTtGDn7l+DIJI8wn0D2sNkA2ixmag/V/0NCEdwAuctbnGfm4mhSW37k7o9LOl1axuZoMdw+lA069gg2gPsc=
 
   matrix:
-    - ANDROID_TARGET=android-23
+    - ANDROID_TARGET=android-22
     - ANDROID_TARGET=android-19
     - ANDROID_TARGET=android-17
     - ANDROID_TARGET=android-15
@@ -28,7 +28,7 @@ android:
     - extra-android-support
     - extra-android-m2repository
     - extra-google-m2repository
-    - sys-img-armeabi-v7a-android-23
+    - sys-img-armeabi-v7a-android-22
     - sys-img-armeabi-v7a-android-19
     - sys-img-armeabi-v7a-android-17
     - sys-img-armeabi-v7a-android-15
