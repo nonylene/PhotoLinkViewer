@@ -3,6 +3,8 @@ package net.nonylene.photolinkviewer.view
 import android.content.Context
 import android.util.AttributeSet
 import android.util.TypedValue
+
+import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
@@ -15,6 +17,7 @@ class UserTweetLoadingView(context: Context, attr: AttributeSet?) : RelativeLayo
     private val selectableBackgroundId : Int
 
     private var loadingView : ImageView? = null
+    private var loadingBaseView : View? = null
 
     public var loadingViewListener: LoadingViewListener? = null
 
@@ -22,30 +25,34 @@ class UserTweetLoadingView(context: Context, attr: AttributeSet?) : RelativeLayo
         val outValue = TypedValue();
         context.theme.resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);
         selectableBackgroundId = outValue.resourceId;
+        setOnClickListener {
+            setIsRequesting(true)
+            // unset loading callback and background
+            loadingViewListener?.onReadMoreClicked();
+        }
     }
 
     protected override fun onFinishInflate() {
         super.onFinishInflate()
         loadingView = findViewById(R.id.loading_imageview) as ImageView
+        loadingBaseView = findViewById(R.id.loading_base_view)
     }
 
     public fun setIsRequesting(isRequesting : Boolean) {
         if (isRequesting) {
             // loading now...
-            setBackgroundResource(android.R.color.transparent);
+            loadingBaseView!!.setBackgroundResource(android.R.color.transparent);
             loadingView!!.animation = rotateAnimation;
             setOnClickListener(null);
         } else {
             // not loading now...
-            setBackgroundResource(selectableBackgroundId);
+            loadingBaseView!!.setBackgroundResource(selectableBackgroundId);
             loadingView!!.animation = null;
 
             setOnClickListener {
-                if (!isRequesting) {
-                    setIsRequesting(true)
-                    // unset loading callback and background
-                    loadingViewListener?.onReadMoreClicked();
-                }
+                setIsRequesting(true)
+                // unset loading callback and background
+                loadingViewListener?.onReadMoreClicked();
             }
         }
     }
