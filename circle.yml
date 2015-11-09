@@ -1,13 +1,18 @@
 machine:
   java:
-      version: openjdk7
+    version: openjdk7
   environment:
     ANDROID_HOME: /usr/local/android-sdk-linux
+    ADB_INSTALL_TIMEOUT: 12
     GRADLE_OPTS: -Xmx512m
 
 dependencies:
+  cache_directories:
+    - ~/.android
   post:
-    - echo y | android update sdk --no-ui --all --filter "platform-tools,build-tools-23.0.1,build-tools-22.0.1,android-23,android-22,sys-img-armeabi-v7a-android-22,android-19,sys-img-armeabi-v7a-android-19,android-17,sys-img-armeabi-v7a-android-17,android-15,sys-img-armeabi-v7a-android-15,extra-android-support,extra-google-m2repository,extra-android-m2repository"
+    # remove cache
+    - rm -r ~/.gradle
+    - echo y | android update sdk --no-ui --filter "platform-tools,build-tools-23.0.1,build-tools-22.0.1,android-23,android-22,sys-img-armeabi-v7a-android-22,android-19,sys-img-armeabi-v7a-android-19,android-17,sys-img-armeabi-v7a-android-17,android-15,sys-img-armeabi-v7a-android-15,extra-android-support,extra-google-m2repository,extra-android-m2repository"
     - echo n | android create avd -n test22 -f -t android-22
     - echo n | android create avd -n test19 -f -t android-19
     - echo n | android create avd -n test17 -f -t android-17
@@ -20,10 +25,8 @@ checkout:
 
 test:
   override:
-    - case $CIRCLE_NODE_INDEX in 0) $ANDROID_HOME/tools/emulator -avd test22 -no-window -no-boot-anim -no-audio ;; 1) $ANDROID_HOME/tools/emulator -avd test19 -no-window -no-boot-anim -no-audio ;; 2) $ANDROID_HOME/tools/emulator -avd test17 -no-window -no-boot-anim -no-audio ;; 3) $ANDROID_HOME/tools/emulator -avd test15 -no-window -no-boot-anim -no-audio ;; esac:
-        background: true
+    - ./test.sh:
         parallel: true
-    - circle-android wait-for-boot:
-        parallel: true
-    - ./gradlew --info clean :app:connectedAndroidTest:
+  post:
+    - cp -r app/build/outputs/androidTest-results $CIRCLE_TEST_REPORTS:
         parallel: true
