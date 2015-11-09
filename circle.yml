@@ -23,7 +23,7 @@ checkout:
 
 test:
     override:
-    - case $CIRCLE_NODE_INDEX in 0) $ANDROID_HOME/tools/emulator -avd test22 -no-window -no-boot-anim -no-audio -memory 756 ;; 1) $ANDROID_HOME/tools/emulator -avd test19 -no-window -no-boot-anim -no-audio ;; 2) $ANDROID_HOME/tools/emulator -avd test17 -no-window -no-boot-anim -no-audio ;; 3) $ANDROID_HOME/tools/emulator -avd test15 -no-window -no-boot-anim -no-audio ;; esac:
+    - case $CIRCLE_NODE_INDEX in 0) $ANDROID_HOME/tools/emulator -avd test22 -no-window -no-audio ;; 1) $ANDROID_HOME/tools/emulator -avd test19 -no-window -no-boot-anim -no-audio ;; 2) $ANDROID_HOME/tools/emulator -avd test17 -no-window -no-boot-anim -no-audio ;; 3) $ANDROID_HOME/tools/emulator -avd test15 -no-window -no-boot-anim -no-audio ;; esac:
         background: true
         parallel: true
     - circle-android wait-for-boot:
