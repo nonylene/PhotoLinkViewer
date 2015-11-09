@@ -1,7 +1,6 @@
 # .travis.yml
 language: android
 jdk: oraclejdk7
-cache: false
 sudo: false
 env:
   global:
