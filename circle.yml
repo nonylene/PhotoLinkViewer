@@ -3,7 +3,6 @@ machine:
       version: openjdk7
   environment:
     ANDROID_HOME: /usr/local/android-sdk-linux
-#    ANDROID_INSTALL_TIMEOUT: 10
     GRADLE_OPTS: -Xmx512m
 
 dependencies:
