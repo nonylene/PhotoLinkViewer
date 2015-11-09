@@ -16,5 +16,5 @@ example:
 ```groovy
 FLICKR_KEY = xxxxxxxxxxxxxxx
 TWITTER_KEY = xxxxxxxxxxxx
-~~~~
+...
 ```
