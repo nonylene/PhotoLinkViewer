@@ -25,5 +25,5 @@ test:
         parallel: true
     - circle-android wait-for-boot:
         parallel: true
-    - ./gradlew --info clean :app:connectedAndroidTest:
+    - ./gradlew --info --stacktrace clean :app:connectedAndroidTest:
         parallel: true
