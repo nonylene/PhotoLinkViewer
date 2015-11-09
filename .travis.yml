@@ -1,11 +1,12 @@
 # .travis.yml
 language: android
 jdk: oraclejdk7
+cache: false
 sudo: false
 env:
   global:
   - TERM=dumb
-  - GRADLE_OPTS="-Xmx1024m -XX:MaxPermSize=1024m"
+  - GRADLE_OPTS="-Xmx512m-XX:MaxPermSize=512m"
   - ADB_INSTALL_TIMEOUT=12
 
   - secure: NWjCzjh7odNCmn5KRkNPuC3jSMAWMRUyR8baKCDewxItrpUyAc8lFuMjQj9y5g9a8xCZ19ld3bZRMy9Qk2PZj8DJgbFlZKLkDr03dVVi0qoF096v9wu5EH9amMaiY+liFPtNGPSaqYbAWPVbAu1GUMmK1D0vfkHUWXPEzsHa1YTE/Pk5G4yGM25pdZtuslUMFfhSU3tQYypl4jaf2UtfiwqppXxKhaeXSg4IoVXV96m7wsjI2fJI/lSMZB8Wg6yrUSdCaAhIR+FvUcEOWIBaaxl83SKlhM/km/U9ZdWFlP4b9Ry5HSiFIId31LFRhpuBF9juPakknFTzLuLKoJ6o+PsIXGjFYV6AvHwRydcJtSWb/g2FZFfxv995c1PBRUK3yYT8snTZgTYPwoOTEW9JPvDAMOiDFl33NwP4pCSq8k1Ibw6EdmdHyk1nfOo+hTDRQfeffCNIwU+5USP7hjKJ6E82+u98kpgjb7AqYQN9HWmDRL5gcXyTR/sVKf1E7z+xac/4q3wcuG7/q9r1YsJlD/YRFHunKRtiI3wcUVDlHCHr0LLzKAPSluokx2TptaNoO4djB1jwpcUZgr3oAC5TNgPcu/AY9QyACtLlu78UjGbrYP48/ryW5Dicqs4O9M5OuIEKrds5hJOHxjP0wouSMyVx/jlgz6utKF35udI1aBs=
