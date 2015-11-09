@@ -1,7 +1,7 @@
 PhotoLinkViewer
 ===============
 
-[![Build Status](https://travis-ci.org/nonylene/PhotoLinkViewer.svg)](https://travis-ci.org/nonylene/PhotoLinkViewer)
+[![Circle CI](https://circleci.com/gh/nonylene/PhotoLinkViewer.svg?style=svg)](https://circleci.com/gh/nonylene/PhotoLinkViewer)
 
 Google Play: [PhotoLinkViewer](https://play.google.com/store/apps/details?id=net.nonylene.photolinkviewer)
 
