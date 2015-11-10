@@ -43,4 +43,4 @@ before_script:
   - sleep 60
 
 script:
-  - ./gradlew --info clean lint :app:connectedAndroidTest
+  - ./gradlew --info clean :app:connectedAndroidTest
