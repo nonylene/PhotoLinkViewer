@@ -16,9 +16,9 @@ env:
 
   matrix:
     - ANDROID_TARGET=android-22
-    - ANDROID_TARGET=android-22
-    - ANDROID_TARGET=android-22
-    - ANDROID_TARGET=android-22
+    - ANDROID_TARGET=android-19
+    - ANDROID_TARGET=android-17
+    - ANDROID_TARGET=android-15
 
 android:
   components:
