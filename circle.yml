@@ -1,9 +1,9 @@
 machine:
   java:
-      version: openjdk7
+    version: openjdk7
   environment:
     ANDROID_HOME: /usr/local/android-sdk-linux
-    ANDROID_INSTALL_TIMEOUT: 10
+    ADB_INSTALL_TIMEOUT: 12
     GRADLE_OPTS: -Xmx512m
 
 dependencies:
@@ -22,13 +22,13 @@ checkout:
     - git submodule update --init
 
 test:
-    override:
-    - case $CIRCLE_NODE_INDEX in 0) $ANDROID_HOME/tools/emulator -avd test22 -no-window -no-boot-anim -no-audio ;; 1) $ANDROID_HOME/tools/emulator -avd test19 -no-window -no-boot-anim -no-audio ;; 2) $ANDROID_HOME/tools/emulator -avd test17 -no-window -no-boot-anim -no-audio ;; 3) $ANDROID_HOME/tools/emulator -avd test15 -no-window -no-boot-anim -no-audio ;; esac:
+  override:
+    - case $CIRCLE_NODE_INDEX in 0) $ANDROID_HOME/tools/emulator -avd test22 -no-skin -no-boot-anim -no-audio -no-window ;; 1) $ANDROID_HOME/tools/emulator -avd test19 -no-skin -no-boot-anim -no-audio -no-window ;; 2) $ANDROID_HOME/tools/emulator -avd test17 -no-skin -no-boot-anim -no-audio -no-window ;; 3) $ANDROID_HOME/tools/emulator -avd test15 -no-skin -no-boot-anim -no-audio -no-window ;; esac:
         background: true
         parallel: true
     - circle-android wait-for-boot:
         parallel: true
-    - sleep 60:
+    - sleep 90:
         parallel: true
     - ./gradlew --info --stacktrace clean :app:connectedAndroidTest:
         parallel: true
