@@ -10,11 +10,11 @@ dependencies:
   post:
     # remove cache
     - rm -r ~/.gradle
-    - echo y | android update sdk --no-ui --all --filter "platform-tools,build-tools-23.0.1,build-tools-22.0.1,android-23,android-22,sys-img-armeabi-v7a-android-22,android-19,sys-img-armeabi-v7a-android-19,android-17,sys-img-armeabi-v7a-android-17,android-15,sys-img-armeabi-v7a-android-15,extra-android-support,extra-google-m2repository,extra-android-m2repository"
+    - echo y | android update sdk --no-ui --all --filter "platform-tools,build-tools-23.0.1,build-tools-22.0.1,android-23,sys-img-armeabi-v7a-android-23,android-22,sys-img-armeabi-v7a-android-22,android-19,sys-img-armeabi-v7a-android-19,android-17,sys-img-armeabi-v7a-android-17,android-15,sys-img-armeabi-v7a-android-15,extra-android-support,extra-google-m2repository,extra-android-m2repository"
     - echo n | android create avd -n test22 -f -t android-22
     - echo n | android create avd -n test19 -f -t android-19
     - echo n | android create avd -n test17 -f -t android-17
-    - echo n | android create avd -n test15 -f -t android-15
+    - echo n | android create avd -n test23 -f -t android-23
 
 checkout:
   post:
@@ -23,7 +23,7 @@ checkout:
 
 test:
     override:
-    - case $CIRCLE_NODE_INDEX in 0) $ANDROID_HOME/tools/emulator -avd test22 -no-window -no-boot-anim -no-audio ;; 1) $ANDROID_HOME/tools/emulator -avd test19 -no-window -no-boot-anim -no-audio ;; 2) $ANDROID_HOME/tools/emulator -avd test17 -no-window -no-boot-anim -no-audio ;; 3) $ANDROID_HOME/tools/emulator -avd test15 -no-window -no-boot-anim -no-audio ;; esac:
+    - case $CIRCLE_NODE_INDEX in 0) $ANDROID_HOME/tools/emulator -avd test22 -no-window -no-boot-anim -no-audio ;; 1) $ANDROID_HOME/tools/emulator -avd test19 -no-window -no-boot-anim -no-audio ;; 2) $ANDROID_HOME/tools/emulator -avd test17 -no-window -no-boot-anim -no-audio ;; 3) $ANDROID_HOME/tools/emulator -avd test23 -no-window -no-audio ;; esac:
         background: true
         parallel: true
     - circle-android wait-for-boot:
