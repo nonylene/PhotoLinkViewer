@@ -8,7 +8,7 @@ do
     echo $n test starting...
     ./gradlew --info --stacktrace clean :app:connectedAndroidTest && break      # substitute your command here
     c=$?
-    echo $n test finished.
+    echo $n test errored.
     sleep 15
 done
 
