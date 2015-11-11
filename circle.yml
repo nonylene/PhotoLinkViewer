@@ -25,6 +25,13 @@ checkout:
 
 test:
   override:
+    - case $CIRCLE_NODE_INDEX in 0) $ANDROID_HOME/tools/emulator -avd test22 -no-skin -no-boot-anim -no-audio -no-window ;; 1) $ANDROID_HOME/tools/emulator -avd test22 -no-skin -no-boot-anim -no-audio -no-window ;; 2) $ANDROID_HOME/tools/emulator -avd test22 -no-skin -no-boot-anim -no-audio -no-window ;; 3) $ANDROID_HOME/tools/emulator -avd test22 -no-skin -no-boot-anim -no-audio -no-window ;; esac:
+        background: true
+        parallel: true
+    - circle-android wait-for-boot:
+        parallel: true
+    - sleep 30:
+        parallel: true
     - ./test.sh:
         parallel: true
   post:
