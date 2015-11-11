@@ -7,6 +7,8 @@ machine:
     GRADLE_OPTS: -Xmx512m
 
 dependencies:
+  cache_directories:
+    - ~/.android
   post:
     # remove cache
     - rm -r ~/.gradle
@@ -33,5 +35,4 @@ test:
     - ./gradlew --info --stacktrace clean :app:connectedAndroidTest:
         parallel: true
   post:
-    - mkdir -p $CIRCLE_TEST_REPORTS/junit/
-    - find . -type f -regex ".*/test-results/*/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
+    - cp -r app/build/outputs/androidTests $CIRCLE_TEST_REPORTS
