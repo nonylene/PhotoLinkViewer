@@ -30,9 +30,9 @@ test:
         parallel: true
     - circle-android wait-for-boot:
         parallel: true
-    - sleep 90:
+    - sleep 30:
         parallel: true
-    - ./gradlew --info --stacktrace clean :app:connectedAndroidTest:
+    - ./test.sh:
         parallel: true
   post:
     - cp -r app/build/outputs/androidTest-results $CIRCLE_TEST_REPORTS:
