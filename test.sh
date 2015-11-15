@@ -3,8 +3,9 @@
 c=0
 n=0
 port=5554
-until [ $n -ge 2 ]
+until [ $n -ge 3 ]
 do
+    c=0
     case $CIRCLE_NODE_INDEX in 0) export ANDROID_VERSION=22 ;; 1) export ANDROID_VERSION=22 ;; 2) export ANDROID_VERSION=22 ;; 3) ANDROID_VERSION=22 ;; esac
     nohup bash -c "$ANDROID_HOME/tools/emulator -avd test$ANDROID_VERSION -no-skin -no-boot-anim -no-audio -no-window -port $port &"
     circle-android wait-for-boot
