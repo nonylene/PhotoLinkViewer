@@ -27,7 +27,7 @@ class TwitterStatusAdapter() : BaseAdapter(), UserTweetView.TwitterViewListener,
 
     val lastStatus: Status?
         get() {
-            return statusList.last() ?: statusList.get(statusList.size - 2)
+            return statusList.last() ?: statusList[statusList.size - 2]
         }
 
     override fun onShowFragmentRequired(plvUrl: PLVUrl) {

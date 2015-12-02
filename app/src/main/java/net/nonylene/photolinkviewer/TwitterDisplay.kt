@@ -187,7 +187,7 @@ class TwitterDisplay : Activity(), TwitterStatusAdapter.TwitterAdapterListener, 
                     .setTitle(getString(R.string.account_dialog_title))
                     .setNegativeButton(getString(android.R.string.cancel), null)
                     .setSingleChoiceItems(screen_list.toTypedArray(), screen_list.indexOf(current_name),
-                            DialogInterface.OnClickListener { dialogInterface, position ->
+                            { dialogInterface, position ->
                                 // save rowid and screen name to preference
                                 sharedPreferences.edit().putInt("account", row_id_list[position]).apply()
                                 sharedPreferences.edit().putString("screen_name", screen_list[position]).apply()

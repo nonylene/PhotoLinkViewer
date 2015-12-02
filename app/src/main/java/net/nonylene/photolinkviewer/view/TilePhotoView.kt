@@ -38,7 +38,7 @@ public class TilePhotoView(context: Context, attrs: AttributeSet?) : LinearLayou
 
     // remove canceled view
     public fun removeImageView(position: Int) {
-        frameLayoutListList.set(position, null)
+        frameLayoutListList[position] = null
     }
 
     public fun setPLVUrl(position: Int, plvUrl: PLVUrl) {
