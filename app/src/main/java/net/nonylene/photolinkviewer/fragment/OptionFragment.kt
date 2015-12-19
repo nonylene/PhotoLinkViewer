@@ -62,9 +62,9 @@ class OptionFragment : Fragment() {
         val size = Point()
         activity.windowManager.defaultDisplay.getSize(size)
         val imageView = activity.findViewById(R.id.imgview) as ImageView
-        val matrix = Matrix()
-        matrix.set(imageView.imageMatrix)
-        matrix.postRotate(if (right) 90f else -90f, (size.x / 2).toFloat(), (size.y / 2).toFloat())
-        imageView.imageMatrix = matrix
+        imageView.imageMatrix = Matrix().apply {
+            set(imageView.imageMatrix)
+            postRotate(if (right) 90f else -90f, (size.x / 2).toFloat(), (size.y / 2).toFloat())
+        }
     }
 }
