@@ -12,7 +12,7 @@ do
     sleep 30
     n=$[$n+1]
     echo $n test starting...
-    ./gradlew --stacktrace clean :app:connectedAndroidTest && break      # substitute your command here
+    ./gradlew --quiet --stacktrace clean :app:connectedAndroidTest && break      # substitute your command here
     c=$?
     echo $n test errored.
     adb emu kill
