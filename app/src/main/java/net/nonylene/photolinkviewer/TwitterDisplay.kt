@@ -18,11 +18,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import butterknife.bindView
+import net.nonylene.photolinkviewer.fragment.*
 
-import net.nonylene.photolinkviewer.fragment.OptionFragment
-import net.nonylene.photolinkviewer.fragment.ShowFragment
-import net.nonylene.photolinkviewer.fragment.TwitterOptionFragment
-import net.nonylene.photolinkviewer.fragment.VideoShowFragment
 import net.nonylene.photolinkviewer.tool.MyAsyncTwitter
 import net.nonylene.photolinkviewer.tool.PLVUrl
 import net.nonylene.photolinkviewer.tool.PLVUrlService
@@ -73,12 +70,6 @@ class TwitterDisplay : Activity(), TwitterStatusAdapter.TwitterAdapterListener, 
         url = intent.data.toString()
         bundle.putString("url", url)
 
-        // option fragment
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        val optionFragment = OptionFragment()
-        optionFragment.arguments = bundle
-        fragmentTransaction.add(R.id.root_layout, optionFragment).commit()
-
         if (!getSharedPreferences("preference", Context.MODE_PRIVATE).getBoolean("authorized", false)) {
             Toast.makeText(applicationContext, getString(R.string.twitter_display_oauth), Toast.LENGTH_LONG).show()
             startActivity(Intent(this, TOAuth::class.java))
@@ -103,12 +94,6 @@ class TwitterDisplay : Activity(), TwitterStatusAdapter.TwitterAdapterListener, 
                 addListener(twitterListener)
                 showStatus(id_long)
             }
-
-            bundle.putLong("id_long", id_long)
-            val twitterOptionFragment = TwitterOptionFragment()
-            twitterOptionFragment.arguments = bundle
-            fragmentManager.beginTransaction().add(R.id.buttons, twitterOptionFragment).commit()
-
         } catch (e: SQLiteException) {
             e.printStackTrace()
 
@@ -120,6 +105,14 @@ class TwitterDisplay : Activity(), TwitterStatusAdapter.TwitterAdapterListener, 
             finish()
         }
 
+        bundle.setTwitterEnabled(true)
+        bundle.setTweetId(id_long)
+
+        // option fragment
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        val optionFragment = OptionFragment()
+        optionFragment.arguments = bundle
+        fragmentTransaction.add(R.id.root_layout, optionFragment).commit()
     }
 
     override fun onShowFragmentRequired(plvUrl: PLVUrl) {
