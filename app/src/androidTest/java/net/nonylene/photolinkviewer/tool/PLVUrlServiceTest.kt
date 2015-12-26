@@ -166,7 +166,7 @@ class PLVUrlServiceTest {
                 assertEquals(siteName, "instagram")
             }
             countDownLatch.countDown()
-        }).requestGetPLVUrl("https://instagram.com/p/90kD_WzfqP/")
+        }).requestGetPLVUrl("https://www.instagram.com/p/90kD_WzfqP/")
 
         getServiceWithSuccessListener({
             it[0].apply {

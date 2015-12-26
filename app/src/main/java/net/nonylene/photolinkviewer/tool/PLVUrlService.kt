@@ -159,7 +159,7 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
     private inner class InstagramSite(url: String, context: Context, listener: PLVUrlListener) : Site(url, context, listener) {
 
         override fun getPLVUrl() {
-            super.getId(url, "^https?://instagr\\.?am[\\.com]*/p/([^/\\?=]+)")?.let { id ->
+            super.getId(url, "^https?://.*instagr\\.?am[\\.com]*/p/([^/\\?=]+)")?.let { id ->
                 val plvUrl = PLVUrl(url)
 
                 plvUrl.siteName = "instagram"
