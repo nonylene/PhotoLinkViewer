@@ -6,7 +6,6 @@ import android.app.Dialog
 import android.app.DialogFragment
 import android.app.Fragment
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.database.sqlite.SQLiteException
 import android.os.Build
@@ -18,6 +17,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
+import butterknife.bindView
 
 import net.nonylene.photolinkviewer.fragment.OptionFragment
 import net.nonylene.photolinkviewer.fragment.ShowFragment
@@ -49,26 +49,19 @@ class TwitterDisplay : Activity(), TwitterStatusAdapter.TwitterAdapterListener, 
     private var isSingle: Boolean = false
     private var isInitialized = false
 
-    private var mTwitterSingleScrollView : HeightScalableScrollView? = null
-    private var mTwitterSingleView: UserTweetView? = null
-    private var mTwitterSingleLoadingView: UserTweetLoadingView? = null
-    private var mTwitterSingleDivider: View? = null
-    private var mProgressBar: ProgressBar? = null
-    private var mTweetBaseLayout: LinearLayout? = null
+    private val mTwitterSingleScrollView : HeightScalableScrollView by bindView(R.id.twitter_single_scroll)
+    private val mTwitterSingleView: UserTweetView by bindView(R.id.twitter_single_view)
+    private val mTwitterSingleLoadingView: UserTweetLoadingView by bindView(R.id.twitter_single_loading)
+    private val mTwitterSingleDivider: View by bindView(R.id.twitter_single_divider)
+    private val mProgressBar: ProgressBar by bindView(R.id.show_progress)
+    private val mTweetBaseLayout: LinearLayout by bindView(R.id.tweet_base_view)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_twitter_display)
 
-        mTwitterSingleScrollView = findViewById(R.id.twitter_single_scroll) as HeightScalableScrollView
-        mTwitterSingleView = findViewById(R.id.twitter_single_view) as UserTweetView
-        mTwitterSingleLoadingView = findViewById(R.id.twitter_single_loading) as UserTweetLoadingView
-        mTwitterSingleDivider = findViewById(R.id.twitter_single_divider) as ImageView
-        mProgressBar = findViewById(R.id.show_progress) as ProgressBar
-        mTweetBaseLayout = findViewById(R.id.tweet_base_view) as LinearLayout
-
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
-            mTweetBaseLayout!!.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
+            mTweetBaseLayout.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
         }
 
         if (Intent.ACTION_VIEW != intent.action) {
@@ -93,22 +86,23 @@ class TwitterDisplay : Activity(), TwitterStatusAdapter.TwitterAdapterListener, 
             return
         }
 
-        mTwitterSingleView!!.twitterViewListener = this
-        mTwitterSingleView!!.visibility = View.GONE
+        mTwitterSingleView.twitterViewListener = this
+        mTwitterSingleView.visibility = View.GONE
 
-        mTwitterSingleLoadingView!!.visibility = View.GONE
-        mTwitterSingleLoadingView!!.loadingViewListener = this
+        mTwitterSingleLoadingView.visibility = View.GONE
+        mTwitterSingleLoadingView.loadingViewListener = this
 
-        mTwitterSingleScrollView!!.isVerticalScrollBarEnabled = false
+        mTwitterSingleScrollView.isVerticalScrollBarEnabled = false
 
         val matcher = Pattern.compile("^https?://twitter\\.com/\\w+/status[es]*/(\\d+)").matcher(url)
         if (!matcher.find()) return
         val id_long = java.lang.Long.parseLong(matcher.group(1))
 
         try {
-            twitter = MyAsyncTwitter.getAsyncTwitter(applicationContext)
-            twitter!!.addListener(twitterListener)
-            twitter!!.showStatus(id_long)
+            twitter = MyAsyncTwitter.getAsyncTwitter(applicationContext).apply {
+                addListener(twitterListener)
+                showStatus(id_long)
+            }
 
             bundle.putLong("id_long", id_long)
             val twitterOptionFragment = TwitterOptionFragment()
@@ -162,16 +156,16 @@ class TwitterDisplay : Activity(), TwitterStatusAdapter.TwitterAdapterListener, 
         if (statusAdapter != null) {
             replyId = statusAdapter!!.lastStatus!!.inReplyToStatusId
         } else {
-            replyId = mTwitterSingleView!!.status!!.inReplyToStatusId
-            mTwitterSingleScrollView!!.max = (resources.displayMetrics.heightPixels / 3.5f).toInt()
-            mTwitterSingleScrollView!!.isVerticalScrollBarEnabled = true
-            mTweetBaseLayout!!.setGravity(Gravity.CENTER_HORIZONTAL)
+            replyId = mTwitterSingleView.status!!.inReplyToStatusId
+            mTwitterSingleScrollView.max = (resources.displayMetrics.heightPixels / 3.5f).toInt()
+            mTwitterSingleScrollView.isVerticalScrollBarEnabled = true
+            mTweetBaseLayout.setGravity(Gravity.CENTER_HORIZONTAL)
         }
         twitter!!.showStatus(replyId)
     }
 
     override fun hideProgressBar() {
-        mProgressBar!!.visibility = View.GONE
+        mProgressBar.visibility = View.GONE
     }
 
     class ChangeAccountDialog : DialogFragment() {
@@ -253,23 +247,24 @@ class TwitterDisplay : Activity(), TwitterStatusAdapter.TwitterAdapterListener, 
 
                     } else {
                         hideProgressBar()
-                        mTwitterSingleView!!.visibility = View.VISIBLE
-                        mTwitterSingleView!!.setEntry(status)
+                        mTwitterSingleView.visibility = View.VISIBLE
+                        mTwitterSingleView.setEntry(status)
                         if (status.inReplyToStatusId != (-1).toLong()) {
-                            mTwitterSingleLoadingView!!.visibility = View.VISIBLE
-                            mTwitterSingleDivider!!.visibility = View.VISIBLE
+                            mTwitterSingleLoadingView.visibility = View.VISIBLE
+                            mTwitterSingleDivider.visibility = View.VISIBLE
                         }
 
                     }
                 } else {
                     if (statusAdapter == null) {
-                        statusAdapter = TwitterStatusAdapter()
-                        statusAdapter!!.twitterAdapterListener = this@TwitterDisplay
+                        statusAdapter = TwitterStatusAdapter().apply {
+                            twitterAdapterListener = this@TwitterDisplay
+                        }
                         val listView = LayoutInflater.from(this@TwitterDisplay).inflate(R.layout.tweets_list_view, mTweetBaseLayout, false) as ListView
                         listView.adapter = statusAdapter
-                        mTweetBaseLayout!!.addView(listView)
-                        mTwitterSingleLoadingView!!.visibility = View.GONE
-                        mTwitterSingleDivider!!.visibility = View.GONE
+                        mTweetBaseLayout.addView(listView)
+                        mTwitterSingleLoadingView.visibility = View.GONE
+                        mTwitterSingleDivider.visibility = View.GONE
                     }
                     statusAdapter!!.addItem(status)
                 }

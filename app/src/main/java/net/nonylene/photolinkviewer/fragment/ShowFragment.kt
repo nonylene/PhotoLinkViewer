@@ -338,14 +338,14 @@ class ShowFragment : Fragment() {
 
             if (result.isResized) {
                 Snackbar.make(baseView,
-                        getString(R.string.resize_message) + result.originalWidth + "x" + result.originalHeight,
-                        Snackbar.LENGTH_LONG)
-                .setAction(R.string.resize_action_message, {
-                    MaxSizeDialogFragment().apply {
-                        show(this@ShowFragment.fragmentManager, "about");
-                    }
-                })
-                .show()
+                            getString(R.string.resize_message) + result.originalWidth + "x" + result.originalHeight,
+                            Snackbar.LENGTH_LONG)
+                        .setAction(R.string.resize_action_message, {
+                            MaxSizeDialogFragment().apply {
+                                show(this@ShowFragment.fragmentManager, "about");
+                            }
+                        })
+                        .show()
             }
         }
 
