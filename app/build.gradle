@@ -85,6 +85,7 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.5.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.mcxiaoke.volley:library:1.0.19'
+    compile 'com.jakewharton:kotterknife:0.1.0-SNAPSHOT'
 
     androidTestCompile('com.android.support.test:runner:0.4'){
         exclude module: 'support-annotations'
@@ -105,4 +106,7 @@ buildscript {
 }
 repositories {
     mavenCentral()
+    maven {
+        url 'https://oss.sonatype.org/content/repositories/snapshots/'
+    }
 }
