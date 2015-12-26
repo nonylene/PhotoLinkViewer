@@ -74,9 +74,9 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile "com.android.support:appcompat-v7:23.+"
-    compile 'com.android.support:support-v13:23.+'
-    compile 'com.android.support:design:23.+'
+    compile "com.android.support:appcompat-v7:23.1.1"
+    compile 'com.android.support:support-v13:23.1.1'
+    compile 'com.android.support:design:23.1.1'
     compile 'org.twitter4j:twitter4j-core:4.0.4'
     compile 'org.twitter4j:twitter4j-async:4.0.4'
     compile 'org.twitter4j:twitter4j-http2-support:4.0.4'
@@ -94,7 +94,7 @@ dependencies {
 }
 
 buildscript {
-    ext.kotlin_version = '1.0.0-beta-1103'
+    ext.kotlin_version = '1.0.0-beta-4584'
     repositories {
         mavenCentral()
     }

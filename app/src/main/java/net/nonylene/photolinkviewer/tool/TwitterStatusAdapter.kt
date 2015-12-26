@@ -79,7 +79,7 @@ class TwitterStatusAdapter() : BaseAdapter(), UserTweetView.TwitterViewListener,
     }
 
     override fun getViewTypeCount(): Int {
-        return ItemType.values.size
+        return ItemType.values().size
     }
 
 
