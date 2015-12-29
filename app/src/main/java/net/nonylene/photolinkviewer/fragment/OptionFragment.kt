@@ -23,6 +23,7 @@ import android.support.design.widget.FloatingActionButton
 import android.support.v13.app.FragmentCompat
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewCompat
+import android.support.v4.view.ViewPropertyAnimatorListenerAdapter
 import android.support.v4.view.animation.FastOutSlowInInterpolator
 import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
@@ -102,8 +103,6 @@ class OptionFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         baseButton.setOnClickListener{ baseButton ->
-            ViewCompat.animate(baseButton).rotationBy(180f).setDuration(150).start()
-
             settingButton.animate().cancel()
             webButton.animate().cancel()
             retweetButton.animate().cancel()
@@ -112,6 +111,8 @@ class OptionFragment : Fragment() {
             settingButton.animate().cancel()
 
             if (isOpen) {
+                ViewCompat.setRotation(baseButton, 0f)
+                ViewCompat.animate(baseButton).rotationBy(180f).setDuration(150)
                 settingButton.hide()
                 webButton.hide()
                 if (arguments.isTwitterEnabled()) {
@@ -120,6 +121,8 @@ class OptionFragment : Fragment() {
                 }
                 if (isDownloadEnabled) downLoadButton.hide()
             } else {
+                ViewCompat.setRotation(baseButton, 180f)
+                ViewCompat.animate(baseButton).rotationBy(180f).setDuration(150)
                 settingButton.showWithAnimation()
                 webButton.showWithAnimation()
                 if (arguments.isTwitterEnabled()) {
