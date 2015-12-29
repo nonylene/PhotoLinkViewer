@@ -1,6 +1,8 @@
 package net.nonylene.photolinkviewer.fragment
 
 import android.Manifest
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.app.Dialog
 import android.app.DialogFragment
 import android.app.DownloadManager
@@ -21,6 +23,7 @@ import android.support.design.widget.FloatingActionButton
 import android.support.v13.app.FragmentCompat
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewCompat
+import android.support.v4.view.animation.FastOutSlowInInterpolator
 import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
@@ -55,6 +58,28 @@ class OptionFragment : Fragment() {
     private var saveBundle: Bundle? = null
     private val preferences by lazy { PreferenceManager.getDefaultSharedPreferences(activity) }
     private var applicationContext : Context? = null
+    private val fastOutSlowInInterpolator = FastOutSlowInInterpolator()
+
+    private var isDownloadEnabled = false
+    private var isOpen = false
+
+    // by default, animation does not run if not isLaidOut().
+    private fun FloatingActionButton.showWithAnimation() {
+        alpha = 0f
+        scaleY = 0f
+        scaleX = 0f
+        animate()
+                .scaleX(1f)
+                .scaleY(1f)
+                .alpha(1f)
+                .setDuration(200)
+                .setInterpolator(fastOutSlowInInterpolator)
+                .setListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationStart(animation: Animator?) {
+                        visibility = View.VISIBLE
+                    }
+                })
+    }
 
     companion object {
         private val LIKE_CODE = 1
@@ -77,31 +102,33 @@ class OptionFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         baseButton.setOnClickListener{ baseButton ->
-            val rotateFlag = baseButton.getTag(R.id.ROTATE_FLAG_TAG) as Boolean? ?: false
-            ViewCompat.animate(baseButton).rotationBy(180f).setDuration(100).start()
+            ViewCompat.animate(baseButton).rotationBy(180f).setDuration(150).start()
 
             settingButton.animate().cancel()
             webButton.animate().cancel()
             retweetButton.animate().cancel()
             likeButton.animate().cancel()
+            downLoadButton.animate().cancel()
+            settingButton.animate().cancel()
 
-            if (rotateFlag) {
-                settingButton.animate().cancel()
+            if (isOpen) {
                 settingButton.hide()
                 webButton.hide()
                 if (arguments.isTwitterEnabled()) {
                     retweetButton.hide()
                     likeButton.hide()
                 }
+                if (isDownloadEnabled) downLoadButton.hide()
             } else {
-                settingButton.show()
-                webButton.show()
+                settingButton.showWithAnimation()
+                webButton.showWithAnimation()
                 if (arguments.isTwitterEnabled()) {
-                    retweetButton.show()
-                    likeButton.show()
+                    retweetButton.showWithAnimation()
+                    likeButton.showWithAnimation()
                 }
+                if (isDownloadEnabled) downLoadButton.showWithAnimation()
             }
-            baseButton.setTag(R.id.ROTATE_FLAG_TAG, !rotateFlag)
+            isOpen = !isOpen
         }
 
         settingButton.setOnClickListener{
@@ -287,7 +314,6 @@ class OptionFragment : Fragment() {
         Toast.makeText(applicationContext!!, applicationContext!!.getString(R.string.download_photo_title) + path.toString(),
                 Toast.LENGTH_LONG).show()
     }
-
 
     private fun getFileNames(plvUrl: PLVUrl): Bundle {
         // set download directory
