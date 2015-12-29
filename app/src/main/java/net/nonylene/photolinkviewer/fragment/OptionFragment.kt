@@ -46,6 +46,7 @@ class OptionFragment : Fragment() {
     private val baseButton: FloatingActionButton by bindView(R.id.basebutton)
     private val settingButton: FloatingActionButton by bindView(R.id.setbutton)
     private val webButton: FloatingActionButton by bindView(R.id.webbutton)
+    private val downLoadButton: FloatingActionButton by bindView(R.id.dlbutton)
     private val rotateLeftButton: ImageView by bindView(R.id.rotate_leftbutton)
     private val rotateRightButton: ImageView by bindView(R.id.rotate_rightbutton)
     private val retweetButton: FloatingActionButton by bindView(R.id.retweet_button)
@@ -212,14 +213,17 @@ class OptionFragment : Fragment() {
 
     // eventBus catch event
     public fun onEvent(downloadButtonEvent: DownloadButtonEvent) {
-        addDLButton(downloadButtonEvent.plvUrl)
+        isDownloadEnabled = downloadButtonEvent.isEnabled
+        if (downloadButtonEvent.isEnabled) {
+            addDLButton(downloadButtonEvent.plvUrl!!)
+        } else {
+            removeDLButton()
+        }
     }
 
     private fun addDLButton(plvUrl: PLVUrl) {
         // dl button visibility and click
-        val dlButton = activity.findViewById(R.id.dlbutton) as ImageButton
-
-        dlButton.setOnClickListener{
+        downLoadButton.setOnClickListener{
             // download direct
             if (preferences.getBoolean("skip_dialog", false)) {
                 saveOrRequestPermission(getFileNames(plvUrl))
@@ -232,8 +236,13 @@ class OptionFragment : Fragment() {
                 }
             }
         }
+        if (isOpen) downLoadButton.showWithAnimation()
+    }
 
-        activity.findViewById(R.id.dlbutton_frame).visibility = View.VISIBLE
+    private fun removeDLButton() {
+        // dl button visibility and click
+        downLoadButton.setOnClickListener(null)
+        if (isOpen) downLoadButton.hide()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>?, grantResults: IntArray?) {
