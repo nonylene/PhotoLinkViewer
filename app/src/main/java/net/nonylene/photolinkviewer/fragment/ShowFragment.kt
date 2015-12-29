@@ -268,7 +268,7 @@ class ShowFragment : Fragment() {
                 return
             }
 
-            EventBus.getDefault().post(DownloadButtonEvent(plvUrl))
+            EventBus.getDefault().post(DownloadButtonEvent(true, plvUrl))
 
             if ("gif" == result.type) {
                 addWebView(plvUrl)
@@ -344,9 +344,7 @@ class ShowFragment : Fragment() {
     override fun onDetach() {
         super.onDetach()
         imageView?.setImageBitmap(null)
-        activity.findViewById(R.id.dlbutton)?.let {
-            activity.findViewById(R.id.dlbutton_frame)?.visibility = View.GONE
-        }
+        EventBus.getDefault().post(DownloadButtonEvent(false, null))
         activity.findViewById(R.id.rotate_root)?.let {
             it.visibility = View.GONE
         }
