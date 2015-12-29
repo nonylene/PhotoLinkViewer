@@ -35,29 +35,14 @@
             app:backgroundTint="#24a8ed"
             />
 
-        <FrameLayout
-            android:id="@+id/dlbutton_frame"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/button_frame_margin"
-            android:visibility="gone">
-
-            <ImageView
-                android:layout_width="@dimen/shadow_size"
-                android:layout_height="@dimen/shadow_size"
-                android:src="@drawable/shadow"/>
-
-            <ImageButton
-                android:id="@+id/dlbutton"
-                android:layout_width="@dimen/layer_button_size"
-                android:layout_height="@dimen/layer_button_size"
-                android:layout_gravity="center"
-                android:background="@null"
-                android:contentDescription="@string/option_fragment_download"
-                android:scaleType="fitXY"
-                android:src="@drawable/download_button_design"/>
-
-        </FrameLayout>
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/dlbutton"
+            style="@style/FloatingActionButton"
+            android:contentDescription="@string/option_fragment_download"
+            android:src="@drawable/ic_file_download_white_48dp"
+            android:visibility="gone"
+            app:backgroundTint="#24a8ed"
+            />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/retweet_button"
