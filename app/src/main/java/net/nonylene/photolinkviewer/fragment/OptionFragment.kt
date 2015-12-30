@@ -51,8 +51,8 @@ class OptionFragment : Fragment() {
     private val settingButton: FloatingActionButton by bindView(R.id.setbutton)
     private val webButton: FloatingActionButton by bindView(R.id.webbutton)
     private val downLoadButton: FloatingActionButton by bindView(R.id.dlbutton)
-    private val rotateLeftButton: ImageView by bindView(R.id.rotate_leftbutton)
-    private val rotateRightButton: ImageView by bindView(R.id.rotate_rightbutton)
+    private val rotateLeftButton: FloatingActionButton by bindView(R.id.rotate_leftbutton)
+    private val rotateRightButton: FloatingActionButton by bindView(R.id.rotate_rightbutton)
     private val retweetButton: FloatingActionButton by bindView(R.id.retweet_button)
     private val likeButton: FloatingActionButton by bindView(R.id.like_button)
 
@@ -111,7 +111,7 @@ class OptionFragment : Fragment() {
             settingButton.animate().cancel()
 
             if (isOpen) {
-                ViewCompat.setRotation(baseButton, 0f)
+                ViewCompat.setRotation(baseButton, 180f)
                 ViewCompat.animate(baseButton).rotationBy(180f).setDuration(150)
                 settingButton.hide()
                 webButton.hide()
@@ -121,7 +121,7 @@ class OptionFragment : Fragment() {
                 }
                 if (isDownloadEnabled) downLoadButton.hide()
             } else {
-                ViewCompat.setRotation(baseButton, 180f)
+                ViewCompat.setRotation(baseButton, 0f)
                 ViewCompat.animate(baseButton).rotationBy(180f).setDuration(150)
                 settingButton.showWithAnimation()
                 webButton.showWithAnimation()
@@ -249,11 +249,16 @@ class OptionFragment : Fragment() {
 
     // eventBus catch event
     public fun onEvent(showFragmentEvent: ShowFragmentEvent) {
+        rotateLeftButton.animate().cancel()
+        rotateRightButton.animate().cancel()
         if (showFragmentEvent.isToBeShown) {
-
+            rotateRightButton.showWithAnimation()
+            rotateLeftButton.showWithAnimation()
         } else {
             isDownloadEnabled = false
             removeDLButton()
+            rotateRightButton.hide()
+            rotateLeftButton.hide()
         }
     }
 
@@ -272,12 +277,14 @@ class OptionFragment : Fragment() {
                 }
             }
         }
+        downLoadButton.animate().cancel()
         if (isOpen) downLoadButton.showWithAnimation()
     }
 
     private fun removeDLButton() {
         // dl button visibility and click
         downLoadButton.setOnClickListener(null)
+        downLoadButton.animate().cancel()
         if (isOpen) downLoadButton.hide()
     }
 

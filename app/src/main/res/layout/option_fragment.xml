@@ -77,51 +77,25 @@
         android:layout_height="wrap_content"
         android:layout_gravity="start|bottom"
         android:orientation="horizontal"
-        android:visibility="gone">
+        android:visibility="visible">
 
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/button_frame_margin">
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/rotate_leftbutton"
+            style="@style/FloatingActionButton"
+            android:contentDescription="@string/option_fragment_openclose"
+            android:src="@drawable/ic_rotate_left_white_48dp"
+            android:visibility="gone"
+            app:backgroundTint="#f8cd24"
+            />
 
-            <ImageView
-                android:layout_width="@dimen/shadow_size"
-                android:layout_height="@dimen/shadow_size"
-                android:src="@drawable/shadow"/>
-
-            <ImageButton
-                android:id="@+id/rotate_leftbutton"
-                android:layout_width="@dimen/layer_button_size"
-                android:layout_height="@dimen/layer_button_size"
-                android:layout_gravity="center"
-                android:background="@null"
-                android:contentDescription="@string/rotate_left"
-                android:scaleType="fitXY"
-                android:src="@drawable/rotate_left_design"/>
-
-        </FrameLayout>
-
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/button_frame_margin">
-
-            <ImageView
-                android:layout_width="@dimen/shadow_size"
-                android:layout_height="@dimen/shadow_size"
-                android:src="@drawable/shadow"/>
-
-            <ImageButton
-                android:id="@+id/rotate_rightbutton"
-                android:layout_width="@dimen/layer_button_size"
-                android:layout_height="@dimen/layer_button_size"
-                android:layout_gravity="center"
-                android:background="@null"
-                android:contentDescription="@string/rotate_right"
-                android:scaleType="fitXY"
-                android:src="@drawable/rotate_right_design"/>
-
-        </FrameLayout>
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/rotate_rightbutton"
+            style="@style/FloatingActionButton"
+            android:contentDescription="@string/option_fragment_openclose"
+            android:src="@drawable/ic_rotate_right_white_48dp"
+            android:visibility="gone"
+            app:backgroundTint="#f8cd24"
+            />
     </LinearLayout>
 
 </FrameLayout>

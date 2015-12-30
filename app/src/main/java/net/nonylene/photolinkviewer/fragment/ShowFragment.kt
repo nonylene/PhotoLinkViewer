@@ -324,8 +324,6 @@ class ShowFragment : Fragment() {
 
             EventBus.getDefault().post(ShowFragmentEvent(true))
 
-            activity.findViewById(R.id.rotate_root).visibility = View.VISIBLE
-
             if (result.isResized) {
                 Snackbar.make(baseView,
                             getString(R.string.resize_message) + result.originalWidth + "x" + result.originalHeight,
@@ -348,9 +346,6 @@ class ShowFragment : Fragment() {
         super.onDetach()
         imageView?.setImageBitmap(null)
         EventBus.getDefault().post(ShowFragmentEvent(false))
-        activity.findViewById(R.id.rotate_root)?.let {
-            it.visibility = View.GONE
-        }
     }
 
 
