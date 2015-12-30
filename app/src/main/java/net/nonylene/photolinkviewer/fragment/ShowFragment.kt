@@ -36,6 +36,7 @@ import net.nonylene.photolinkviewer.MaxSizePreferenceActivity
 import net.nonylene.photolinkviewer.R
 import net.nonylene.photolinkviewer.async.AsyncHttpBitmap
 import net.nonylene.photolinkviewer.event.DownloadButtonEvent
+import net.nonylene.photolinkviewer.event.ShowFragmentEvent
 import net.nonylene.photolinkviewer.tool.Initialize
 import net.nonylene.photolinkviewer.tool.PLVUrl
 import net.nonylene.photolinkviewer.tool.ProgressBarListener
@@ -268,7 +269,7 @@ class ShowFragment : Fragment() {
                 return
             }
 
-            EventBus.getDefault().post(DownloadButtonEvent(true, plvUrl))
+            EventBus.getDefault().post(DownloadButtonEvent(plvUrl))
 
             if ("gif" == result.type) {
                 addWebView(plvUrl)
@@ -321,6 +322,8 @@ class ShowFragment : Fragment() {
             matrix.postTranslate(initX, initY)
             imageView!!.imageMatrix = matrix
 
+            EventBus.getDefault().post(ShowFragmentEvent(true))
+
             activity.findViewById(R.id.rotate_root).visibility = View.VISIBLE
 
             if (result.isResized) {
@@ -344,7 +347,7 @@ class ShowFragment : Fragment() {
     override fun onDetach() {
         super.onDetach()
         imageView?.setImageBitmap(null)
-        EventBus.getDefault().post(DownloadButtonEvent(false, null))
+        EventBus.getDefault().post(ShowFragmentEvent(false))
         activity.findViewById(R.id.rotate_root)?.let {
             it.visibility = View.GONE
         }

@@ -23,7 +23,6 @@ import android.support.design.widget.FloatingActionButton
 import android.support.v13.app.FragmentCompat
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewCompat
-import android.support.v4.view.ViewPropertyAnimatorListenerAdapter
 import android.support.v4.view.animation.FastOutSlowInInterpolator
 import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
@@ -37,6 +36,7 @@ import net.nonylene.photolinkviewer.R
 import net.nonylene.photolinkviewer.Settings
 import net.nonylene.photolinkviewer.dialog.SaveDialogFragment
 import net.nonylene.photolinkviewer.event.DownloadButtonEvent
+import net.nonylene.photolinkviewer.event.ShowFragmentEvent
 import net.nonylene.photolinkviewer.tool.MyAsyncTwitter
 import net.nonylene.photolinkviewer.tool.PLVUrl
 import twitter4j.Status
@@ -243,10 +243,16 @@ class OptionFragment : Fragment() {
 
     // eventBus catch event
     public fun onEvent(downloadButtonEvent: DownloadButtonEvent) {
-        isDownloadEnabled = downloadButtonEvent.isEnabled
-        if (downloadButtonEvent.isEnabled) {
-            addDLButton(downloadButtonEvent.plvUrl!!)
+        isDownloadEnabled = true
+        addDLButton(downloadButtonEvent.plvUrl)
+    }
+
+    // eventBus catch event
+    public fun onEvent(showFragmentEvent: ShowFragmentEvent) {
+        if (showFragmentEvent.isToBeShown) {
+
         } else {
+            isDownloadEnabled = false
             removeDLButton()
         }
     }
