@@ -21,7 +21,7 @@
             android:id="@+id/webbutton"
             style="@style/FloatingActionButton"
             android:contentDescription="@string/option_fragment_open"
-            android:src="@drawable/ic_open_in_browser_white_36dp"
+            android:src="@drawable/ic_open_in_browser_white"
             android:visibility="gone"
             app:backgroundTint="#24a8ed"
             />
@@ -30,7 +30,7 @@
             android:id="@+id/setbutton"
             style="@style/FloatingActionButton"
             android:contentDescription="@string/option_fragment_settings"
-            android:src="@drawable/ic_settings_white_24dp"
+            android:src="@drawable/ic_settings_white"
             android:visibility="gone"
             app:backgroundTint="#24a8ed"
             />
@@ -39,7 +39,7 @@
             android:id="@+id/dlbutton"
             style="@style/FloatingActionButton"
             android:contentDescription="@string/option_fragment_download"
-            android:src="@drawable/ic_file_download_white_48dp"
+            android:src="@drawable/ic_file_download_white"
             android:visibility="gone"
             app:backgroundTint="#24a8ed"
             />
@@ -57,7 +57,7 @@
             android:id="@+id/like_button"
             style="@style/FloatingActionButton"
             android:contentDescription="@string/like_button_description"
-            android:src="@drawable/ic_favorite_white_24dp"
+            android:src="@drawable/ic_favorite_white"
             android:visibility="gone"
             app:backgroundTint="#f4554f"
             />
@@ -66,7 +66,7 @@
             android:id="@+id/basebutton"
             style="@style/FloatingActionButton"
             android:contentDescription="@string/option_fragment_openclose"
-            android:src="@drawable/ic_expand_less_white_24dp"
+            android:src="@drawable/ic_expand_less_white"
             app:backgroundTint="#46d249"
             />
     </LinearLayout>
@@ -83,7 +83,7 @@
             android:id="@+id/rotate_leftbutton"
             style="@style/FloatingActionButton"
             android:contentDescription="@string/option_fragment_openclose"
-            android:src="@drawable/ic_rotate_left_white_48dp"
+            android:src="@drawable/ic_rotate_left_white"
             android:visibility="gone"
             app:backgroundTint="#f8cd24"
             />
@@ -92,7 +92,7 @@
             android:id="@+id/rotate_rightbutton"
             style="@style/FloatingActionButton"
             android:contentDescription="@string/option_fragment_openclose"
-            android:src="@drawable/ic_rotate_right_white_48dp"
+            android:src="@drawable/ic_rotate_right_white"
             android:visibility="gone"
             app:backgroundTint="#f8cd24"
             />
