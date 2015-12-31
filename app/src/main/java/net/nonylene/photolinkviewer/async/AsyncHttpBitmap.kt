@@ -68,7 +68,7 @@ class AsyncHttpBitmap(context: Context, private val plvUrl: PLVUrl, private val 
 
             // if bitmap size is bigger than limit, load small photo
             val bitmap: Bitmap?
-            if (max_size <= Math.max(options.outHeight, options.outWidth)) {
+            if (max_size < Math.max(options.outHeight, options.outWidth)) {
                 val options2 = BitmapFactory.Options().apply {
                     inSampleSize = Math.max(options.outHeight, options.outWidth) / max_size + 1
                 }
