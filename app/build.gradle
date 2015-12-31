@@ -9,8 +9,8 @@ android {
         applicationId "net.nonylene.photolinkviewer"
         minSdkVersion 15
         targetSdkVersion 23
-        versionCode 44
-        versionName "2.2.5"
+        versionCode 45
+        versionName "2.3.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         def FLICKR_KEY
