@@ -37,6 +37,7 @@ import net.nonylene.photolinkviewer.R
 import net.nonylene.photolinkviewer.async.AsyncHttpBitmap
 import net.nonylene.photolinkviewer.event.DownloadButtonEvent
 import net.nonylene.photolinkviewer.event.ShowFragmentEvent
+import net.nonylene.photolinkviewer.event.SnackbarEvent
 import net.nonylene.photolinkviewer.tool.Initialize
 import net.nonylene.photolinkviewer.tool.PLVUrl
 import net.nonylene.photolinkviewer.tool.ProgressBarListener
@@ -324,16 +325,13 @@ class ShowFragment : Fragment() {
 
             EventBus.getDefault().post(ShowFragmentEvent(true))
 
-            if (result.isResized) {
-                Snackbar.make(baseView,
-                            getString(R.string.resize_message) + result.originalWidth + "x" + result.originalHeight,
-                            Snackbar.LENGTH_LONG)
-                        .setAction(R.string.resize_action_message, {
-                            MaxSizeDialogFragment().apply {
-                                show(this@ShowFragment.fragmentManager, "about");
-                            }
-                        })
-                        .show()
+            // avoid crash after fragment closed
+            activity.let { activity ->
+                EventBus.getDefault().post(
+                        SnackbarEvent(getString(R.string.resize_message) + result.originalWidth + "x" + result.originalHeight,
+                                getString(R.string.resize_action_message), {
+                            MaxSizeDialogFragment().show(activity.fragmentManager, "about")
+                        }))
             }
         }
 

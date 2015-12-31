@@ -19,7 +19,9 @@ import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.preference.PreferenceManager
+import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.FloatingActionButton
+import android.support.design.widget.Snackbar
 import android.support.v13.app.FragmentCompat
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewCompat
@@ -37,6 +39,7 @@ import net.nonylene.photolinkviewer.Settings
 import net.nonylene.photolinkviewer.dialog.SaveDialogFragment
 import net.nonylene.photolinkviewer.event.DownloadButtonEvent
 import net.nonylene.photolinkviewer.event.ShowFragmentEvent
+import net.nonylene.photolinkviewer.event.SnackbarEvent
 import net.nonylene.photolinkviewer.tool.MyAsyncTwitter
 import net.nonylene.photolinkviewer.tool.PLVUrl
 import twitter4j.Status
@@ -47,6 +50,7 @@ import java.io.File
 
 class OptionFragment : Fragment() {
 
+    private val baseView: CoordinatorLayout by bindView(R.id.option_base_view)
     private val baseButton: FloatingActionButton by bindView(R.id.basebutton)
     private val settingButton: FloatingActionButton by bindView(R.id.setbutton)
     private val webButton: FloatingActionButton by bindView(R.id.webbutton)
@@ -260,6 +264,15 @@ class OptionFragment : Fragment() {
             rotateRightButton.hide()
             rotateLeftButton.hide()
         }
+    }
+
+    // eventBus catch event
+    public fun onEvent(snackbarEvent: SnackbarEvent) {
+        Snackbar.make(baseView, snackbarEvent.message, Snackbar.LENGTH_LONG).apply {
+            snackbarEvent.actionMessage?.let {
+                setAction(it, snackbarEvent.actionListener)
+            }
+        }.show()
     }
 
     private fun addDLButton(plvUrl: PLVUrl) {

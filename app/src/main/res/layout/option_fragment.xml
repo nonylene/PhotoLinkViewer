@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:app="http://schemas.android.com/apk/res-auto"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             android:paddingBottom="@dimen/activity_vertical_margin"
-             android:paddingEnd="@dimen/activity_horizontal_margin"
-             android:paddingLeft="@dimen/activity_horizontal_margin"
-             android:paddingRight="@dimen/activity_horizontal_margin"
-             android:paddingStart="@dimen/activity_horizontal_margin"
-             android:paddingTop="@dimen/activity_vertical_margin">
+<android.support.design.widget.CoordinatorLayout
+    android:id="@+id/option_base_view"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
-        android:orientation="vertical">
-
+        android:orientation="vertical"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        app:layout_anchor="@id/option_base_view"
+        app:layout_anchorGravity="end|bottom"
+        app:layout_behavior="net.nonylene.photolinkviewer.tool.ForSnackbarBehavior"
+        >
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/webbutton"
@@ -69,19 +69,36 @@
             android:src="@drawable/ic_expand_less_white"
             app:backgroundTint="#46d249"
             />
+
+        <!-- avoid shadow cut by padding -->
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/activity_vertical_margin"/>
+
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/rotate_root"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="start|bottom"
-        android:orientation="horizontal"
-        android:visibility="visible">
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        app:layout_anchor="@id/option_base_view"
+        app:layout_anchorGravity="start|bottom"
+        app:layout_behavior="net.nonylene.photolinkviewer.tool.ForSnackbarBehavior"
+        >
+
+        <!-- avoid shadow cut by padding -->
+        <Space
+            android:id="@+id/rotate_space"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/activity_vertical_margin"
+            android:layout_alignParentBottom="true"/>
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/rotate_leftbutton"
             style="@style/FloatingActionButton"
+            android:layout_above="@id/rotate_space"
+            android:layout_alignParentLeft="true"
             android:contentDescription="@string/option_fragment_openclose"
             android:src="@drawable/ic_rotate_left_white"
             android:visibility="gone"
@@ -91,11 +108,14 @@
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/rotate_rightbutton"
             style="@style/FloatingActionButton"
+            android:layout_above="@id/rotate_space"
+            android:layout_toRightOf="@id/rotate_leftbutton"
             android:contentDescription="@string/option_fragment_openclose"
             android:src="@drawable/ic_rotate_right_white"
             android:visibility="gone"
             app:backgroundTint="#f8cd24"
             />
-    </LinearLayout>
 
-</FrameLayout>
+    </RelativeLayout>
+
+</android.support.design.widget.CoordinatorLayout>
