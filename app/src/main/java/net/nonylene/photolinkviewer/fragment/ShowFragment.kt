@@ -12,7 +12,6 @@ import android.os.Build
 import android.os.Bundle
 import android.app.Fragment
 import android.preference.PreferenceManager
-import android.support.design.widget.Snackbar
 import android.app.DialogFragment
 import android.support.v7.app.AlertDialog
 import android.text.TextUtils
@@ -326,12 +325,14 @@ class ShowFragment : Fragment() {
             EventBus.getDefault().post(ShowFragmentEvent(true))
 
             // avoid crash after fragment closed
-            activity.let { activity ->
-                EventBus.getDefault().post(
-                        SnackbarEvent(getString(R.string.resize_message) + result.originalWidth + "x" + result.originalHeight,
-                                getString(R.string.resize_action_message), {
-                            MaxSizeDialogFragment().show(activity.fragmentManager, "about")
-                        }))
+            if (result.isResized) {
+                activity.let { activity ->
+                    EventBus.getDefault().post(
+                            SnackbarEvent(getString(R.string.resize_message) + result.originalWidth + "x" + result.originalHeight,
+                                    getString(R.string.resize_action_message), {
+                                MaxSizeDialogFragment().show(activity.fragmentManager, "about")
+                            }))
+                }
             }
         }
 
