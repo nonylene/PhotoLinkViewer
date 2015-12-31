@@ -2,7 +2,6 @@ package net.nonylene.photolinkviewer.dialog
 
 import android.app.Dialog
 import android.app.DialogFragment
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
@@ -24,7 +23,7 @@ class SaveDialogFragment : DialogFragment() {
                         // get filename
                         arguments.putString("filename",
                                 (dialog.findViewById(R.id.path_EditText) as EditText).text.toString())
-                        targetFragment.onActivityResult(0, 0, Intent().putExtra("bundle", arguments))
+                        targetFragment.onActivityResult(targetRequestCode, 0, Intent().putExtra("bundle", arguments))
                     }
                 )
                 .setNegativeButton(getString(android.R.string.cancel), null)

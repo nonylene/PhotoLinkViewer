@@ -76,5 +76,33 @@
             android:layout_margin="5dp"
             android:text="@string/about_app_picasso_licence"
             android:typeface="monospace"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:autoLink="web"
+            android:text="@string/about_app_eventbus"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="@string/about_app_eventbus_licence"
+            android:typeface="monospace"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:autoLink="web"
+            android:text="@string/about_app_kotterknife"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="@string/about_app_kotterknife_licence"
+            android:typeface="monospace"/>
     </LinearLayout>
 </ScrollView>

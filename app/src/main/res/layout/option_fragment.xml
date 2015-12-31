@@ -1,173 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             android:paddingBottom="@dimen/activity_vertical_margin"
-             android:paddingEnd="@dimen/activity_horizontal_margin"
-             android:paddingLeft="@dimen/activity_horizontal_margin"
-             android:paddingRight="@dimen/activity_horizontal_margin"
-             android:paddingStart="@dimen/activity_horizontal_margin"
-             android:paddingTop="@dimen/activity_vertical_margin">
+<android.support.design.widget.CoordinatorLayout
+    android:id="@+id/option_base_view"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        app:layout_anchor="@id/option_base_view"
+        app:layout_anchorGravity="end|bottom"
+        app:layout_behavior="net.nonylene.photolinkviewer.tool.ForSnackbarBehavior"
+        >
 
-        <LinearLayout
-            android:id="@+id/buttons"
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/webbutton"
+            style="@style/FloatingActionButton"
+            android:contentDescription="@string/option_fragment_open"
+            android:src="@drawable/ic_open_in_browser_white"
+            android:visibility="gone"
+            app:backgroundTint="#24a8ed"
+            />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/setbutton"
+            style="@style/FloatingActionButton"
+            android:contentDescription="@string/option_fragment_settings"
+            android:src="@drawable/ic_settings_white"
+            android:visibility="gone"
+            app:backgroundTint="#24a8ed"
+            />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/dlbutton"
+            style="@style/FloatingActionButton"
+            android:contentDescription="@string/option_fragment_download"
+            android:src="@drawable/ic_file_download_white"
+            android:visibility="gone"
+            app:backgroundTint="#24a8ed"
+            />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/retweet_button"
+            style="@style/FloatingActionButton"
+            android:contentDescription="@string/retweet_button_description"
+            android:src="@drawable/retweet_white"
+            android:visibility="gone"
+            app:backgroundTint="#f4554f"
+            />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/like_button"
+            style="@style/FloatingActionButton"
+            android:contentDescription="@string/like_button_description"
+            android:src="@drawable/ic_favorite_white"
+            android:visibility="gone"
+            app:backgroundTint="#f4554f"
+            />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/basebutton"
+            style="@style/FloatingActionButton"
+            android:contentDescription="@string/option_fragment_openclose"
+            android:src="@drawable/ic_expand_less_white"
+            app:backgroundTint="#46d249"
+            />
+
+        <!-- avoid shadow cut by padding -->
+        <Space
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone">
+            android:layout_height="@dimen/activity_vertical_margin"/>
 
-            <FrameLayout
-                android:layout_margin="@dimen/button_frame_margin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:layout_width="@dimen/shadow_size"
-                    android:layout_height="@dimen/shadow_size"
-                    android:src="@drawable/shadow"/>
-
-                <ImageButton
-                    android:id="@+id/webbutton"
-                    android:layout_width="@dimen/layer_button_size"
-                    android:layout_height="@dimen/layer_button_size"
-                    android:layout_gravity="center"
-                    android:background="@null"
-                    android:contentDescription="@string/option_fragment_open"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/browser_button_design"/>
-
-            </FrameLayout>
-
-            <FrameLayout
-                android:layout_margin="@dimen/button_frame_margin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:layout_width="@dimen/shadow_size"
-                    android:layout_height="@dimen/shadow_size"
-                    android:src="@drawable/shadow"/>
-
-                <ImageButton
-                    android:id="@+id/setbutton"
-                    android:layout_width="@dimen/layer_button_size"
-                    android:layout_height="@dimen/layer_button_size"
-                    android:layout_gravity="center"
-                    android:background="@null"
-                    android:contentDescription="@string/option_fragment_settings"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/setting_button_design"/>
-
-            </FrameLayout>
-
-            <FrameLayout
-                android:layout_margin="@dimen/button_frame_margin"
-                android:id="@+id/dlbutton_frame"
-                android:visibility="gone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:layout_width="@dimen/shadow_size"
-                    android:layout_height="@dimen/shadow_size"
-                    android:src="@drawable/shadow"/>
-
-                <ImageButton
-                    android:id="@+id/dlbutton"
-                    android:layout_width="@dimen/layer_button_size"
-                    android:layout_height="@dimen/layer_button_size"
-                    android:layout_gravity="center"
-                    android:background="@null"
-                    android:contentDescription="@string/option_fragment_download"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/download_button_design"/>
-
-            </FrameLayout>
-        </LinearLayout>
-
-        <FrameLayout
-            android:layout_marginTop="6dp"
-            android:layout_marginBottom="@dimen/button_frame_margin"
-            android:layout_marginLeft="@dimen/button_frame_margin"
-            android:layout_marginRight="@dimen/button_frame_margin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:layout_width="@dimen/shadow_size"
-                android:layout_height="@dimen/shadow_size"
-                android:src="@drawable/shadow"/>
-
-            <ImageButton
-                android:id="@+id/basebutton"
-                android:layout_width="@dimen/layer_button_size"
-                android:layout_height="@dimen/layer_button_size"
-                android:layout_gravity="center"
-                android:background="@null"
-                android:contentDescription="@string/option_fragment_open"
-                android:scaleType="fitXY"
-                android:src="@drawable/up_button_design"/>
-
-        </FrameLayout>
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/rotate_root"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="start|bottom"
-        android:orientation="horizontal"
-        android:visibility="gone">
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        app:layout_anchor="@id/option_base_view"
+        app:layout_anchorGravity="start|bottom"
+        app:layout_behavior="net.nonylene.photolinkviewer.tool.ForSnackbarBehavior"
+        >
 
-        <FrameLayout
-            android:layout_margin="@dimen/button_frame_margin"
+        <!-- avoid shadow cut by padding -->
+        <Space
+            android:id="@+id/rotate_space"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="@dimen/activity_vertical_margin"
+            android:layout_alignParentBottom="true"/>
 
-            <ImageView
-                android:layout_width="@dimen/shadow_size"
-                android:layout_height="@dimen/shadow_size"
-                android:src="@drawable/shadow"/>
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/rotate_leftbutton"
+            style="@style/FloatingActionButton"
+            android:layout_above="@id/rotate_space"
+            android:layout_alignParentLeft="true"
+            android:contentDescription="@string/option_fragment_openclose"
+            android:src="@drawable/ic_rotate_left_white"
+            android:visibility="gone"
+            app:backgroundTint="#f8cd24"
+            />
 
-            <ImageButton
-                android:id="@+id/rotate_leftbutton"
-                android:layout_width="@dimen/layer_button_size"
-                android:layout_height="@dimen/layer_button_size"
-                android:layout_gravity="center"
-                android:background="@null"
-                android:contentDescription="@string/rotate_left"
-                android:scaleType="fitXY"
-                android:src="@drawable/rotate_left_design"/>
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/rotate_rightbutton"
+            style="@style/FloatingActionButton"
+            android:layout_above="@id/rotate_space"
+            android:layout_toRightOf="@id/rotate_leftbutton"
+            android:contentDescription="@string/option_fragment_openclose"
+            android:src="@drawable/ic_rotate_right_white"
+            android:visibility="gone"
+            app:backgroundTint="#f8cd24"
+            />
 
-        </FrameLayout>
+    </RelativeLayout>
 
-        <FrameLayout
-            android:layout_margin="@dimen/button_frame_margin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:layout_width="@dimen/shadow_size"
-                android:layout_height="@dimen/shadow_size"
-                android:src="@drawable/shadow"/>
-
-            <ImageButton
-                android:id="@+id/rotate_rightbutton"
-                android:layout_width="@dimen/layer_button_size"
-                android:layout_height="@dimen/layer_button_size"
-                android:layout_gravity="center"
-                android:background="@null"
-                android:contentDescription="@string/rotate_right"
-                android:scaleType="fitXY"
-                android:src="@drawable/rotate_right_design"/>
-
-        </FrameLayout>
-    </LinearLayout>
-
-</FrameLayout>
+</android.support.design.widget.CoordinatorLayout>
