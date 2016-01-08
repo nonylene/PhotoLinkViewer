@@ -117,8 +117,8 @@ afterEvaluate {
     def propertiesFile = file('fabric.properties')
     if (!propertiesFile.exists()) {
         ant.propertyfile(file: "fabric.properties") {
-            entry(key: "apiSecret", value: System.getenv("FABRIC_KEY"))
-            entry(key: "apiKey", value: System.getenv("FABRIC_SECRET"))
+            entry(key: "apiKey", value: System.getenv("FABRIC_KEY"))
+            entry(key: "apiSecret", value: System.getenv("FABRIC_SECRET"))
         }
     }
 }
