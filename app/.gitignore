@@ -1,4 +1,5 @@
 /build
 
 key.properties
+fabric.properties
 app.iml

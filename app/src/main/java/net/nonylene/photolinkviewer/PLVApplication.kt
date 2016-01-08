@@ -3,6 +3,8 @@ package net.nonylene.photolinkviewer
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
+import com.crashlytics.android.Crashlytics
+import io.fabric.sdk.android.Fabric
 import net.nonylene.photolinkviewer.tool.OkHttpManager
 
 public class PLVApplication : Application(), Application.ActivityLifecycleCallbacks {
@@ -10,6 +12,7 @@ public class PLVApplication : Application(), Application.ActivityLifecycleCallba
     override fun onCreate() {
         super.onCreate()
         registerActivityLifecycleCallbacks(this)
+        Fabric.with(this, Crashlytics())
     }
 
     override fun onActivityPaused(activity: Activity?) {
