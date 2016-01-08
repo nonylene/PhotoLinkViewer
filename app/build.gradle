@@ -55,6 +55,16 @@ android {
                 instagramCallbackScheme: INSTAGRAM_CALLBACK_SCHEME
         ]
     }
+
+    buildTypes {
+        release {
+            buildConfigField "boolean", "IS_CRASHLYTICS_ENABLED", "true"
+        }
+        debug {
+            buildConfigField "boolean", "IS_CRASHLYTICS_ENABLED", "false"
+        }
+    }
+
     packagingOptions {
         exclude 'META-INF/LICENSE.txt'
     }
