@@ -3,6 +3,7 @@ package net.nonylene.photolinkviewer.view
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -57,7 +58,7 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
                 // add key icon
                 val iconSize = (17 * DP).toInt()
                 // resize app icon (bitmap_factory makes low-quality images)
-                val protect = context.resources.getDrawable(R.drawable.lock)
+                val protect = ContextCompat.getDrawable(context, R.drawable.lock)
                 protect.setBounds(0, 0, iconSize, iconSize)
                 // set app-icon and bounds
                 snView.setCompoundDrawables(protect, null, null, null)
