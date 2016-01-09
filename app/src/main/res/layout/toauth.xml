@@ -14,18 +14,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/toauth_button"/>
-
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"/>
-
-        <Button
-            android:id="@+id/update_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:text="@string/toauth_update_button"/>
     </LinearLayout>
 
     <ListView

@@ -11,7 +11,6 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Base64
 import android.util.Log
-import android.view.View
 import android.widget.Button
 import android.widget.ListView
 import android.widget.Toast
@@ -22,8 +21,6 @@ import net.nonylene.photolinkviewer.tool.Encryption
 import net.nonylene.photolinkviewer.tool.MyAsyncTwitter
 import net.nonylene.photolinkviewer.tool.MyCursorAdapter
 import net.nonylene.photolinkviewer.tool.MySQLiteOpenHelper
-
-import java.io.UnsupportedEncodingException
 
 import twitter4j.AsyncTwitter
 import twitter4j.AsyncTwitterFactory
@@ -44,16 +41,25 @@ class TOAuth : AppCompatActivity(), DeleteDialogFragment.DeleteDialogCallBack {
     private val preferences by lazy { getSharedPreferences("preference", Context.MODE_PRIVATE) }
 
     private val listView : ListView by bindView(R.id.accounts_list)
-    private val updateButton : Button by bindView(R.id.update_button)
+    private val oAuthButton : Button by bindView(R.id.oAuthButton)
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.toauth)
-        // oauth button
-        val oAuthButton = findViewById(R.id.oAuthButton) as Button
-        oAuthButton.setOnClickListener(Button1ClickListener())
-        // update button
-        updateButton.setOnClickListener(UpdateButtonClickListener())
+
+
+        oAuthButton.setOnClickListener {
+            try {
+                twitter = AsyncTwitterFactory().instance.apply {
+                    setOAuthConsumer(BuildConfig.TWITTER_KEY, BuildConfig.TWITTER_SECRET)
+                    addListener(twitterListener)
+                    getOAuthRequestTokenAsync("plvtwitter://callback")
+                }
+            } catch (e: Exception) {
+                Log.e("twitter", e.toString())
+            }
+        }
+
         // create table accounts
         with(database) {
             beginTransaction()
@@ -61,7 +67,9 @@ class TOAuth : AppCompatActivity(), DeleteDialogFragment.DeleteDialogCallBack {
             setTransactionSuccessful()
             endTransaction()
         }
+
         setListView()
+        updateProfiles()
     }
 
     private fun setListView() {
@@ -85,7 +93,7 @@ class TOAuth : AppCompatActivity(), DeleteDialogFragment.DeleteDialogCallBack {
 
         // not to lock
         try {
-            val cursor = database!!.rawQuery("select rowid _id, * from accounts", null)
+            val cursor = database.rawQuery("select rowid _id, * from accounts", null)
             myCursorAdapter = MyCursorAdapter(applicationContext, cursor, true)
             listView.adapter = myCursorAdapter
             // check current radio button
@@ -105,13 +113,15 @@ class TOAuth : AppCompatActivity(), DeleteDialogFragment.DeleteDialogCallBack {
         var toastText: String? = null
         try {
             toastText = getString(R.string.delete_account_toast)
-            database!!.beginTransaction()
-            // quotation is required.
-            database!!.delete("accounts", "userName = ?", arrayOf(userName))
-            // commit
-            database!!.setTransactionSuccessful()
-            val new_cursor = database!!.rawQuery("select rowid _id, * from accounts", null)
-            database!!.endTransaction()
+            with(database) {
+                beginTransaction()
+                // quotation is required.
+                delete("accounts", "userName = ?", arrayOf(userName))
+                // commit
+                setTransactionSuccessful()
+                endTransaction()
+            }
+            val new_cursor = database.rawQuery("select rowid _id, * from accounts", null)
             // renew listView
             // i want to use content provider and cursor loader in future.
             myCursorAdapter!!.swapCursor(new_cursor)
@@ -125,22 +135,46 @@ class TOAuth : AppCompatActivity(), DeleteDialogFragment.DeleteDialogCallBack {
         }
     }
 
-
-    internal inner class Button1ClickListener : View.OnClickListener {
-        override fun onClick(v: View) {
+    private fun updateProfiles() {
+        if (preferences.getBoolean("authorized", false)) {
             try {
-                twitter = AsyncTwitterFactory().instance
-                val apikey = BuildConfig.TWITTER_KEY
-                val apisecret = BuildConfig.TWITTER_SECRET
-                twitter!!.setOAuthConsumer(apikey, apisecret)
-                twitter!!.addListener(twitterListener)
-                twitter!!.getOAuthRequestTokenAsync("plvtwitter://callback")
-            } catch (e: Exception) {
-                Log.e("twitter", e.toString())
+                val twitter = MyAsyncTwitter.getAsyncTwitterFromDB(database, applicationContext)
+                twitter.addListener(object : TwitterAdapter() {
+                    override fun gotUserDetail(user: User) {
+                        try {
+                            val values = ContentValues()
+                            values.put("userName", user.screenName)
+                            values.put("icon", user.biggerProfileImageURL)
+                            // open database
+                            with(database) {
+                                beginTransaction()
+                                update("accounts", values, "userId = ?", arrayOf(user.id.toString()))
+                                setTransactionSuccessful()
+                                endTransaction()
+                            }
+                            runOnUiThread {
+                                // renew ui
+                                myCursorAdapter!!.swapCursor(database.rawQuery("select rowid _id, * from accounts", null))
+                            }
+                        } catch (e: SQLiteException) {
+                            Log.e("SQL", e.toString())
+                        }
+                    }
+                })
+                // move cursor focus
+                val cursor = database.rawQuery("select rowid _id, userId from accounts", null)
+                cursor.moveToFirst()
+                twitter.showUser(cursor.getLong(cursor.getColumnIndex("userId")))
+                while (cursor.moveToNext()) {
+                    twitter.showUser(cursor.getLong(cursor.getColumnIndex("userId")))
+                }
+            } catch (e: CursorIndexOutOfBoundsException) {
+                Log.e("cursor", e.toString())
+                Toast.makeText(applicationContext, getString(R.string.twitter_async_select), Toast.LENGTH_LONG).show()
             }
-
         }
     }
+
 
     private val twitterListener = object : TwitterAdapter() {
 
@@ -155,74 +189,70 @@ class TOAuth : AppCompatActivity(), DeleteDialogFragment.DeleteDialogCallBack {
             startActivity(intent)
         }
 
-        override fun gotOAuthAccessToken(token: AccessToken?) {
+        override fun gotOAuthAccessToken(token: AccessToken) {
             try {
-                val apikey = BuildConfig.TWITTER_KEY
-                val apisecret = BuildConfig.TWITTER_SECRET
                 // get oauthed user_name and user_id and icon_url
-                val twitterNotAsync = TwitterFactory().instance
-                twitterNotAsync.setOAuthConsumer(apikey, apisecret)
-                twitterNotAsync.oAuthAccessToken = token
+                val twitterNotAsync = TwitterFactory().instance.apply {
+                    setOAuthConsumer(BuildConfig.TWITTER_KEY, BuildConfig.TWITTER_SECRET)
+                    oAuthAccessToken = token
+                }
                 val myId = twitterNotAsync.id
                 val user = twitterNotAsync.showUser(myId)
                 val screenName = user.screenName
                 val icon = user.biggerProfileImageURL
                 // encrypt twitter tokens by key
-                val key = Encryption.generate()
-                val twitter_token = Encryption.encrypt(token!!.token.toByteArray("UTF-8"), key)
-                val twitter_tsecret = Encryption.encrypt(token.tokenSecret.toByteArray("UTF-8"), key)
-                val keys = Base64.encodeToString(key.encoded, Base64.DEFAULT)
                 // save encrypted keys to database
-                val values = ContentValues()
-                values.put("userName", screenName)
-                values.put("userId", myId)
-                values.put("token", twitter_token)
-                values.put("token_secret", twitter_tsecret)
-                values.put("key", keys)
-                values.put("icon", icon)
+                val values = ContentValues().apply {
+                    put("userName", screenName)
+                    put("userId", myId)
+                    put("icon", icon)
+
+                    val key = Encryption.generate()
+                    put("token", Encryption.encrypt(token.token.toByteArray("UTF-8"), key))
+                    put("token_secret", Encryption.encrypt(token.tokenSecret.toByteArray("UTF-8"), key))
+                    put("key", Base64.encodeToString(key.encoded, Base64.DEFAULT))
+                }
                 // open database
-                database!!.beginTransaction()
-                // if exists...
-                database!!.delete("accounts", "userId = ?", arrayOf(myId.toString()))
-                // insert account information
-                database!!.insert("accounts", null, values)
-                // commit
-                database!!.setTransactionSuccessful()
-                database!!.endTransaction()
-                val cursorNew = database!!.rawQuery("select rowid _id, userId from accounts where userId = ?", arrayOf(myId.toString()))
-                cursorNew.moveToFirst()
+                with(database) {
+                    beginTransaction()
+                    // if exists...
+                    delete("accounts", "userId = ?", arrayOf(myId.toString()))
+                    // insert account information
+                    insert("accounts", null, values)
+                    // commit
+                    setTransactionSuccessful()
+                    endTransaction()
+                }
+                val cursorNew = database.rawQuery("select rowid _id, userId from accounts where userId = ?",
+                        arrayOf(myId.toString())).apply {
+                    moveToFirst()
+                }
                 val account = cursorNew.getInt(cursorNew.getColumnIndex("_id"))
                 // set oauth_completed frag
-                preferences.edit().putBoolean("authorized", true).apply()
-                preferences.edit().putString("screen_name", screenName).apply()
-                preferences.edit().putInt("account", account).apply()
+                preferences.edit()
+                        .putBoolean("authorized", true)
+                        .putString("screen_name", screenName)
+                        .putInt("account", account)
+                        .apply()
                 //putting cue to UI Thread
                 runOnUiThread {
                     Toast.makeText(this@TOAuth, getString(R.string.toauth_succeeded_token) + " " + screenName, Toast.LENGTH_LONG).show()
                     setListView()
                 }
-            } catch (e: UnsupportedEncodingException) {
-                Log.e("gettoken", e.toString())
-                //putting cue to UI Thread
-                runOnUiThread { Toast.makeText(this@TOAuth, getString(R.string.toauth_failed_encode), Toast.LENGTH_LONG).show() }
-                finish()
             } catch (e: TwitterException) {
-                Log.e("gettoken", e.toString())
+                e.printStackTrace()
                 //putting cue to UI Thread
                 runOnUiThread { Toast.makeText(this@TOAuth, getString(R.string.toauth_failed_twitter4j), Toast.LENGTH_LONG).show() }
                 finish()
             } catch (e: SQLiteException) {
-                Log.w("SQLite", e.toString())
+                e.printStackTrace()
             }
-
         }
-
     }
 
     override fun onNewIntent(intent: Intent) {
-        val uri = intent.data
-        if (uri != null) {
-            val oauth = uri.getQueryParameter("oauth_verifier")
+        intent.data?.let {
+            val oauth = it.getQueryParameter("oauth_verifier")
             if (oauth != null) {
                 twitter!!.getOAuthAccessTokenAsync(requestToken, oauth)
             } else {
@@ -231,60 +261,20 @@ class TOAuth : AppCompatActivity(), DeleteDialogFragment.DeleteDialogCallBack {
         }
     }
 
-    internal inner class UpdateButtonClickListener : View.OnClickListener {
-        override fun onClick(v: View) {
-            if (preferences.getBoolean("authorized", false)) {
-                try {
-                    val twitter = MyAsyncTwitter.getAsyncTwitterFromDB(database, applicationContext)
-                    val cursor = database!!.rawQuery("select rowid _id, userId from accounts", null)
-                    twitter.addListener(object : TwitterAdapter() {
-                        override fun gotUserDetail(user: User?) {
-                            try {
-                                val values = ContentValues()
-                                values.put("userName", user!!.screenName)
-                                values.put("icon", user.biggerProfileImageURL)
-                                // open database
-                                database!!.beginTransaction()
-                                database!!.update("accounts", values, "userId = ?", arrayOf(user.id.toString()))
-                                database!!.setTransactionSuccessful()
-                                database!!.endTransaction()
-                                runOnUiThread {
-                                    // renew ui
-                                    val cursor = database!!.rawQuery("select rowid _id, * from accounts", null)
-                                    myCursorAdapter!!.swapCursor(cursor)
-                                }
-                            } catch (e: SQLiteException) {
-                                Log.e("SQL", e.toString())
-                            }
-
-                        }
-                    })
-                    // move cursor focus
-                    cursor.moveToFirst()
-                    twitter.showUser(cursor.getLong(cursor.getColumnIndex("userId")))
-                    while (cursor.moveToNext()) {
-                        twitter.showUser(cursor.getLong(cursor.getColumnIndex("userId")))
-                    }
-                } catch (e: CursorIndexOutOfBoundsException) {
-                    Log.e("cursor", e.toString())
-                    Toast.makeText(applicationContext, getString(R.string.twitter_async_select), Toast.LENGTH_LONG).show()
-                }
-
-            }
-        }
-    }
-
     private fun changeAccount(rowid: Int) {
         // save rowid and screen name to preference
-        preferences.edit().putInt("account", rowid).apply()
-        val cursor = database!!.rawQuery("select userName from accounts where rowid = ?", arrayOf(rowid.toString()))
-        cursor.moveToFirst()
-        val screen_name = cursor.getString(cursor.getColumnIndex("userName"))
-        preferences.edit().putString("screen_name", screen_name).apply()
+        val cursor = database.rawQuery("select userName from accounts where rowid = ?",
+                arrayOf(rowid.toString())).apply {
+            moveToFirst()
+        }
+        preferences.edit()
+                .putInt("account", rowid)
+                .putString("screen_name", cursor.getString(cursor.getColumnIndex("userName")))
+                .apply()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        database!!.close()
+        database.close()
     }
 }
