@@ -16,6 +16,7 @@
         android:label="@string/app_name">
         <activity
             android:name=".Show"
+            android:configChanges="orientation|screenSize"
             android:theme="@style/Theme.Transparent">
             <intent-filter
                 android:label="PhotoLinkViewer - twipple">
