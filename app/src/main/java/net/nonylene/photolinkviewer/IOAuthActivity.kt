@@ -89,8 +89,7 @@ class IOAuthActivity : AppCompatActivity(), DeleteDialogFragment.DeleteDialogCal
         }
     }
 
-    fun getAccessToken(code: String) {
-
+    private fun getAccessToken(code: String) {
         // jsonRequest not understand parameters...
         val instagramRequest = object : StringRequest(Request.Method.POST, "https://api.instagram.com/oauth/access_token", { response ->
             try {

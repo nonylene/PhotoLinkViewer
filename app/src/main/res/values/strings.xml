@@ -5,7 +5,7 @@
     <string name="pref_twitter_title">twitter account settings</string>
     <string name="toauth_failed_encode">Encode error</string>
     <string name="toauth_failed_token">failed to get token!</string>
-    <string name="toauth_succeeded_token">succeeded to get token!</string>
+    <string name="toauth_succeeded_token">Get token successfully!</string>
     <string name="option_fragment_open" translatable="false">Open with new Browser</string>
     <string name="option_fragment_settings" translatable="false">Settings</string>
     <string name="option_fragment_download" translatable="false">Download</string>
@@ -127,5 +127,6 @@
     <string name="image_resized_dialog_text">Each device has different max size limit of ImageView (2048px or 4096px usually. This app set limit as 2048px by default.)\nImage will be resized when loading image is bigger than this limit (You can get original size image by downloading).\n\nYou can set this parameter in settings.</string>
     <string name="image_resized_dialog_neutral">Go setting</string>
     <string name="permission_denied">Permission request denied.</string>
+    <string name="use_old_oauth">Use callback OAuth method</string>
 
 </resources>

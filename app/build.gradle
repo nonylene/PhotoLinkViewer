@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
 apply plugin: 'kotlin-android'
 
 android {
@@ -54,6 +55,16 @@ android {
                 instagramCallbackScheme: INSTAGRAM_CALLBACK_SCHEME
         ]
     }
+
+    buildTypes {
+        release {
+            buildConfigField "boolean", "IS_CRASHLYTICS_ENABLED", "true"
+        }
+        debug {
+            buildConfigField "boolean", "IS_CRASHLYTICS_ENABLED", "false"
+        }
+    }
+
     packagingOptions {
         exclude 'META-INF/LICENSE.txt'
     }
@@ -94,20 +105,44 @@ dependencies {
     androidTestCompile('com.android.support.test:rules:0.4'){
         exclude module: 'support-annotations'
     }
+    compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
+        transitive = true
+    }
+    compile('com.twitter.sdk.android:twitter:1.11.0@aar') {
+        transitive = true
+    }
+}
+
+afterEvaluate {
+    def propertiesFile = file('fabric.properties')
+    if (!propertiesFile.exists()) {
+        ant.propertyfile(file: "fabric.properties") {
+            entry(key: "apiKey", value: System.getenv("FABRIC_KEY"))
+            entry(key: "apiSecret", value: System.getenv("FABRIC_SECRET"))
+        }
+    }
 }
 
 buildscript {
     ext.kotlin_version = '1.0.0-beta-4584'
     repositories {
-        mavenCentral()
+        jcenter()
+        maven {
+            url 'https://maven.fabric.io/public'
+        }
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'io.fabric.tools:gradle:1.+'
     }
 }
+
 repositories {
-    mavenCentral()
+    jcenter()
     maven {
         url 'https://oss.sonatype.org/content/repositories/snapshots/'
+    }
+    maven {
+        url 'https://maven.fabric.io/public'
     }
 }
