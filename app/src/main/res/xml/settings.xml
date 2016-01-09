@@ -10,7 +10,7 @@
         android:title="@string/pref_twitter_title">
         <intent
             android:action="android.intent.action.view"
-            android:targetClass="net.nonylene.photolinkviewer.TOAuth"
+            android:targetClass="net.nonylene.photolinkviewer.TwitterOAuthActivity"
             android:targetPackage="net.nonylene.photolinkviewer"/>
     </Preference>
 

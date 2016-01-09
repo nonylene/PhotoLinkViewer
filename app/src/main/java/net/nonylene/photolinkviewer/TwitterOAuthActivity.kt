@@ -32,7 +32,7 @@ import twitter4j.User
 import twitter4j.auth.AccessToken
 import twitter4j.auth.RequestToken
 
-class TOAuth : AppCompatActivity(), DeleteDialogFragment.DeleteDialogCallBack {
+class TwitterOAuthActivity : AppCompatActivity(), DeleteDialogFragment.DeleteDialogCallBack {
 
     private var twitter: AsyncTwitter? = null
     private var requestToken: RequestToken? = null
@@ -82,11 +82,11 @@ class TOAuth : AppCompatActivity(), DeleteDialogFragment.DeleteDialogCallBack {
         listView.setOnItemLongClickListener { parent, view, position, id ->
             val cursor = listView.getItemAtPosition(position) as Cursor
             with(DeleteDialogFragment()) {
-                setDeleteDialogCallBack(this@TOAuth)
+                setDeleteDialogCallBack(this@TwitterOAuthActivity)
                 arguments = Bundle().apply {
                     putString("screen_name", cursor.getString(cursor.getColumnIndex("userName")))
                 }
-                show(this@TOAuth.fragmentManager, "delete")
+                show(this@TwitterOAuthActivity.fragmentManager, "delete")
             }
             true
         }
@@ -236,13 +236,13 @@ class TOAuth : AppCompatActivity(), DeleteDialogFragment.DeleteDialogCallBack {
                         .apply()
                 //putting cue to UI Thread
                 runOnUiThread {
-                    Toast.makeText(this@TOAuth, getString(R.string.toauth_succeeded_token) + " " + screenName, Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@TwitterOAuthActivity, getString(R.string.toauth_succeeded_token) + " " + screenName, Toast.LENGTH_LONG).show()
                     setListView()
                 }
             } catch (e: TwitterException) {
                 e.printStackTrace()
                 //putting cue to UI Thread
-                runOnUiThread { Toast.makeText(this@TOAuth, getString(R.string.toauth_failed_twitter4j), Toast.LENGTH_LONG).show() }
+                runOnUiThread { Toast.makeText(this@TwitterOAuthActivity, getString(R.string.toauth_failed_twitter4j), Toast.LENGTH_LONG).show() }
                 finish()
             } catch (e: SQLiteException) {
                 e.printStackTrace()
@@ -256,7 +256,7 @@ class TOAuth : AppCompatActivity(), DeleteDialogFragment.DeleteDialogCallBack {
             if (oauth != null) {
                 twitter!!.getOAuthAccessTokenAsync(requestToken, oauth)
             } else {
-                Toast.makeText(this@TOAuth, getString(R.string.toauth_failed_token), Toast.LENGTH_LONG).show()
+                Toast.makeText(this@TwitterOAuthActivity, getString(R.string.toauth_failed_token), Toast.LENGTH_LONG).show()
             }
         }
     }
