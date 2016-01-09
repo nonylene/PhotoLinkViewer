@@ -13,6 +13,7 @@ import android.os.Bundle
 import android.app.Fragment
 import android.preference.PreferenceManager
 import android.app.DialogFragment
+import android.content.res.Configuration
 import android.support.v7.app.AlertDialog
 import android.text.TextUtils
 import android.view.GestureDetector
@@ -430,6 +431,27 @@ class ShowFragment : Fragment() {
                         startActivity(Intent(activity, MaxSizePreferenceActivity::class.java))
                     })
                     .create()
+        }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+
+        when (newConfig.orientation) {
+            Configuration.ORIENTATION_LANDSCAPE, Configuration.ORIENTATION_PORTRAIT -> {
+                val matrix = Matrix().apply {
+                    set(imageView.imageMatrix)
+                }
+                val values = FloatArray(9)
+                matrix.getValues(values)
+                // swap XY
+                values[Matrix.MTRANS_X].let {
+                    values[Matrix.MTRANS_X] = values[Matrix.MTRANS_Y]
+                    values[Matrix.MTRANS_Y] = it
+                }
+                matrix.setValues(values)
+                imageView.imageMatrix = matrix
+            }
         }
     }
 }

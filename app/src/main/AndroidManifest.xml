@@ -311,6 +311,7 @@
 
         <activity
             android:name=".TwitterDisplay"
+            android:configChanges="orientation|screenSize"
             android:theme="@style/Theme.Transparent">
             <intent-filter
                 android:label="PhotoLinkViewer - twitter">
