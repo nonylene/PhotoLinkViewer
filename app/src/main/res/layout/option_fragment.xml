@@ -9,58 +9,76 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="bottom"
         android:orientation="vertical"
         android:paddingRight="@dimen/activity_horizontal_margin"
         app:layout_anchor="@id/option_base_view"
         app:layout_anchorGravity="end|bottom"
-        app:layout_behavior="net.nonylene.photolinkviewer.tool.ForSnackbarBehavior"
-        >
+        app:layout_behavior="net.nonylene.photolinkviewer.tool.ForSnackbarBehavior">
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/webbutton"
-            style="@style/FloatingActionButton"
-            android:contentDescription="@string/option_fragment_open"
-            android:src="@drawable/ic_open_in_browser_white"
-            android:visibility="gone"
-            app:backgroundTint="#24a8ed"
-            />
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:fillViewport="true"
+            >
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/setbutton"
-            style="@style/FloatingActionButton"
-            android:contentDescription="@string/option_fragment_settings"
-            android:src="@drawable/ic_settings_white"
-            android:visibility="gone"
-            app:backgroundTint="#24a8ed"
-            />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="bottom"
+                android:orientation="vertical"
+                >
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/dlbutton"
-            style="@style/FloatingActionButton"
-            android:contentDescription="@string/option_fragment_download"
-            android:src="@drawable/ic_file_download_white"
-            android:visibility="gone"
-            app:backgroundTint="#24a8ed"
-            />
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/webbutton"
+                    style="@style/FloatingActionButton"
+                    android:contentDescription="@string/option_fragment_open"
+                    android:src="@drawable/ic_open_in_browser_white"
+                    android:visibility="gone"
+                    app:backgroundTint="#24a8ed"
+                    />
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/retweet_button"
-            style="@style/FloatingActionButton"
-            android:contentDescription="@string/retweet_button_description"
-            android:src="@drawable/retweet_white"
-            android:visibility="gone"
-            app:backgroundTint="#f4554f"
-            />
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/setbutton"
+                    style="@style/FloatingActionButton"
+                    android:contentDescription="@string/option_fragment_settings"
+                    android:src="@drawable/ic_settings_white"
+                    android:visibility="gone"
+                    app:backgroundTint="#24a8ed"
+                    />
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/like_button"
-            style="@style/FloatingActionButton"
-            android:contentDescription="@string/like_button_description"
-            android:src="@drawable/ic_favorite_white"
-            android:visibility="gone"
-            app:backgroundTint="#f4554f"
-            />
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/dlbutton"
+                    style="@style/FloatingActionButton"
+                    android:contentDescription="@string/option_fragment_download"
+                    android:src="@drawable/ic_file_download_white"
+                    android:visibility="gone"
+                    app:backgroundTint="#24a8ed"
+                    />
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/retweet_button"
+                    style="@style/FloatingActionButton"
+                    android:contentDescription="@string/retweet_button_description"
+                    android:src="@drawable/retweet_white"
+                    android:visibility="gone"
+                    app:backgroundTint="#f4554f"
+                    />
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/like_button"
+                    style="@style/FloatingActionButton"
+                    android:contentDescription="@string/like_button_description"
+                    android:src="@drawable/ic_favorite_white"
+                    android:visibility="gone"
+                    app:backgroundTint="#f4554f"
+                    />
+
+            </LinearLayout>
+
+        </ScrollView>
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/basebutton"

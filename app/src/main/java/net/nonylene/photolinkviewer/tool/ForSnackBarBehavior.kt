@@ -18,6 +18,4 @@ public class ForSnackbarBehavior(context: Context, attrs: AttributeSet) : Coordi
         child?.translationY = translationY;
         return true;
     }
-
 }
-
