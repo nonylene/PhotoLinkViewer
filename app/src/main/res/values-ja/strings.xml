@@ -109,5 +109,6 @@
     <string name="image_resized_dialog_text">デバイスによって固有の表示可能な最大サイズ(大抵 2048 or 4096px です)があり、それ以上になると縮小されます。ダウンロード時には縮小されません。\n\n最大値は設定で調整できます。</string>
     <string name="max_preference_toast">最大サイズを %1$d px に設定しました</string>
     <string name="permission_denied">権限が拒否されました</string>
+    <string name="use_old_oauth">コールバック認証を使用</string>
 
 </resources>

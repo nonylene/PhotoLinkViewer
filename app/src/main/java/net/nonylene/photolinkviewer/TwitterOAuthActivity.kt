@@ -11,10 +11,15 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Base64
 import android.util.Log
-import android.widget.Button
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.ListView
 import android.widget.Toast
 import butterknife.bindView
+import com.twitter.sdk.android.core.Callback
+import com.twitter.sdk.android.core.Result
+import com.twitter.sdk.android.core.TwitterSession
+import com.twitter.sdk.android.core.identity.TwitterLoginButton
 
 import net.nonylene.photolinkviewer.dialog.DeleteDialogFragment
 import net.nonylene.photolinkviewer.tool.Encryption
@@ -41,22 +46,41 @@ class TwitterOAuthActivity : AppCompatActivity(), DeleteDialogFragment.DeleteDia
     private val preferences by lazy { getSharedPreferences("preference", Context.MODE_PRIVATE) }
 
     private val listView : ListView by bindView(R.id.accounts_list)
-    private val oAuthButton : Button by bindView(R.id.oAuthButton)
+    private val twitterOAuthButton : TwitterLoginButton by bindView(R.id.twitter_oauth_button)
+
+    private val twitterListener = object : TwitterAdapter() {
+        override fun onException(exception: TwitterException?, method: TwitterMethod?) {
+            Log.e("twitter", exception!!.toString())
+        }
+
+        override fun gotOAuthRequestToken(token: RequestToken?) {
+            requestToken = token
+            val uri = Uri.parse(requestToken!!.authorizationURL)
+            startActivity(Intent(Intent.ACTION_VIEW, uri))
+        }
+
+        override fun gotOAuthAccessToken(token: AccessToken) {
+            fetchAndSaveUserData(token)
+        }
+    }
+
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.toauth)
 
+        twitterOAuthButton.callback = object: Callback<TwitterSession>() {
+            override fun failure(e: com.twitter.sdk.android.core.TwitterException) {
+                e.printStackTrace()
+                Toast.makeText(this@TwitterOAuthActivity, getString(R.string.toauth_failed_token), Toast.LENGTH_LONG).show()
+            }
 
-        oAuthButton.setOnClickListener {
-            try {
-                twitter = AsyncTwitterFactory().instance.apply {
-                    setOAuthConsumer(BuildConfig.TWITTER_KEY, BuildConfig.TWITTER_SECRET)
-                    addListener(twitterListener)
-                    getOAuthRequestTokenAsync("plvtwitter://callback")
+            override fun success(result: Result<TwitterSession>) {
+                result.data.authToken.let {
+                    Thread(Runnable {
+                        fetchAndSaveUserData(AccessToken(it.token, it.secret))
+                    }).start()
                 }
-            } catch (e: Exception) {
-                Log.e("twitter", e.toString())
             }
         }
 
@@ -107,6 +131,29 @@ class TwitterOAuthActivity : AppCompatActivity(), DeleteDialogFragment.DeleteDia
         } catch (e: SQLiteException) {
             Log.e("SQLite", e.toString())
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.twitter_oauth_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+            R.id.twitter_old_oauth -> {
+                try {
+                    twitter = AsyncTwitterFactory().instance.apply {
+                        setOAuthConsumer(BuildConfig.TWITTER_KEY, BuildConfig.TWITTER_SECRET)
+                        addListener(twitterListener)
+                        getOAuthRequestTokenAsync("plvtwitter://callback")
+                    }
+                } catch (e: Exception) {
+                    Log.e("twitter", e.toString())
+                }
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onDeleteConfirmed(userName: String) {
@@ -175,81 +222,6 @@ class TwitterOAuthActivity : AppCompatActivity(), DeleteDialogFragment.DeleteDia
         }
     }
 
-
-    private val twitterListener = object : TwitterAdapter() {
-
-        override fun onException(exception: TwitterException?, method: TwitterMethod?) {
-            Log.e("twitter", exception!!.toString())
-        }
-
-        override fun gotOAuthRequestToken(token: RequestToken?) {
-            requestToken = token
-            val uri = Uri.parse(requestToken!!.authorizationURL)
-            val intent = Intent(Intent.ACTION_VIEW, uri)
-            startActivity(intent)
-        }
-
-        override fun gotOAuthAccessToken(token: AccessToken) {
-            try {
-                // get oauthed user_name and user_id and icon_url
-                val twitterNotAsync = TwitterFactory().instance.apply {
-                    setOAuthConsumer(BuildConfig.TWITTER_KEY, BuildConfig.TWITTER_SECRET)
-                    oAuthAccessToken = token
-                }
-                val myId = twitterNotAsync.id
-                val user = twitterNotAsync.showUser(myId)
-                val screenName = user.screenName
-                val icon = user.biggerProfileImageURL
-                // encrypt twitter tokens by key
-                // save encrypted keys to database
-                val values = ContentValues().apply {
-                    put("userName", screenName)
-                    put("userId", myId)
-                    put("icon", icon)
-
-                    val key = Encryption.generate()
-                    put("token", Encryption.encrypt(token.token.toByteArray("UTF-8"), key))
-                    put("token_secret", Encryption.encrypt(token.tokenSecret.toByteArray("UTF-8"), key))
-                    put("key", Base64.encodeToString(key.encoded, Base64.DEFAULT))
-                }
-                // open database
-                with(database) {
-                    beginTransaction()
-                    // if exists...
-                    delete("accounts", "userId = ?", arrayOf(myId.toString()))
-                    // insert account information
-                    insert("accounts", null, values)
-                    // commit
-                    setTransactionSuccessful()
-                    endTransaction()
-                }
-                val cursorNew = database.rawQuery("select rowid _id, userId from accounts where userId = ?",
-                        arrayOf(myId.toString())).apply {
-                    moveToFirst()
-                }
-                val account = cursorNew.getInt(cursorNew.getColumnIndex("_id"))
-                // set oauth_completed frag
-                preferences.edit()
-                        .putBoolean("authorized", true)
-                        .putString("screen_name", screenName)
-                        .putInt("account", account)
-                        .apply()
-                //putting cue to UI Thread
-                runOnUiThread {
-                    Toast.makeText(this@TwitterOAuthActivity, getString(R.string.toauth_succeeded_token) + " " + screenName, Toast.LENGTH_LONG).show()
-                    setListView()
-                }
-            } catch (e: TwitterException) {
-                e.printStackTrace()
-                //putting cue to UI Thread
-                runOnUiThread { Toast.makeText(this@TwitterOAuthActivity, getString(R.string.toauth_failed_twitter4j), Toast.LENGTH_LONG).show() }
-                finish()
-            } catch (e: SQLiteException) {
-                e.printStackTrace()
-            }
-        }
-    }
-
     override fun onNewIntent(intent: Intent) {
         intent.data?.let {
             val oauth = it.getQueryParameter("oauth_verifier")
@@ -258,6 +230,67 @@ class TwitterOAuthActivity : AppCompatActivity(), DeleteDialogFragment.DeleteDia
             } else {
                 Toast.makeText(this@TwitterOAuthActivity, getString(R.string.toauth_failed_token), Toast.LENGTH_LONG).show()
             }
+        }
+    }
+
+    // this method must be run asynchronously.
+    private fun fetchAndSaveUserData(token: AccessToken) {
+        try {
+            // get oauthed user_name and user_id and icon_url
+            val twitterNotAsync = TwitterFactory().instance.apply {
+                setOAuthConsumer(BuildConfig.TWITTER_KEY, BuildConfig.TWITTER_SECRET)
+                oAuthAccessToken = token
+            }
+            val myId = twitterNotAsync.id
+            val user = twitterNotAsync.showUser(myId)
+            val screenName = user.screenName
+            val icon = user.biggerProfileImageURL
+            // encrypt twitter tokens by key
+            // save encrypted keys to database
+            val values = ContentValues().apply {
+                put("userName", screenName)
+                put("userId", myId)
+                put("icon", icon)
+
+                val key = Encryption.generate()
+                put("token", Encryption.encrypt(token.token.toByteArray("UTF-8"), key))
+                put("token_secret", Encryption.encrypt(token.tokenSecret.toByteArray("UTF-8"), key))
+                put("key", Base64.encodeToString(key.encoded, Base64.DEFAULT))
+            }
+            // open database
+            with(database) {
+                beginTransaction()
+                // if exists...
+                delete("accounts", "userId = ?", arrayOf(myId.toString()))
+                // insert account information
+                insert("accounts", null, values)
+                // commit
+                setTransactionSuccessful()
+                endTransaction()
+            }
+            val cursorNew = database.rawQuery("select rowid _id, userId from accounts where userId = ?",
+                    arrayOf(myId.toString())).apply {
+                moveToFirst()
+            }
+            val account = cursorNew.getInt(cursorNew.getColumnIndex("_id"))
+            // set oauth_completed frag
+            preferences.edit()
+                    .putBoolean("authorized", true)
+                    .putString("screen_name", screenName)
+                    .putInt("account", account)
+                    .apply()
+            //putting cue to UI Thread
+            runOnUiThread {
+                Toast.makeText(this@TwitterOAuthActivity, getString(R.string.toauth_succeeded_token) + " @" + screenName, Toast.LENGTH_LONG).show()
+                setListView()
+            }
+        } catch (e: TwitterException) {
+            e.printStackTrace()
+            //putting cue to UI Thread
+            runOnUiThread { Toast.makeText(this@TwitterOAuthActivity, getString(R.string.toauth_failed_twitter4j), Toast.LENGTH_LONG).show() }
+            finish()
+        } catch (e: SQLiteException) {
+            e.printStackTrace()
         }
     }
 
@@ -276,5 +309,11 @@ class TwitterOAuthActivity : AppCompatActivity(), DeleteDialogFragment.DeleteDia
     override fun onDestroy() {
         super.onDestroy()
         database.close()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        // Pass the activity result to the login button.
+        twitterOAuthButton.onActivityResult(requestCode, resultCode, data);
     }
 }
