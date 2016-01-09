@@ -38,6 +38,7 @@ import net.nonylene.photolinkviewer.R
 import net.nonylene.photolinkviewer.Settings
 import net.nonylene.photolinkviewer.dialog.SaveDialogFragment
 import net.nonylene.photolinkviewer.event.DownloadButtonEvent
+import net.nonylene.photolinkviewer.event.RotateEvent
 import net.nonylene.photolinkviewer.event.ShowFragmentEvent
 import net.nonylene.photolinkviewer.event.SnackbarEvent
 import net.nonylene.photolinkviewer.tool.MyAsyncTwitter
@@ -151,11 +152,11 @@ class OptionFragment : Fragment() {
         }
 
         rotateRightButton.setOnClickListener {
-            rotateImg(true)
+            EventBus.getDefault().post(RotateEvent(true))
         }
 
         rotateLeftButton.setOnClickListener {
-            rotateImg(false)
+            EventBus.getDefault().post(RotateEvent(false))
         }
 
         val bundle = arguments
@@ -176,17 +177,6 @@ class OptionFragment : Fragment() {
                     show(this@OptionFragment.fragmentManager, "like")
                 }
             }
-        }
-    }
-
-    private fun rotateImg(right: Boolean) {
-        //get display size
-        val size = Point()
-        activity.windowManager.defaultDisplay.getSize(size)
-        val imageView = activity.findViewById(R.id.imgview) as ImageView
-        imageView.imageMatrix = Matrix().apply {
-            set(imageView.imageMatrix)
-            postRotate(if (right) 90f else -90f, (size.x / 2).toFloat(), (size.y / 2).toFloat())
         }
     }
 

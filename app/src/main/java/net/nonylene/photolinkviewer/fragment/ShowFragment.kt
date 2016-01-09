@@ -35,6 +35,7 @@ import net.nonylene.photolinkviewer.MaxSizePreferenceActivity
 import net.nonylene.photolinkviewer.R
 import net.nonylene.photolinkviewer.async.AsyncHttpBitmap
 import net.nonylene.photolinkviewer.event.DownloadButtonEvent
+import net.nonylene.photolinkviewer.event.RotateEvent
 import net.nonylene.photolinkviewer.event.ShowFragmentEvent
 import net.nonylene.photolinkviewer.event.SnackbarEvent
 import net.nonylene.photolinkviewer.tool.Initialize
@@ -341,12 +342,32 @@ class ShowFragment : Fragment() {
         }
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        imageView?.setImageBitmap(null)
-        EventBus.getDefault().post(ShowFragmentEvent(false))
+
+    @SuppressWarnings("unused")
+    public fun onEvent(rotateEvent: RotateEvent) {
+        rotateImg(rotateEvent.isRightRotate)
     }
 
+    private fun rotateImg(right: Boolean) {
+        //get display size
+        val size = Point()
+        activity.windowManager.defaultDisplay.getSize(size)
+        imageView.imageMatrix = Matrix().apply {
+            set(imageView.imageMatrix)
+            postRotate(if (right) 90f else -90f, (size.x / 2).toFloat(), (size.y / 2).toFloat())
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        imageView.setImageBitmap(null)
+    }
+
+    override fun onDestroy() {
+        EventBus.getDefault().unregister(this)
+        super.onDestroy()
+        EventBus.getDefault().post(ShowFragmentEvent(false))
+    }
 
     private fun addWebView(plvUrl: PLVUrl) {
         val videoWidth = plvUrl.width
