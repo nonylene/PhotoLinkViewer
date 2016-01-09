@@ -30,6 +30,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.Toast
+import butterknife.bindView
 import de.greenrobot.event.EventBus
 import net.nonylene.photolinkviewer.MaxSizePreferenceActivity
 
@@ -45,28 +46,28 @@ import net.nonylene.photolinkviewer.tool.ProgressBarListener
 
 class ShowFragment : Fragment() {
 
-    private var baseView: View? = null
-    private var imageView: ImageView? = null
-    private var showFrameLayout: FrameLayout? = null
-    private var progressBar: ProgressBar? = null
+    private val imageView: ImageView by bindView(R.id.imgview)
+    private val showFrameLayout: FrameLayout by bindView(R.id.showframe)
+    private val progressBar: ProgressBar by bindView(R.id.showprogress)
 
-    private var preferences: SharedPreferences? = null
+    private val preferences: SharedPreferences by lazy { PreferenceManager.getDefaultSharedPreferences(activity) }
     private var firstzoom = 1f
     private var quickScale: MyQuickScale? = null
     private var applicationContext : Context? = null
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        EventBus.getDefault().register(this)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-
         applicationContext = activity.applicationContext
+        return inflater.inflate(R.layout.show_fragment, container, false)
+    }
 
-        preferences = PreferenceManager.getDefaultSharedPreferences(activity)
-
-        baseView = inflater.inflate(R.layout.show_fragment, container, false)
-
-        imageView = baseView!!.findViewById(R.id.imgview) as ImageView
-        showFrameLayout = baseView!!.findViewById(R.id.showframe) as FrameLayout
-        progressBar = baseView!!.findViewById(R.id.showprogress) as ProgressBar
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         val scaleGestureDetector = ScaleGestureDetector(activity, simpleOnScaleGestureListener())
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -75,7 +76,7 @@ class ShowFragment : Fragment() {
 
         val gestureDetector = GestureDetector(activity, simpleOnGestureListener())
 
-        imageView!!.setOnTouchListener { view, event ->
+        imageView.setOnTouchListener { view, event ->
             scaleGestureDetector.onTouchEvent(event)
             if (!scaleGestureDetector.isInProgress) {
                 gestureDetector.onTouchEvent(event)
@@ -88,18 +89,16 @@ class ShowFragment : Fragment() {
             true
         }
 
-        if (!preferences!!.getBoolean("initialized39", false)) {
+        if (!preferences.getBoolean("initialized39", false)) {
             Initialize.initialize39(activity)
         }
 
         if (arguments.getBoolean("single_frag", false)) {
-            showFrameLayout!!.setBackgroundResource(R.color.transparent)
-            progressBar!!.visibility = View.GONE
+            showFrameLayout.setBackgroundResource(R.color.transparent)
+            progressBar.visibility = View.GONE
         }
 
         AsyncExecute(arguments.getParcelable<PLVUrl>("plvurl")).Start()
-
-        return baseView
     }
 
     internal inner class simpleOnGestureListener : GestureDetector.SimpleOnGestureListener() {
@@ -108,19 +107,19 @@ class ShowFragment : Fragment() {
         override fun onScroll(e1: MotionEvent, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
             // drag photo
             val matrix = Matrix()
-            matrix.set(imageView!!.imageMatrix)
+            matrix.set(imageView.imageMatrix)
             val values = FloatArray(9)
             matrix.getValues(values)
             // move photo
             values[Matrix.MTRANS_X] = values[Matrix.MTRANS_X] - distanceX
             values[Matrix.MTRANS_Y] = values[Matrix.MTRANS_Y] - distanceY
             matrix.setValues(values)
-            imageView!!.imageMatrix = matrix
+            imageView.imageMatrix = matrix
             return super.onScroll(e1, e2, distanceX, distanceY)
         }
 
         override fun onDoubleTap(e: MotionEvent): Boolean {
-            double_zoom = preferences!!.getBoolean("double_zoom", false)
+            double_zoom = preferences.getBoolean("double_zoom", false)
             quickScale = MyQuickScale(e, !double_zoom)
             if (!double_zoom) doubleZoom(e)
             return super.onDoubleTap(e)
@@ -139,7 +138,7 @@ class ShowFragment : Fragment() {
         private fun doubleZoom(e: MotionEvent) {
             val touchX = e.x
             val touchY = e.y
-            imageView!!.startAnimation(ScaleAnimation(1f, 2f, 1f, 2f, touchX, touchY).apply {
+            imageView.startAnimation(ScaleAnimation(1f, 2f, 1f, 2f, touchX, touchY).apply {
                 duration = 200
                 isFillEnabled = true
                 setAnimationListener(object : Animation.AnimationListener {
@@ -148,9 +147,9 @@ class ShowFragment : Fragment() {
 
                     override fun onAnimationEnd(animation: Animation) {
                         val matrix = Matrix()
-                        matrix.set(imageView!!.imageMatrix)
+                        matrix.set(imageView.imageMatrix)
                         matrix.postScale(2f, 2f, touchX, touchY)
-                        imageView!!.imageMatrix = matrix
+                        imageView.imageMatrix = matrix
                     }
 
                     override fun onAnimationRepeat(animation: Animation) {
@@ -174,7 +173,7 @@ class ShowFragment : Fragment() {
             //get current status
             val values = FloatArray(9)
             val matrix = Matrix()
-            matrix.set(imageView!!.imageMatrix)
+            matrix.set(imageView.imageMatrix)
             matrix.getValues(values)
             //set base zoom param
             basezoom = values[Matrix.MSCALE_X]
@@ -188,17 +187,17 @@ class ShowFragment : Fragment() {
             moved = true
             val touchY = e.y
             val matrix = Matrix()
-            matrix.set(imageView!!.imageMatrix)
+            matrix.set(imageView.imageMatrix)
             // adjust zoom speed
             // If using preference_fragment, value is saved to DefaultSharedPref.
-            val zoomSpeed = (preferences!!.getString("zoom_speed", "1.4")).toFloat()
+            val zoomSpeed = (preferences.getString("zoom_speed", "1.4")).toFloat()
             val new_zoom = Math.pow((touchY / initialY).toDouble(), (zoomSpeed * 2).toDouble()).toFloat()
             // photo's zoom scale (is relative to old zoom value.)
             val scale = new_zoom / old_zoom
             if (new_zoom > firstzoom / basezoom * 0.8) {
                 old_zoom = new_zoom
                 matrix.postScale(scale, scale, initialX, initialY)
-                imageView!!.imageMatrix = matrix
+                imageView.imageMatrix = matrix
             }
         }
     }
@@ -216,7 +215,7 @@ class ShowFragment : Fragment() {
             //get current status
             val values = FloatArray(9)
             val matrix = Matrix()
-            matrix.set(imageView!!.imageMatrix)
+            matrix.set(imageView.imageMatrix)
             matrix.getValues(values)
             //set base zoom param
             basezoom = values[Matrix.MSCALE_X]
@@ -227,17 +226,17 @@ class ShowFragment : Fragment() {
 
         override fun onScale(detector: ScaleGestureDetector): Boolean {
             val matrix = Matrix()
-            matrix.set(imageView!!.imageMatrix)
+            matrix.set(imageView.imageMatrix)
             // adjust zoom speed
             // If using preference_fragment, value is saved to DefaultSharedPref.
-            val zoomSpeed = (preferences!!.getString("zoom_speed", "1.4")).toFloat()
+            val zoomSpeed = (preferences.getString("zoom_speed", "1.4")).toFloat()
             val new_zoom = Math.pow(detector.scaleFactor.toDouble(), zoomSpeed.toDouble()).toFloat()
             // photo's zoom scale (is relative to old zoom value.)
             val scale = new_zoom / old_zoom
             if (new_zoom > firstzoom / basezoom * 0.8) {
                 old_zoom = new_zoom
                 matrix.postScale(scale, scale, touchX, touchY)
-                imageView!!.imageMatrix = matrix
+                imageView.imageMatrix = matrix
             }
             return super.onScale(detector)
         }
@@ -254,7 +253,7 @@ class ShowFragment : Fragment() {
         }
 
         override fun onCreateLoader(id: Int, bundle: Bundle): Loader<AsyncHttpBitmap.Result> {
-            val max_size = preferences!!.getInt("imageview_max_size", 2) * 1024
+            val max_size = preferences.getInt("imageview_max_size", 2) * 1024
             return AsyncHttpBitmap(activity.applicationContext, bundle.getParcelable<PLVUrl>("plvurl"), max_size)
         }
 
@@ -266,7 +265,7 @@ class ShowFragment : Fragment() {
             val bitmap = result.bitmap
 
             if (bitmap == null) {
-                Toast.makeText(baseView!!.context, getString(R.string.show_bitamap_error) +
+                Toast.makeText(applicationContext, getString(R.string.show_bitamap_error) +
                         result.errorMessage?.let { "\n" + it }, Toast.LENGTH_LONG).show()
                 return
             }
@@ -290,17 +289,17 @@ class ShowFragment : Fragment() {
             val origWidth = bitmap.width.toFloat()
             val origHeight = bitmap.height.toFloat()
             //set image
-            imageView!!.setImageBitmap(bitmap)
+            imageView.setImageBitmap(bitmap)
             //get matrix from imageview
             val matrix = Matrix()
-            matrix.set(imageView!!.matrix)
+            matrix.set(imageView.matrix)
             //get display size
             val wid = dispWidth / origWidth
             val hei = dispHeight / origHeight
             val zoom = Math.min(wid, hei)
             val initX: Float
             val initY: Float
-            if (preferences!!.getBoolean("adjust_zoom", false) || zoom < 1) {
+            if (preferences.getBoolean("adjust_zoom", false) || zoom < 1) {
                 //zoom
                 matrix.setScale(zoom, zoom)
                 if (wid < hei) {
@@ -322,7 +321,7 @@ class ShowFragment : Fragment() {
             }
 
             matrix.postTranslate(initX, initY)
-            imageView!!.imageMatrix = matrix
+            imageView.imageMatrix = matrix
 
             EventBus.getDefault().post(ShowFragmentEvent(true))
 
@@ -412,11 +411,11 @@ class ShowFragment : Fragment() {
         }
 
         removeProgressBar()
-        showFrameLayout!!.addView(webView)
+        showFrameLayout.addView(webView)
     }
 
     private fun removeProgressBar() {
-        showFrameLayout!!.removeView(progressBar)
+        showFrameLayout.removeView(progressBar)
         (activity as? ProgressBarListener)?.hideProgressBar()
     }
 
