@@ -1,12 +1,13 @@
 package net.nonylene.photolinkviewer.tool
 
-import android.content.Context
+import android.content.SharedPreferences
+import android.preference.PreferenceManager
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
+import org.junit.*
 
-import org.junit.Before
-import org.junit.Test
 import org.junit.runner.RunWith
+import java.util.*
 
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
@@ -16,10 +17,10 @@ import kotlin.test.assertTrue
 @RunWith(AndroidJUnit4::class)
 class PLVUrlServiceTest {
 
-    private var mContext: Context? = null
+    private val mContext = InstrumentationRegistry.getInstrumentation().targetContext
 
     private fun getServiceWithSuccessListener(operation: (Array<PLVUrl>) -> Unit): PLVUrlService {
-        return PLVUrlService(mContext!!, object : PLVUrlService.PLVUrlListener {
+        return PLVUrlService(mContext, object : PLVUrlService.PLVUrlListener {
 
             override public fun onGetPLVUrlFinished(plvUrls: Array<PLVUrl>) {
                 operation(plvUrls)
@@ -34,9 +35,57 @@ class PLVUrlServiceTest {
         })
     }
 
-    @Before
-    fun setUp() {
-        mContext = InstrumentationRegistry.getInstrumentation().targetContext
+    companion object {
+        private val defaultPrefStringMap = HashMap<String, String>()
+        private val defaultPrefBooleanMap = HashMap<String, Boolean>()
+
+        @JvmStatic
+        @BeforeClass
+        fun start() {
+            val preferences = PreferenceManager.getDefaultSharedPreferences(
+                    InstrumentationRegistry.getInstrumentation().targetContext)
+            defaultPrefBooleanMap.put("instagram_api", preferences.getInstagramEnabled())
+            preferences.edit().putIsInstagramEnabled(false).apply()
+            initPreference("flickr", preferences)
+            initPreference("nicoseiga", preferences)
+            initPreference("tumblr", preferences)
+            initPreference("twitter", preferences)
+            initPreference("twipple", preferences)
+            initPreference("imgly", preferences)
+            initPreference("instagram", preferences)
+        }
+
+        @JvmStatic
+        @AfterClass
+        fun finalize() {
+            val preferences = PreferenceManager.getDefaultSharedPreferences(
+                    InstrumentationRegistry.getInstrumentation().targetContext)
+            preferences.edit().putIsInstagramEnabled(defaultPrefBooleanMap["instagram_api"]!!).apply()
+            restorePreference("flickr", preferences)
+            restorePreference("nicoseiga", preferences)
+            restorePreference("tumblr", preferences)
+            restorePreference("twitter", preferences)
+            restorePreference("twipple", preferences)
+            restorePreference("imgly", preferences)
+            restorePreference("instagram", preferences)
+        }
+
+        private fun initPreference(siteName: String, sharedPreferences: SharedPreferences) {
+            defaultPrefStringMap.putQuality(sharedPreferences.getQuality(siteName, false), siteName, false)
+            defaultPrefStringMap.putQuality(sharedPreferences.getQuality(siteName, true), siteName, true)
+
+            sharedPreferences.edit()
+                    .putQuality("large", siteName, false)
+                    .putQuality("large", siteName, true)
+                    .apply()
+        }
+
+        private fun restorePreference(siteName: String, sharedPreferences: SharedPreferences) {
+            sharedPreferences.edit()
+                    .putQuality(defaultPrefStringMap.getQuality(siteName, false), siteName, false)
+                    .putQuality(defaultPrefStringMap.getQuality(siteName, true), siteName, true)
+                    .apply()
+        }
     }
 
     @Test
@@ -290,4 +339,12 @@ class PLVUrlServiceTest {
 
         countDownLatch.await(5, TimeUnit.SECONDS)
     }
+}
+
+private fun HashMap<String, String>.putQuality(quality: String, siteName: String, isWifi: Boolean) {
+    put(siteName + if (isWifi) "wifi" else "3g", quality)
+}
+
+private fun HashMap<String, String>.getQuality(siteName: String, isWifi: Boolean, defaultValue: String = "large"): String {
+    return get(siteName + if (isWifi) "wifi" else "3g") ?: defaultValue
 }
