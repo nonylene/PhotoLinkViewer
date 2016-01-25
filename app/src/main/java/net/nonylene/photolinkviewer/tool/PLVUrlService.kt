@@ -59,8 +59,9 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
 
         protected fun wifiChecker(sharedPreferences: SharedPreferences): Boolean {
             //check wifi connecting and wifi setting enabled or not
+            // note: if no default network is available, activeNetWorInfo returns null
             return sharedPreferences.getBoolean("wifi_switch", false) &&
-                    (context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).activeNetworkInfo.type ==
+                    (context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).activeNetworkInfo?.type ?: -1 ==
                             ConnectivityManager.TYPE_WIFI
         }
 
