@@ -5,13 +5,14 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.widget.*
+import butterknife.bindView
 
 class MaxSizePreferenceActivity : AppCompatActivity() {
 
-    private var imageView: ImageView? = null
-    private var textView: TextView? = null
-    private var seekBar: SeekBar? = null
-    private var setButton: Button? = null
+    private val imageView: ImageView by bindView(R.id.imageView)
+    private val textView: TextView by bindView(R.id.textView)
+    private val seekBar: SeekBar by bindView(R.id.seekBar)
+    private val setButton: Button by bindView(R.id.setButton)
 
     private val blackPaint = Paint().apply {
         color = Color.BLACK
@@ -36,41 +37,36 @@ class MaxSizePreferenceActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_max_preference)
 
-        imageView = findViewById(R.id.imageView) as ImageView?
-        textView = findViewById(R.id.textView) as TextView?
-        seekBar = findViewById(R.id.seekBar) as SeekBar?
-        setButton = findViewById(R.id.setButton) as Button?
-
-        seekBar!!.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                textView!!.text = "${(progress + 1) * 1024}px"
+                textView.text = "${(progress + 1) * 1024}px"
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                setButton!!.isEnabled = false
+                setButton.isEnabled = false
             }
 
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
                 updateImageView(seekBar!!.progress)
-                setButton!!.isEnabled = true
+                setButton.isEnabled = true
             }
         })
 
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
 
-        setButton!!.setOnClickListener {
-            val size = seekBar!!.progress + 1
+        setButton.setOnClickListener {
+            val size = seekBar.progress + 1
             sharedPref.edit().putInt("imageview_max_size", size).apply()
             Toast.makeText(this.applicationContext, getString(R.string.max_preference_toast, size * 1024), Toast.LENGTH_LONG).show()
         }
 
         val index = sharedPref.getInt("imageview_max_size", 2) - 1;
         updateImageView(index)
-        seekBar!!.progress = index
+        seekBar.progress = index
     }
 
     private fun updateImageView(index: Int) {
-        imageView!!.setImageDrawable(null)
+        imageView.setImageDrawable(null)
         val size = (index + 1) * 1024
         val s2 = size / 2f
         val scaledBitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
@@ -90,7 +86,7 @@ class MaxSizePreferenceActivity : AppCompatActivity() {
         }, greenPaint)
         canvas.drawCircle(s2, s2, size / 5f, redPaint)
         canvas.drawText("${size}px", s2, s2, textPaint)
-        imageView!!.setImageBitmap(scaledBitmap)
+        imageView.setImageBitmap(scaledBitmap)
     }
 
 }
