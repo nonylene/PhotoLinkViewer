@@ -19,7 +19,7 @@
     <string name="rotate_left" translatable="false">rotate_left</string>
     <string name="save_dialog_positive">Save</string>
     <string name="save_dialog_title">Save photo to…</string>
-    <string name="download_photo_title">"file saved to "</string>
+    <string name="download_photo_title">"Saving file to "</string>
     <string name="setting_dir_dialogtitle">Default value is PLViewer/</string>
     <string name="setting_dir_title">Change download directory</string>
     <string name="setting_mkdir_dialogtitle">Select filename</string>

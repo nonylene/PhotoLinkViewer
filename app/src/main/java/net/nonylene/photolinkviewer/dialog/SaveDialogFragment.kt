@@ -13,6 +13,7 @@ import net.nonylene.photolinkviewer.R
 
 class SaveDialogFragment : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val arguments = arguments
         // set custom view
         val view = View.inflate(activity, R.layout.save_path, null)
         (view.findViewById(R.id.path_TextView) as TextView).setText(arguments.getString("dir"))
