@@ -18,12 +18,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import butterknife.bindView
-import net.nonylene.photolinkviewer.fragment.*
+import net.nonylene.photolinkviewer.core.fragment.*
+import net.nonylene.photolinkviewer.core.tool.PLVUrl
+import net.nonylene.photolinkviewer.core.tool.PLVUrlService
+import net.nonylene.photolinkviewer.core.tool.ProgressBarListener
+import net.nonylene.photolinkviewer.core.view.TilePhotoView
 
 import net.nonylene.photolinkviewer.tool.MyAsyncTwitter
-import net.nonylene.photolinkviewer.tool.PLVUrl
-import net.nonylene.photolinkviewer.tool.PLVUrlService
-import net.nonylene.photolinkviewer.tool.ProgressBarListener
 import net.nonylene.photolinkviewer.tool.TwitterStatusAdapter
 import net.nonylene.photolinkviewer.view.HeightScalableScrollView
 import net.nonylene.photolinkviewer.view.UserTweetLoadingView
@@ -38,7 +39,7 @@ import twitter4j.TwitterException
 import twitter4j.TwitterMethod
 
 
-class TwitterDisplay : Activity(), TwitterStatusAdapter.TwitterAdapterListener, ProgressBarListener, UserTweetView.TwitterViewListener, UserTweetLoadingView.LoadingViewListener {
+class TwitterDisplay : Activity(), TwitterStatusAdapter.TwitterAdapterListener, ProgressBarListener, TilePhotoView.TilePhotoViewListener, UserTweetLoadingView.LoadingViewListener {
 
     private var url: String? = null
     private var statusAdapter: TwitterStatusAdapter? = null
@@ -77,7 +78,7 @@ class TwitterDisplay : Activity(), TwitterStatusAdapter.TwitterAdapterListener, 
             return
         }
 
-        mTwitterSingleView.twitterViewListener = this
+        mTwitterSingleView.tilePhotoViewListener = this
         mTwitterSingleView.visibility = View.GONE
 
         mTwitterSingleLoadingView.visibility = View.GONE

@@ -12,6 +12,7 @@ import android.widget.CursorAdapter
 import android.widget.ImageView
 
 import net.nonylene.photolinkviewer.R
+import net.nonylene.photolinkviewer.core.tool.OkHttpManager
 
 class MyCursorAdapter(context: Context, cursor: Cursor, autoRequery: Boolean) : CursorAdapter(context, cursor, autoRequery) {
 

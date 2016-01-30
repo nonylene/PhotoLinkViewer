@@ -12,9 +12,10 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import butterknife.bindView
 import net.nonylene.photolinkviewer.R
-import net.nonylene.photolinkviewer.tool.OkHttpManager
-import net.nonylene.photolinkviewer.tool.PLVUrl
-import net.nonylene.photolinkviewer.tool.PLVUrlService
+import net.nonylene.photolinkviewer.core.tool.OkHttpManager
+import net.nonylene.photolinkviewer.core.tool.PLVUrl
+import net.nonylene.photolinkviewer.core.tool.PLVUrlService
+import net.nonylene.photolinkviewer.core.view.TilePhotoView
 import twitter4j.Status
 import java.text.SimpleDateFormat
 
@@ -32,7 +33,7 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
     private val photoBaseLayout: LinearLayout by bindView(R.id.photo_base)
     private val photoLayout: TilePhotoView by bindView(R.id.photos)
 
-    public var twitterViewListener: TwitterViewListener? = null
+    public var tilePhotoViewListener: TilePhotoView.TilePhotoViewListener? = null
 
     public var status : Status? = null
         private set
@@ -84,7 +85,7 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
             if (!urlEntities.isEmpty()) {
                 urlBaseLayout.visibility = View.VISIBLE
 
-                urlPhotoLayout.twitterViewListener = twitterViewListener
+                urlPhotoLayout.tilePhotoViewListener = tilePhotoViewListener
 
                 for (urlEntity in urlEntities) {
                     val url = urlEntity.expandedURL
@@ -103,7 +104,7 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
             if (!mediaEntities.isEmpty()) {
                 photoBaseLayout.visibility = View.VISIBLE
 
-                photoLayout.twitterViewListener = twitterViewListener
+                photoLayout.tilePhotoViewListener = tilePhotoViewListener
 
                 for (mediaEntity in mediaEntities) {
                     val url = mediaEntity.mediaURLHttps
@@ -166,10 +167,5 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
             context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
         }
         urlLayout.addView(textView)
-    }
-
-    public interface TwitterViewListener {
-        fun onShowFragmentRequired(plvUrl: PLVUrl)
-        fun onVideoShowFragmentRequired(plvUrl: PLVUrl)
     }
 }

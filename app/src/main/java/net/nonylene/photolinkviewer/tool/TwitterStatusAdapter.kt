@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 
 import net.nonylene.photolinkviewer.R
+import net.nonylene.photolinkviewer.core.tool.PLVUrl
+import net.nonylene.photolinkviewer.core.view.TilePhotoView
 import net.nonylene.photolinkviewer.view.UserTweetLoadingView
 import net.nonylene.photolinkviewer.view.UserTweetView
 
@@ -13,7 +15,7 @@ import java.util.ArrayList
 
 import twitter4j.Status
 
-class TwitterStatusAdapter() : BaseAdapter(), UserTweetView.TwitterViewListener, UserTweetLoadingView.LoadingViewListener {
+class TwitterStatusAdapter() : BaseAdapter(), TilePhotoView.TilePhotoViewListener, UserTweetLoadingView.LoadingViewListener {
 
     private val statusList = ArrayList<Status?>()
 
@@ -60,7 +62,7 @@ class TwitterStatusAdapter() : BaseAdapter(), UserTweetView.TwitterViewListener,
             return loadView
         } else {
             val tweetView = (convertView ?: inflater.inflate(R.layout.twitter_status_list, parent, false)) as UserTweetView
-            tweetView.twitterViewListener = this
+            tweetView.tilePhotoViewListener = this
             tweetView.setEntry(getItem(position)!!)
             return tweetView
         }

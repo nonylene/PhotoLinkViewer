@@ -98,6 +98,7 @@ dependencies {
     compile 'com.mcxiaoke.volley:library:1.0.19'
     compile 'com.jakewharton:kotterknife:0.1.0-SNAPSHOT'
     compile 'de.greenrobot:eventbus:2.4.0'
+    compile "net.nonylene:photolinkviewer-core:0.0.0a"
 
     androidTestCompile('com.android.support.test:runner:0.4'){
         exclude module: 'support-annotations'
@@ -144,5 +145,8 @@ repositories {
     }
     maven {
         url 'https://maven.fabric.io/public'
+    }
+    maven {
+        url "http://dl.bintray.com/nonylene/maven"
     }
 }

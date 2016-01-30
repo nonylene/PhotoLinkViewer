@@ -26,9 +26,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import net.nonylene.photolinkviewer.fragment.PreferenceSummaryFragment;
+import net.nonylene.photolinkviewer.core.fragment.PreferenceSummaryFragment;
+import net.nonylene.photolinkviewer.core.tool.Initialize;
 import net.nonylene.photolinkviewer.tool.AccountsList;
-import net.nonylene.photolinkviewer.tool.Initialize;
 import net.nonylene.photolinkviewer.tool.MyAsyncTwitter;
 
 import java.util.ArrayList;
