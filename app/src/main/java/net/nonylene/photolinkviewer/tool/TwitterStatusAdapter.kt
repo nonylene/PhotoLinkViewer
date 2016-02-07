@@ -15,7 +15,7 @@ import java.util.ArrayList
 
 import twitter4j.Status
 
-class TwitterStatusAdapter() : BaseAdapter(), TilePhotoView.TilePhotoViewListener, UserTweetLoadingView.LoadingViewListener {
+class TwitterStatusAdapter() : BaseAdapter(), UserTweetLoadingView.LoadingViewListener {
 
     private val statusList = ArrayList<Status?>()
 
@@ -31,14 +31,6 @@ class TwitterStatusAdapter() : BaseAdapter(), TilePhotoView.TilePhotoViewListene
         get() {
             return statusList.last() ?: statusList[statusList.size - 2]
         }
-
-    override fun onShowFragmentRequired(plvUrl: PLVUrl) {
-        twitterAdapterListener?.onShowFragmentRequired(plvUrl)
-    }
-
-    override fun onVideoShowFragmentRequired(plvUrl: PLVUrl) {
-        twitterAdapterListener?.onVideoShowFragmentRequired(plvUrl)
-    }
 
     override fun getItemViewType(position: Int): Int {
         return getItemViewTypeEnum(position).id
@@ -62,7 +54,15 @@ class TwitterStatusAdapter() : BaseAdapter(), TilePhotoView.TilePhotoViewListene
             return loadView
         } else {
             val tweetView = (convertView ?: inflater.inflate(R.layout.twitter_status_list, parent, false)) as UserTweetView
-            tweetView.tilePhotoViewListener = this
+            tweetView.tilePhotoViewListener = object : TilePhotoView.TilePhotoViewListener {
+                override fun onShowFragmentRequired(plvUrl: PLVUrl) {
+                    twitterAdapterListener?.onShowFragmentRequired(plvUrl)
+                }
+
+                override fun onVideoShowFragmentRequired(plvUrl: PLVUrl) {
+                    twitterAdapterListener?.onVideoShowFragmentRequired(plvUrl)
+                }
+            }
             tweetView.setEntry(getItem(position)!!)
             return tweetView
         }

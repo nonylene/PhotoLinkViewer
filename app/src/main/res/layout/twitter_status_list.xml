@@ -106,7 +106,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"/>
 
-            <net.nonylene.photolinkviewer.view.TilePhotoView
+            <net.nonylene.photolinkviewer.core.view.TilePhotoView
                 android:id="@+id/url_photos"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
@@ -131,7 +131,7 @@
             android:scaleType="fitStart"
             android:src="@drawable/photo_icon"/>
 
-        <net.nonylene.photolinkviewer.view.TilePhotoView
+        <net.nonylene.photolinkviewer.core.view.TilePhotoView
             android:id="@+id/photos"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

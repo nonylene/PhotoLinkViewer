@@ -128,5 +128,7 @@
     <string name="image_resized_dialog_neutral">Go setting</string>
     <string name="permission_denied">Permission request denied.</string>
     <string name="use_old_oauth">Use callback OAuth method</string>
+    <string name="display_preference_summary">tap to open</string>
+    <string name="display_preference_title">Display</string>
 
 </resources>

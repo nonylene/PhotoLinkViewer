@@ -12,10 +12,10 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import butterknife.bindView
 import net.nonylene.photolinkviewer.R
-import net.nonylene.photolinkviewer.core.tool.OkHttpManager
 import net.nonylene.photolinkviewer.core.tool.PLVUrl
 import net.nonylene.photolinkviewer.core.tool.PLVUrlService
 import net.nonylene.photolinkviewer.core.view.TilePhotoView
+import net.nonylene.photolinkviewer.tool.OkHttpManager
 import twitter4j.Status
 import java.text.SimpleDateFormat
 
@@ -33,14 +33,14 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
     private val photoBaseLayout: LinearLayout by bindView(R.id.photo_base)
     private val photoLayout: TilePhotoView by bindView(R.id.photos)
 
-    public var tilePhotoViewListener: TilePhotoView.TilePhotoViewListener? = null
+    var tilePhotoViewListener: TilePhotoView.TilePhotoViewListener? = null
 
-    public var status : Status? = null
+    var status : Status? = null
         private set
 
     private val DP = context.resources.displayMetrics.density
 
-    public fun setEntry(status: Status) {
+    fun setEntry(status: Status) {
         this.status = status
 
         //retweet check
@@ -140,19 +140,19 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
         return (object : PLVUrlService.PLVUrlListener {
             var position: Int? = null
 
-            override public fun onGetPLVUrlFinished(plvUrls: Array<PLVUrl>) {
+            override fun onGetPLVUrlFinished(plvUrls: Array<PLVUrl>) {
                 tileView.setPLVUrls(position!!, plvUrls)
                 tileView.notifyChanged()
             }
 
-            override public fun onGetPLVUrlFailed(text: String) {
+            override fun onGetPLVUrlFailed(text: String) {
                 position?.let {
                     tileView.removeImageView(it)
                     tileView.notifyChanged()
                 }
             }
 
-            override public fun onURLAccepted() {
+            override fun onURLAccepted() {
                 position = tileView.addImageView();
                 tileView.notifyChanged()
             }

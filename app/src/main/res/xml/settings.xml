@@ -5,15 +5,14 @@
     <PreferenceCategory
         android:title="Account">
 
-    <Preference
-        android:summary="@string/pref_twitter_summary"
-        android:title="@string/pref_twitter_title">
-        <intent
-            android:action="android.intent.action.view"
-            android:targetClass="net.nonylene.photolinkviewer.TwitterOAuthActivity"
-            android:targetPackage="net.nonylene.photolinkviewer"/>
-    </Preference>
-
+        <Preference
+            android:summary="@string/pref_twitter_summary"
+            android:title="@string/pref_twitter_title">
+            <intent
+                android:action="android.intent.action.view"
+                android:targetClass="net.nonylene.photolinkviewer.TwitterOAuthActivity"
+                android:targetPackage="net.nonylene.photolinkviewer"/>
+        </Preference>
 
         <Preference
             android:key="instagram_preference"
@@ -27,78 +26,14 @@
 
     </PreferenceCategory>
 
-
-    <PreferenceCategory
-        android:title="@string/display_title">
-
-        <Preference
-            android:summary="@string/setting_quality_summary"
-            android:title="@string/setting_quality_title">
-            <intent
-                android:action="android.intent.action.view"
-                android:targetClass="net.nonylene.photolinkviewer.ChangeQualityActivity"
-                android:targetPackage="net.nonylene.photolinkviewer"/>
-        </Preference>
-
-        <EditTextPreference
-            android:defaultValue="1.4"
-            android:dialogTitle="@string/settings_zoom_dtitle"
-            android:inputType="numberDecimal"
-            android:key="zoom_speed"
-            android:title="@string/settings_zoom_title"/>
-
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="video_play"
-            android:summary="@string/setting_video_summary"
-            android:title="@string/setting_video_title"/>
-
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="adjust_zoom"
-            android:summary="@string/adjust_summary"
-            android:title="@string/adjust_title"/>
-
-        <Preference
-            android:summary="@string/setting_size_summary"
-            android:title="@string/setting_size_title">
-            <intent
-                android:action="android.intent.action.view"
-                android:targetClass="net.nonylene.photolinkviewer.MaxSizePreferenceActivity"
-                android:targetPackage="net.nonylene.photolinkviewer"/>
-        </Preference>
-    </PreferenceCategory>
-
-    <PreferenceCategory
-        android:title="@string/save_title">
-
-        <EditTextPreference
-            android:defaultValue="PLViewer/"
-            android:dialogTitle="@string/setting_dir_dialogtitle"
-            android:key='download_dir'
-            android:title="@string/setting_dir_title"/>
-
-        <ListPreference
-            android:defaultValue="mkdir"
-            android:dialogTitle="@string/setting_mkdir_dialogtitle"
-            android:entries="@array/filename"
-            android:entryValues="@array/filename_value"
-            android:key="download_file"
-            android:title="@string/setting_mkdir_title"/>
-
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key='skip_dialog'
-            android:summary="@string/skip_summary"
-            android:title="@string/skip_title"/>
-
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key='leave_notify'
-            android:summary="@string/leave_notify_summary"
-            android:title="@string/leave_notify_title"/>
-
-    </PreferenceCategory>
+    <Preference
+        android:summary="@string/display_preference_summary"
+        android:title="@string/display_preference_title">
+        <intent
+            android:action="android.intent.action.view"
+            android:targetClass="net.nonylene.photolinkviewer.core.PLVPreferenceActivity"
+            android:targetPackage="net.nonylene.photolinkviewer"/>
+    </Preference>
 
     <PreferenceCategory
         android:title="@string/others_title">
@@ -112,12 +47,6 @@
                 android:key="disp_tweet"
                 android:summary="@string/disp_tweet_summary"
                 android:title="@string/disp_tweet_title"/>
-
-            <SwitchPreference
-                android:defaultValue="false"
-                android:key="double_zoom"
-                android:summary="@string/double_zoom_summary"
-                android:title="@string/double_zoom_title"/>
 
         </PreferenceScreen>
 

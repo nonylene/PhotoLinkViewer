@@ -22,10 +22,7 @@ import com.twitter.sdk.android.core.TwitterSession
 import com.twitter.sdk.android.core.identity.TwitterLoginButton
 
 import net.nonylene.photolinkviewer.dialog.DeleteDialogFragment
-import net.nonylene.photolinkviewer.tool.Encryption
-import net.nonylene.photolinkviewer.tool.MyAsyncTwitter
-import net.nonylene.photolinkviewer.tool.MyCursorAdapter
-import net.nonylene.photolinkviewer.tool.MySQLiteOpenHelper
+import net.nonylene.photolinkviewer.tool.*
 
 import twitter4j.AsyncTwitter
 import twitter4j.AsyncTwitterFactory
@@ -172,6 +169,7 @@ class TwitterOAuthActivity : AppCompatActivity(), DeleteDialogFragment.DeleteDia
             // renew listView
             // i want to use content provider and cursor loader in future.
             myCursorAdapter!!.swapCursor(new_cursor)
+            PLVUtils.refreshTwitterTokens(database)
 
         } catch (e: SQLiteException) {
             toastText = getString(R.string.delete_failed_toast)
@@ -183,7 +181,7 @@ class TwitterOAuthActivity : AppCompatActivity(), DeleteDialogFragment.DeleteDia
     }
 
     private fun updateProfiles() {
-        if (preferences.getBoolean("authorized", false)) {
+        if (preferences.isTwitterOAuthed()) {
             try {
                 val twitter = MyAsyncTwitter.getAsyncTwitterFromDB(database, applicationContext)
                 twitter.addListener(object : TwitterAdapter() {
@@ -211,6 +209,7 @@ class TwitterOAuthActivity : AppCompatActivity(), DeleteDialogFragment.DeleteDia
                 // move cursor focus
                 val cursor = database.rawQuery("select rowid _id, userId from accounts", null)
                 cursor.moveToFirst()
+                PLVUtils.refreshTwitterTokens(database)
                 twitter.showUser(cursor.getLong(cursor.getColumnIndex("userId")))
                 while (cursor.moveToNext()) {
                     twitter.showUser(cursor.getLong(cursor.getColumnIndex("userId")))
@@ -253,8 +252,8 @@ class TwitterOAuthActivity : AppCompatActivity(), DeleteDialogFragment.DeleteDia
                 put("icon", icon)
 
                 val key = Encryption.generate()
-                put("token", Encryption.encrypt(token.token.toByteArray("UTF-8"), key))
-                put("token_secret", Encryption.encrypt(token.tokenSecret.toByteArray("UTF-8"), key))
+                put("token", Encryption.encrypt(token.token.toByteArray(), key))
+                put("token_secret", Encryption.encrypt(token.tokenSecret.toByteArray(), key))
                 put("key", Base64.encodeToString(key.encoded, Base64.DEFAULT))
             }
             // open database
@@ -275,10 +274,13 @@ class TwitterOAuthActivity : AppCompatActivity(), DeleteDialogFragment.DeleteDia
             val account = cursorNew.getInt(cursorNew.getColumnIndex("_id"))
             // set oauth_completed frag
             preferences.edit()
-                    .putBoolean("authorized", true)
-                    .putString("screen_name", screenName)
+                    .putIsTwitterOAuthed(true)
+                    .putDefaultTwitterScreenName(screenName)
                     .putInt("account", account)
                     .apply()
+
+            PLVUtils.refreshTwitterTokens(database)
+
             //putting cue to UI Thread
             runOnUiThread {
                 Toast.makeText(this@TwitterOAuthActivity, getString(R.string.toauth_succeeded_token) + " @" + screenName, Toast.LENGTH_LONG).show()
@@ -302,7 +304,7 @@ class TwitterOAuthActivity : AppCompatActivity(), DeleteDialogFragment.DeleteDia
         }
         preferences.edit()
                 .putInt("account", rowid)
-                .putString("screen_name", cursor.getString(cursor.getColumnIndex("userName")))
+                .putDefaultTwitterScreenName(cursor.getString(cursor.getColumnIndex("userName")))
                 .apply()
     }
 

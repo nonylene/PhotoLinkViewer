@@ -23,9 +23,8 @@ import net.nonylene.photolinkviewer.core.tool.PLVUrl
 import net.nonylene.photolinkviewer.core.tool.PLVUrlService
 import net.nonylene.photolinkviewer.core.tool.ProgressBarListener
 import net.nonylene.photolinkviewer.core.view.TilePhotoView
+import net.nonylene.photolinkviewer.tool.*
 
-import net.nonylene.photolinkviewer.tool.MyAsyncTwitter
-import net.nonylene.photolinkviewer.tool.TwitterStatusAdapter
 import net.nonylene.photolinkviewer.view.HeightScalableScrollView
 import net.nonylene.photolinkviewer.view.UserTweetLoadingView
 import net.nonylene.photolinkviewer.view.UserTweetView
@@ -71,7 +70,7 @@ class TwitterDisplay : Activity(), TwitterStatusAdapter.TwitterAdapterListener, 
         url = intent.data.toString()
         bundle.putString("url", url)
 
-        if (!getSharedPreferences("preference", Context.MODE_PRIVATE).getBoolean("authorized", false)) {
+        if (!getSharedPreferences("preference", Context.MODE_PRIVATE).isTwitterOAuthed()) {
             Toast.makeText(applicationContext, getString(R.string.twitter_display_oauth), Toast.LENGTH_LONG).show()
             startActivity(Intent(this, TwitterOAuthActivity::class.java))
             finish()
@@ -106,30 +105,25 @@ class TwitterDisplay : Activity(), TwitterStatusAdapter.TwitterAdapterListener, 
             finish()
         }
 
-        bundle.setTwitterEnabled(true)
-        bundle.setTweetId(id_long)
-
         // option fragment
         val fragmentTransaction = fragmentManager.beginTransaction()
-        val optionFragment = OptionFragment()
-        optionFragment.arguments = bundle
+        val optionFragment = OptionFragment().apply {
+            arguments = OptionFragment.createArguments(url!!, id_long, getSharedPreferences("preference", MODE_PRIVATE).getDefaultTwitterScreenName()!!)
+        }
         fragmentTransaction.add(R.id.root_layout, optionFragment).commit()
     }
 
     override fun onShowFragmentRequired(plvUrl: PLVUrl) {
-        onFragmentRequired(ShowFragment(), plvUrl)
+        onFragmentRequired(ShowFragment(), ShowFragment.createArguments(plvUrl, isSingle))
     }
 
     override fun onVideoShowFragmentRequired(plvUrl: PLVUrl) {
-        onFragmentRequired(VideoShowFragment(), plvUrl)
+        onFragmentRequired(VideoShowFragment(), VideoShowFragment.createArguments(plvUrl, isSingle))
     }
 
-    private fun onFragmentRequired(fragment: Fragment, plvUrl: PLVUrl) {
+    private fun onFragmentRequired(fragment: Fragment, bundle: Bundle) {
         try {
             // go to show fragment
-            val bundle = Bundle()
-            bundle.putParcelable("plvurl", plvUrl)
-            bundle.putBoolean("single_frag", isSingle)
             val fragmentTransaction = fragmentManager.beginTransaction()
 
             fragment.arguments = bundle
@@ -170,15 +164,17 @@ class TwitterDisplay : Activity(), TwitterStatusAdapter.TwitterAdapterListener, 
             val row_id_list = accountsList.rowIdList
             // get current screen_name
             val sharedPreferences = activity.getSharedPreferences("preference", Context.MODE_PRIVATE)
-            val current_name = sharedPreferences.getString("screen_name", null)
+            val current_name = sharedPreferences.getDefaultTwitterScreenName()
             return AlertDialog.Builder(activity)
                     .setTitle(getString(R.string.account_dialog_title))
                     .setNegativeButton(getString(android.R.string.cancel), null)
                     .setSingleChoiceItems(screen_list.toTypedArray(), screen_list.indexOf(current_name),
                             { dialogInterface, position ->
                                 // save rowid and screen name to preference
-                                sharedPreferences.edit().putInt("account", row_id_list[position]).apply()
-                                sharedPreferences.edit().putString("screen_name", screen_list[position]).apply()
+                                sharedPreferences.edit()
+                                        .putInt("account", row_id_list[position])
+                                        .putDefaultTwitterScreenName(screen_list[position])
+                                        .apply()
                                 //reload activity
                                 startActivity(activity.intent)
                                 dialog.dismiss()

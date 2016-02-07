@@ -30,6 +30,7 @@ import net.nonylene.photolinkviewer.core.fragment.PreferenceSummaryFragment;
 import net.nonylene.photolinkviewer.core.tool.Initialize;
 import net.nonylene.photolinkviewer.tool.AccountsList;
 import net.nonylene.photolinkviewer.tool.MyAsyncTwitter;
+import net.nonylene.photolinkviewer.tool.PLVUtils;
 
 import java.util.ArrayList;
 
@@ -85,6 +86,14 @@ public class Settings extends AppCompatActivity {
             });
 
             instagramSwitch = (SwitchPreference) findPreference("instagram_api");
+
+            instagramSwitch.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    PLVUtils.INSTANCE.refreshInstagramToken(getActivity(), (boolean) newValue);
+                    return true;
+                }
+            });
 
             return super.onCreateView(inflater, container, savedInstanceState);
         }

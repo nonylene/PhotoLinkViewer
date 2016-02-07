@@ -4,13 +4,19 @@ import android.app.Activity
 import android.app.Application
 import android.os.Bundle
 import com.crashlytics.android.Crashlytics
+import com.squareup.okhttp.Cache
 import com.twitter.sdk.android.Twitter
 import com.twitter.sdk.android.core.TwitterAuthConfig
 import io.fabric.sdk.android.Fabric
 import io.fabric.sdk.android.Kit
-import net.nonylene.photolinkviewer.tool.OkHttpManager
+import net.nonylene.photolinkviewer.core.PhotoLinkViewer
+import net.nonylene.photolinkviewer.tool.PLVUtils
+import java.io.File
+import java.io.IOException
 
-public class PLVApplication : Application(), Application.ActivityLifecycleCallbacks {
+class PLVApplication : Application(), Application.ActivityLifecycleCallbacks {
+
+    private var cache: Cache? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -18,8 +24,22 @@ public class PLVApplication : Application(), Application.ActivityLifecycleCallba
 
         Fabric.with(this,
                 *arrayOf<Kit<*>>(Twitter(TwitterAuthConfig(BuildConfig.TWITTER_KEY, BuildConfig.TWITTER_SECRET)))
-                    .let { if (BuildConfig.IS_CRASHLYTICS_ENABLED) it.plus(Crashlytics()) else it }
+                        .let { if (BuildConfig.IS_CRASHLYTICS_ENABLED) it.plus(Crashlytics()) else it }
         )
+
+        PhotoLinkViewer.with(PhotoLinkViewer.TwitterKeys(BuildConfig.TWITTER_KEY, BuildConfig.TWITTER_SECRET),
+                BuildConfig.TUMBLR_KEY, BuildConfig.FLICKR_KEY, Settings::class.java)
+
+        try {
+            val cacheDir = File(applicationContext.cacheDir, "okhttp")
+            cache = Cache(cacheDir, 20 * 1024 * 1024) // 20 MB
+            PhotoLinkViewer.cache = cache;
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+
+        PLVUtils.refreshTwitterTokens(this)
+        PLVUtils.refreshInstagramToken(this)
     }
 
     override fun onActivityPaused(activity: Activity?) {
@@ -35,7 +55,7 @@ public class PLVApplication : Application(), Application.ActivityLifecycleCallba
     }
 
     override fun onActivityStopped(activity: Activity?) {
-        OkHttpManager.flushCache()
+        cache?.flush()
     }
 
     override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {

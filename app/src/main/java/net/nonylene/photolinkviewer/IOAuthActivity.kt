@@ -18,12 +18,13 @@ import com.android.volley.AuthFailureError
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.squareup.picasso.Picasso
-import net.nonylene.photolinkviewer.core.tool.OkHttpManager
-import net.nonylene.photolinkviewer.core.tool.VolleyManager
 
 import net.nonylene.photolinkviewer.dialog.DeleteDialogFragment
 import net.nonylene.photolinkviewer.tool.Encryption
+import net.nonylene.photolinkviewer.tool.OkHttpManager
+import net.nonylene.photolinkviewer.tool.PLVUtils
 
 import org.json.JSONException
 import org.json.JSONObject
@@ -45,7 +46,7 @@ class IOAuthActivity : AppCompatActivity(), DeleteDialogFragment.DeleteDialogCal
         setContentView(R.layout.activity_instagram)
 
         preferences = getSharedPreferences("preference", Context.MODE_PRIVATE)
-        queue = VolleyManager.getRequestQueue(this)
+        queue = Volley.newRequestQueue(this)
 
         iconView = findViewById(R.id.instagram_image_view) as ImageView
         screenNameView = findViewById(R.id.instagram_screen_name) as TextView
@@ -124,7 +125,7 @@ class IOAuthActivity : AppCompatActivity(), DeleteDialogFragment.DeleteDialogCal
 
             // encrypt
             val key = Encryption.generate()
-            val accessTokenGen = Encryption.encrypt(json.getString("access_token").toByteArray("UTF-8"), key)
+            val accessTokenGen = Encryption.encrypt(json.getString("access_token").toByteArray(), key)
             val keyString = Base64.encodeToString(key.encoded, Base64.DEFAULT)
 
             preferences!!.edit()
@@ -138,6 +139,8 @@ class IOAuthActivity : AppCompatActivity(), DeleteDialogFragment.DeleteDialogCal
 
             PreferenceManager.getDefaultSharedPreferences(this).edit()
                     .putBoolean("instagram_api", true).apply()
+
+            PLVUtils.refreshInstagramToken(this)
 
             screenNameView!!.text = username
 
@@ -178,6 +181,8 @@ class IOAuthActivity : AppCompatActivity(), DeleteDialogFragment.DeleteDialogCal
 
         PreferenceManager.getDefaultSharedPreferences(this).edit()
                 .putBoolean("instagram_api", false).apply()
+
+        PLVUtils.refreshInstagramToken(this)
 
         screenNameView!!.setText(R.string.instagram_not_authorized)
         iconView!!.setImageResource(R.drawable.instagram_logo)

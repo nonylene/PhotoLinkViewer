@@ -110,5 +110,7 @@
     <string name="max_preference_toast">最大サイズを %1$d px に設定しました</string>
     <string name="permission_denied">権限が拒否されました</string>
     <string name="use_old_oauth">コールバック認証を使用</string>
+    <string name="display_preference_summary">タップして開く</string>
+    <string name="display_preference_title">表示設定</string>
 
 </resources>

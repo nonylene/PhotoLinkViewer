@@ -98,7 +98,9 @@ dependencies {
     compile 'com.mcxiaoke.volley:library:1.0.19'
     compile 'com.jakewharton:kotterknife:0.1.0-SNAPSHOT'
     compile 'de.greenrobot:eventbus:2.4.0'
-    compile "net.nonylene:photolinkviewer-core:0.0.0a"
+    compile ("net.nonylene:photolinkviewer-core:0.0.2-SNAPSHOT") {
+        changing = true;
+    }
 
     androidTestCompile('com.android.support.test:runner:0.4'){
         exclude module: 'support-annotations'
@@ -125,7 +127,7 @@ afterEvaluate {
 }
 
 buildscript {
-    ext.kotlin_version = '1.0.0-beta-4584'
+    ext.kotlin_version = '1.0.0-rc-1036'
     repositories {
         jcenter()
         maven {
@@ -147,6 +149,6 @@ repositories {
         url 'https://maven.fabric.io/public'
     }
     maven {
-        url "http://dl.bintray.com/nonylene/maven"
+        url "https://nonylene.github.io/PhotoLinkViewer-Core/repository/snapshots"
     }
 }

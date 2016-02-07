@@ -1,3 +1,8 @@
+general:
+  branches:
+    ignore:
+      - gh-pages
+
 machine:
   java:
     version: openjdk7
@@ -12,9 +17,8 @@ dependencies:
     - echo y | android update sdk --no-ui --all --filter "build-tools-23.0.2"
   cache_directories:
     - ~/.android
+    - ~/.gradle
   post:
-    # remove cache
-    - rm -r ~/.gradle
     - echo n | android create avd -n test22 -f -t android-22
     - echo n | android create avd -n test19 -f -t android-19
     - echo n | android create avd -n test17 -f -t android-17

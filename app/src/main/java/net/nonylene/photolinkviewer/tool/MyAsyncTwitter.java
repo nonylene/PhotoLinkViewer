@@ -10,9 +10,10 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Base64;
 
 import net.nonylene.photolinkviewer.BuildConfig;
-import net.nonylene.photolinkviewer.R;
+import net.nonylene.photolinkviewer.core.PhotoLinkViewer;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 import javax.crypto.spec.SecretKeySpec;
 
@@ -90,5 +91,40 @@ public class MyAsyncTwitter {
         list.setRowIdList(row_id_list);
         list.setScreenList(screen_list);
         return list;
+    }
+
+    public static LinkedHashMap<String, PhotoLinkViewer.TwitterToken> getAccountsTokenList(Context context) {
+        // sql
+        MySQLiteOpenHelper sqLiteOpenHelper = new MySQLiteOpenHelper(context);
+        SQLiteDatabase database = sqLiteOpenHelper.getReadableDatabase();
+        LinkedHashMap<String, PhotoLinkViewer.TwitterToken> map = getAccountsTokenList(database);
+        database.close();
+        return map;
+    }
+
+    public static LinkedHashMap<String, PhotoLinkViewer.TwitterToken> getAccountsTokenList(SQLiteDatabase database) {
+        LinkedHashMap<String, PhotoLinkViewer.TwitterToken> tokenLinkedHashMap = new LinkedHashMap<>();
+        Cursor cursor = database.rawQuery("select userName, token, token_secret, key from accounts", null);
+        // lists
+        if (cursor.moveToFirst()) {
+            String tokenKey = cursor.getString(3);
+            byte[] keyboo = Base64.decode(tokenKey, Base64.DEFAULT);
+            SecretKeySpec key = new SecretKeySpec(keyboo, 0, keyboo.length, "AES");
+            byte[] token = Base64.decode(cursor.getString(1), Base64.DEFAULT);
+            byte[] token_secret = Base64.decode(cursor.getString(2), Base64.DEFAULT);
+            PhotoLinkViewer.TwitterToken accessToken = new PhotoLinkViewer.TwitterToken(Encryption.decrypt(token, key), Encryption.decrypt(token_secret, key));
+            tokenLinkedHashMap.put(cursor.getString(0), accessToken);
+
+            while (cursor.moveToNext()) {
+                String tKey = cursor.getString(3);
+                byte[] kboo = Base64.decode(tKey, Base64.DEFAULT);
+                SecretKeySpec keySpec = new SecretKeySpec(kboo, 0, kboo.length, "AES");
+                byte[] aTokenByte = Base64.decode(cursor.getString(1), Base64.DEFAULT);
+                byte[] aTokenSecretByte = Base64.decode(cursor.getString(2), Base64.DEFAULT);
+                PhotoLinkViewer.TwitterToken aToken = new PhotoLinkViewer.TwitterToken(Encryption.decrypt(aTokenByte, keySpec), Encryption.decrypt(aTokenSecretByte, keySpec));
+                tokenLinkedHashMap.put(cursor.getString(0), aToken);
+            }
+        }
+        return tokenLinkedHashMap;
     }
 }
