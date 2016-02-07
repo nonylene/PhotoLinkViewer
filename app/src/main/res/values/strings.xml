@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <resources>
 
     <string name="app_name" translatable="false">PhotoLinkViewer</string>
@@ -6,31 +6,9 @@
     <string name="toauth_failed_encode">Encode error</string>
     <string name="toauth_failed_token">failed to get token!</string>
     <string name="toauth_succeeded_token">Get token successfully!</string>
-    <string name="option_fragment_open" translatable="false">Open with new Browser</string>
-    <string name="option_fragment_settings" translatable="false">Settings</string>
-    <string name="option_fragment_download" translatable="false">Download</string>
-    <string name="option_fragment_openclose" translatable="false">Open/Close</string>
     <string name="pref_twitter_summary">Tap to open</string>
-    <string name="settings_zoom_summary">Tap to set</string>
-    <string name="settings_zoom_dtitle">Default value is 1.4</string>
-    <string name="settings_zoom_title">Zoom scale for distance of fingers</string>
-    <string name="intent_title">Select App</string>
-    <string name="rotate_right" translatable="false">rotate_right</string>
-    <string name="rotate_left" translatable="false">rotate_left</string>
-    <string name="save_dialog_positive">Save</string>
-    <string name="save_dialog_title">Save photo to…</string>
-    <string name="download_photo_title">"Saving file to "</string>
-    <string name="setting_dir_dialogtitle">Default value is PLViewer/</string>
-    <string name="setting_dir_title">Change download directory</string>
-    <string name="setting_mkdir_dialogtitle">Select filename</string>
-    <string name="setting_mkdir_title">Change filename</string>
     <string name="twitter_display_oauth">please oAuth!</string>
-    <string name="url_purse_toast">URL purse error</string>
-    <string name="show_bitamap_error">error!</string>
-    <string name="show_flickrjson_toast">flickr JSON Parse Error!</string>
     <string name="twitter_error_toast">twitter error</string>
-    <string name="like_button_description" translatable="false">like</string>
-    <string name="retweet_button_description" translatable="false">retweet</string>
     <string name="like_dialog_title">Like</string>
     <string name="like_dialog_message">Like this tweet?</string>
     <string name="retweet_dialog_title">Retweet</string>
@@ -40,33 +18,12 @@
     <string name="toauth_update_button">Update account database</string>
     <string name="twitter_like_toast">liked!</string>
     <string name="twitter_retweet_toast">retweeted!</string>
-    <string name="setting_quality_summary">Tap to open</string>
-    <string name="setting_quality_title">Quality settings</string>
-    <string name="setting_quality_dialogtitle">Not applied on some sites</string>
     <string name="delete_dialog_title">Delete account</string>
     <string name="delete_dialog_message_account">account: \@</string>
     <string name="delete_dialog_message">Delete this account?</string>
     <string name="delete_account_toast">Deleted successfully</string>
     <string name="delete_failed_toast">Delete failed!</string>
     <string name="twitter_async_select">Please set account correctly!</string>
-    <string name="vine_url_toast">Error!</string>
-    <string name="vine_json_toast">JSON error!</string>
-    <string name="quality_setting_dialogtitle">Please choose quality</string>
-    <string name="flickr_quality_title" translatable="false">flickr</string>
-    <string name="twipple_quality_title" translatable="false">twipple</string>
-    <string name="imgly_quality_title" translatable="false">img.ly</string>
-    <string name="instagram_quality_title" translatable="false">instagram</string>
-    <string name="twitter_quality_title" translatable="false">twitter</string>
-    <string name="nicoseiga_quality_title">niconico seiga</string>
-    <string name="tumblr_quality_title" translatable="false">tumblr</string>
-    <string name="batch_dialog_title">Please choose</string>
-    <string name="quality_batch_title">Batch quality setting</string>
-    <string name="quality_batch_summary">Set quality in a lump</string>
-    <string name="quality_sites_categoryname">Setting by sitename</string>
-    <string name="quality_switch_title">Enable wifi setting</string>
-    <string name="quality_switch_summary">Change quality when wifi connected</string>
-    <string name="original_switch_summary">Always download biggest size</string>
-    <string name="original_switch_title">Save high quality</string>
     <string name="about_app_twitter4j_licence" translatable="false">Copyright Yusuke Yamamoto \n\n Licensed under the Apache License, Version 2.0 (the \"License\");\n you may not use this file except in compliance with the License. You may obtain a copy of the License at\n\n http://www.apache.org/licenses/LICENSE-2.0\n\n Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n See the License for the specific language governing permissions and limitations under the License.</string>
     <string name="about_app_name" translatable="false">"PhotoLinkViewer - Ver. "</string>
     <string name="about_app_creator" translatable="false">Creator: nonylene</string>
@@ -74,31 +31,14 @@
     <string name="about_app_twitter4j" translatable="false">* twitter4j - http://twitter4j.org</string>
     <string name="about_app_pretitle">About this app</string>
     <string name="about_app_dialogtitle">About this app</string>
-    <string name="nico_original_toast">Cannot view original photo for this id. Even if you choose original, this is compressed photo</string>
     <string name="account_dialog_title">Change account ?</string>
     <string name="twitter_error_authorize">Not authorized</string>
     <string name="volley_error">Error!</string>
-    <string name="notes_about_quality">cannot open full-size these sites:\n\ninstagram, some nicoseiga.</string>
-    <string name="notes_dialog_title">notes about quality</string>
-    <string name="notes_pref_summary">About quality</string>
-    <string name="notes_pref_title">notes</string>
-    <string name="setting_video_title">Auto play video</string>
-    <string name="setting_video_summary">Play video before you tap</string>
     <string name="disp_tweet_title">Always show tweet</string>
     <string name="disp_tweet_summary">Display tweet details even if number of attached photo is only one when receive link to tweet photo.</string>
-    <string name="double_zoom_summary">Double tap zoom will be disabled if dragged after double tap.\n\nWarning: Some devices (e.g. Xperia, GALAXY) cannot perform double tap zoom even if you don\'t drag.</string>
-    <string name="double_zoom_title">Disable zoom before quickscale zoom</string>
     <string name="apref_summary">Tap to open</string>
     <string name="apref_title">Advanced / experimental options</string>
-    <string name="adjust_title">Adjust photo size</string>
-    <string name="adjust_summary">Adjust zoom to screen size even if small photo.</string>
-    <string name="display_title">Display</string>
-    <string name="save_title">Save</string>
     <string name="others_title">Others</string>
-    <string name="leave_notify_summary">Leave notification after download.</string>
-    <string name="leave_notify_title">Leave notification</string>
-    <string name="skip_summary">Download without dialog.</string>
-    <string name="skip_title">Skip dialog</string>
     <string name="instagram_not_authorized">Not authorized</string>
     <string name="instagram_oauth_text">Auth</string>
     <string name="instagram_unoauth_text">UnAuth</string>
@@ -108,8 +48,6 @@
     <string name="instagram_api_summary">get Instagram video and photos via API.\nYou need to authorize your instagram account.</string>
     <string name="twitter_tweet_toast">tweeted!</string>
     <string name="tweet">tweet!</string>
-    <string name="resize_message">"Original size : "</string>
-    <string name="resize_action_message">Detail</string>
     <string name="about_app_okhttp" translatable="false">* OkHttp - http://square.github.io/okhttp/</string>
     <string name="about_app_okhttp_licence" translatable="false">Copyright 2014 Square, Inc.\n\nLicensed under the Apache License, Version 2.0 (the \"License\");\nyou may not use this file except in compliance with the License.\nYou may obtain a copy of the License at\n\n http://www.apache.org/licenses/LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software\ndistributed under the License is distributed on an \"AS IS\" BASIS,\nWITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\nSee the License for the specific language governing permissions and\nlimitations under the License.</string>
     <string name="about_app_picasso" translatable="false">* Picasso - http://square.github.io/picasso/</string>
@@ -118,15 +56,6 @@
     <string name="about_app_eventbus_licence" translatable="false">Licensed under the Apache License, Version 2.0 (the \"License\");\nyou may not use this file except in compliance with the License.\nYou may obtain a copy of the License at\n\n http://www.apache.org/licenses/LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software\ndistributed under the License is distributed on an \"AS IS\" BASIS,\nWITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\nSee the License for the specific language governing permissions and\nlimitations under the License.</string>
     <string name="about_app_kotterknife" translatable="false">* KotterKnife - https://github.com/JakeWharton/kotterknife</string>
     <string name="about_app_kotterknife_licence" translatable="false">Copyright 2014 Jake Wharton\n\nLicensed under the Apache License, Version 2.0 (the \"License\");\nyou may not use this file except in compliance with the License.\nYou may obtain a copy of the License at\n\n http://www.apache.org/licenses/LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software\ndistributed under the License is distributed on an \"AS IS\" BASIS,\nWITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\nSee the License for the specific language governing permissions and\nlimitations under the License.</string>
-    <string name="setting_size_title">Max preview image size</string>
-    <string name="setting_size_summary">Tap to open</string>
-    <string name="max_preference_description">You can set max size of ImageView here.\nPlease check whether your device can display max size image.\nBig size may cause crash due to memory.\nDownloaded images don\'t depend on this setting.</string>
-    <string name="max_preference_button">Set this size</string>
-    <string name="max_preference_toast">Set max size as %1$d px!</string>
-    <string name="image_resized_dialog_title">Image was resized</string>
-    <string name="image_resized_dialog_text">Each device has different max size limit of ImageView (2048px or 4096px usually. This app set limit as 2048px by default.)\nImage will be resized when loading image is bigger than this limit (You can get original size image by downloading).\n\nYou can set this parameter in settings.</string>
-    <string name="image_resized_dialog_neutral">Go setting</string>
-    <string name="permission_denied">Permission request denied.</string>
     <string name="use_old_oauth">Use callback OAuth method</string>
     <string name="display_preference_summary">tap to open</string>
     <string name="display_preference_title">Display</string>
