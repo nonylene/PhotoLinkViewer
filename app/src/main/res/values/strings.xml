@@ -37,7 +37,7 @@
     <string name="disp_tweet_title">Always show tweet</string>
     <string name="disp_tweet_summary">Display tweet details even if number of attached photo is only one when receive link to tweet photo.</string>
     <string name="apref_summary">Tap to open</string>
-    <string name="apref_title">Advanced / experimental options</string>
+    <string name="apref_title">Other options</string>
     <string name="others_title">Others</string>
     <string name="instagram_not_authorized">Not authorized</string>
     <string name="instagram_oauth_text">Auth</string>
@@ -57,7 +57,5 @@
     <string name="about_app_kotterknife" translatable="false">* KotterKnife - https://github.com/JakeWharton/kotterknife</string>
     <string name="about_app_kotterknife_licence" translatable="false">Copyright 2014 Jake Wharton\n\nLicensed under the Apache License, Version 2.0 (the \"License\");\nyou may not use this file except in compliance with the License.\nYou may obtain a copy of the License at\n\n http://www.apache.org/licenses/LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software\ndistributed under the License is distributed on an \"AS IS\" BASIS,\nWITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\nSee the License for the specific language governing permissions and\nlimitations under the License.</string>
     <string name="use_old_oauth">Use callback OAuth method</string>
-    <string name="display_preference_summary">tap to open</string>
-    <string name="display_preference_title">Display</string>
 
 </resources>

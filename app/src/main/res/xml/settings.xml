@@ -26,15 +26,6 @@
 
     </PreferenceCategory>
 
-    <Preference
-        android:summary="@string/display_preference_summary"
-        android:title="@string/display_preference_title">
-        <intent
-            android:action="android.intent.action.view"
-            android:targetClass="net.nonylene.photolinkviewer.core.PLVPreferenceActivity"
-            android:targetPackage="net.nonylene.photolinkviewer"/>
-    </Preference>
-
     <PreferenceCategory
         android:title="@string/others_title">
 

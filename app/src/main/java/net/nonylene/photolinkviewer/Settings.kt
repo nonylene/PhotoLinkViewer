@@ -2,6 +2,8 @@ package net.nonylene.photolinkviewer
 
 import android.app.Dialog
 import android.app.DialogFragment
+import android.app.Fragment
+import android.app.FragmentManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -9,6 +11,9 @@ import android.os.Handler
 import android.os.Looper
 import android.preference.PreferenceManager
 import android.preference.SwitchPreference
+import android.support.v13.app.FragmentPagerAdapter
+import android.support.v4.view.PagerTabStrip
+import android.support.v4.view.ViewPager
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
@@ -19,9 +24,9 @@ import android.widget.EditText
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
+import net.nonylene.photolinkviewer.core.fragment.PLVPreferenceFragment
 
 import net.nonylene.photolinkviewer.core.fragment.PreferenceSummaryFragment
-import net.nonylene.photolinkviewer.core.tool.Initialize
 import net.nonylene.photolinkviewer.tool.MyAsyncTwitter
 import net.nonylene.photolinkviewer.tool.PLVUtils
 
@@ -34,10 +39,29 @@ class Settings : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (!PreferenceManager.getDefaultSharedPreferences(this).getBoolean("initialized39", false)) {
-            Initialize.initialize39(this)
+        setContentView(R.layout.activity_settings)
+        (findViewById(R.id.quality_tab_strip) as PagerTabStrip).setTabIndicatorColorResource(R.color.primary_color)
+        (findViewById(R.id.quality_pager) as ViewPager).adapter = SettingsPagerAdapter(fragmentManager)
+    }
+
+    private inner class SettingsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
+        private var titles = arrayListOf("DISPLAY / SAVE", "ACCOUNT / OTHER")
+
+        override fun getItem(i: Int): Fragment? {
+            return when (i) {
+                0 -> PLVPreferenceFragment()
+                1 -> SettingsFragment()
+                else -> null
+            }
         }
-        fragmentManager.beginTransaction().replace(android.R.id.content, SettingsFragment()).commit()
+
+        override fun getCount(): Int {
+            return titles.size
+        }
+
+        override fun getPageTitle(position: Int): CharSequence {
+            return titles[position]
+        }
     }
 
     class SettingsFragment : PreferenceSummaryFragment() {

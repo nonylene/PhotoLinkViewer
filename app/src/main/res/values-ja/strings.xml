@@ -29,7 +29,7 @@
     <string name="volley_error">エラー</string>
     <string name="disp_tweet_summary">ツイート写真へのリンクを受け取った際、投稿された写真が複数でないときもツイート詳細を表示します</string>
     <string name="disp_tweet_title">常にツイートを表示</string>
-    <string name="apref_title">詳細/実験的オプション</string>
+    <string name="apref_title">その他の設定</string>
     <string name="apref_summary">タップして開く</string>
     <string name="others_title">その他</string>
     <string name="instagram_api_summary">Instagramの動画と写真をAPI経由で取得します。oAuth認証が必要です。</string>
@@ -44,7 +44,5 @@
     <string name="like_dialog_message">このツイートをいいねしますか？</string>
     <string name="like_dialog_title">いいねする</string>
     <string name="use_old_oauth">コールバック認証を使用</string>
-    <string name="display_preference_summary">タップして開く</string>
-    <string name="display_preference_title">表示設定</string>
 
 </resources>
