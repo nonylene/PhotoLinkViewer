@@ -81,14 +81,6 @@ class TwitterOAuthActivity : AppCompatActivity(), DeleteDialogFragment.DeleteDia
             }
         }
 
-        // create table accounts
-        with(database) {
-            beginTransaction()
-            execSQL("create table if not exists accounts (userName unique, userId integer unique, token, token_secret, key, icon)")
-            setTransactionSuccessful()
-            endTransaction()
-        }
-
         setListView()
         updateProfiles()
     }

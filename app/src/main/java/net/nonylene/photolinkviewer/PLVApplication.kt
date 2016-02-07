@@ -10,6 +10,7 @@ import com.twitter.sdk.android.core.TwitterAuthConfig
 import io.fabric.sdk.android.Fabric
 import io.fabric.sdk.android.Kit
 import net.nonylene.photolinkviewer.core.PhotoLinkViewer
+import net.nonylene.photolinkviewer.tool.MyAsyncTwitter
 import net.nonylene.photolinkviewer.tool.PLVUtils
 import java.io.File
 import java.io.IOException
@@ -21,6 +22,8 @@ class PLVApplication : Application(), Application.ActivityLifecycleCallbacks {
     override fun onCreate() {
         super.onCreate()
         registerActivityLifecycleCallbacks(this)
+
+        MyAsyncTwitter.createTwitterTable(this)
 
         Fabric.with(this,
                 *arrayOf<Kit<*>>(Twitter(TwitterAuthConfig(BuildConfig.TWITTER_KEY, BuildConfig.TWITTER_SECRET)))

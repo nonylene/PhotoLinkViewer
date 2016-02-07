@@ -127,4 +127,15 @@ public class MyAsyncTwitter {
         }
         return tokenLinkedHashMap;
     }
+
+    public static void createTwitterTable(Context context) {
+        // create table accounts
+        MySQLiteOpenHelper sqLiteOpenHelper = new MySQLiteOpenHelper(context);
+        SQLiteDatabase database = sqLiteOpenHelper.getReadableDatabase();
+        database.beginTransaction();
+        database.execSQL("create table if not exists accounts (userName unique, userId integer unique, token, token_secret, key, icon)");
+        database.setTransactionSuccessful();
+        database.endTransaction();
+        database.close();
+    }
 }
