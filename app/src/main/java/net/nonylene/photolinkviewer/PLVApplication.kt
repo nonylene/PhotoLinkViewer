@@ -31,7 +31,7 @@ class PLVApplication : Application(), Application.ActivityLifecycleCallbacks {
         )
 
         PhotoLinkViewer.with(PhotoLinkViewer.TwitterKeys(BuildConfig.TWITTER_KEY, BuildConfig.TWITTER_SECRET),
-                BuildConfig.TUMBLR_KEY, BuildConfig.FLICKR_KEY, Settings::class.java)
+                BuildConfig.FLICKR_KEY, BuildConfig.TUMBLR_KEY, Settings::class.java)
 
         try {
             val cacheDir = File(applicationContext.cacheDir, "okhttp")
