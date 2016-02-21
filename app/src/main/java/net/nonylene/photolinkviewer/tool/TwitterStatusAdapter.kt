@@ -41,7 +41,7 @@ class TwitterStatusAdapter() : BaseAdapter(), UserTweetLoadingView.LoadingViewLi
     }
 
     // not selectable base view
-    override public fun isEnabled(position : Int) : Boolean{
+    override fun isEnabled(position : Int) : Boolean{
         return getItemViewTypeEnum(position) != ItemType.STATUS;
     }
 

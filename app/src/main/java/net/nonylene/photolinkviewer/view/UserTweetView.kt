@@ -12,10 +12,12 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import butterknife.bindView
 import net.nonylene.photolinkviewer.R
+import net.nonylene.photolinkviewer.core.event.DownloadButtonEvent
 import net.nonylene.photolinkviewer.core.tool.PLVUrl
 import net.nonylene.photolinkviewer.core.tool.PLVUrlService
 import net.nonylene.photolinkviewer.core.view.TilePhotoView
 import net.nonylene.photolinkviewer.tool.OkHttpManager
+import org.greenrobot.eventbus.EventBus
 import twitter4j.Status
 import java.text.SimpleDateFormat
 
@@ -34,6 +36,7 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
     private val photoLayout: TilePhotoView by bindView(R.id.photos)
 
     var tilePhotoViewListener: TilePhotoView.TilePhotoViewListener? = null
+    var sendDownloadEvent = false
 
     var status : Status? = null
         private set
@@ -90,7 +93,9 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
                 for (urlEntity in urlEntities) {
                     val url = urlEntity.expandedURL
                     addUrl(url)
-                    val service = PLVUrlService(context, getPLVUrlListener(urlPhotoLayout))
+                    val service = PLVUrlService(context).apply {
+                        plvUrlListener = getPLVUrlListener(urlPhotoLayout)
+                    }
                     service.requestGetPLVUrl(url)
                 }
             } else {
@@ -106,28 +111,32 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
 
                 photoLayout.tilePhotoViewListener = tilePhotoViewListener
 
-                for (mediaEntity in mediaEntities) {
+                val plvUrls = mediaEntities.map { mediaEntity ->
                     val url = mediaEntity.mediaURLHttps
 
                     if (mediaEntity.type in arrayOf("animated_gif", "video")) {
                         mediaEntity.videoAspectRatioHeight
 
                         // get biggest url
-                        val file_url = mediaEntity.videoVariants.filter {
+                        val displayUrl = mediaEntity.videoVariants.filter {
                             ("video/mp4") == it.contentType
                         }.maxBy { it.bitrate }!!.url
-
-                        val plvUrl = PLVUrl(mediaEntity.mediaURLHttps)
-                        plvUrl.siteName = "twitter"
+                        val fileName = Uri.parse(displayUrl).lastPathSegment?.let {
+                            it.substring(0, it.lastIndexOf("."))
+                        }
+                        val plvUrl = PLVUrl(url, "twitter", fileName!!)
                         plvUrl.thumbUrl = mediaEntity.mediaURLHttps
-                        plvUrl.displayUrl = file_url
-                        plvUrl.setIsVideo(true)
-                        photoLayout.setPLVUrl(photoLayout.addImageView(), plvUrl)
+                        plvUrl.displayUrl = displayUrl
+                        plvUrl.isVideo = true
+                        plvUrl.type = "mp4"
+                        plvUrl
                     } else {
-                        val service = PLVUrlService(context, getPLVUrlListener(photoLayout))
-                        service.requestGetPLVUrl(url)
+                        val service = PLVUrlService(context)
+                        service.getPLVUrl(url)!![0]
                     }
                 }
+                EventBus.getDefault().postSticky(DownloadButtonEvent(plvUrls, true))
+                photoLayout.setPLVUrls(photoLayout.addImageView(), plvUrls.toTypedArray())
                 photoLayout.notifyChanged()
             } else {
                 photoBaseLayout.visibility = View.GONE

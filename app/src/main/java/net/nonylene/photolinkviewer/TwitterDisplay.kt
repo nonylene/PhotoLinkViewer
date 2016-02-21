@@ -1,17 +1,18 @@
 package net.nonylene.photolinkviewer
 
 import android.animation.LayoutTransition
-import android.app.Activity
 import android.app.Dialog
 import android.app.DialogFragment
-import android.app.Fragment
 import android.content.Context
 import android.content.Intent
 import android.database.sqlite.SQLiteException
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
+import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -38,7 +39,7 @@ import twitter4j.TwitterException
 import twitter4j.TwitterMethod
 
 
-class TwitterDisplay : Activity(), TwitterStatusAdapter.TwitterAdapterListener, ProgressBarListener, TilePhotoView.TilePhotoViewListener, UserTweetLoadingView.LoadingViewListener {
+class TwitterDisplay : AppCompatActivity(), TwitterStatusAdapter.TwitterAdapterListener, ProgressBarListener, TilePhotoView.TilePhotoViewListener, UserTweetLoadingView.LoadingViewListener {
 
     private var url: String? = null
     private var statusAdapter: TwitterStatusAdapter? = null
@@ -106,7 +107,7 @@ class TwitterDisplay : Activity(), TwitterStatusAdapter.TwitterAdapterListener, 
         }
 
         // option fragment
-        val fragmentTransaction = fragmentManager.beginTransaction()
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
         val optionFragment = OptionFragment().apply {
             arguments = OptionFragment.createArguments(url!!, id_long, getSharedPreferences("preference", MODE_PRIVATE).getDefaultTwitterScreenName()!!)
         }
@@ -114,20 +115,20 @@ class TwitterDisplay : Activity(), TwitterStatusAdapter.TwitterAdapterListener, 
     }
 
     override fun onShowFragmentRequired(plvUrl: PLVUrl) {
-        onFragmentRequired(ShowFragment(), ShowFragment.createArguments(plvUrl, isSingle))
+        onFragmentRequired(ShowFragment(), ShowFragment.createArguments(plvUrl, isSingle), BaseShowFragment.SHOW_FRAGMENT_TAG)
     }
 
     override fun onVideoShowFragmentRequired(plvUrl: PLVUrl) {
-        onFragmentRequired(VideoShowFragment(), VideoShowFragment.createArguments(plvUrl, isSingle))
+        onFragmentRequired(VideoShowFragment(), VideoShowFragment.createArguments(plvUrl, isSingle), BaseShowFragment.SHOW_FRAGMENT_TAG)
     }
 
-    private fun onFragmentRequired(fragment: Fragment, bundle: Bundle) {
+    private fun onFragmentRequired(fragment: Fragment, bundle: Bundle, tag: String) {
         try {
             // go to show fragment
-            val fragmentTransaction = fragmentManager.beginTransaction()
+            val fragmentTransaction = supportFragmentManager.beginTransaction()
 
             fragment.arguments = bundle
-            fragmentTransaction.replace(R.id.show_frag_replace, fragment)
+            fragmentTransaction.replace(R.id.show_frag_replace, fragment, tag)
 
             // back to this screen when back pressed
             if (!isSingle) fragmentTransaction.addToBackStack(null)
@@ -215,30 +216,40 @@ class TwitterDisplay : Activity(), TwitterStatusAdapter.TwitterAdapterListener, 
                         val mediaEntity = mediaEntities[0]
 
                         if (mediaEntity.type in arrayOf("animated_gif", "video")) {
-                            val plvUrl = PLVUrl(url)
-                            // get biggest url
-                            plvUrl.displayUrl = mediaEntity.videoVariants.filter {
+                            val displayUrl = mediaEntity.videoVariants.filter {
                                 ("video/mp4") == it.contentType
                             }.maxBy { it.bitrate }!!.url
+                            val fileName = Uri.parse(displayUrl).lastPathSegment?.let {
+                                it.substring(0, it.lastIndexOf("."))
+                            }
+                            val plvUrl = PLVUrl(url!!, "twitter", fileName!!)
+                            plvUrl.type = "mp4"
+                            plvUrl.displayUrl = displayUrl
+                            plvUrl.thumbUrl = mediaEntity.mediaURLHttps
+                            plvUrl.isVideo = true
+                            // get biggest url
                             onVideoShowFragmentRequired(plvUrl)
 
                         } else {
-                            PLVUrlService(this@TwitterDisplay, object : PLVUrlService.PLVUrlListener {
-                                override fun onGetPLVUrlFinished(plvUrls: Array<PLVUrl>) {
-                                    val plvUrl = plvUrls[0]
-                                    if (plvUrl.isVideo) onVideoShowFragmentRequired(plvUrl)
-                                    else onShowFragmentRequired(plvUrl)
-                                }
+                            PLVUrlService(this@TwitterDisplay).apply {
+                                plvUrlListener =  object : PLVUrlService.PLVUrlListener {
+                                    override fun onGetPLVUrlFinished(plvUrls: Array<PLVUrl>) {
+                                        val plvUrl = plvUrls[0]
+                                        if (plvUrl.isVideo) onVideoShowFragmentRequired(plvUrl)
+                                        else onShowFragmentRequired(plvUrl)
+                                    }
 
-                                override fun onGetPLVUrlFailed(text: String) {}
-                                override fun onURLAccepted() {}
-                            }).requestGetPLVUrl(mediaEntity.mediaURLHttps)
+                                    override fun onGetPLVUrlFailed(text: String) {}
+                                    override fun onURLAccepted() {}
+                                }
+                            }.requestGetPLVUrl(mediaEntity.mediaURLHttps)
                         }
 
                     } else {
                         hideProgressBar()
                         mTwitterSingleView.visibility = View.VISIBLE
                         mTwitterSingleView.setEntry(status)
+                        mTwitterSingleView.sendDownloadEvent = true
                         if (status.inReplyToStatusId != (-1).toLong()) {
                             mTwitterSingleLoadingView.visibility = View.VISIBLE
                             mTwitterSingleDivider.visibility = View.VISIBLE

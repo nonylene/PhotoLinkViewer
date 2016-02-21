@@ -2,6 +2,7 @@ package net.nonylene.photolinkviewer.tool
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
+import android.net.Uri
 import android.preference.PreferenceManager
 import android.util.Base64
 import net.nonylene.photolinkviewer.core.PhotoLinkViewer
