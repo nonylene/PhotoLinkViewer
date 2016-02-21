@@ -248,8 +248,8 @@ class TwitterDisplay : AppCompatActivity(), TwitterStatusAdapter.TwitterAdapterL
                     } else {
                         hideProgressBar()
                         mTwitterSingleView.visibility = View.VISIBLE
-                        mTwitterSingleView.setEntry(status)
                         mTwitterSingleView.sendDownloadEvent = true
+                        mTwitterSingleView.setEntry(status)
                         if (status.inReplyToStatusId != (-1).toLong()) {
                             mTwitterSingleLoadingView.visibility = View.VISIBLE
                             mTwitterSingleDivider.visibility = View.VISIBLE

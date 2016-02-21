@@ -135,7 +135,9 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
                         service.getPLVUrl(url)!![0]
                     }
                 }
-                EventBus.getDefault().postSticky(DownloadButtonEvent(plvUrls, true))
+
+                if (sendDownloadEvent) EventBus.getDefault().postSticky(DownloadButtonEvent(plvUrls, true))
+
                 photoLayout.setPLVUrls(photoLayout.addImageView(), plvUrls.toTypedArray())
                 photoLayout.notifyChanged()
             } else {
