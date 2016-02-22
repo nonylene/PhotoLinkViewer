@@ -31,19 +31,19 @@ public class MyAsyncTwitter {
         // sql
         MySQLiteOpenHelper sqLiteOpenHelper = new MySQLiteOpenHelper(context);
         SQLiteDatabase database = sqLiteOpenHelper.getReadableDatabase();
-        AsyncTwitter twitter = getTwitterFromId(database, context, row_id);
+        AsyncTwitter twitter = getTwitterFromId(database, row_id);
         // sql close
         database.close();
         return twitter;
     }
 
     public static AsyncTwitter getAsyncTwitterFromDB(SQLiteDatabase database, Context context) throws SQLiteException, CursorIndexOutOfBoundsException {
-        return getAsyncTwitterFromDB(database, context, getRowId(context));
+        return getAsyncTwitterFromDB(database, getRowId(context));
     }
 
-    public static AsyncTwitter getAsyncTwitterFromDB(SQLiteDatabase database, Context context, int row_id) throws SQLiteException, CursorIndexOutOfBoundsException {
+    public static AsyncTwitter getAsyncTwitterFromDB(SQLiteDatabase database, int row_id) throws SQLiteException, CursorIndexOutOfBoundsException {
         // sql not close
-        return getTwitterFromId(database, context, row_id);
+        return getTwitterFromId(database, row_id);
     }
 
     private static int getRowId(Context context) {
@@ -51,7 +51,7 @@ public class MyAsyncTwitter {
         return sharedPreferences.getInt("account", 1);
     }
 
-    private static AsyncTwitter getTwitterFromId(SQLiteDatabase database, Context context, int row_id) {
+    private static AsyncTwitter getTwitterFromId(SQLiteDatabase database, int row_id) {
         // oAuthed
         String apikey = BuildConfig.TWITTER_KEY;
         String apisecret = BuildConfig.TWITTER_SECRET;
