@@ -113,7 +113,7 @@ class Settings : AppCompatActivity() {
                     append(info.versionName)
                     setOnClickListener {
                         count++
-                        if (count == 5) {
+                        if (count == 4) {
                             targetFragment.onActivityResult(targetRequestCode, TWEET_CODE, null)
                             count = 0
                         }
@@ -159,7 +159,9 @@ class Settings : AppCompatActivity() {
                                     Intent().putExtra("tweet_text", editedText.text.toString()))
                         }
                         .setNegativeButton(getString(android.R.string.cancel), null)
-                        .create()
+                        .create().apply {
+                    setCanceledOnTouchOutside(false)
+                }
             }
         }
 
