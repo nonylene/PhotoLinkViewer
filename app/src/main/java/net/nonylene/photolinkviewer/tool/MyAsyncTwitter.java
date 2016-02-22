@@ -82,10 +82,7 @@ public class MyAsyncTwitter {
             row_id_list.add(cursor.getInt(cursor.getColumnIndex("rowid")));
         }
         database.close();
-        AccountsList list = new AccountsList();
-        list.setRowIdList(row_id_list);
-        list.setScreenList(screen_list);
-        return list;
+        return new AccountsList(screen_list, row_id_list);
     }
 
     public static LinkedHashMap<String, PhotoLinkViewer.TwitterToken> getAccountsTokenList(Context context) {
