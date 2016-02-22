@@ -58,15 +58,10 @@ public class MyAsyncTwitter {
         Cursor cursor = database.rawQuery("select token, token_secret, key from accounts where rowid = ?", new String[]{String.valueOf(row_id)});
         // rowid only one row
         cursor.moveToFirst();
-        String tokenkey = cursor.getString(2);
-        byte[] keyboo = Base64.decode(tokenkey, Base64.DEFAULT);
-        SecretKeySpec key = new SecretKeySpec(keyboo, 0, keyboo.length, "AES");
-        byte[] token = Base64.decode(cursor.getString(0), Base64.DEFAULT);
-        byte[] token_secret = Base64.decode(cursor.getString(1), Base64.DEFAULT);
-        AccessToken accessToken = new AccessToken(Encryption.decrypt(token, key), Encryption.decrypt(token_secret, key));
+        PhotoLinkViewer.TwitterToken token = getAccessToken(cursor);
         AsyncTwitter twitter = new AsyncTwitterFactory().getInstance();
         twitter.setOAuthConsumer(apikey, apisecret);
-        twitter.setOAuthAccessToken(accessToken);
+        twitter.setOAuthAccessToken(new AccessToken(token.getAccessToken(), token.getAccessTokenSecret()));
         return twitter;
     }
 
@@ -75,7 +70,7 @@ public class MyAsyncTwitter {
         // get account info from database
         SQLiteOpenHelper helper = new MySQLiteOpenHelper(context);
         SQLiteDatabase database = helper.getReadableDatabase();
-        Cursor cursor = database.rawQuery("select rowid, userName from accounts", null);
+        Cursor cursor = database.rawQuery("select rowid, userName from accounts order by rowid", null);
         // lists
         ArrayList<String> screen_list = new ArrayList<>();
         ArrayList<Integer> row_id_list = new ArrayList<>();
@@ -104,28 +99,24 @@ public class MyAsyncTwitter {
 
     public static LinkedHashMap<String, PhotoLinkViewer.TwitterToken> getAccountsTokenList(SQLiteDatabase database) {
         LinkedHashMap<String, PhotoLinkViewer.TwitterToken> tokenLinkedHashMap = new LinkedHashMap<>();
-        Cursor cursor = database.rawQuery("select userName, token, token_secret, key from accounts", null);
+        Cursor cursor = database.rawQuery("select userName, token, token_secret, key from accounts order by rowid", null);
         // lists
         if (cursor.moveToFirst()) {
-            String tokenKey = cursor.getString(3);
-            byte[] keyboo = Base64.decode(tokenKey, Base64.DEFAULT);
-            SecretKeySpec key = new SecretKeySpec(keyboo, 0, keyboo.length, "AES");
-            byte[] token = Base64.decode(cursor.getString(1), Base64.DEFAULT);
-            byte[] token_secret = Base64.decode(cursor.getString(2), Base64.DEFAULT);
-            PhotoLinkViewer.TwitterToken accessToken = new PhotoLinkViewer.TwitterToken(Encryption.decrypt(token, key), Encryption.decrypt(token_secret, key));
-            tokenLinkedHashMap.put(cursor.getString(0), accessToken);
-
+            tokenLinkedHashMap.put(cursor.getString(cursor.getColumnIndex("userName")), getAccessToken(cursor));
             while (cursor.moveToNext()) {
-                String tKey = cursor.getString(3);
-                byte[] kboo = Base64.decode(tKey, Base64.DEFAULT);
-                SecretKeySpec keySpec = new SecretKeySpec(kboo, 0, kboo.length, "AES");
-                byte[] aTokenByte = Base64.decode(cursor.getString(1), Base64.DEFAULT);
-                byte[] aTokenSecretByte = Base64.decode(cursor.getString(2), Base64.DEFAULT);
-                PhotoLinkViewer.TwitterToken aToken = new PhotoLinkViewer.TwitterToken(Encryption.decrypt(aTokenByte, keySpec), Encryption.decrypt(aTokenSecretByte, keySpec));
-                tokenLinkedHashMap.put(cursor.getString(0), aToken);
+                tokenLinkedHashMap.put(cursor.getString(cursor.getColumnIndex("userName")), getAccessToken(cursor));
             }
         }
         return tokenLinkedHashMap;
+    }
+
+    private static PhotoLinkViewer.TwitterToken getAccessToken(Cursor cursor) {
+        String tokenKey = cursor.getString(cursor.getColumnIndex("key"));
+        byte[] keyboo = Base64.decode(tokenKey, Base64.DEFAULT);
+        SecretKeySpec key = new SecretKeySpec(keyboo, 0, keyboo.length, "AES");
+        byte[] token = Base64.decode(cursor.getString(cursor.getColumnIndex("token")), Base64.DEFAULT);
+        byte[] token_secret = Base64.decode(cursor.getString(cursor.getColumnIndex("token_secret")), Base64.DEFAULT);
+        return new PhotoLinkViewer.TwitterToken(Encryption.decrypt(token, key), Encryption.decrypt(token_secret, key));
     }
 
     public static void createTwitterTable(Context context) {
