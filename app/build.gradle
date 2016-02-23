@@ -10,8 +10,8 @@ android {
         applicationId "net.nonylene.photolinkviewer"
         minSdkVersion 15
         targetSdkVersion 23
-        versionCode 50
-        versionName "2.4.0"
+        versionCode 51
+        versionName "2.4.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         def FLICKR_KEY
@@ -103,7 +103,7 @@ dependencies {
     compile 'com.mcxiaoke.volley:library:1.0.19'
     compile 'com.jakewharton:kotterknife:0.1.0-SNAPSHOT'
     compile 'org.greenrobot:eventbus:3.0.0'
-    compile ("net.nonylene:photolinkviewer-core:0.0.4") {
+    compile ("net.nonylene:photolinkviewer-core:0.0.5-SNAPSHOT") {
         changing = true;
     }
 
@@ -154,6 +154,6 @@ repositories {
         url 'https://maven.fabric.io/public'
     }
     maven {
-        url "https://nonylene.github.io/PhotoLinkViewer-Core/repository/"
+        url "https://nonylene.github.io/PhotoLinkViewer-Core/repository/snapshots/"
     }
 }
