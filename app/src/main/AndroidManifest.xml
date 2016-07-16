@@ -148,6 +148,10 @@
                 <data
                     android:host="tmblr.co"
                     android:scheme="http"/>
+
+                <data
+                    android:host="tmblr.co"
+                    android:scheme="https"/>
             </intent-filter>
 
             <intent-filter
@@ -327,6 +331,14 @@
                     android:scheme="http"/>
                 <data
                     android:host="twitter.com"
+                    android:pathPattern="/.*/status.*/..*"
+                    android:scheme="https"/>
+                <data
+                    android:host="mobile.twitter.com"
+                    android:pathPattern="/.*/status.*/..*"
+                    android:scheme="http"/>
+                <data
+                    android:host="mobile.twitter.com"
                     android:pathPattern="/.*/status.*/..*"
                     android:scheme="https"/>
             </intent-filter>
