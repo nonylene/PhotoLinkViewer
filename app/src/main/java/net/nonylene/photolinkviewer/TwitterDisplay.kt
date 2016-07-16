@@ -195,12 +195,12 @@ class TwitterDisplay : AppCompatActivity(), TwitterStatusAdapter.TwitterAdapterL
             // 64: suspended
             // 136: blocked
             when (e.errorCode) {
-                179, 88, 64, 136 -> createDialog()
+                179, 88, 64, 136 -> createAccountDialog()
             }
             runOnUiThread { Toast.makeText(applicationContext, message, Toast.LENGTH_LONG).show() }
         }
 
-        fun createDialog() {
+        fun createAccountDialog() {
             val accountDialog = ChangeAccountDialog()
             accountDialog.show(fragmentManager, "account")
         }
