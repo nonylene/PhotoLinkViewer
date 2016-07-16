@@ -190,8 +190,12 @@ class TwitterDisplay : AppCompatActivity(), TwitterStatusAdapter.TwitterAdapterL
         override fun onException(e: TwitterException, twitterMethod: TwitterMethod?) {
             Log.e("twitterException", e.toString())
             val message = getString(R.string.twitter_error_toast) + ": " + e.statusCode + "\n(" + e.errorMessage + ")"
+            // 179: not authorized
+            // 88: limit exceeded
+            // 64: suspended
+            // 136: blocked
             when (e.errorCode) {
-                179, 88 -> createDialog()
+                179, 88, 64, 136 -> createDialog()
             }
             runOnUiThread { Toast.makeText(applicationContext, message, Toast.LENGTH_LONG).show() }
         }
