@@ -1,5 +1,7 @@
 package net.nonylene.photolinkviewer.view
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -20,6 +22,7 @@ import net.nonylene.photolinkviewer.tool.OkHttpManager
 import org.greenrobot.eventbus.EventBus
 import twitter4j.Status
 import java.text.SimpleDateFormat
+import java.util.*
 
 class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(context, attrs) {
 
@@ -51,7 +54,14 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
 
         // put status on text
         textView.text = finStatus.text
-        dayView.text = SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(finStatus.createdAt)
+        // long tap to copy text
+        textView.setOnLongClickListener {
+            (context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).primaryClip =
+                    ClipData.newPlainText("tweet text", textView.text)
+            true
+        }
+
+        dayView.text = SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault()).format(finStatus.createdAt)
         likeView.text = "Like: " + finStatus.favoriteCount
         rtView.text = "RT: " + finStatus.retweetCount
 
@@ -164,7 +174,7 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
             }
 
             override fun onURLAccepted() {
-                position = tileView.addImageView();
+                position = tileView.addImageView()
                 tileView.notifyChanged()
             }
         })

@@ -42,7 +42,7 @@ class TwitterStatusAdapter() : BaseAdapter(), UserTweetLoadingView.LoadingViewLi
 
     // not selectable base view
     override fun isEnabled(position : Int) : Boolean{
-        return getItemViewTypeEnum(position) != ItemType.STATUS;
+        return getItemViewTypeEnum(position) != ItemType.STATUS
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
@@ -84,8 +84,7 @@ class TwitterStatusAdapter() : BaseAdapter(), UserTweetLoadingView.LoadingViewLi
         return ItemType.values().size
     }
 
-
-    public fun addItem(status: Status) {
+    fun addItem(status: Status) {
         // init -> add loading footer
         if (statusList.isEmpty()) statusList.addAll(arrayOf(status, null))
         else statusList.add(statusList.size - 1, status)
@@ -106,7 +105,7 @@ class TwitterStatusAdapter() : BaseAdapter(), UserTweetLoadingView.LoadingViewLi
         isRequesting = true
     }
 
-    private enum class ItemType internal constructor(val id: Int) {
+    private enum class ItemType constructor(val id: Int) {
         STATUS(0), LOADING(1)
     }
 
