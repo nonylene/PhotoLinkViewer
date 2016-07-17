@@ -37,12 +37,14 @@
 
             <TextView
                 android:id="@+id/twTxt"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="2dp"
-                android:layout_marginTop="2dp"
+                android:paddingBottom="2dp"
+                android:paddingTop="2dp"
+                android:background="?attr/selectableItemBackground"
                 android:textColor="@android:color/black"
-                android:textSize="13sp"/>
+                android:textSize="13sp"
+                />
 
             <LinearLayout
                 android:layout_width="match_parent"
