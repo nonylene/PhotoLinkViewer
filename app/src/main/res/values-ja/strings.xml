@@ -32,13 +32,6 @@
     <string name="apref_title">その他の設定</string>
     <string name="apref_summary">タップして開く</string>
     <string name="others_title">その他</string>
-    <string name="instagram_api_summary">Instagramの動画と写真をAPI経由で取得します。oAuth認証が必要です。</string>
-    <string name="instagram_api_title">Instagram APIを使用</string>
-    <string name="instagram_not_authorized">認証されていません</string>
-    <string name="instagram_oauth_text">認証</string>
-    <string name="instagram_preference_summary">タップして開く</string>
-    <string name="instagram_pregerence_title">Instagramアカウント設定</string>
-    <string name="instagram_unoauth_text">認証解除</string>
     <string name="twitter_tweet_toast">ツイートしました</string>
     <string name="tweet">ツイート</string>
     <string name="like_dialog_message">このツイートをいいねしますか？</string>

@@ -9,8 +9,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.preference.PreferenceManager
-import android.preference.SwitchPreference
 import android.support.v13.app.FragmentPagerAdapter
 import android.support.v4.view.PagerTabStrip
 import android.support.v4.view.ViewPager
@@ -28,7 +26,6 @@ import net.nonylene.photolinkviewer.core.fragment.PLVPreferenceFragment
 
 import net.nonylene.photolinkviewer.core.fragment.PreferenceSummaryFragment
 import net.nonylene.photolinkviewer.tool.MyAsyncTwitter
-import net.nonylene.photolinkviewer.tool.PLVUtils
 
 import twitter4j.Status
 import twitter4j.TwitterAdapter
@@ -66,8 +63,6 @@ class Settings : AppCompatActivity() {
 
     class SettingsFragment : PreferenceSummaryFragment() {
 
-        private var instagramSwitch: SwitchPreference? = null
-
         override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
             addPreferencesFromResource(R.xml.settings)
             val aboutAppPreference = findPreference("about_app_preference")
@@ -77,28 +72,7 @@ class Settings : AppCompatActivity() {
                 }.show(fragmentManager, "about")
                 false
             }
-
-            val instagramPreference = findPreference("instagram_preference")
-            instagramPreference.setOnPreferenceClickListener {
-                startActivity(Intent(activity, IOAuthActivity::class.java))
-                false
-            }
-
-            instagramSwitch = findPreference("instagram_api") as SwitchPreference
-
-            instagramSwitch!!.setOnPreferenceChangeListener { preference, newValue ->
-                PLVUtils.refreshInstagramToken(activity, newValue as Boolean)
-                true
-            }
-
             return super.onCreateView(inflater, container, savedInstanceState)
-        }
-
-        override fun onResume() {
-            super.onResume()
-            // IOAuthActivity
-            instagramSwitch!!.isEnabled = activity.getSharedPreferences("preference", Context.MODE_PRIVATE).getBoolean("instagram_authorized", false)
-            instagramSwitch!!.isChecked = PreferenceManager.getDefaultSharedPreferences(activity).getBoolean("instagram_api", false)
         }
 
         // license etc

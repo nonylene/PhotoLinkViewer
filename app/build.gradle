@@ -17,9 +17,6 @@ android {
         def FLICKR_KEY
         def TWITTER_KEY
         def TWITTER_SECRET
-        def INSTAGRAM_KEY
-        def INSTAGRAM_SECRET
-        def INSTAGRAM_CALLBACK_SCHEME
         def TUMBLR_KEY
 
         def file = project.file('key.properties')
@@ -29,31 +26,18 @@ android {
             FLICKR_KEY = properties.get("FLICKR_KEY")
             TWITTER_KEY = properties.get("TWITTER_KEY")
             TWITTER_SECRET = properties.get("TWITTER_SECRET")
-            INSTAGRAM_KEY = properties.get("INSTAGRAM_KEY")
-            INSTAGRAM_SECRET = properties.get("INSTAGRAM_SECRET")
-            INSTAGRAM_CALLBACK_SCHEME = properties.get("INSTAGRAM_CALLBACK_SCHEME")
             TUMBLR_KEY = properties.get("TUMBLR_KEY")
         } else {
             FLICKR_KEY = System.getenv("FLICKR_KEY")
             TWITTER_KEY = System.getenv("TWITTER_KEY")
             TWITTER_SECRET = System.getenv("TWITTER_SECRET")
-            INSTAGRAM_KEY = System.getenv("INSTAGRAM_KEY")
-            INSTAGRAM_SECRET = System.getenv("INSTAGRAM_SECRET")
-            INSTAGRAM_CALLBACK_SCHEME = System.getenv("INSTAGRAM_CALLBACK_SCHEME")
             TUMBLR_KEY = System.getenv("TUMBLR_KEY")
         }
 
         buildConfigField "String", "FLICKR_KEY", "\"${FLICKR_KEY}\""
         buildConfigField "String", "TWITTER_KEY", "\"${TWITTER_KEY}\""
         buildConfigField "String", "TWITTER_SECRET", "\"${TWITTER_SECRET}\""
-        buildConfigField "String", "INSTAGRAM_KEY", "\"${INSTAGRAM_KEY}\""
-        buildConfigField "String", "INSTAGRAM_SECRET", "\"${INSTAGRAM_SECRET}\""
-        buildConfigField "String", "INSTAGRAM_CALLBACK_SCHEME", "\"${INSTAGRAM_CALLBACK_SCHEME}\""
         buildConfigField "String", "TUMBLR_KEY", "\"${TUMBLR_KEY}\""
-
-        manifestPlaceholders = [
-                instagramCallbackScheme: INSTAGRAM_CALLBACK_SCHEME
-        ]
     }
 
     buildTypes {

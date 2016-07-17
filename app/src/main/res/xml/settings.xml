@@ -14,16 +14,6 @@
                 android:targetPackage="net.nonylene.photolinkviewer"/>
         </Preference>
 
-        <Preference
-            android:key="instagram_preference"
-            android:summary="@string/instagram_preference_summary"
-            android:title="@string/instagram_pregerence_title"/>
-
-        <SwitchPreference
-            android:key="instagram_api"
-            android:summary="@string/instagram_api_summary"
-            android:title="@string/instagram_api_title"/>
-
     </PreferenceCategory>
 
     <PreferenceCategory

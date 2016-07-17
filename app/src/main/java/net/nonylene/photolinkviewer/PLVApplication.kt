@@ -12,6 +12,7 @@ import io.fabric.sdk.android.Kit
 import net.nonylene.photolinkviewer.core.PhotoLinkViewer
 import net.nonylene.photolinkviewer.tool.MyAsyncTwitter
 import net.nonylene.photolinkviewer.tool.PLVUtils
+import net.nonylene.photolinkviewer.tool.migrate52
 import java.io.File
 import java.io.IOException
 
@@ -36,13 +37,14 @@ class PLVApplication : Application(), Application.ActivityLifecycleCallbacks {
         try {
             val cacheDir = File(applicationContext.cacheDir, "okhttp")
             cache = Cache(cacheDir, 20 * 1024 * 1024) // 20 MB
-            PhotoLinkViewer.cache = cache;
+            PhotoLinkViewer.cache = cache
         } catch (e: IOException) {
             e.printStackTrace()
         }
-
         PLVUtils.refreshTwitterTokens(this)
-        PLVUtils.refreshInstagramToken(this)
+
+        // migration
+        migrate52(this)
     }
 
     override fun onActivityPaused(activity: Activity?) {

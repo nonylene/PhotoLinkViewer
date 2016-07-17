@@ -39,13 +39,6 @@
     <string name="apref_summary">Tap to open</string>
     <string name="apref_title">Other options</string>
     <string name="others_title">Others</string>
-    <string name="instagram_not_authorized">Not authorized</string>
-    <string name="instagram_oauth_text">Auth</string>
-    <string name="instagram_unoauth_text">UnAuth</string>
-    <string name="instagram_preference_summary">Tap to open</string>
-    <string name="instagram_pregerence_title">Instagram account settings</string>
-    <string name="instagram_api_title">Use instagram API</string>
-    <string name="instagram_api_summary">get Instagram video and photos via API.\nYou need to authorize your instagram account.</string>
     <string name="twitter_tweet_toast">tweeted!</string>
     <string name="tweet">tweet!</string>
     <string name="about_app_okhttp" translatable="false">* OkHttp - http://square.github.io/okhttp/</string>

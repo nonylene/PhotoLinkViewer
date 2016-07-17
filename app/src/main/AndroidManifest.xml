@@ -298,23 +298,6 @@
         </activity>
 
         <activity
-            android:name=".IOAuthActivity"
-            android:launchMode="singleTask"
-            android:parentActivityName=".Settings">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Settings"/>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-
-                <data android:scheme="${instagramCallbackScheme}"/>
-            </intent-filter>
-        </activity>
-
-        <activity
             android:name=".TwitterDisplay"
             android:configChanges="orientation|screenSize"
             android:theme="@style/Theme.Transparent">
