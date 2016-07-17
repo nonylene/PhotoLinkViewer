@@ -10,8 +10,8 @@ android {
         applicationId "net.nonylene.photolinkviewer"
         minSdkVersion 15
         targetSdkVersion 23
-        versionCode 52
-        versionName "2.4.2"
+        versionCode 53
+        versionName "2.4.3"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         def FLICKR_KEY
@@ -87,7 +87,7 @@ dependencies {
     compile 'com.mcxiaoke.volley:library:1.0.19'
     compile 'com.jakewharton:kotterknife:0.1.0-SNAPSHOT'
     compile 'org.greenrobot:eventbus:3.0.0'
-    compile ("net.nonylene:photolinkviewer-core:0.0.6-SNAPSHOT") {
+    compile ("net.nonylene:photolinkviewer-core:0.0.6") {
         changing = true;
     }
 
