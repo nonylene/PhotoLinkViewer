@@ -12,6 +12,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import butterknife.bindView
 import net.nonylene.photolinkviewer.R
 import net.nonylene.photolinkviewer.core.event.DownloadButtonEvent
@@ -58,6 +59,7 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
         textView.setOnLongClickListener {
             (context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).primaryClip =
                     ClipData.newPlainText("tweet text", textView.text)
+            Toast.makeText(context.applicationContext, "Tweet copied!", Toast.LENGTH_LONG).show()
             true
         }
 
