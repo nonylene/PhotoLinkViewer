@@ -16,10 +16,10 @@ import android.widget.Toast
 import butterknife.bindView
 import net.nonylene.photolinkviewer.R
 import net.nonylene.photolinkviewer.core.event.DownloadButtonEvent
+import net.nonylene.photolinkviewer.core.tool.OkHttpManager
 import net.nonylene.photolinkviewer.core.tool.PLVUrl
 import net.nonylene.photolinkviewer.core.tool.PLVUrlService
 import net.nonylene.photolinkviewer.core.view.TilePhotoView
-import net.nonylene.photolinkviewer.tool.OkHttpManager
 import org.greenrobot.eventbus.EventBus
 import twitter4j.Status
 import java.text.SimpleDateFormat
