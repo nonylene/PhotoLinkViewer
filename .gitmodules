@@ -1,0 +1,3 @@
+[submodule "modules/Core"]
+	path = modules/Core
+	url = git@github.com:nonylene/PhotolinkViewer-Core
