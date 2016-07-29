@@ -33,7 +33,6 @@
     <string name="about_app_dialogtitle">About this app</string>
     <string name="account_dialog_title">Change account ?</string>
     <string name="twitter_error_authorize">Not authorized</string>
-    <string name="volley_error">Error!</string>
     <string name="disp_tweet_title">Always show tweet</string>
     <string name="disp_tweet_summary">Display tweet details even if number of attached photo is only one when receive link to tweet photo.</string>
     <string name="apref_summary">Tap to open</string>
