@@ -27,6 +27,7 @@ import java.util.*
 
 class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(context, attrs) {
 
+    private val baseView: LinearLayout by bindView(R.id.twBase)
     private val textView: TextView by bindView(R.id.twTxt)
     private val snView: TextView by bindView(R.id.twSN)
     private val dayView: TextView by bindView(R.id.twDay)
@@ -53,15 +54,16 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
         //retweet check
         val finStatus = if (status.isRetweet) status.retweetedStatus else status
 
-        // put status on text
-        textView.text = finStatus.text
         // long tap to copy text
-        textView.setOnLongClickListener {
+        baseView.setOnLongClickListener {
             (context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).primaryClip =
                     ClipData.newPlainText("tweet text", textView.text)
             Toast.makeText(context.applicationContext, "Tweet copied!", Toast.LENGTH_LONG).show()
             true
         }
+
+        // put status on text
+        textView.text = finStatus.text
 
         dayView.text = SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault()).format(finStatus.createdAt)
         likeView.text = "Like: " + finStatus.favoriteCount
