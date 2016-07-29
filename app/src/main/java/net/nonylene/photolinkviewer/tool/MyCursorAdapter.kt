@@ -10,9 +10,9 @@ import android.view.ViewGroup
 import android.widget.CheckedTextView
 import android.widget.CursorAdapter
 import android.widget.ImageView
+import com.bumptech.glide.Glide
 
 import net.nonylene.photolinkviewer.R
-import net.nonylene.photolinkviewer.core.tool.OkHttpManager
 
 class MyCursorAdapter(context: Context, cursor: Cursor, autoRequery: Boolean) : CursorAdapter(context, cursor, autoRequery) {
 
@@ -30,7 +30,7 @@ class MyCursorAdapter(context: Context, cursor: Cursor, autoRequery: Boolean) : 
             val icon_url = cursor.getString(cursor.getColumnIndex("icon"))
 
             val imageView = view.findViewById(R.id.icon) as ImageView
-            OkHttpManager.getPicasso(context).load(icon_url).into(imageView)
+            Glide.with(context).load(icon_url).into(imageView)
         } catch (e: SQLiteException) {
             Log.e("SQL", e.toString())
         }
