@@ -1,2 +1,3 @@
-include ':app', ':photolinkviewer-core'
+include ':app', ':photolinkviewer-core', ':photolinkviewer-test'
 project(':photolinkviewer-core').projectDir = new File('modules/Core/photolinkviewer-core')
+project(':photolinkviewer-test').projectDir = new File('modules/Core/photolinkviewer-test')
