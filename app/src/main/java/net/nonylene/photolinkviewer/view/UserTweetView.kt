@@ -14,9 +14,9 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import butterknife.bindView
+import com.bumptech.glide.Glide
 import net.nonylene.photolinkviewer.R
 import net.nonylene.photolinkviewer.core.event.DownloadButtonEvent
-import net.nonylene.photolinkviewer.core.tool.OkHttpManager
 import net.nonylene.photolinkviewer.core.tool.PLVUrl
 import net.nonylene.photolinkviewer.core.tool.PLVUrlService
 import net.nonylene.photolinkviewer.core.view.TilePhotoView
@@ -85,7 +85,7 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
                 snView.setCompoundDrawables(null, null, null, null)
             }
             // set icon
-            OkHttpManager.getPicasso(context).load(user.biggerProfileImageURL).into(iconView)
+            Glide.with(context).load(user.biggerProfileImageURL).into(iconView)
             iconView.setBackgroundResource(R.drawable.twitter_image_design)
             //show user when tapped
             iconView.setOnClickListener {
