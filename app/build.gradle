@@ -83,11 +83,8 @@ dependencies {
     compile 'org.twitter4j:twitter4j-http2-support:4.0.4'
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
-    compile 'com.squareup.okhttp:okhttp:2.7.4'
-    compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.jakewharton:kotterknife:0.1.0-SNAPSHOT'
     compile 'org.greenrobot:eventbus:3.0.0'
-    compile 'com.android.volley:volley:1.0.0'
 
     androidTestCompile('com.android.support.test:runner:0.4'){
         exclude module: 'support-annotations'
