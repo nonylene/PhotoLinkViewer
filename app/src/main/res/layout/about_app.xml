@@ -68,13 +68,13 @@
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:autoLink="web"
-            android:text="@string/about_app_picasso"/>
+            android:text="@string/about_app_glide"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:text="@string/about_app_picasso_licence"
+            android:text="@string/about_app_glide_licence"
             android:typeface="monospace"/>
 
         <TextView
