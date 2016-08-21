@@ -26,7 +26,6 @@
     <string name="about_app_pretitle">このアプリについて</string>
     <string name="account_dialog_title">アカウントを変更しますか？</string>
     <string name="twitter_error_authorize">このツイートの閲覧は許可されていません</string>
-    <string name="volley_error">エラー</string>
     <string name="disp_tweet_summary">ツイート写真へのリンクを受け取った際、投稿された写真が複数でないときもツイート詳細を表示します</string>
     <string name="disp_tweet_title">常にツイートを表示</string>
     <string name="apref_title">その他の設定</string>
