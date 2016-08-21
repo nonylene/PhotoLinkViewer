@@ -277,4 +277,9 @@ class TwitterDisplay : AppCompatActivity(), TwitterStatusAdapter.TwitterAdapterL
             }
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        twitter?.shutdown()
+    }
 }
