@@ -277,7 +277,7 @@
         </activity>
 
         <activity
-            android:name=".Settings">
+            android:name=".PreferenceActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -289,10 +289,10 @@
         <activity
             android:name=".TwitterOAuthActivity"
             android:launchMode="singleTask"
-            android:parentActivityName=".Settings">
+            android:parentActivityName=".PreferenceActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Settings"/>
+                android:value=".PreferenceActivity"/>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
 

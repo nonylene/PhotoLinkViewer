@@ -32,7 +32,7 @@ import twitter4j.TwitterAdapter
 import twitter4j.TwitterException
 import twitter4j.TwitterMethod
 
-class Settings : AppCompatActivity() {
+class PreferenceActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
