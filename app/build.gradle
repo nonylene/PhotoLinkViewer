@@ -65,6 +65,13 @@ android {
     dexOptions {
         incremental true
     }
+    dataBinding {
+        enabled = true
+    }
+}
+
+kapt {
+    generateStubs = true
 }
 
 dependencies {
@@ -80,6 +87,7 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
     compile 'com.jakewharton:kotterknife:0.1.0-SNAPSHOT'
     compile 'org.greenrobot:eventbus:3.0.0'
+    kapt "com.android.databinding:compiler:2.1.2"
 
     androidTestCompile('com.android.support.test:runner:0.4'){
         exclude module: 'support-annotations'
