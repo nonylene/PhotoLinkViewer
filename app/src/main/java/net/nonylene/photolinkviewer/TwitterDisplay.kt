@@ -227,7 +227,7 @@ class TwitterDisplay : AppCompatActivity(), TwitterStatusAdapter.TwitterAdapterL
                             val fileName = Uri.parse(displayUrl).lastPathSegment?.let {
                                 it.substring(0, it.lastIndexOf("."))
                             }
-                            val plvUrl = PLVUrl(url!!, "twitter", fileName!!)
+                            val plvUrl = PLVUrl(url!!, "twitter", fileName!!, null)
                             plvUrl.type = "mp4"
                             plvUrl.displayUrl = displayUrl
                             plvUrl.thumbUrl = mediaEntity.mediaURLHttps

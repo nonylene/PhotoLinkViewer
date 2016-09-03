@@ -85,7 +85,7 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
                 snView.setCompoundDrawables(null, null, null, null)
             }
             // set icon
-            Glide.with(context).load(user.biggerProfileImageURL).into(iconView)
+            Glide.with(context.applicationContext).load(user.biggerProfileImageURL).into(iconView)
             iconView.setBackgroundResource(R.drawable.twitter_image_design)
             //show user when tapped
             iconView.setOnClickListener {
@@ -138,7 +138,7 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
                         val fileName = Uri.parse(displayUrl).lastPathSegment?.let {
                             it.substring(0, it.lastIndexOf("."))
                         }
-                        val plvUrl = PLVUrl(url, "twitter", fileName!!)
+                        val plvUrl = PLVUrl(url, "twitter", fileName!!, null)
                         plvUrl.thumbUrl = mediaEntity.mediaURLHttps
                         plvUrl.displayUrl = displayUrl
                         plvUrl.isVideo = true
