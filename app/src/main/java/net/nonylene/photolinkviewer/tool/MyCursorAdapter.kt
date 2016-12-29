@@ -30,7 +30,7 @@ class MyCursorAdapter(context: Context, cursor: Cursor, autoRequery: Boolean) : 
             val icon_url = cursor.getString(cursor.getColumnIndex("icon"))
 
             val imageView = view.findViewById(R.id.icon) as ImageView
-            Glide.with(context).load(icon_url).into(imageView)
+            Glide.with(context.applicationContext).load(icon_url).into(imageView)
         } catch (e: SQLiteException) {
             Log.e("SQL", e.toString())
         }

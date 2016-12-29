@@ -206,7 +206,10 @@ class TwitterDisplay : AppCompatActivity(), TwitterStatusAdapter.TwitterAdapterL
         }
 
         override fun gotShowStatus(status: Status) {
-            runOnUiThread{
+            // suppress Glide exception
+            if (isFinishing || isDestroyed) return
+
+            runOnUiThread {
                 if (!isInitialized) {
                     isInitialized = true
 
