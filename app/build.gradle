@@ -3,13 +3,13 @@ apply plugin: 'io.fabric'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion '23.0.3'
+    compileSdkVersion 25
+    buildToolsVersion '25.0.2'
 
     defaultConfig {
         applicationId "net.nonylene.photolinkviewer"
         minSdkVersion 15
-        targetSdkVersion 23
+        targetSdkVersion 25
         versionCode 55
         versionName "2.5.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -62,9 +62,6 @@ android {
     lintOptions {
         abortOnError false
     }
-    dexOptions {
-        incremental true
-    }
     dataBinding {
         enabled = true
     }
@@ -77,17 +74,17 @@ kapt {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':photolinkviewer-core')
-    compile "com.android.support:appcompat-v7:23.4.0"
-    compile 'com.android.support:support-v13:23.4.0'
-    compile 'com.android.support:design:23.4.0'
-    compile 'org.twitter4j:twitter4j-core:4.0.4'
-    compile 'org.twitter4j:twitter4j-async:4.0.4'
-    compile 'org.twitter4j:twitter4j-http2-support:4.0.4'
+    compile "com.android.support:appcompat-v7:25.1.0"
+    compile 'com.android.support:support-v13:25.1.0'
+    compile 'com.android.support:design:25.1.0'
+    compile 'org.twitter4j:twitter4j-core:4.0.6'
+    compile 'org.twitter4j:twitter4j-async:4.0.6'
+    compile 'org.twitter4j:twitter4j-http2-support:4.0.6'
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
     compile 'com.jakewharton:kotterknife:0.1.0-SNAPSHOT'
     compile 'org.greenrobot:eventbus:3.0.0'
-    kapt "com.android.databinding:compiler:2.1.2"
+    kapt "com.android.databinding:compiler:2.2.3"
 
     androidTestCompile('com.android.support.test:runner:0.4'){
         exclude module: 'support-annotations'
@@ -95,10 +92,10 @@ dependencies {
     androidTestCompile('com.android.support.test:rules:0.4'){
         exclude module: 'support-annotations'
     }
-    compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.5@aar') {
         transitive = true
     }
-    compile('com.twitter.sdk.android:twitter:1.11.0@aar') {
+    compile('com.twitter.sdk.android:twitter:2.3.1@aar') {
         transitive = true
     }
 }
@@ -114,7 +111,7 @@ afterEvaluate {
 }
 
 buildscript {
-    ext.kotlin_version = '1.0.3'
+    ext.kotlin_version = '1.0.5-2'
     repositories {
         jcenter()
         maven {
@@ -135,10 +132,4 @@ repositories {
     maven {
         url 'https://maven.fabric.io/public'
     }
-//    maven {
-//        url "https://nonylene.github.io/PhotoLinkViewer-Core/repository/snapshots/"
-//    }
-//    maven {
-//        url "https://nonylene.github.io/PhotoLinkViewer-Core/repository/"
-//    }
 }

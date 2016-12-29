@@ -17,26 +17,25 @@ import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.*
+import android.widget.LinearLayout
+import android.widget.ListView
+import android.widget.ProgressBar
+import android.widget.Toast
 import butterknife.bindView
-import net.nonylene.photolinkviewer.core.fragment.*
+import net.nonylene.photolinkviewer.core.fragment.BaseShowFragment
+import net.nonylene.photolinkviewer.core.fragment.OptionFragment
+import net.nonylene.photolinkviewer.core.fragment.ShowFragment
+import net.nonylene.photolinkviewer.core.fragment.VideoShowFragment
 import net.nonylene.photolinkviewer.core.tool.PLVUrl
 import net.nonylene.photolinkviewer.core.tool.PLVUrlService
 import net.nonylene.photolinkviewer.core.tool.ProgressBarListener
 import net.nonylene.photolinkviewer.core.view.TilePhotoView
 import net.nonylene.photolinkviewer.tool.*
-
 import net.nonylene.photolinkviewer.view.HeightScalableScrollView
 import net.nonylene.photolinkviewer.view.UserTweetLoadingView
 import net.nonylene.photolinkviewer.view.UserTweetView
-
+import twitter4j.*
 import java.util.regex.Pattern
-
-import twitter4j.AsyncTwitter
-import twitter4j.Status
-import twitter4j.TwitterAdapter
-import twitter4j.TwitterException
-import twitter4j.TwitterMethod
 
 
 class TwitterDisplay : AppCompatActivity(), TwitterStatusAdapter.TwitterAdapterListener, ProgressBarListener, TilePhotoView.TilePhotoViewListener, UserTweetLoadingView.LoadingViewListener {
@@ -212,7 +211,7 @@ class TwitterDisplay : AppCompatActivity(), TwitterStatusAdapter.TwitterAdapterL
                     isInitialized = true
 
                     // set media entity
-                    val mediaEntities = status.extendedMediaEntities
+                    val mediaEntities = status.mediaEntities
 
                     // if number of media entity is one, show fragment directly
                     if (!PreferenceManager.getDefaultSharedPreferences(applicationContext).getBoolean("disp_tweet", false)

@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.Application
 import android.os.Bundle
 import com.crashlytics.android.Crashlytics
-import com.squareup.okhttp.Cache
 import com.twitter.sdk.android.Twitter
 import com.twitter.sdk.android.core.TwitterAuthConfig
 import io.fabric.sdk.android.Fabric
@@ -13,6 +12,7 @@ import net.nonylene.photolinkviewer.core.PhotoLinkViewer
 import net.nonylene.photolinkviewer.tool.MyAsyncTwitter
 import net.nonylene.photolinkviewer.tool.PLVUtils
 import net.nonylene.photolinkviewer.tool.migrate52
+import okhttp3.Cache
 import java.io.File
 import java.io.IOException
 

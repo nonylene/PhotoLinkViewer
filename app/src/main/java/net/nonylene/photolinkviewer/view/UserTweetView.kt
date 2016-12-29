@@ -117,7 +117,7 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
             }
         }
 
-        status.extendedMediaEntities.let { mediaEntities ->
+        status.mediaEntities.let { mediaEntities ->
             // initialize
             photoLayout.initialize()
             if (!mediaEntities.isEmpty()) {
