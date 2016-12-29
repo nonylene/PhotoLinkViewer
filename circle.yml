@@ -5,7 +5,7 @@ general:
 
 machine:
   java:
-    version: openjdk7
+    version: openjdk8
   environment:
     ANDROID_HOME: /usr/local/android-sdk-linux
     ADB_INSTALL_TIMEOUT: 12
