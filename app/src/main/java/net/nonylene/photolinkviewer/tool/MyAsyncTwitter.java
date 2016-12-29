@@ -19,7 +19,8 @@ import javax.crypto.spec.SecretKeySpec;
 
 import twitter4j.AsyncTwitter;
 import twitter4j.AsyncTwitterFactory;
-import twitter4j.auth.AccessToken;
+import twitter4j.conf.Configuration;
+import twitter4j.conf.ConfigurationBuilder;
 
 public class MyAsyncTwitter {
 
@@ -53,16 +54,22 @@ public class MyAsyncTwitter {
 
     private static AsyncTwitter getTwitterFromId(SQLiteDatabase database, int row_id) {
         // oAuthed
-        String apikey = BuildConfig.TWITTER_KEY;
-        String apisecret = BuildConfig.TWITTER_SECRET;
+        String apiKey = BuildConfig.TWITTER_KEY;
+        String apiSecret = BuildConfig.TWITTER_SECRET;
         Cursor cursor = database.rawQuery("select token, token_secret, key from accounts where rowid = ?", new String[]{String.valueOf(row_id)});
         // rowid only one row
         cursor.moveToFirst();
         PhotoLinkViewer.TwitterToken token = getAccessToken(cursor);
-        AsyncTwitter twitter = new AsyncTwitterFactory().getInstance();
-        twitter.setOAuthConsumer(apikey, apisecret);
-        twitter.setOAuthAccessToken(new AccessToken(token.getAccessToken(), token.getAccessTokenSecret()));
-        return twitter;
+
+        Configuration twitterConfiguration = new ConfigurationBuilder()
+                .setTweetModeExtended(true)
+                .setOAuthConsumerKey(apiKey)
+                .setOAuthConsumerSecret(apiSecret)
+                .setOAuthAccessToken(token.getAccessToken())
+                .setOAuthAccessTokenSecret(token.getAccessTokenSecret())
+                .build();
+
+        return new AsyncTwitterFactory(twitterConfiguration).getInstance();
     }
 
 
