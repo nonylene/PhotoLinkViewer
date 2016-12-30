@@ -32,6 +32,12 @@
         </PreferenceScreen>
 
         <Preference
+            android:title="@string/faq_title"
+            android:summary="@string/faq_summary"
+            android:key="faq"
+            />
+
+        <Preference
             android:key="about_app_preference"
             android:title="@string/about_app_pretitle">
         </Preference>

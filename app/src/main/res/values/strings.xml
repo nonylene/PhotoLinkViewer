@@ -41,5 +41,9 @@
     <string name="twitter_tweet_toast">tweeted!</string>
     <string name="tweet">tweet!</string>
     <string name="use_old_oauth">Use callback OAuth method</string>
+    <string name="asset_faq_filename">faq_en.html</string>
+    <string name="faq_summary">Tap to open</string>
+    <string name="faq_title">FAQ</string>
+    <string name="initial_faq_message">Welcome to PhotoLinkViewer! Show FAQ?</string>
 
 </resources>

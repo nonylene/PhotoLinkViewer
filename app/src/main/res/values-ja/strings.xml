@@ -36,5 +36,9 @@
     <string name="like_dialog_message">このツイートをいいねしますか？</string>
     <string name="like_dialog_title">いいねする</string>
     <string name="use_old_oauth">コールバック認証を使用</string>
+    <string name="asset_faq_filename">faq_ja.html</string>
+    <string name="faq_title">FAQ</string>
+    <string name="faq_summary">タップして開く</string>
+    <string name="initial_faq_message">PhotoLinkViewer へようこそ！FAQ を表示しますか？</string>
 
 </resources>

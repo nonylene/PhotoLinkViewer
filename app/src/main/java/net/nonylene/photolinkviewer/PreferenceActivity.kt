@@ -9,6 +9,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.preference.PreferenceManager
+import android.support.design.widget.Snackbar
 import android.support.v13.app.FragmentPagerAdapter
 import android.support.v4.view.PagerTabStrip
 import android.support.v4.view.ViewPager
@@ -17,16 +19,12 @@ import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.EditText
-import android.widget.Spinner
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import net.nonylene.photolinkviewer.core.fragment.PLVPreferenceFragment
-
 import net.nonylene.photolinkviewer.core.fragment.PreferenceSummaryFragment
 import net.nonylene.photolinkviewer.tool.MyAsyncTwitter
-
+import net.nonylene.photolinkviewer.tool.putShownInitialFaqSnackBar
+import net.nonylene.photolinkviewer.tool.shownInitialFaqSnackBar
 import twitter4j.Status
 import twitter4j.TwitterAdapter
 import twitter4j.TwitterException
@@ -39,6 +37,20 @@ class PreferenceActivity : AppCompatActivity() {
         setContentView(R.layout.activity_settings)
         (findViewById(R.id.quality_tab_strip) as PagerTabStrip).setTabIndicatorColorResource(R.color.primary_color)
         (findViewById(R.id.quality_pager) as ViewPager).adapter = SettingsPagerAdapter(fragmentManager)
+
+        val pref = PreferenceManager.getDefaultSharedPreferences(this)
+        if (!pref.shownInitialFaqSnackBar()) {
+            Snackbar.make(
+                    findViewById(android.R.id.content),
+                    getString(R.string.initial_faq_message),
+                    Snackbar.LENGTH_LONG
+            ).apply {
+                setAction("Open", {
+                    startActivity(Intent(this@PreferenceActivity, FaqActivity::class.java))
+                })
+            }.show()
+            pref.edit().putShownInitialFaqSnackBar(true).apply()
+        }
     }
 
     private inner class SettingsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
@@ -65,6 +77,7 @@ class PreferenceActivity : AppCompatActivity() {
 
         override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
             addPreferencesFromResource(R.xml.settings)
+
             val aboutAppPreference = findPreference("about_app_preference")
             aboutAppPreference.setOnPreferenceClickListener {
                 AboutDialogFragment().apply {
@@ -72,6 +85,12 @@ class PreferenceActivity : AppCompatActivity() {
                 }.show(fragmentManager, "about")
                 false
             }
+
+            findPreference("faq").setOnPreferenceClickListener {
+                activity.startActivity(Intent(activity, FaqActivity::class.java))
+                false
+            }
+
             return super.onCreateView(inflater, container, savedInstanceState)
         }
 
