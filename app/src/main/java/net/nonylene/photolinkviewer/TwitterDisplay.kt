@@ -86,9 +86,9 @@ class TwitterDisplay : AppCompatActivity(), TwitterStatusAdapter.TwitterAdapterL
 
         mTwitterSingleScrollView.isVerticalScrollBarEnabled = false
 
-        val matcher = Pattern.compile("^https?://(mobile\\.|)twitter\\.com/[^\\/]+/status(es|)/(\\d+)").matcher(url)
+        val matcher = Pattern.compile("^https?://(mobile\\.|)twitter\\.com/(i/|)[^/]+/status(es|)/(\\d+)").matcher(url)
         if (!matcher.find()) return
-        val id_long = java.lang.Long.parseLong(matcher.group(3))
+        val id_long = java.lang.Long.parseLong(matcher.group(4))
 
         try {
             twitter = MyAsyncTwitter.getAsyncTwitter(applicationContext).apply {
