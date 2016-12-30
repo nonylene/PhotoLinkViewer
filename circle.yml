@@ -19,7 +19,7 @@ dependencies:
     - ~/.android
     - ~/.gradle
   post:
-    - echo n | android create avd -n test22 -f -t android-24 --abi "default/armeabi-v7a"
+    - echo n | android create avd -n test24 -f -t android-24 --abi "default/armeabi-v7a"
     - echo n | android create avd -n test22 -f -t android-22 --abi "default/armeabi-v7a"
     - echo n | android create avd -n test19 -f -t android-19
     - echo n | android create avd -n test17 -f -t android-17
