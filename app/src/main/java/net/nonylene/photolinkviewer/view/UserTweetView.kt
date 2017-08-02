@@ -94,7 +94,7 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
             }
         }
 
-        status.urlEntities.let { urlEntities ->
+        finStatus.urlEntities.let { urlEntities ->
             // initialize
             urlLayout.removeAllViews()
             urlPhotoLayout.initialize()
@@ -117,7 +117,7 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
             }
         }
 
-        status.mediaEntities.let { mediaEntities ->
+        finStatus.mediaEntities.let { mediaEntities ->
             // initialize
             photoLayout.initialize()
             if (!mediaEntities.isEmpty()) {
