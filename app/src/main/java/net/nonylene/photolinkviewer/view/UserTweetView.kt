@@ -19,6 +19,7 @@ import net.nonylene.photolinkviewer.R
 import net.nonylene.photolinkviewer.core.event.DownloadButtonEvent
 import net.nonylene.photolinkviewer.core.tool.PLVUrl
 import net.nonylene.photolinkviewer.core.tool.PLVUrlService
+import net.nonylene.photolinkviewer.core.tool.createTwitterPLVUrls
 import net.nonylene.photolinkviewer.core.view.TilePhotoView
 import org.greenrobot.eventbus.EventBus
 import twitter4j.Status
@@ -125,30 +126,7 @@ class UserTweetView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
 
                 photoLayout.tilePhotoViewListener = tilePhotoViewListener
 
-                val plvUrls = mediaEntities.map { mediaEntity ->
-                    val url = mediaEntity.mediaURLHttps
-
-                    if (mediaEntity.type in arrayOf("animated_gif", "video")) {
-                        mediaEntity.videoAspectRatioHeight
-
-                        // get biggest url
-                        val displayUrl = mediaEntity.videoVariants.filter {
-                            ("video/mp4") == it.contentType
-                        }.maxBy { it.bitrate }!!.url
-                        val fileName = Uri.parse(displayUrl).lastPathSegment?.let {
-                            it.substring(0, it.lastIndexOf("."))
-                        }
-                        val plvUrl = PLVUrl(url, "twitter", fileName!!, null)
-                        plvUrl.thumbUrl = mediaEntity.mediaURLHttps
-                        plvUrl.displayUrl = displayUrl
-                        plvUrl.isVideo = true
-                        plvUrl.type = "mp4"
-                        plvUrl
-                    } else {
-                        val service = PLVUrlService(context)
-                        service.getPLVUrl(url)!![0]
-                    }
-                }
+                val plvUrls = createTwitterPLVUrls(finStatus, context)
 
                 if (sendDownloadEvent) EventBus.getDefault().postSticky(DownloadButtonEvent(plvUrls, true))
 

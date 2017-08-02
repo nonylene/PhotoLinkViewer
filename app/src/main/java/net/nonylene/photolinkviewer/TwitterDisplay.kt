@@ -6,7 +6,6 @@ import android.app.DialogFragment
 import android.content.Context
 import android.content.Intent
 import android.database.sqlite.SQLiteException
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -27,8 +26,8 @@ import net.nonylene.photolinkviewer.core.fragment.OptionFragment
 import net.nonylene.photolinkviewer.core.fragment.ShowFragment
 import net.nonylene.photolinkviewer.core.fragment.VideoShowFragment
 import net.nonylene.photolinkviewer.core.tool.PLVUrl
-import net.nonylene.photolinkviewer.core.tool.PLVUrlService
 import net.nonylene.photolinkviewer.core.tool.ProgressBarListener
+import net.nonylene.photolinkviewer.core.tool.createTwitterPLVUrls
 import net.nonylene.photolinkviewer.core.view.TilePhotoView
 import net.nonylene.photolinkviewer.tool.*
 import net.nonylene.photolinkviewer.view.HeightScalableScrollView
@@ -220,36 +219,13 @@ class TwitterDisplay : AppCompatActivity(), TwitterStatusAdapter.TwitterAdapterL
                     if (!PreferenceManager.getDefaultSharedPreferences(applicationContext).getBoolean("disp_tweet", false)
                             && (url!!.contains("/photo") || url!!.contains("/video")) && mediaEntities.size == 1) {
                         isSingle = true
-                        val mediaEntity = mediaEntities[0]
 
-                        if (mediaEntity.type in arrayOf("animated_gif", "video")) {
-                            val displayUrl = mediaEntity.videoVariants.filter {
-                                ("video/mp4") == it.contentType
-                            }.maxBy { it.bitrate }!!.url
-                            val fileName = Uri.parse(displayUrl).lastPathSegment?.let {
-                                it.substring(0, it.lastIndexOf("."))
-                            }
-                            val plvUrl = PLVUrl(url!!, "twitter", fileName!!, null)
-                            plvUrl.type = "mp4"
-                            plvUrl.displayUrl = displayUrl
-                            plvUrl.thumbUrl = mediaEntity.mediaURLHttps
-                            plvUrl.isVideo = true
+                        val plvUrl = createTwitterPLVUrls(status, this@TwitterDisplay)[0]
+                        if (plvUrl.isVideo) {
                             // get biggest url
                             onVideoShowFragmentRequired(plvUrl)
-
                         } else {
-                            PLVUrlService(this@TwitterDisplay).apply {
-                                plvUrlListener =  object : PLVUrlService.PLVUrlListener {
-                                    override fun onGetPLVUrlFinished(plvUrls: Array<PLVUrl>) {
-                                        val plvUrl = plvUrls[0]
-                                        if (plvUrl.isVideo) onVideoShowFragmentRequired(plvUrl)
-                                        else onShowFragmentRequired(plvUrl)
-                                    }
-
-                                    override fun onGetPLVUrlFailed(text: String) {}
-                                    override fun onURLAccepted() {}
-                                }
-                            }.requestGetPLVUrl(mediaEntity.mediaURLHttps)
+                            onShowFragmentRequired(plvUrl)
                         }
 
                     } else {
