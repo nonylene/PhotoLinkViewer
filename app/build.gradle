@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 25
@@ -65,10 +66,6 @@ android {
     dataBinding {
         enabled = true
     }
-}
-
-kapt {
-    generateStubs = true
 }
 
 dependencies {
