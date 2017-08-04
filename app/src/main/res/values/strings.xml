@@ -2,24 +2,24 @@
 <resources>
 
     <string name="app_name" translatable="false">PhotoLinkViewer</string>
-    <string name="pref_twitter_title">twitter account settings</string>
+    <string name="pref_twitter_title">Twitter account settings</string>
     <string name="toauth_failed_encode">Encode error</string>
-    <string name="toauth_failed_token">failed to get token!</string>
+    <string name="toauth_failed_token">Failed to get token!</string>
     <string name="toauth_succeeded_token">Get token successfully!</string>
     <string name="pref_twitter_summary">Tap to open</string>
-    <string name="twitter_display_oauth">please oAuth!</string>
-    <string name="twitter_error_toast">twitter error</string>
+    <string name="twitter_display_oauth">Please oAuth with your Twitter account!</string>
+    <string name="twitter_error_toast">Twitter error</string>
     <string name="like_dialog_title">Like</string>
     <string name="like_dialog_message">Like this tweet?</string>
     <string name="retweet_dialog_title">Retweet</string>
     <string name="retweet_dialog_message">Retweet this tweet?</string>
-    <string name="toauth_failed_twitter4j">twitter error!</string>
+    <string name="toauth_failed_twitter4j">Twitter error!</string>
     <string name="toauth_button">Add account</string>
     <string name="toauth_update_button">Update account database</string>
-    <string name="twitter_like_toast">liked!</string>
+    <string name="twitter_like_toast">Liked!</string>
     <string name="twitter_retweet_toast">retweeted!</string>
     <string name="delete_dialog_title">Delete account</string>
-    <string name="delete_dialog_message_account">account: \@</string>
+    <string name="delete_dialog_message_account">Account: \@</string>
     <string name="delete_dialog_message">Delete this account?</string>
     <string name="delete_account_toast">Deleted successfully</string>
     <string name="delete_failed_toast">Delete failed!</string>
@@ -31,16 +31,16 @@
     <string name="about_app_twitter4j" translatable="false">* twitter4j - http://twitter4j.org</string>
     <string name="about_app_pretitle">About this app</string>
     <string name="about_app_dialogtitle">About this app</string>
-    <string name="account_dialog_title">Change account ?</string>
+    <string name="account_dialog_title">Change account?</string>
     <string name="twitter_error_authorize">Not authorized</string>
     <string name="disp_tweet_title">Always show tweet</string>
-    <string name="disp_tweet_summary">Display tweet details even if number of attached photo is only one when receive link to tweet photo.</string>
+    <string name="disp_tweet_summary">Display tweet details even if received link is photo url and only one photo is attached.</string>
     <string name="apref_summary">Tap to open</string>
     <string name="apref_title">Other options</string>
     <string name="others_title">Others</string>
-    <string name="twitter_tweet_toast">tweeted!</string>
-    <string name="tweet">tweet!</string>
-    <string name="use_old_oauth">Use callback OAuth method</string>
+    <string name="twitter_tweet_toast">Tweeted!</string>
+    <string name="tweet">Tweet!</string>
+    <string name="use_old_oauth">Use normal callback OAuth method</string>
     <string name="asset_faq_filename">faq_en.html</string>
     <string name="faq_summary">Tap to open</string>
     <string name="faq_title">FAQ</string>
